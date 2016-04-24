@@ -3,6 +3,7 @@ from math import floor
 from math import sqrt
 from sys import maxint
 
+
 def get_size_lower_bound(num_tokens, sim_measure_type, threshold):
     if sim_measure_type == 'COSINE':
         return int(floor(threshold * threshold * num_tokens))
@@ -12,6 +13,7 @@ def get_size_lower_bound(num_tokens, sim_measure_type, threshold):
         return int(floor(threshold * num_tokens))
     elif sim_measure_type == 'OVERLAP':
         return threshold
+
 
 def get_size_upper_bound(num_tokens, sim_measure_type, threshold):
     if sim_measure_type == 'COSINE':
@@ -38,6 +40,7 @@ def get_prefix_length(num_tokens, sim_measure_type, threshold):
         return int(num_tokens - ceil(threshold * num_tokens) + 1)
     elif sim_measure_type == 'OVERLAP':
         return num_tokens - threshold + 1
+
 
 def get_overlap_threshold(l_num_tokens, r_num_tokens,
                           sim_measure_type, threshold):

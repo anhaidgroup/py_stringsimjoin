@@ -1,7 +1,7 @@
 from py_stringsimjoin.index.index import Index
 
-class InvertedIndex(Index):
 
+class InvertedIndex(Index):
     def __init__(self, table, id_attr, index_attr, tokenizer):
         self.table = table
         self.id_attr = id_attr

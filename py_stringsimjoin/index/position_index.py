@@ -4,7 +4,6 @@ from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
 
 
 class PositionIndex(Index):
-
     def __init__(self, table, id_attr, index_attr, tokenizer, 
                  sim_measure_type, threshold, token_ordering):
         self.table = table

@@ -30,12 +30,13 @@ def gen_token_ordering_for_tables(table_list, attr_list, tokenizer):
 
     return token_ordering
 
+
 def order_using_token_ordering(tokens, token_ordering):
     ordered_tokens = []
 
     for token in tokens:
         order = token_ordering.get(token)
-        if order != None:
+        if order is not None:
             ordered_tokens.append(order)
 
     ordered_tokens.sort()

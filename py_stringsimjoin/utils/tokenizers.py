@@ -1,6 +1,7 @@
 from py_stringmatching.tokenizers import delimiter
 from py_stringmatching.tokenizers import qgram
 
+
 def create_delimiter_tokenizer(delim_str=' '):
     """Creates a delimiter based tokenizer using the given delimiter.
 

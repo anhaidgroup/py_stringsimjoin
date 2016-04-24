@@ -1,7 +1,7 @@
 from py_stringsimjoin.index.index import Index
 
-class SizeIndex(Index):
 
+class SizeIndex(Index):
     def __init__(self, table, id_attr, index_attr, tokenizer):
         self.table = table
         self.id_attr = id_attr
@@ -11,7 +11,6 @@ class SizeIndex(Index):
         self.min_length = 0
         self.max_length = 0
         super(self.__class__, self).__init__()
-
 
     def build(self):
         for row in self.table:
