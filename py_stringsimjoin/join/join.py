@@ -135,6 +135,7 @@ def sim_join(ltable, rtable,
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
     prog_bar = pyprind.ProgBar(len(rtable))
+    candset_id = 1
     for r_row in rtable_dict.values():
         r_id = r_row[r_id_attr_index]
         r_join_attr_tokens = set(tokenizer(str(
@@ -167,6 +168,7 @@ def sim_join(ltable, rtable,
                     if sim_score >= threshold:
                         if has_output_attributes:
                             output_row = get_output_row_from_tables(
+                                             candset_id,
                                              ltable_dict[cand], r_row,
                                              cand, r_id,
                                              l_out_attrs_indices,
@@ -175,13 +177,15 @@ def sim_join(ltable, rtable,
                                 output_row.append(sim_score)
                             output_rows.append(output_row)
                         else:
-                            output_row = [cand, r_id]
+                            output_row = [candset_id, cand, r_id]
                             if out_sim_score:
                                 output_row.append(sim_score)
                             output_rows.append(output_row)
+                        candset_id += 1
         prog_bar.update()
 
     output_header = get_output_header_from_tables(
+                        '_id',
                         l_id_attr, r_id_attr,
                         l_out_attrs, r_out_attrs,
                         l_out_prefix, r_out_prefix)

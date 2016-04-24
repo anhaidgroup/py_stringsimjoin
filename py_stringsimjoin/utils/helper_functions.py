@@ -1,7 +1,11 @@
-def get_output_row_from_tables(l_row, r_row,
+def get_output_row_from_tables(candset_id,
+                               l_row, r_row,
                                l_id, r_id, 
                                l_out_attrs=None, r_out_attrs=None):
     output_row = []
+    
+    # add candset id
+    output_row.append(candset_id)
 
     # add ltable id attr
     output_row.append(l_id)
@@ -31,10 +35,13 @@ def get_output_row_from_candset(row_dict, out_attrs):
     return output_row
 
 
-def get_output_header_from_tables(l_id_attr, r_id_attr,
+def get_output_header_from_tables(candset_id_attr,
+                                  l_id_attr, r_id_attr,
                                   l_out_attrs, r_out_attrs,
                                   l_out_prefix, r_out_prefix):
     output_header = []
+
+    output_header.append(candset_id_attr)
 
     output_header.append(l_out_prefix + l_id_attr)
 
