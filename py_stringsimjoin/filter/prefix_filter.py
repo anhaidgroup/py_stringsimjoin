@@ -7,7 +7,7 @@ from py_stringsimjoin.index.prefix_index import PrefixIndex
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
-from py_stringsimjoin.utils.token_ordering import gen_token_ordering
+from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
 
 
@@ -91,14 +91,19 @@ class PrefixFilter(Filter):
         for l_row in ltable.itertuples(index=False):
             ltable_dict[l_row[l_id_attr_index]] = l_row
 
-        # generate token ordering using tokens in l_filter_attr
-        token_ordering = gen_token_ordering(ltable_dict.values(),
-                                            l_filter_attr_index,
-                                            self.tokenizer) 
         # build a dictionary on rtable
         rtable_dict = {}
         for r_row in rtable.itertuples(index=False):
             rtable_dict[r_row[r_id_attr_index]] = r_row
+
+        # generate token ordering using tokens in l_filter_attr
+        # and r_filter_attr
+        token_ordering = gen_token_ordering_for_tables(
+                                            [ltable_dict.values(),
+                                             rtable_dict.values()],
+                                            [l_filter_attr_index,
+                                             r_filter_attr_index],
+                                            self.tokenizer)
 
         # Build prefix index on l_filter_attr
         prefix_index = PrefixIndex(ltable_dict.values(),

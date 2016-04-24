@@ -25,6 +25,9 @@ def get_size_upper_bound(num_tokens, sim_measure_type, threshold):
 
 
 def get_prefix_length(num_tokens, sim_measure_type, threshold):
+    if num_tokens == 0:
+        return 0
+
     if sim_measure_type == 'COSINE':
         return int(num_tokens -
                    floor(threshold * threshold * num_tokens) + 1)
@@ -32,7 +35,7 @@ def get_prefix_length(num_tokens, sim_measure_type, threshold):
         return int(num_tokens -
                    floor((threshold / (2 - threshold)) * num_tokens) + 1)
     elif sim_measure_type == 'JACCARD':
-        return int(num_tokens - floor(threshold * num_tokens) + 1)
+        return int(num_tokens - ceil(threshold * num_tokens) + 1)
     elif sim_measure_type == 'OVERLAP':
         return num_tokens - threshold + 1
 
@@ -46,4 +49,3 @@ def get_overlap_threshold(l_num_tokens, r_num_tokens,
         return float((threshold / (1 + threshold)) * (l_num_tokens + r_num_tokens))
     elif sim_measure_type == 'OVERLAP':
         return threshold
-

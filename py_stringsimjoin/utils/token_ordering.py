@@ -1,35 +1,43 @@
-def gen_token_ordering(table, attr, tokenizer):
-    token_frequency_dict = {}
+def gen_token_ordering_for_lists(token_lists):
+    token_freq_dict = {}
+    for token_list in token_lists:
+        for token in token_list:
+            token_freq_dict[token] = token_freq_dict.get(token, 0) + 1
+            order_idx = 1
 
-    for row in table:
-        for token in set(tokenizer(str(row[attr]))):
-            token_frequency_dict[token] = token_frequency_dict.get(token, 0) + 1
+    token_ordering = {}
+    for token in sorted(token_freq_dict, key=token_freq_dict.get):
+        token_ordering[token] = order_idx
+        order_idx += 1
+
+    return token_ordering
+
+
+def gen_token_ordering_for_tables(table_list, attr_list, tokenizer):
+    token_freq_dict = {}
+    table_index = 0
+    for table in table_list:
+        for row in table:
+            for token in set(tokenizer(str(row[attr_list[table_index]]))):
+                token_freq_dict[token] = token_freq_dict.get(token, 0) + 1
+        table_index += 1
 
     token_ordering = {}
     order_idx = 1
-    for token in sorted(token_frequency_dict, key=token_frequency_dict.get):
+    for token in sorted(token_freq_dict, key=token_freq_dict.get):
         token_ordering[token] = order_idx
         order_idx += 1
 
     return token_ordering
 
 def order_using_token_ordering(tokens, token_ordering):
-    tokens_dict = {}
-    new_tokens = []
-
-    for token in tokens:
-        order_index = token_ordering.get(token)
-        if order_index != None:
-            tokens_dict[token] = order_index
-        else:
-            new_tokens.append(token)
-
     ordered_tokens = []
 
-    for token in sorted(tokens_dict, key=tokens_dict.get):
-        ordered_tokens.append(token)
+    for token in tokens:
+        order = token_ordering.get(token)
+        if order != None:
+            ordered_tokens.append(order)
 
-    for token in new_tokens:
-        ordered_tokens.append(token)
+    ordered_tokens.sort()
 
     return ordered_tokens
