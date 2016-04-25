@@ -14,7 +14,11 @@ class SizeIndex(Index):
 
     def build(self):
         for row in self.table:
-            num_tokens = len(set(self.tokenizer(str(row[self.index_attr]))))
+            index_string = str(row[self.index_attr])
+            # check for empty string
+            if not index_string:
+                continue
+            num_tokens = len(set(self.tokenizer(index_string)))
             
             if self.index.get(num_tokens) is None:
                 self.index[num_tokens] = []

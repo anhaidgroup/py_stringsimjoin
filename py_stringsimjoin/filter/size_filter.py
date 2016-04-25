@@ -33,16 +33,21 @@ class SizeFilter(Filter):
         Returns:
         result : boolean, True if the tuple pair is dropped.
         """
+        # check for empty string
+        if (not lstring) or (not rstring):
+            return True
+
         l_num_tokens = len(set(self.tokenizer(lstring)))
         r_num_tokens = len(set(self.tokenizer(rstring)))
 
         size_lower_bound = get_size_lower_bound(l_num_tokens,
-                                           self.sim_measure_type,self.threshold)
+                                                self.sim_measure_type,
+                                                self.threshold)
         size_upper_bound = get_size_upper_bound(l_num_tokens,
-                                           self.sim_measure_type,self.threshold)
+                                                self.sim_measure_type,
+                                                self.threshold)
 
-        if (r_num_tokens >= size_lower_bound and 
-            r_num_tokens <= size_upper_bound):
+        if size_lower_bound <= r_num_tokens <= size_upper_bound:
             return False
         else:
             return True
@@ -106,8 +111,11 @@ class SizeFilter(Filter):
 
         for r_row in rtable_dict.values():
             r_id = r_row[r_id_attr_index]
-            r_num_tokens = len(set(self.tokenizer(str(
-                               r_row[r_filter_attr_index]))))
+            r_string = str(r_row[r_filter_attr_index])
+            # check for empty string
+            if not r_string:
+                continue
+            r_num_tokens = len(set(self.tokenizer(r_string)))
            
             size_lower_bound = get_size_lower_bound(r_num_tokens,
                                                     self.sim_measure_type,

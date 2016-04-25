@@ -7,6 +7,7 @@ from py_stringsimjoin.index.prefix_index import PrefixIndex
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
+from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
 
@@ -36,17 +37,21 @@ class PrefixFilter(Filter):
         """
         ltokens = list(set(self.tokenizer(lstring)))
         rtokens = list(set(self.tokenizer(rstring)))
- 
-        l_prefix_length = get_prefix_length(len(ltokens),
+
+        token_ordering = gen_token_ordering_for_lists([ltokens, rtokens])
+        ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
+        ordered_rtokens = order_using_token_ordering(rtokens, token_ordering)
+
+        l_prefix_length = get_prefix_length(len(ordered_ltokens),
                                             self.sim_measure_type,
                                             self.threshold) 
-        r_prefix_length = get_prefix_length(len(rtokens),
+        r_prefix_length = get_prefix_length(len(ordered_rtokens),
                                             self.sim_measure_type,
                                             self.threshold)
-        prefix_overlap = len(set(ltokens[0:l_prefix_length]).intersection(
-                             set(rtokens[0:r_prefix_length])))
+        prefix_overlap = set(ordered_ltokens[0:l_prefix_length]).intersection(
+                         set(ordered_rtokens[0:r_prefix_length]))
 
-        if prefix_overlap > 0:
+        if len(prefix_overlap) > 0:
             return False
         else:
             return True
