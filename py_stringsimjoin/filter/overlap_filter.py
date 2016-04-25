@@ -56,6 +56,16 @@ class OverlapFilter(Filter):
         Returns:
         result : Pandas data frame
         """
+        output_header = get_output_header_from_tables(
+                            '_id',
+                            l_id_attr, r_id_attr,
+                            l_out_attrs, r_out_attrs,
+                            l_out_prefix, r_out_prefix)
+
+        # check for empty tables
+        if ltable.empty or rtable.empty:
+            return pd.DataFrame(columns=output_header)
+
         # find column indices of id attr, filter attr and output attrs in ltable
         l_columns = list(ltable.columns.values)
         l_id_attr_index = l_columns.index(l_id_attr)
@@ -123,10 +133,4 @@ class OverlapFilter(Filter):
                     candset_id += 1
             prog_bar.update()
 
-        output_header = get_output_header_from_tables(
-                            '_id',
-                            l_id_attr, r_id_attr,
-                            l_out_attrs, r_out_attrs, 
-                            l_out_prefix, r_out_prefix)
-        output_table = pd.DataFrame(output_rows, columns=output_header)
-        return output_table
+        return pd.DataFrame(output_rows, columns=output_header)

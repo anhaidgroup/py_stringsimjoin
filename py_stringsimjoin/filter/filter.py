@@ -20,6 +20,10 @@ class Filter(object):
         Returns:
         result : Pandas data frame
         """
+        # check for empty candset
+        if candset.empty:
+            return candset
+
         # find column indices of id attr and filter attr in ltable
         l_columns = list(ltable.columns.values)
         l_id_attr_index = l_columns.index(l_id_attr)
