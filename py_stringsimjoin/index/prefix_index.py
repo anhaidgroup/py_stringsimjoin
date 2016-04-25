@@ -18,8 +18,12 @@ class PrefixIndex(Index):
 
     def build(self):
         for row in self.table:
+            index_string = str(row[self.index_attr])
+            # check for empty string
+            if not index_string:
+                continue
             index_attr_tokens = order_using_token_ordering(set(
-                                    self.tokenizer(str(row[self.index_attr]))), 
+                                    self.tokenizer(index_string)),
                                                            self.token_ordering)
             prefix_length = get_prefix_length(
                                 len(index_attr_tokens),

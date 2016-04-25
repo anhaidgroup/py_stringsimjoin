@@ -12,7 +12,11 @@ class InvertedIndex(Index):
 
     def build(self):
         for row in self.table:
-            index_attr_tokens = set(self.tokenizer(str(row[self.index_attr])))
+            index_string = str(row[self.index_attr])
+            # check for empty string
+            if not index_string:
+                continue
+            index_attr_tokens = set(self.tokenizer(index_string))
 
             row_id = row[self.id_attr]
             for token in index_attr_tokens:

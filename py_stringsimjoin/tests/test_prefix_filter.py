@@ -24,6 +24,7 @@ class FilterPairTestCases(unittest.TestCase):
 
     def test_empty_input(self):
         self.assertTrue(self.prefix_filter.filter_pair('ab', ''))
+        self.assertTrue(self.prefix_filter.filter_pair('', ''))
 
 
 # test PrefixFilter.filter_tables method

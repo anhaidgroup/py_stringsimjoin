@@ -138,8 +138,11 @@ def sim_join(ltable, rtable,
     candset_id = 1
     for r_row in rtable_dict.values():
         r_id = r_row[r_id_attr_index]
-        r_join_attr_tokens = set(tokenizer(str(
-                                 r_row[r_join_attr_index])))
+        r_string = str(r_row[r_join_attr_index])
+        # check for empty string
+        if not r_string:
+            continue
+        r_join_attr_tokens = set(tokenizer(r_string))
         r_ordered_tokens = order_using_token_ordering(r_join_attr_tokens,
                                                       token_ordering)
         r_num_tokens = len(r_ordered_tokens)

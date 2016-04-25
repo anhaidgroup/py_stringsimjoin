@@ -38,6 +38,10 @@ class SuffixFilter(Filter):
         Returns:
         result : boolean, True if the tuple pair is dropped.
         """
+        # check for empty string
+        if (not lstring) or (not rstring):
+            return True
+
         ltokens = list(set(self.tokenizer(lstring)))
         rtokens = list(set(self.tokenizer(rstring)))    
 
@@ -142,7 +146,11 @@ class SuffixFilter(Filter):
 
         for l_row in ltable_dict.values():
             l_id = l_row[l_id_attr_index]
-            ltokens = set(self.tokenizer(l_row[l_filter_attr_index]))
+            l_string = str(l_row[l_filter_attr_index])
+            # check for empty string
+            if not l_string:
+                continue
+            ltokens = set(self.tokenizer(l_string))
             ordered_ltokens = order_using_token_ordering(ltokens,
                                                          token_ordering)
             l_num_tokens = len(ordered_ltokens)
@@ -152,7 +160,11 @@ class SuffixFilter(Filter):
             l_suffix = ordered_ltokens[l_prefix_length:]
             for r_row in rtable_dict.values():
                 r_id = r_row[r_id_attr_index]
-                rtokens = set(self.tokenizer(r_row[r_filter_attr_index]))
+                r_string = str(r_row[r_filter_attr_index])
+                # check for empty string
+                if not r_string:
+                    continue
+                rtokens = set(self.tokenizer(r_string))
                 ordered_rtokens = order_using_token_ordering(rtokens,
                                                              token_ordering)
                 r_num_tokens = len(ordered_rtokens)

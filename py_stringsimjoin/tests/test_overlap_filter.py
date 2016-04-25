@@ -22,6 +22,7 @@ class FilterPairTestCases(unittest.TestCase):
 
     def test_empty_input(self):
         self.assertTrue(self.overlap_filter.filter_pair('ab', ''))
+        self.assertTrue(self.overlap_filter.filter_pair('', ''))
 
 
 # test OverlapFilter.filter_tables method

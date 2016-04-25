@@ -29,6 +29,10 @@ class OverlapFilter(Filter):
         Returns:
         result : boolean, True if the tuple pair is dropped.
         """
+        # check for empty string
+        if (not lstring) or (not rstring):
+            return True
+
         ltokens = self.tokenizer(lstring)
         rtokens = self.tokenizer(rstring)
  
@@ -108,8 +112,11 @@ class OverlapFilter(Filter):
 
         for r_row in rtable_dict.values():
             r_id = r_row[r_id_attr_index]
-            r_filter_attr_tokens = set(self.tokenizer(str(
-                                       r_row[r_filter_attr_index])))
+            r_string = str(r_row[r_filter_attr_index])
+            # check for empty string
+            if not r_string:
+                continue
+            r_filter_attr_tokens = set(self.tokenizer(r_string))
 
             # probe inverted index and find overlap of candidates          
             candidate_overlap = {}

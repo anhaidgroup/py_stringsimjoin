@@ -23,6 +23,7 @@ class FilterPairTestCases(unittest.TestCase):
 
     def test_empty_input(self):
         self.assertTrue(self.size_filter.filter_pair('ab', ''))
+        self.assertTrue(self.size_filter.filter_pair('', ''))
 
 
 # test SizeFilter.filter_tables method
