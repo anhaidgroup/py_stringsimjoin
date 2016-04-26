@@ -55,4 +55,19 @@ def get_output_header_from_tables(candset_key_attr,
         for r_attr in r_out_attrs:
             output_header.append(r_out_prefix + r_attr)
 
-    return output_header    
+    return output_header
+
+
+def build_dict_from_table(table, key_attr_index):
+    table_dict = {}
+    for row in table.itertuples(index=False):
+        table_dict[row[key_attr_index]] = row
+    return table_dict
+
+
+def find_output_attribute_indices(original_columns, output_attributes):
+    output_attribute_indices = []
+    if output_attributes is not None:
+        for attr in output_attributes:
+            output_attribute_indices.append(original_columns.index(attr))
+    return output_attribute_indices
