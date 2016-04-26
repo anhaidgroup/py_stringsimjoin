@@ -57,7 +57,6 @@ class SuffixFilter(Filter):
         r_prefix_length = get_prefix_length(r_num_tokens,
                                             self.sim_measure_type,
                                             self.threshold)
-
         return self._filter_suffix(ordered_ltokens[l_prefix_length:],
                              ordered_rtokens[r_prefix_length:],
                              l_num_tokens - l_prefix_length,
@@ -210,29 +209,32 @@ class SuffixFilter(Filter):
             l_suffix_num_tokens == 0 or
             r_suffix_num_tokens == 0):
             return abs_diff
+
         r_mid = int(ceil(r_suffix_num_tokens / 2))
         r_mid_token = r_suffix[r_mid]
         o = (hamming_dist_max - abs_diff) / 2
+
         if l_suffix_num_tokens <= r_suffix_num_tokens:
             o_l = 1
             o_r = 0
         else:
             o_l = 0
             o_r = 1
+
         (r_l, r_r, flag, diff) = self._partition(
                                   r_suffix, r_mid_token, r_mid, r_mid)
         (l_l, l_r, flag, diff) = self._partition(l_suffix, r_mid_token, 
                                   max(0, int(r_mid - o - abs_diff * o_l)),
                                   min(l_suffix_num_tokens - 1,
                                       int(r_mid + o + abs_diff * o_r)))
-        if flag == 0:
-            return hamming_dist_max + 1
+
         r_l_num_tokens = len(r_l)
         r_r_num_tokens = len(r_r)
         l_l_num_tokens = len(l_l)
         l_r_num_tokens = len(l_r)
         hamming_dist = (abs(l_l_num_tokens - r_l_num_tokens) +
                         abs(l_r_num_tokens - r_r_num_tokens) + diff)
+
         if hamming_dist > hamming_dist_max:
             return hamming_dist
         else:

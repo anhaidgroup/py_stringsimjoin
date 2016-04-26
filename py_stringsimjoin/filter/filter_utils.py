@@ -32,10 +32,10 @@ def get_prefix_length(num_tokens, sim_measure_type, threshold):
 
     if sim_measure_type == 'COSINE':
         return int(num_tokens -
-                   floor(threshold * threshold * num_tokens) + 1)
+                   ceil(threshold * threshold * num_tokens) + 1)
     elif sim_measure_type == 'DICE':
         return int(num_tokens -
-                   floor((threshold / (2 - threshold)) * num_tokens) + 1)
+                   ceil((threshold / (2 - threshold)) * num_tokens) + 1)
     elif sim_measure_type == 'JACCARD':
         return int(num_tokens - ceil(threshold * num_tokens) + 1)
     elif sim_measure_type == 'OVERLAP':
