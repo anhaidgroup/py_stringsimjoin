@@ -2,9 +2,9 @@ from py_stringsimjoin.index.index import Index
 
 
 class InvertedIndex(Index):
-    def __init__(self, table, id_attr, index_attr, tokenizer):
+    def __init__(self, table, key_attr, index_attr, tokenizer):
         self.table = table
-        self.id_attr = id_attr
+        self.key_attr = key_attr
         self.index_attr = index_attr
         self.tokenizer = tokenizer
         self.index = {}
@@ -18,7 +18,7 @@ class InvertedIndex(Index):
                 continue
             index_attr_tokens = set(self.tokenizer(index_string))
 
-            row_id = row[self.id_attr]
+            row_id = row[self.key_attr]
             for token in index_attr_tokens:
                 if self.index.get(token) is None:
                     self.index[token] = []

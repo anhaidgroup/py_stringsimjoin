@@ -4,10 +4,10 @@ from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
 
 
 class PositionIndex(Index):
-    def __init__(self, table, id_attr, index_attr, tokenizer, 
+    def __init__(self, table, key_attr, index_attr, tokenizer, 
                  sim_measure_type, threshold, token_ordering):
         self.table = table
-        self.id_attr = id_attr
+        self.key_attr = key_attr
         self.index_attr = index_attr
         self.tokenizer = tokenizer
         self.sim_measure_type = sim_measure_type
@@ -31,7 +31,7 @@ class PositionIndex(Index):
                                 num_tokens,
                                 self.sim_measure_type, self.threshold)
  
-            row_id = row[self.id_attr]
+            row_id = row[self.key_attr]
             pos = 0
             for token in index_attr_tokens[0:prefix_length]:
                 if self.index.get(token) is None:
