@@ -6,7 +6,8 @@ from py_stringsimjoin.filter.filter_utils import get_size_lower_bound
 from py_stringsimjoin.filter.filter_utils import get_size_upper_bound
 from py_stringsimjoin.index.size_index import SizeIndex
 from py_stringsimjoin.utils.helper_functions import build_dict_from_table
-from py_stringsimjoin.utils.helper_functions import find_output_attribute_indices
+from py_stringsimjoin.utils.helper_functions import \
+                                                 find_output_attribute_indices
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
@@ -71,7 +72,8 @@ class SizeFilter(Filter):
         Returns:
         result : Pandas data frame
         """
-        # find column indices of key attr, filter attr and output attrs in ltable
+        # find column indices of key attr, filter attr and
+        # output attrs in ltable
         l_columns = list(ltable.columns.values)
         l_key_attr_index = l_columns.index(l_key_attr)
         l_filter_attr_index = l_columns.index(l_filter_attr)
@@ -79,7 +81,8 @@ class SizeFilter(Filter):
         l_out_attrs_indices = find_output_attribute_indices(l_columns,
                                                             l_out_attrs)
 
-        # find column indices of key attr, filter attr and output attrs in rtable
+        # find column indices of key attr, filter attr and
+        # output attrs in rtable
         r_columns = list(rtable.columns.values)
         r_key_attr_index = r_columns.index(r_key_attr)
         r_filter_attr_index = r_columns.index(r_filter_attr)
@@ -87,10 +90,12 @@ class SizeFilter(Filter):
                                                             r_out_attrs)
 
         # build a dictionary on ltable
-        ltable_dict = build_dict_from_table(ltable, l_key_attr_index)
+        ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
+                                            l_filter_attr_index)
 
         # build a dictionary on rtable
-        rtable_dict = build_dict_from_table(rtable, r_key_attr_index)
+        rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
+                                            r_filter_attr_index)
 
         # Build size index over ltable
         size_index = SizeIndex(ltable_dict.values(),

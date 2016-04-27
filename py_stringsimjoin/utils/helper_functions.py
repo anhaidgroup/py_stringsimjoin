@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 def get_output_row_from_tables(candset_id,
                                l_row, r_row,
                                l_id, r_id, 
@@ -58,10 +61,11 @@ def get_output_header_from_tables(candset_key_attr,
     return output_header
 
 
-def build_dict_from_table(table, key_attr_index):
+def build_dict_from_table(table, key_attr_index, join_attr_index):
     table_dict = {}
     for row in table.itertuples(index=False):
-        table_dict[row[key_attr_index]] = row
+        if not pd.isnull(row[join_attr_index]): 
+            table_dict[row[key_attr_index]] = row
     return table_dict
 
 

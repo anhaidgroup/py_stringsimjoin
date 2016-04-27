@@ -5,7 +5,8 @@ from py_stringsimjoin.filter.filter import Filter
 from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.index.prefix_index import PrefixIndex
 from py_stringsimjoin.utils.helper_functions import build_dict_from_table
-from py_stringsimjoin.utils.helper_functions import find_output_attribute_indices
+from py_stringsimjoin.utils.helper_functions import \
+                                                 find_output_attribute_indices
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
@@ -79,14 +80,16 @@ class PrefixFilter(Filter):
         Returns:
         result : Pandas data frame
         """
-        # find column indices of key attr, filter attr and output attrs in ltable
+        # find column indices of key attr, filter attr and
+        # output attrs in ltable
         l_columns = list(ltable.columns.values)
         l_key_attr_index = l_columns.index(l_key_attr)
         l_filter_attr_index = l_columns.index(l_filter_attr)
         l_out_attrs_indices = find_output_attribute_indices(l_columns,
                                                             l_out_attrs)
 
-        # find column indices of key attr, filter attr and output attrs in rtable
+        # find column indices of key attr, filter attr and
+        # output attrs in rtable
         r_columns = list(rtable.columns.values)
         r_key_attr_index = r_columns.index(r_key_attr)
         r_filter_attr_index = r_columns.index(r_filter_attr)
@@ -94,10 +97,12 @@ class PrefixFilter(Filter):
                                                             r_out_attrs)
         
         # build a dictionary on ltable
-        ltable_dict = build_dict_from_table(ltable, l_key_attr_index)
+        ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
+                                            l_filter_attr_index)
 
         # build a dictionary on rtable
-        rtable_dict = build_dict_from_table(rtable, r_key_attr_index)
+        rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
+                                            r_filter_attr_index)
 
         # generate token ordering using tokens in l_filter_attr
         # and r_filter_attr

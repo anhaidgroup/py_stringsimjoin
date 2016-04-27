@@ -93,10 +93,10 @@ def sim_join(ltable, rtable,
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
     # build a dictionary on ltable
-    ltable_dict = build_dict_from_table(ltable, l_key_attr_index)
+    ltable_dict = build_dict_from_table(ltable, l_key_attr_index, l_join_attr_index)
 
     # build a dictionary on rtable
-    rtable_dict = build_dict_from_table(rtable, r_key_attr_index)
+    rtable_dict = build_dict_from_table(rtable, r_key_attr_index, r_join_attr_index)
 
     # generate token ordering using tokens in l_join_attr
     # and r_join_attr
@@ -126,7 +126,7 @@ def sim_join(ltable, rtable,
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
-    prog_bar = pyprind.ProgBar(len(rtable))
+    prog_bar = pyprind.ProgBar(len(rtable_dict.keys()))
     candset_id = 1
     for r_row in rtable_dict.values():
         r_id = r_row[r_key_attr_index]
@@ -140,7 +140,8 @@ def sim_join(ltable, rtable,
         r_num_tokens = len(r_ordered_tokens)
         r_prefix_length = get_prefix_length(r_num_tokens,
                                             sim_measure_type,
-                                            threshold)
+                                            threshold)     
+
         candidate_overlap = pos_filter._find_candidates(r_ordered_tokens,
                                                         r_num_tokens,
                                                         r_prefix_length,

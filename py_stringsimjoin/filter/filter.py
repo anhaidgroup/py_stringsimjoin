@@ -1,4 +1,7 @@
+import pandas as pd
 import pyprind
+
+from py_stringsimjoin.utils.helper_functions import build_dict_from_table
 
 
 class Filter(object):
@@ -25,25 +28,23 @@ class Filter(object):
         if candset.empty:
             return candset
 
-        # find column indices of id attr and filter attr in ltable
+        # find column indices of key attr and filter attr in ltable
         l_columns = list(ltable.columns.values)
         l_key_attr_index = l_columns.index(l_key_attr)
         l_filter_attr_index = l_columns.index(l_filter_attr)
 
-        # find column indices of id attr and filter attr in rtable
+        # find column indices of key attr and filter attr in rtable
         r_columns = list(rtable.columns.values)
         r_key_attr_index = r_columns.index(r_key_attr)
         r_filter_attr_index = r_columns.index(r_filter_attr)
 
         # build a dictionary on ltable
-        ltable_dict = {}
-        for l_row in ltable.itertuples(index=False):
-            ltable_dict[l_row[l_key_attr_index]] = l_row
+        ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
+                                            l_filter_attr_index)
 
         # build a dictionary on rtable
-        rtable_dict = {}
-        for r_row in rtable.itertuples(index=False):
-            rtable_dict[r_row[r_key_attr_index]] = r_row
+        rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
+                                            r_filter_attr_index)
 
         # find indices of l_key_attr and r_key_attr in candset
         candset_columns = list(candset.columns.values)
@@ -59,9 +60,13 @@ class Filter(object):
 
             l_row = ltable_dict[l_id]
             r_row = rtable_dict[r_id]
-            valid_rows.append(not self.filter_pair(
-                                      l_row[l_filter_attr_index],
-                                      r_row[r_filter_attr_index]))
+            if (pd.isnull(l_row[l_filter_attr_index]) or
+                pd.isnull(r_row[r_filter_attr_index])):
+                valid_rows.append(False)
+            else:
+                valid_rows.append(not self.filter_pair(
+                                          l_row[l_filter_attr_index],
+                                          r_row[r_filter_attr_index]))
 
             prog_bar.update()
 
