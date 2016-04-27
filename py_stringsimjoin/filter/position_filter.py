@@ -12,6 +12,7 @@ from py_stringsimjoin.utils.helper_functions import find_output_attribute_indice
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
+from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
 
@@ -46,8 +47,12 @@ class PositionFilter(Filter):
         ltokens = list(set(self.tokenizer(lstring)))
         rtokens = list(set(self.tokenizer(rstring)))
 
-        l_num_tokens = len(ltokens)
-        r_num_tokens = len(rtokens)
+        token_ordering = gen_token_ordering_for_lists([ltokens, rtokens])
+        ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
+        ordered_rtokens = order_using_token_ordering(rtokens, token_ordering)
+
+        l_num_tokens = len(ordered_ltokens)
+        r_num_tokens = len(ordered_rtokens)
 
         l_prefix_length = get_prefix_length(l_num_tokens,
                                             self.sim_measure_type,
@@ -58,7 +63,7 @@ class PositionFilter(Filter):
  
         l_prefix_dict = {}
         l_pos = 0
-        for token in ltokens[0:l_prefix_length]:
+        for token in ordered_ltokens[0:l_prefix_length]:
             l_prefix_dict[token] = l_pos
 
         overlap_threshold = get_overlap_threshold(l_num_tokens, r_num_tokens,
@@ -66,7 +71,7 @@ class PositionFilter(Filter):
                                                   self.threshold)
         current_overlap = 0
         r_pos = 0 
-        for token in rtokens[0:r_prefix_length]:
+        for token in ordered_rtokens[0:r_prefix_length]:
             l_pos = l_prefix_dict.get(token)
             if l_pos is not None:
                 overlap_upper_bound = 1 + min(l_num_tokens - l_pos - 1,

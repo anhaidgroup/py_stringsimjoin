@@ -49,6 +49,6 @@ def get_overlap_threshold(l_num_tokens, r_num_tokens,
     elif sim_measure_type == 'DICE':
         return floor((threshold / 2) * (l_num_tokens + r_num_tokens))
     elif sim_measure_type == 'JACCARD':
-        return float((threshold / (1 + threshold)) * (l_num_tokens + r_num_tokens))
+        return ceil((threshold / (1 + threshold)) * (l_num_tokens + r_num_tokens))
     elif sim_measure_type == 'OVERLAP':
         return threshold
