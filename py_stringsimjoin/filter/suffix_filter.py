@@ -1,4 +1,4 @@
-from math import ceil
+from math import floor
 
 import pandas as pd
 import pyprind
@@ -62,25 +62,28 @@ class SuffixFilter(Filter):
                                             self.threshold)
         return self._filter_suffix(ordered_ltokens[l_prefix_length:],
                              ordered_rtokens[r_prefix_length:],
-                             l_num_tokens - l_prefix_length,
-                             r_num_tokens - r_prefix_length,
+                             l_prefix_length,
+                             r_prefix_length,
                              len(ltokens), len(rtokens))
     
     def _filter_suffix(self, l_suffix, r_suffix,
-                       l_suffix_num_tokens, r_suffix_num_tokens,
+                       l_prefix_num_tokens, r_prefix_num_tokens,
                        l_num_tokens, r_num_tokens):
 
         overlap_threshold = get_overlap_threshold(l_num_tokens, r_num_tokens,
                                                   self.sim_measure_type,
                                                   self.threshold)
+
+        hamming_dist_prefix = r_prefix_num_tokens - l_prefix_num_tokens
+        if l_num_tokens >= r_num_tokens:
+            hamming_dist_prefix = l_prefix_num_tokens - r_prefix_num_tokens
         hamming_dist_max = (l_num_tokens + r_num_tokens -
-                            2 * overlap_threshold -
-                           (l_num_tokens - l_suffix_num_tokens - 
-                            r_num_tokens + r_suffix_num_tokens))
+                            2 * overlap_threshold + hamming_dist_prefix)
+
         hamming_dist = self._est_hamming_dist_lower_bound(
                                 l_suffix, r_suffix,
-                                l_suffix_num_tokens,
-                                r_suffix_num_tokens,
+                                l_num_tokens - l_prefix_num_tokens,
+                                r_num_tokens - r_prefix_num_tokens,
                                 hamming_dist_max, 1)
         if hamming_dist <= hamming_dist_max:
             return False
@@ -171,8 +174,8 @@ class SuffixFilter(Filter):
                                                     self.threshold)
                 if not self._filter_suffix(l_suffix,
                                            ordered_rtokens[r_prefix_length:],
-                                           l_num_tokens - l_prefix_length,
-                                           r_num_tokens - r_prefix_length,
+                                           l_prefix_length,
+                                           r_prefix_length,
                                            l_num_tokens, r_num_tokens):
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(
@@ -209,7 +212,7 @@ class SuffixFilter(Filter):
             r_suffix_num_tokens == 0):
             return abs_diff
 
-        r_mid = int(ceil(r_suffix_num_tokens / 2))
+        r_mid = int(floor(r_suffix_num_tokens / 2))
         r_mid_token = r_suffix[r_mid]
         o = (hamming_dist_max - abs_diff) / 2
 
@@ -254,27 +257,39 @@ class SuffixFilter(Filter):
                 return hamming_dist
     
     def _partition(self, tokens, probe_token, left, right):
-        if (right < left or
-            tokens[left] > probe_token or
-            tokens[right] < probe_token):
+        right = min(right, len(tokens) - 1)
+
+        if right < left:
             return [], [], 0, 1
+
+        if tokens[left] > probe_token:
+            return [], tokens, 0, 1
+
+        if tokens[right] < probe_token:
+            return tokens, [], 0, 1
+
         pos = self._binary_search(tokens, probe_token, left, right)
         tokens_left = tokens[0:pos]
+
         if tokens[pos] == probe_token:
             tokens_right = tokens[pos+1:len(tokens)]
             diff = 0
         else:
             tokens_right = tokens[pos:len(tokens)]
             diff = 1
+
         return tokens_left, tokens_right, 1, diff
 
     def _binary_search(self, tokens, probe_token, left, right):
-        mid = int(ceil((left + right) / 2))
+        if left == right:
+            return left
+
+        mid = int(floor((left + right) / 2))
         mid_token = tokens[mid]
-        if (left == right) or (mid_token == probe_token):
+
+        if mid_token == probe_token:
             return mid
         elif mid_token < probe_token:
-            return self._binary_search(tokens, probe_token, mid + 1, right)
+            return self._binary_search(tokens, probe_token, mid+1, right)
         else:
             return self._binary_search(tokens, probe_token, left, mid)
-

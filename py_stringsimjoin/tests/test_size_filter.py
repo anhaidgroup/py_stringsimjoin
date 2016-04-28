@@ -45,8 +45,7 @@ class FilterTablesTestCases(unittest.TestCase):
                           {'id': 3, 'attr':'xy pl ou'},
                           {'id': 4, 'attr':'aa'},
                           {'id': 5, 'attr':'fg cd aa ef'}])
-        expected_pairs = set(['1,5', '3,1', '3,2', '3,4', '4,2',
-                              '4,3', '4,5', '5,3', '5,5'])
+        expected_pairs = set(['1,5', '3,1', '3,4', '4,3', '5,5'])
         C = self.size_filter.filter_tables(A, B,
                                            'id', 'id',
                                            'attr', 'attr')
@@ -100,8 +99,7 @@ class FilterCandsetTestCases(unittest.TestCase):
                      B[['r_id', 'tmp_join_key']],
                      on='tmp_join_key').drop('tmp_join_key', 1)
 
-        expected_pairs = set(['1,5', '3,1', '3,2', '3,4', '4,2',
-                              '4,3', '4,5', '5,3', '5,5'])
+        expected_pairs = set(['1,5', '3,1', '3,4', '4,3', '5,5'])
         D = self.size_filter.filter_candset(C,
                                             'l_id', 'r_id',
                                             A, B,

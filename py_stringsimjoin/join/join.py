@@ -52,6 +52,43 @@ def jaccard_join(ltable, rtable,
                     out_sim_score)
 
 
+def cosine_join(ltable, rtable,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                tokenizer,
+                threshold,
+                l_out_attrs=None, r_out_attrs=None,
+                l_out_prefix='l_', r_out_prefix='r_',
+                out_sim_score=True):
+    """Join two tables using cosine similarity measure.
+
+    Finds tuple pairs from ltable and rtable such that
+    CosineSimilarity(ltable.l_join_attr, rtable.r_join_attr) >= threshold
+
+    Args:
+    ltable, rtable : Pandas data frame
+    l_key_attr, r_key_attr : String, key attribute from ltable and rtable
+    l_join_attr, r_join_attr : String, join attribute from ltable and rtable
+    tokenizer : function, tokenizer function to be used to tokenize join attributes
+    threshold : float, cosine threshold to be satisfied
+    l_out_attrs, r_out_attrs : list of attributes to be included in the output table from ltable and rtable
+    l_out_prefix, r_out_prefix : String, prefix to be used in the attribute names of the output table
+    out_sim_score : boolean, indicates if similarity score needs to be included in the output table
+
+    Returns:
+    result : Pandas data frame
+    """
+    return sim_join(ltable, rtable,
+                    l_key_attr, r_key_attr,
+                    l_join_attr, r_join_attr,
+                    tokenizer,
+                    'COSINE',
+                    threshold,
+                    l_out_attrs, r_out_attrs,
+                    l_out_prefix, r_out_prefix,
+                    out_sim_score)
+
+
 def sim_join(ltable, rtable,
              l_key_attr, r_key_attr,
              l_join_attr, r_join_attr,
@@ -157,8 +194,8 @@ def sim_join(ltable, rtable,
                 if not suffix_filter._filter_suffix(
                            l_ordered_tokens[l_prefix_length:],
                            r_ordered_tokens[r_prefix_length:],
-                           l_num_tokens - l_prefix_length,
-                           r_num_tokens - r_prefix_length,
+                           l_prefix_length,
+                           r_prefix_length,
                            l_num_tokens, r_num_tokens):
                     sim_score = sim_fn(l_ordered_tokens, r_ordered_tokens)
                     if sim_score >= threshold:

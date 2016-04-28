@@ -46,7 +46,7 @@ class FilterTablesTestCases(unittest.TestCase):
                           {'id': 3, 'attr':'xy pl ou'},
                           {'id': 4, 'attr':'aa'},
                           {'id': 5, 'attr':'fg cd aa ef ab'}])
-        expected_pairs = set(['3,4', '5,5'])
+        expected_pairs = set(['3,4'])
         C = self.suffix_filter.filter_tables(A, B,
                                            'id', 'id',
                                            'attr', 'attr')
