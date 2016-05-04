@@ -17,7 +17,7 @@ class SizeFilter(Filter):
     """Size filter class.
 
     Attributes:
-        tokenizer: Tokenizer function, which is used to tokenize input string.
+        tokenizer: Tokenizer object.
         sim_measure_type: String, similarity measure type.
         threshold: float, similarity threshold to be used by the filter. 
     """
@@ -40,8 +40,8 @@ class SizeFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        l_num_tokens = len(set(self.tokenizer(lstring)))
-        r_num_tokens = len(set(self.tokenizer(rstring)))
+        l_num_tokens = len(set(self.tokenizer.tokenize(lstring)))
+        r_num_tokens = len(set(self.tokenizer.tokenize(rstring)))
 
         size_lower_bound = get_size_lower_bound(l_num_tokens,
                                                 self.sim_measure_type,
@@ -114,7 +114,7 @@ class SizeFilter(Filter):
             # check for empty string
             if not r_string:
                 continue
-            r_num_tokens = len(set(self.tokenizer(r_string)))
+            r_num_tokens = len(set(self.tokenizer.tokenize(r_string)))
            
             size_lower_bound = get_size_lower_bound(r_num_tokens,
                                                     self.sim_measure_type,

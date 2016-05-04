@@ -18,7 +18,7 @@ class SizeIndex(Index):
             # check for empty string
             if not index_string:
                 continue
-            num_tokens = len(set(self.tokenizer(index_string)))
+            num_tokens = len(set(self.tokenizer.tokenize(index_string)))
             
             if self.index.get(num_tokens) is None:
                 self.index[num_tokens] = []

@@ -24,7 +24,7 @@ class PositionIndex(Index):
             if not index_string:
                 continue
             index_attr_tokens = order_using_token_ordering(set(
-                                    self.tokenizer(index_string)),
+                                    self.tokenizer.tokenize(index_string)),
                                                            self.token_ordering)
             num_tokens = len(index_attr_tokens)
             prefix_length = get_prefix_length(

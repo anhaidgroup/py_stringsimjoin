@@ -15,7 +15,7 @@ class OverlapFilter(Filter):
     """Overlap filter class.
 
     Attributes:
-        tokenizer: Tokenizer function, which is used to tokenize input string.
+        tokenizer: Tokenizer object.
         overlap_size: overlap threshold for the filter.
     """
     def __init__(self, tokenizer, overlap_size=1):
@@ -36,8 +36,8 @@ class OverlapFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        ltokens = self.tokenizer(lstring)
-        rtokens = self.tokenizer(rstring)
+        ltokens = self.tokenizer.tokenize(lstring)
+        rtokens = self.tokenizer.tokenize(rstring)
  
         num_overlap = len(set(ltokens).intersection(set(rtokens))) 
 
@@ -104,7 +104,7 @@ class OverlapFilter(Filter):
             # check for empty string
             if not r_string:
                 continue
-            r_filter_attr_tokens = set(self.tokenizer(r_string))
+            r_filter_attr_tokens = set(self.tokenizer.tokenize(r_string))
 
             # probe inverted index and find overlap of candidates          
             candidate_overlap = {}

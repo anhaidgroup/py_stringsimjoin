@@ -45,8 +45,8 @@ def create_test_function(sim_measure_type, tokenizer, threshold):
         # apply sim function to the entire cartesian product to obtain
         # the expected set of pairs satisfying the threshold.
         self.cartprod['sim_score'] = self.cartprod.apply(lambda row: sim_func(
-            set(tokenizer(str(row[self.l_join_attr]))),
-            set(tokenizer(str(row[self.r_join_attr])))), axis=1)
+            set(tokenizer.tokenize(str(row[self.l_join_attr]))),
+            set(tokenizer.tokenize(str(row[self.r_join_attr])))), axis=1)
 
         expected_pairs = set()
         for idx, row in self.cartprod.iterrows():

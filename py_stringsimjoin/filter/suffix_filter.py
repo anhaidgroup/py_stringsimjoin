@@ -21,7 +21,7 @@ class SuffixFilter(Filter):
     """Suffix filter class.
 
     Attributes:
-        tokenizer: Tokenizer function, which is used to tokenize input string.
+        tokenizer: Tokenizer object.
         sim_measure_type: String, similarity measure type.
         threshold: float, similarity threshold to be used by the filter.
     """
@@ -45,8 +45,8 @@ class SuffixFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        ltokens = list(set(self.tokenizer(lstring)))
-        rtokens = list(set(self.tokenizer(rstring)))    
+        ltokens = list(set(self.tokenizer.tokenize(lstring)))
+        rtokens = list(set(self.tokenizer.tokenize(rstring)))    
 
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens]) 
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
@@ -150,7 +150,7 @@ class SuffixFilter(Filter):
             # check for empty string
             if not l_string:
                 continue
-            ltokens = set(self.tokenizer(l_string))
+            ltokens = set(self.tokenizer.tokenize(l_string))
             ordered_ltokens = order_using_token_ordering(ltokens,
                                                          token_ordering)
             l_num_tokens = len(ordered_ltokens)
@@ -164,7 +164,7 @@ class SuffixFilter(Filter):
                 # check for empty string
                 if not r_string:
                     continue
-                rtokens = set(self.tokenizer(r_string))
+                rtokens = set(self.tokenizer.tokenize(r_string))
                 ordered_rtokens = order_using_token_ordering(rtokens,
                                                              token_ordering)
                 r_num_tokens = len(ordered_rtokens)

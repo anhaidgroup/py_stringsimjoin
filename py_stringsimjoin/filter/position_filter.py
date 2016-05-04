@@ -22,7 +22,7 @@ class PositionFilter(Filter):
     """Position filter class.
 
     Attributes:
-        tokenizer: Tokenizer function, which is used to tokenize input string.
+        tokenizer: Tokenizer object.
         sim_measure_type: String, similarity measure type.
         threshold: float, similarity threshold to be used by the filter.
     """
@@ -45,8 +45,8 @@ class PositionFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        ltokens = list(set(self.tokenizer(lstring)))
-        rtokens = list(set(self.tokenizer(rstring)))
+        ltokens = list(set(self.tokenizer.tokenize(lstring)))
+        rtokens = list(set(self.tokenizer.tokenize(rstring)))
 
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens])
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
@@ -154,7 +154,7 @@ class PositionFilter(Filter):
             # check for empty string
             if not r_string:
                 continue
-            r_filter_attr_tokens = set(self.tokenizer(r_string))
+            r_filter_attr_tokens = set(self.tokenizer.tokenize(r_string))
             r_ordered_tokens = order_using_token_ordering(r_filter_attr_tokens,
                                                           token_ordering)
             r_num_tokens = len(r_ordered_tokens)

@@ -16,7 +16,7 @@ class InvertedIndex(Index):
             # check for empty string
             if not index_string:
                 continue
-            index_attr_tokens = set(self.tokenizer(index_string))
+            index_attr_tokens = set(self.tokenizer.tokenize(index_string))
 
             row_id = row[self.key_attr]
             for token in index_attr_tokens:

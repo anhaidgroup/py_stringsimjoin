@@ -35,7 +35,7 @@ def jaccard_join(ltable, rtable,
     ltable, rtable : Pandas data frame
     l_key_attr, r_key_attr : String, key attribute from ltable and rtable
     l_join_attr, r_join_attr : String, join attribute from ltable and rtable
-    tokenizer : function, tokenizer function to be used to tokenize join attributes
+    tokenizer : Tokenizer object, tokenizer to be used to tokenize join attributes
     threshold : float, jaccard threshold to be satisfied
     l_out_attrs, r_out_attrs : list of attributes to be included in the output table from ltable and rtable
     l_out_prefix, r_out_prefix : String, prefix to be used in the attribute names of the output table
@@ -89,7 +89,7 @@ def cosine_join(ltable, rtable,
     ltable, rtable : Pandas data frame
     l_key_attr, r_key_attr : String, key attribute from ltable and rtable
     l_join_attr, r_join_attr : String, join attribute from ltable and rtable
-    tokenizer : function, tokenizer function to be used to tokenize join attributes
+    tokenizer : Tokenizer object, tokenizer to be used to tokenize join attributes
     threshold : float, cosine threshold to be satisfied
     l_out_attrs, r_out_attrs : list of attributes to be included in the output table from ltable and rtable
     l_out_prefix, r_out_prefix : String, prefix to be used in the attribute names of the output table
@@ -144,7 +144,7 @@ def sim_join(ltable, rtable,
     ltable, rtable : Pandas data frame
     l_key_attr, r_key_attr : String, key attribute from ltable and rtable
     l_join_attr, r_join_attr : String, join attribute from ltable and rtable
-    tokenizer : function, tokenizer function to be used to tokenize join attributes
+    tokenizer : Tokenizer object, tokenizer to be used to tokenize join attributes
     sim_measure_type : String, similarity measure type ('JACCARD', 'COSINE', 'DICE', 'OVERLAP')
     threshold : float, similarity threshold to be satisfied
     l_out_attrs, r_out_attrs : list of attributes to be included in the output table from ltable and rtable
@@ -185,7 +185,7 @@ def sim_join(ltable, rtable,
     l_join_attr_dict = {}
     for row in ltable_dict.values():
         l_join_attr_dict[row[l_key_attr_index]] = order_using_token_ordering(
-            set(tokenizer(str(row[l_join_attr_index]))), token_ordering)
+            set(tokenizer.tokenize(str(row[l_join_attr_index]))), token_ordering)
 
     # Build position index on l_join_attr
     position_index = PositionIndex(ltable_dict.values(),
@@ -208,7 +208,7 @@ def sim_join(ltable, rtable,
         # check for empty string
         if not r_string:
             continue
-        r_join_attr_tokens = set(tokenizer(r_string))
+        r_join_attr_tokens = set(tokenizer.tokenize(r_string))
         r_ordered_tokens = order_using_token_ordering(r_join_attr_tokens,
                                                       token_ordering)
         r_num_tokens = len(r_ordered_tokens)

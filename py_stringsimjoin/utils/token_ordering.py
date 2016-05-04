@@ -1,3 +1,5 @@
+"""Token ordering utilities"""
+
 def gen_token_ordering_for_lists(token_lists):
     token_freq_dict = {}
     for token_list in token_lists:
@@ -18,7 +20,8 @@ def gen_token_ordering_for_tables(table_list, attr_list, tokenizer):
     table_index = 0
     for table in table_list:
         for row in table:
-            for token in set(tokenizer(str(row[attr_list[table_index]]))):
+            for token in set(tokenizer.tokenize(str(
+                             row[attr_list[table_index]]))):
                 token_freq_dict[token] = token_freq_dict.get(token, 0) + 1
         table_index += 1
 
