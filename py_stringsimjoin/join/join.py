@@ -1,3 +1,4 @@
+from joblib import Parallel, delayed
 import pandas as pd
 import pyprind
 
@@ -10,6 +11,7 @@ from py_stringsimjoin.utils.helper_functions import find_output_attribute_indice
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
+from py_stringsimjoin.utils.helper_functions import split_table
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
@@ -22,7 +24,8 @@ def jaccard_join(ltable, rtable,
                  threshold,
                  l_out_attrs=None, r_out_attrs=None,
                  l_out_prefix='l_', r_out_prefix='r_',
-                 out_sim_score=True):
+                 out_sim_score=True,
+                 n_jobs=1):
     """Join two tables using jaccard similarity measure.
 
     Finds tuple pairs from ltable and rtable such that
@@ -41,15 +44,32 @@ def jaccard_join(ltable, rtable,
     Returns:
     result : Pandas data frame
     """
-    return sim_join(ltable, rtable,
-                    l_key_attr, r_key_attr,
-                    l_join_attr, r_join_attr,
-                    tokenizer,
-                    'JACCARD',
-                    threshold,
-                    l_out_attrs, r_out_attrs,
-                    l_out_prefix, r_out_prefix,
-                    out_sim_score)
+    if n_jobs == 1:
+        output_table = sim_join(ltable, rtable,
+                                l_key_attr, r_key_attr,
+                                l_join_attr, r_join_attr,
+                                tokenizer,
+                                'JACCARD',
+                                threshold,
+                                l_out_attrs, r_out_attrs,
+                                l_out_prefix, r_out_prefix,
+                                out_sim_score)
+        output_table.insert(0, '_id', range(0, len(output_table)))
+        return output_table
+    else:
+        r_splits = split_table(rtable, n_jobs) 
+        results = Parallel(n_jobs=n_jobs)(delayed(sim_join)(ltable, s,
+                                                            l_key_attr, r_key_attr,
+                                                            l_join_attr, r_join_attr,
+                                                            tokenizer,
+                                                            'JACCARD',
+                                                            threshold,
+                                                            l_out_attrs, r_out_attrs,
+                                                            l_out_prefix, r_out_prefix,
+                                                            out_sim_score) for s in r_splits)
+        output_table = pd.concat(results)
+        output_table.insert(0, '_id', range(0, len(output_table)))
+        return output_table
 
 
 def cosine_join(ltable, rtable,
@@ -78,15 +98,32 @@ def cosine_join(ltable, rtable,
     Returns:
     result : Pandas data frame
     """
-    return sim_join(ltable, rtable,
-                    l_key_attr, r_key_attr,
-                    l_join_attr, r_join_attr,
-                    tokenizer,
-                    'COSINE',
-                    threshold,
-                    l_out_attrs, r_out_attrs,
-                    l_out_prefix, r_out_prefix,
-                    out_sim_score)
+    if n_jobs == 1:
+        output_table = sim_join(ltable, rtable,
+                                l_key_attr, r_key_attr,
+                                l_join_attr, r_join_attr,
+                                tokenizer,
+                                'COSINE',
+                                threshold,
+                                l_out_attrs, r_out_attrs,
+                                l_out_prefix, r_out_prefix,
+                                out_sim_score)
+        output_table.insert(0, '_id', range(0, len(output_table)))
+        return output_table
+    else:
+        r_splits = split_table(rtable, n_jobs)
+        results = Parallel(n_jobs=n_jobs)(delayed(sim_join)(ltable, s,
+                                                            l_key_attr, r_key_attr,
+                                                            l_join_attr, r_join_attr,
+                                                            tokenizer,
+                                                            'COSINE',
+                                                            threshold,
+                                                            l_out_attrs, r_out_attrs,
+                                                            l_out_prefix, r_out_prefix,
+                                                            out_sim_score) for s in r_splits)
+        output_table = pd.concat(results)
+        output_table.insert(0, '_id', range(0, len(output_table)))
+        return output_table
 
 
 def sim_join(ltable, rtable,
@@ -201,7 +238,6 @@ def sim_join(ltable, rtable,
                     if sim_score >= threshold:
                         if has_output_attributes:
                             output_row = get_output_row_from_tables(
-                                             candset_id,
                                              ltable_dict[cand], r_row,
                                              cand, r_id,
                                              l_out_attrs_indices,
@@ -210,15 +246,13 @@ def sim_join(ltable, rtable,
                                 output_row.append(sim_score)
                             output_rows.append(output_row)
                         else:
-                            output_row = [candset_id, cand, r_id]
+                            output_row = [cand, r_id]
                             if out_sim_score:
                                 output_row.append(sim_score)
                             output_rows.append(output_row)
-                        candset_id += 1
         prog_bar.update()
 
     output_header = get_output_header_from_tables(
-                        '_id',
                         l_key_attr, r_key_attr,
                         l_out_attrs, r_out_attrs,
                         l_out_prefix, r_out_prefix)

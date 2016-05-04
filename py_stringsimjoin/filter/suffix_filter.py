@@ -143,7 +143,6 @@ class SuffixFilter(Filter):
         has_output_attributes = (l_out_attrs is not None or
                                  r_out_attrs is not None)
         prog_bar = pyprind.ProgBar(len(rtable.index))
-        candset_id = 1
 
         for l_row in ltable_dict.values():
             l_id = l_row[l_key_attr_index]
@@ -179,27 +178,24 @@ class SuffixFilter(Filter):
                                            l_num_tokens, r_num_tokens):
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(
-                                         candset_id,
                                          ltable_dict[l_id], r_row,
                                          l_id, r_id, 
                                          l_out_attrs_indices,
                                          r_out_attrs_indices)
                         output_rows.append(output_row)
                     else:
-                        output_rows.append([candset_id, l_id, r_id])
-
-                    candset_id += 1
+                        output_rows.append([l_id, r_id])
 
             prog_bar.update()
 
         output_header = get_output_header_from_tables(
-                            '_id',
                             l_key_attr, r_key_attr,
                             l_out_attrs, r_out_attrs, 
                             l_out_prefix, r_out_prefix)
 
         # generate a dataframe from the list of output rows
         output_table = pd.DataFrame(output_rows, columns=output_header)
+        output_table.insert(0, '_id', range(0, len(output_table)))
         return output_table
 
     def _est_hamming_dist_lower_bound(self, l_suffix, r_suffix,

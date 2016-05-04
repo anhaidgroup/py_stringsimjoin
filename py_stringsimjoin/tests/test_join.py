@@ -65,7 +65,7 @@ def create_test_function(sim_measure_type, tokenizer, threshold):
 
         # verify whether the output table has the necessary attributes.
         self.assertListEqual(list(D.columns.values),
-                             ['_id', self.l_key_attr,
+                             [self.l_key_attr,
                               self.r_key_attr, '_sim_score'])
 
         actual_pairs = set()
