@@ -1,4 +1,6 @@
 """Token ordering utilities"""
+from py_stringsimjoin.utils.tokenizers import tokenize
+
 
 def gen_token_ordering_for_lists(token_lists):
     token_freq_dict = {}
@@ -15,13 +17,14 @@ def gen_token_ordering_for_lists(token_lists):
     return token_ordering
 
 
-def gen_token_ordering_for_tables(table_list, attr_list, tokenizer):
+def gen_token_ordering_for_tables(table_list, attr_list, tokenizer,
+                                  sim_measure_type='OVERLAP'):
     token_freq_dict = {}
     table_index = 0
     for table in table_list:
         for row in table:
-            for token in set(tokenizer.tokenize(str(
-                             row[attr_list[table_index]]))):
+            for token in tokenize(str(row[attr_list[table_index]]),
+                                  tokenizer, sim_measure_type):
                 token_freq_dict[token] = token_freq_dict.get(token, 0) + 1
         table_index += 1
 

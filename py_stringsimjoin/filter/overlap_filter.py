@@ -9,6 +9,7 @@ from py_stringsimjoin.utils.helper_functions import \
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
+from py_stringsimjoin.utils.tokenizers import tokenize
 
 
 class OverlapFilter(Filter):
@@ -36,8 +37,8 @@ class OverlapFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        ltokens = self.tokenizer.tokenize(lstring)
-        rtokens = self.tokenizer.tokenize(rstring)
+        ltokens = tokenize(lstring, self.tokenizer)
+        rtokens = tokenize(rstring, self.tokenizer)
  
         num_overlap = len(set(ltokens).intersection(set(rtokens))) 
 

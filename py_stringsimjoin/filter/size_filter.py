@@ -11,6 +11,7 @@ from py_stringsimjoin.utils.helper_functions import \
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
+from py_stringsimjoin.utils.tokenizers import tokenize
 
 
 class SizeFilter(Filter):
@@ -40,8 +41,10 @@ class SizeFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        l_num_tokens = len(set(self.tokenizer.tokenize(lstring)))
-        r_num_tokens = len(set(self.tokenizer.tokenize(rstring)))
+        l_num_tokens = len(tokenize(lstring, self.tokenizer,
+                                    self.sim_measure_type))
+        r_num_tokens = len(tokenize(rstring, self.tokenizer,
+                                    self.sim_measure_type))
 
         size_lower_bound = get_size_lower_bound(l_num_tokens,
                                                 self.sim_measure_type,
@@ -114,7 +117,8 @@ class SizeFilter(Filter):
             # check for empty string
             if not r_string:
                 continue
-            r_num_tokens = len(set(self.tokenizer.tokenize(r_string)))
+            r_num_tokens = len(tokenize(r_string, self.tokenizer,
+                                        self.sim_measure_type))
            
             size_lower_bound = get_size_lower_bound(r_num_tokens,
                                                     self.sim_measure_type,

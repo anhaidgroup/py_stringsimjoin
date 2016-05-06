@@ -10,6 +10,7 @@ from py_stringsimjoin.utils.helper_functions import \
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
+from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
@@ -42,8 +43,8 @@ class PrefixFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        ltokens = list(set(self.tokenizer.tokenize(lstring)))
-        rtokens = list(set(self.tokenizer.tokenize(rstring)))
+        ltokens = tokenize(lstring, self.tokenizer, self.sim_measure_type)
+        rtokens = tokenize(rstring, self.tokenizer, self.sim_measure_type)
 
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens])
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
@@ -51,10 +52,12 @@ class PrefixFilter(Filter):
 
         l_prefix_length = get_prefix_length(len(ordered_ltokens),
                                             self.sim_measure_type,
-                                            self.threshold) 
+                                            self.threshold,
+                                            self.tokenizer) 
         r_prefix_length = get_prefix_length(len(ordered_rtokens),
                                             self.sim_measure_type,
-                                            self.threshold)
+                                            self.threshold,
+                                            self.tokenizer)
         prefix_overlap = set(ordered_ltokens[0:l_prefix_length]).intersection(
                          set(ordered_rtokens[0:r_prefix_length]))
 
@@ -111,7 +114,8 @@ class PrefixFilter(Filter):
                                              rtable_dict.values()],
                                             [l_filter_attr_index,
                                              r_filter_attr_index],
-                                            self.tokenizer)
+                                            self.tokenizer,
+                                            self.sim_measure_type)
 
         # Build prefix index on l_filter_attr
         prefix_index = PrefixIndex(ltable_dict.values(),
@@ -131,19 +135,20 @@ class PrefixFilter(Filter):
             # check for empty string
             if not r_string:
                 continue
-            r_filter_attr_tokens = set(self.tokenizer.tokenize(r_string))
+            r_filter_attr_tokens = tokenize(r_string, self.tokenizer,
+                                            self.sim_measure_type)
             r_ordered_tokens = order_using_token_ordering(r_filter_attr_tokens,
                                                           token_ordering)
            
             r_prefix_length = get_prefix_length(len(r_ordered_tokens),
                                                 self.sim_measure_type,
-                                                self.threshold)
+                                                self.threshold,
+                                                self.tokenizer)
 
             # probe prefix index and find candidates
-            candidates = set()
-            for token in r_ordered_tokens[0:r_prefix_length]:
-                for cand in prefix_index.probe(token):
-                    candidates.add(cand)
+            candidates = self._find_candidates(
+                                  r_ordered_tokens[0:r_prefix_length],
+                                  prefix_index)
 
             for cand in candidates:
                 if has_output_attributes:
@@ -166,3 +171,10 @@ class PrefixFilter(Filter):
         output_table = pd.DataFrame(output_rows, columns=output_header)
         output_table.insert(0, '_id', range(0, len(output_table)))
         return output_table
+
+    def _find_candidates(self, tokens, prefix_index):
+        candidates = set()
+        for token in tokens:
+            for cand in prefix_index.probe(token):
+                candidates.add(cand)
+        return candidates

@@ -72,3 +72,10 @@ def create_qgram_tokenizer(q_val=2):
     return Tokenizer('QGRAM',
                      partial(qgram, qval=q_val),
                      q_val = q_val)
+
+
+def tokenize(input_string, tokenizer, sim_measure_type='OVERLAP'):
+    if sim_measure_type == 'EDIT_DISTANCE':
+        return tokenizer.tokenize(input_string)
+    else:
+        return list(set(tokenizer.tokenize(input_string)))

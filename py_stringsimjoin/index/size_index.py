@@ -1,4 +1,5 @@
 from py_stringsimjoin.index.index import Index
+from py_stringsimjoin.utils.tokenizers import tokenize
 
 
 class SizeIndex(Index):
@@ -18,7 +19,7 @@ class SizeIndex(Index):
             # check for empty string
             if not index_string:
                 continue
-            num_tokens = len(set(self.tokenizer.tokenize(index_string)))
+            num_tokens = len(tokenize(index_string, self.tokenizer))
             
             if self.index.get(num_tokens) is None:
                 self.index[num_tokens] = []

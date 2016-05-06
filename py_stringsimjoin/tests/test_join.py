@@ -8,6 +8,7 @@ from py_stringsimjoin.join.join import sim_join
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
 from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer
+from py_stringsimjoin.utils.tokenizers import tokenize
 
 
 class JoinTestCases(unittest.TestCase):
@@ -45,8 +46,8 @@ def create_test_function(sim_measure_type, tokenizer, threshold):
         # apply sim function to the entire cartesian product to obtain
         # the expected set of pairs satisfying the threshold.
         self.cartprod['sim_score'] = self.cartprod.apply(lambda row: sim_func(
-            set(tokenizer.tokenize(str(row[self.l_join_attr]))),
-            set(tokenizer.tokenize(str(row[self.r_join_attr])))), axis=1)
+            tokenize(str(row[self.l_join_attr]), tokenizer, sim_measure_type),
+            tokenize(str(row[self.r_join_attr]), tokenizer, sim_measure_type)), axis=1)
 
         expected_pairs = set()
         for idx, row in self.cartprod.iterrows():

@@ -1,5 +1,6 @@
 from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.index.index import Index
+from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
 
 
@@ -22,12 +23,15 @@ class PrefixIndex(Index):
             # check for empty string
             if not index_string:
                 continue
-            index_attr_tokens = order_using_token_ordering(set(
-                                    self.tokenizer.tokenize(index_string)),
-                                                           self.token_ordering)
+            index_attr_tokens = order_using_token_ordering(tokenize(
+                                        index_string,
+                                        self.tokenizer,
+                                        self.sim_measure_type),
+                                    self.token_ordering)
             prefix_length = get_prefix_length(
                                 len(index_attr_tokens),
-                                self.sim_measure_type, self.threshold)
+                                self.sim_measure_type, self.threshold,
+                                self.tokenizer)
  
             row_id = row[self.key_attr]
             for token in index_attr_tokens[0:prefix_length]:

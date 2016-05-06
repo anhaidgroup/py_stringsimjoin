@@ -12,6 +12,7 @@ from py_stringsimjoin.utils.helper_functions import \
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
+from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
@@ -45,8 +46,8 @@ class SuffixFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        ltokens = list(set(self.tokenizer.tokenize(lstring)))
-        rtokens = list(set(self.tokenizer.tokenize(rstring)))    
+        ltokens = tokenize(lstring, self.tokenizer, self.sim_measure_type)
+        rtokens = tokenize(rstring, self.tokenizer, self.sim_measure_type)    
 
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens]) 
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
@@ -56,10 +57,12 @@ class SuffixFilter(Filter):
         r_num_tokens = len(ordered_rtokens)
         l_prefix_length = get_prefix_length(l_num_tokens,
                                             self.sim_measure_type,
-                                            self.threshold)
+                                            self.threshold,
+                                            self.tokenizer)
         r_prefix_length = get_prefix_length(r_num_tokens,
                                             self.sim_measure_type,
-                                            self.threshold)
+                                            self.threshold,
+                                            self.tokenizer)
         return self._filter_suffix(ordered_ltokens[l_prefix_length:],
                              ordered_rtokens[r_prefix_length:],
                              l_prefix_length,
@@ -69,10 +72,10 @@ class SuffixFilter(Filter):
     def _filter_suffix(self, l_suffix, r_suffix,
                        l_prefix_num_tokens, r_prefix_num_tokens,
                        l_num_tokens, r_num_tokens):
-
         overlap_threshold = get_overlap_threshold(l_num_tokens, r_num_tokens,
                                                   self.sim_measure_type,
-                                                  self.threshold)
+                                                  self.threshold,
+                                                  self.tokenizer)
 
         hamming_dist_prefix = r_prefix_num_tokens - l_prefix_num_tokens
         if l_num_tokens >= r_num_tokens:
@@ -137,7 +140,8 @@ class SuffixFilter(Filter):
                                              rtable_dict.values()],
                                             [l_filter_attr_index,
                                              r_filter_attr_index],
-                                            self.tokenizer)
+                                            self.tokenizer,
+                                            self.sim_measure_type)
 
         output_rows = []
         has_output_attributes = (l_out_attrs is not None or
@@ -150,13 +154,14 @@ class SuffixFilter(Filter):
             # check for empty string
             if not l_string:
                 continue
-            ltokens = set(self.tokenizer.tokenize(l_string))
+            ltokens = tokenize(l_string, self.tokenizer, self.sim_measure_type)
             ordered_ltokens = order_using_token_ordering(ltokens,
                                                          token_ordering)
             l_num_tokens = len(ordered_ltokens)
             l_prefix_length = get_prefix_length(l_num_tokens,
                                                 self.sim_measure_type,
-                                                self.threshold)
+                                                self.threshold,
+                                                self.tokenizer)
             l_suffix = ordered_ltokens[l_prefix_length:]
             for r_row in rtable_dict.values():
                 r_id = r_row[r_key_attr_index]
@@ -164,13 +169,14 @@ class SuffixFilter(Filter):
                 # check for empty string
                 if not r_string:
                     continue
-                rtokens = set(self.tokenizer.tokenize(r_string))
+                rtokens = tokenize(r_string, self.tokenizer, self.sim_measure_type)
                 ordered_rtokens = order_using_token_ordering(rtokens,
                                                              token_ordering)
                 r_num_tokens = len(ordered_rtokens)
                 r_prefix_length = get_prefix_length(r_num_tokens,
                                                     self.sim_measure_type,
-                                                    self.threshold)
+                                                    self.threshold,
+                                                    self.tokenizer)
                 if not self._filter_suffix(l_suffix,
                                            ordered_rtokens[r_prefix_length:],
                                            l_prefix_length,

@@ -50,6 +50,7 @@ class FilterTablesTestCases(unittest.TestCase):
         C = self.suffix_filter.filter_tables(A, B,
                                            'id', 'id',
                                            'attr', 'attr')
+
         self.assertEquals(len(C), len(expected_pairs))
         self.assertListEqual(list(C.columns.values),
                              ['_id', 'l_id', 'r_id'])
