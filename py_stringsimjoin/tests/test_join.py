@@ -1,104 +1,184 @@
+from functools import partial
 import os
-import unittest
 
+from nose.tools import assert_equal
+from nose.tools import assert_list_equal
 from nose.tools import nottest
 import pandas as pd
 
-from py_stringsimjoin.join.join import sim_join
+from py_stringsimjoin.join.join import cosine_join
+from py_stringsimjoin.join.join import jaccard_join
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
 from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer
 from py_stringsimjoin.utils.tokenizers import tokenize
 
 
-class JoinTestCases(unittest.TestCase):
-    def setUp(self):
-        # load input tables for the tests.
-        self.ltable = pd.read_csv(os.path.join(os.path.dirname(__file__),
-                                               'data/table_A.csv'))
-        self.rtable = pd.read_csv(os.path.join(os.path.dirname(__file__),
-                                               'data/table_B.csv'))
-        self.l_key_attr = 'A.ID'
-        self.r_key_attr = 'B.ID'
-        self.l_join_attr = 'A.name'
-        self.r_join_attr = 'B.name'
+JOIN_FN_MAP = {'JACCARD': jaccard_join,
+               'COSINE': cosine_join}
 
-        # generate cartesian product to be used as candset
-        self.ltable['tmp_join_key'] = 1
-        self.rtable['tmp_join_key'] = 1
-        self.cartprod = pd.merge(self.ltable[[self.l_key_attr,
-                                              self.l_join_attr,
-                                              'tmp_join_key']],
-                                 self.rtable[[self.r_key_attr,
-                                              self.r_join_attr,
-                                              'tmp_join_key']],
-                                 on='tmp_join_key').drop('tmp_join_key', 1)
-        self.ltable.drop('tmp_join_key', 1)
-        self.rtable.drop('tmp_join_key', 1)
-
+DEFAULT_L_OUT_PREFIX = 'l_'
+DEFAULT_R_OUT_PREFIX = 'r_'
 
 @nottest
-def create_test_function(sim_measure_type, tokenizer, threshold):
+def test_valid_join(scenario, sim_measure_type, args):
+    (ltable_path, l_key_attr, l_join_attr) = scenario[0]
+    (rtable_path, r_key_attr, r_join_attr) = scenario[1]
+    join_fn = JOIN_FN_MAP[sim_measure_type]
 
-    def test_function(self):
-        sim_func = get_sim_function(sim_measure_type)
+    # load input tables for the tests.
+    ltable = pd.read_csv(os.path.join(os.path.dirname(__file__),
+                                      ltable_path))
+    rtable = pd.read_csv(os.path.join(os.path.dirname(__file__),
+                                      rtable_path))
 
-        # apply sim function to the entire cartesian product to obtain
-        # the expected set of pairs satisfying the threshold.
-        self.cartprod['sim_score'] = self.cartprod.apply(lambda row: sim_func(
-            tokenize(str(row[self.l_join_attr]), tokenizer, sim_measure_type),
-            tokenize(str(row[self.r_join_attr]), tokenizer, sim_measure_type)), axis=1)
+    # generate cartesian product to be used as candset
+    ltable['tmp_join_key'] = 1
+    rtable['tmp_join_key'] = 1
+    cartprod = pd.merge(ltable[[l_key_attr,
+                                l_join_attr,
+                                'tmp_join_key']],
+                        rtable[[r_key_attr,
+                                r_join_attr,
+                                'tmp_join_key']],
+                        on='tmp_join_key').drop('tmp_join_key', 1)
+    ltable.drop('tmp_join_key', 1)
+    rtable.drop('tmp_join_key', 1)
 
-        expected_pairs = set()
-        for idx, row in self.cartprod.iterrows():
-            if float(row['sim_score']) >= threshold:
-                expected_pairs.add(','.join((str(row[self.l_key_attr]),
-                                             str(row[self.r_key_attr]))))
+    sim_func = get_sim_function(sim_measure_type)
 
-        # use join function to obtain actual output pairs.
-        D = sim_join(self.ltable, self.rtable,
-                     self.l_key_attr, self.r_key_attr,
-                     self.l_join_attr, self.r_join_attr,
-                     tokenizer,
-                     sim_measure_type,
-                     threshold,
-                     l_out_prefix='', r_out_prefix='')
+    # apply sim function to the entire cartesian product to obtain
+    # the expected set of pairs satisfying the threshold.
+    cartprod['sim_score'] = cartprod.apply(lambda row: sim_func(
+                tokenize(str(row[l_join_attr]), args[0], sim_measure_type),
+                tokenize(str(row[r_join_attr]), args[0], sim_measure_type)),
+            axis=1)
 
-        # verify whether the output table has the necessary attributes.
-        self.assertListEqual(list(D.columns.values),
-                             [self.l_key_attr,
-                              self.r_key_attr, '_sim_score'])
+    expected_pairs = set()
+    for idx, row in cartprod.iterrows():
+        if float(row['sim_score']) >= args[1]:
+            expected_pairs.add(','.join((str(row[l_key_attr]),
+                                         str(row[r_key_attr]))))
 
-        actual_pairs = set()
-        for idx, row in D.iterrows():
-            actual_pairs.add(','.join((str(row[self.l_key_attr]),
-                                       str(row[self.r_key_attr]))))
+    # use join function to obtain actual output pairs.
+    actual_candset = join_fn(ltable, rtable,
+                             l_key_attr, r_key_attr,
+                             l_join_attr, r_join_attr,
+                             *args)
 
-        # verify whether the actual pairs and the expected pairs match.
-        self.assertEqual(len(expected_pairs), len(actual_pairs))
-        common_pairs = actual_pairs.intersection(expected_pairs)
-        self.assertEqual(len(common_pairs), len(expected_pairs))
+    expected_output_attrs = ['_id']
+    l_out_prefix = DEFAULT_L_OUT_PREFIX
+    r_out_prefix = DEFAULT_R_OUT_PREFIX
 
-    return test_function
+    # Check for l_out_prefix in args.
+    if len(args) > 4:
+        l_out_prefix = args[4]
+    expected_output_attrs.append(l_out_prefix + l_key_attr)
 
-# create tokenizers needed for the tests.
-delim_tokenizer = create_delimiter_tokenizer(' ')
-qg2_tokenizer = create_qgram_tokenizer(2)
-qg3_tokenizer = create_qgram_tokenizer(3)
+    # Check for l_out_attrs in args.
+    if len(args) > 2:
+        if args[2]:
+            for attr in args[2]:
+                expected_output_attrs.append(l_out_prefix + attr)
 
-# add join parameters to test. For each set of parameters, a test method
-# will be dynamically created.
-join_conf = {'jaccard_delim' : ['JACCARD', delim_tokenizer, 0.2],
-             'jaccard_qg2' : ['JACCARD', qg2_tokenizer, 0.2],
-             'jaccard_qg3' : ['JACCARD', qg3_tokenizer, 0.2],
-             'cosine_delim' : ['COSINE', delim_tokenizer, 0.2],
-             'cosine_qg2' : ['COSINE', qg2_tokenizer, 0.2],
-             'cosine_qg3' : ['COSINE', qg3_tokenizer, 0.2]}
+    # Check for r_out_prefix in args.
+    if len(args) > 5:
+        r_out_prefix = args[5]
+    expected_output_attrs.append(r_out_prefix + r_key_attr)
 
-# dynamically create test methods and add it to the test class.
-for name, params in join_conf.iteritems():
-    test_function = create_test_function(params[0], params[1], params[2])
-    setattr(JoinTestCases, 'test_{0}'.format(name), test_function)
-    del test_function
+    # Check for r_out_attrs in args.
+    if len(args) > 3:
+        if args[3]:
+            for attr in args[3]:
+                expected_output_attrs.append(r_out_prefix + attr)
 
+    # Check for out_sim_score in args. 
+    if len(args) > 6:
+        if args[6]:
+            expected_output_attrs.append('_sim_score')
+    else:
+        expected_output_attrs.append('_sim_score')
 
+    # verify whether the output table has the necessary attributes.
+    assert_list_equal(list(actual_candset.columns.values),
+                      expected_output_attrs)
+
+    actual_pairs = set()
+    for idx, row in actual_candset.iterrows():
+        actual_pairs.add(','.join((str(row[l_out_prefix + l_key_attr]),
+                                   str(row[r_out_prefix + r_key_attr]))))
+
+    # verify whether the actual pairs and the expected pairs match.
+    assert_equal(len(expected_pairs), len(actual_pairs))
+    common_pairs = actual_pairs.intersection(expected_pairs)
+    assert_equal(len(common_pairs), len(expected_pairs))
+
+def test_set_sim_join():
+    # data to be tested.
+    test_scenario_1 = [('data/table_A.csv', 'A.ID', 'A.name'),
+                       ('data/table_B.csv', 'B.ID', 'B.name')]
+    data = {'TEST_SCENARIO_1' : test_scenario_1}
+
+    # similarity measures to be tested.
+    sim_measure_types = ['JACCARD', 'COSINE']
+
+    # similarity thresholds to be tested.
+    thresholds = [0.3, 0.5, 0.7, 0.85, 1]
+
+    # tokenizers to be tested.
+    tokenizers = {'SPACE_DELIMITER': create_delimiter_tokenizer(),
+                  '2_GRAM': create_qgram_tokenizer(),
+                  '3_GRAM': create_qgram_tokenizer(3)}
+
+    # Test each combination of similarity measure, threshold and tokenizer
+    # for different test scenarios.
+    for label, scenario in data.iteritems():
+        for sim_measure_type in sim_measure_types:
+            for threshold in thresholds:
+                for tok_type, tok in tokenizers.iteritems():
+                    test_function = partial(test_valid_join, scenario,
+                                                             sim_measure_type,
+                                                             (tok, threshold))
+                    test_function.description = 'Test ' + sim_measure_type + \
+                        ' with ' + str(threshold) + ' threshold and ' + \
+                        tok_type + ' tokenizer for ' + label + '.'
+                    yield test_function,
+
+    # Test each similarity measure with output attributes added.
+    for sim_measure_type in sim_measure_types:
+        test_function = partial(test_valid_join, test_scenario_1,
+                                                 sim_measure_type,
+                                                 (tokenizers['SPACE_DELIMITER'],
+                                                  1,
+                                                  ['A.birth_year', 'A.zipcode'],
+                                                  ['B.name', 'B.zipcode']))
+        test_function.description = 'Test ' + sim_measure_type + \
+                                    ' with output attributes.'
+        yield test_function,
+
+    # Test each similarity measure with a different output prefix.
+    for sim_measure_type in sim_measure_types:
+        test_function = partial(test_valid_join, test_scenario_1,
+                                                 sim_measure_type,
+                                                 (tokenizers['SPACE_DELIMITER'],
+                                                  1,
+                                                  ['A.birth_year', 'A.zipcode'],
+                                                  ['B.name', 'B.zipcode'],
+                                                  'ltable.', 'rtable.'))
+        test_function.description = 'Test ' + sim_measure_type + \
+                                    ' with output attributes and prefix.'
+        yield test_function,
+
+    # Test each similarity measure with output_sim_score disabled.
+    for sim_measure_type in sim_measure_types:
+        test_function = partial(test_valid_join, test_scenario_1,
+                                                 sim_measure_type,
+                                                 (tokenizers['SPACE_DELIMITER'],
+                                                  1,
+                                                  ['A.birth_year', 'A.zipcode'],
+                                                  ['B.name', 'B.zipcode'],
+                                                  'ltable.', 'rtable.',
+                                                  False))
+        test_function.description = 'Test ' + sim_measure_type + \
+                                    ' with sim_score disabled.'
+        yield test_function,
