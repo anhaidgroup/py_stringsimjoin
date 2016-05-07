@@ -1,7 +1,7 @@
 from joblib import Parallel, delayed
 import pandas as pd
 import pyprind
-
+import time
 from py_stringsimjoin.filter.position_filter import PositionFilter
 from py_stringsimjoin.filter.prefix_filter import PrefixFilter
 from py_stringsimjoin.filter.suffix_filter import SuffixFilter
@@ -17,8 +17,15 @@ from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
 from py_stringsimjoin.utils.helper_functions import split_table
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.tokenizers import tokenize
+from py_stringsimjoin.utils.tokenizers import Tokenizer
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
+from py_stringsimjoin.utils.validation import validate_attr
+from py_stringsimjoin.utils.validation import validate_input_table
+from py_stringsimjoin.utils.validation import validate_output_attrs
+from py_stringsimjoin.utils.validation import validate_threshold
+from py_stringsimjoin.utils.validation import validate_tokenizer
+from py_stringsimjoin.utils.validation import validate_key_attr
 
 
 def jaccard_join(ltable, rtable,
@@ -47,7 +54,35 @@ def jaccard_join(ltable, rtable,
 
     Returns:
     result : Pandas data frame
-    """
+    """ 
+    # check if the input tables are dataframes
+    validate_input_table(ltable, 'left table')
+    validate_input_table(rtable, 'right table')
+
+    # check if the key attributes and join attributes exist
+    validate_attr(l_key_attr, ltable.columns,
+                  'key attribute', 'left table')
+    validate_attr(r_key_attr, rtable.columns,
+                  'key attribute', 'right table')
+    validate_attr(l_join_attr, ltable.columns,
+                  'join attribute', 'left table')
+    validate_attr(r_join_attr, rtable.columns,
+                  'join attribute', 'right table')
+
+    # check if the input tokenizer is valid
+    validate_tokenizer(tokenizer)
+ 
+    # check if the input threshold is valid
+    validate_threshold(threshold, 'JACCARD')
+
+    # check if the output attributes exist
+    validate_output_attrs(l_out_attrs, ltable.columns,
+                          r_out_attrs, rtable.columns)
+
+    # check if the key attributes are unique and do not contain missing values
+    validate_key_attr(l_key_attr, ltable, 'left table')
+    validate_key_attr(r_key_attr, rtable, 'right table')
+
     if n_jobs == 1:
         output_table = sim_join(ltable, rtable,
                                 l_key_attr, r_key_attr,
@@ -103,6 +138,34 @@ def cosine_join(ltable, rtable,
     Returns:
     result : Pandas data frame
     """
+    # check if the input tables are dataframes
+    validate_input_table(ltable, 'left table')
+    validate_input_table(rtable, 'right table')
+
+    # check if the key attributes and join attributes exist
+    validate_attr(l_key_attr, ltable.columns,
+                  'key attribute', 'left table')
+    validate_attr(r_key_attr, rtable.columns,
+                  'key attribute', 'right table')
+    validate_attr(l_join_attr, ltable.columns,
+                  'join attribute', 'left table')
+    validate_attr(r_join_attr, rtable.columns,
+                  'join attribute', 'right table')
+
+    # check if the input tokenizer is valid
+    validate_tokenizer(tokenizer)
+
+    # check if the input threshold is valid
+    validate_threshold(threshold, 'COSINE')
+
+    # check if the output attributes exist
+    validate_output_attrs(l_out_attrs, ltable.columns,
+                          r_out_attrs, rtable.columns)
+
+    # check if the key attributes are unique and do not contain missing values
+    validate_key_attr(l_key_attr, ltable, 'left table')
+    validate_key_attr(r_key_attr, rtable, 'right table')
+
     if n_jobs == 1:
         output_table = sim_join(ltable, rtable,
                                 l_key_attr, r_key_attr,

@@ -1,9 +1,11 @@
 from functools import partial
 import os
+import unittest
 
 from nose.tools import assert_equal
 from nose.tools import assert_list_equal
 from nose.tools import nottest
+from nose.tools import raises
 import pandas as pd
 
 from py_stringsimjoin.join.join import cosine_join
@@ -182,3 +184,134 @@ def test_set_sim_join():
         test_function.description = 'Test ' + sim_measure_type + \
                                     ' with sim_score disabled.'
         yield test_function,
+
+class SetSimJoinInvalidTestCases(unittest.TestCase):
+    def setUp(self):
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.tokenizer = create_delimiter_tokenizer()
+        self.threshold = 0.8
+
+    @raises(TypeError)
+    def test_jaccard_join_invalid_ltable(self):
+        jaccard_join([], self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_jaccard_join_invalid_rtable(self):
+        jaccard_join(self.A, [], 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_l_key_attr(self):
+        jaccard_join(self.A, self.B, 'A.invalid_id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_r_key_attr(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.invalid_id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_l_join_attr(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.invalid_attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_r_join_attr(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.invalid_attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_jaccard_join_invalid_tokenizer(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     [], self.threshold)
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_threshold_above(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, 1.5)
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_threshold_below(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, -0.1)
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_threshold_zero(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, 0)
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_l_out_attr(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold,
+                     ['A.invalid_attr'], ['B.attr'])
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_r_out_attr(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold,
+                     ['A.attr'], ['B.invalid_attr'])
+
+    @raises(TypeError)
+    def test_cosine_join_invalid_ltable(self):
+        cosine_join([], self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_cosine_join_invalid_rtable(self):
+        cosine_join(self.A, [], 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_l_key_attr(self):
+        cosine_join(self.A, self.B, 'A.invalid_id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_r_key_attr(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.invalid_id', 'A.attr', 'B.attr',
+                    self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_l_join_attr(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.invalid_attr', 'B.attr',
+                    self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_r_join_attr(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.invalid_attr',
+                    self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_cosine_join_invalid_tokenizer(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    [], self.threshold)
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_threshold_above(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, 1.5)
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_threshold_below(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, -0.1)
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_threshold_zero(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, 0)
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_l_out_attr(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, self.threshold,
+                    ['A.invalid_attr'], ['B.attr'])
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_r_out_attr(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, self.threshold,
+                    ['A.attr'], ['B.invalid_attr'])
