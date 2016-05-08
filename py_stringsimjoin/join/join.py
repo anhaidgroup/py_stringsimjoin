@@ -1,9 +1,14 @@
-from joblib import Parallel, delayed
+from joblib import delayed
+from joblib import Parallel
 import pandas as pd
 import pyprind
-import time
+
 from py_stringsimjoin.filter.position_filter import PositionFilter
+from py_stringsimjoin.filter.position_filter import _find_candidates as \
+                                             find_candidates_position_filter
 from py_stringsimjoin.filter.prefix_filter import PrefixFilter
+from py_stringsimjoin.filter.prefix_filter import _find_candidates as \
+                                             find_candidates_prefix_filter
 from py_stringsimjoin.filter.suffix_filter import SuffixFilter
 from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.index.position_index import PositionIndex
@@ -262,7 +267,7 @@ def edit_dist_join(ltable, rtable,
                                token_ordering)
     prefix_index.build()
 
-    prefix_filter = PrefixFilter(tokenizer, sim_measure_type, threshold)
+    prefix_filter = PrefixFilter(tokenizer, 'EDIT_DISTANCE', threshold)
     sim_fn = get_sim_function('EDIT_DISTANCE')
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
@@ -279,14 +284,9 @@ def edit_dist_join(ltable, rtable,
         r_join_attr_tokens = tokenize(r_string, tokenizer, sim_measure_type)
         r_ordered_tokens = order_using_token_ordering(r_join_attr_tokens,
                                                       token_ordering)
-        r_prefix_length = get_prefix_length(len(r_ordered_tokens),
-                                            sim_measure_type,
-                                            threshold,
-                                            tokenizer)
-       
-        candidates = prefix_filter._find_candidates(
-                                       r_ordered_tokens[0:r_prefix_length],
-                                       prefix_index) 
+        candidates = find_candidates_prefix_filter(
+                         r_ordered_tokens, len(r_ordered_tokens),
+                         prefix_filter, prefix_index) 
         for cand in candidates:
             if r_len - threshold <= l_join_attr_dict[cand] <= r_len + threshold:
                 edit_dist = sim_fn(str(ltable_dict[cand][l_join_attr_index]),
@@ -414,10 +414,9 @@ def sim_join(ltable, rtable,
                                             sim_measure_type,
                                             threshold, tokenizer)     
 
-        candidate_overlap = pos_filter._find_candidates(r_ordered_tokens,
-                                                        r_num_tokens,
-                                                        r_prefix_length,
-                                                        position_index)
+        candidate_overlap = find_candidates_position_filter(
+                                r_ordered_tokens, r_num_tokens, r_prefix_length,
+                                pos_filter, position_index)
         for cand, overlap in candidate_overlap.iteritems():
             if overlap > 0:
                 l_ordered_tokens = l_join_attr_dict[cand]

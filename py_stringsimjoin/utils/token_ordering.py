@@ -44,7 +44,7 @@ def order_using_token_ordering(tokens, token_ordering):
         order = token_ordering.get(token)
         if order is not None:
             ordered_tokens.append(order)
-
+            
     ordered_tokens.sort()
 
     return ordered_tokens

@@ -32,8 +32,8 @@ class FilterTablesTestCases(unittest.TestCase):
     def setUp(self):
         self.tokenizer = create_delimiter_tokenizer(' ')
         self.position_filter = PositionFilter(self.tokenizer,
-                                              sim_measure_type='JACCARD',
-                                              threshold=0.8)
+                                              'JACCARD',
+                                              0.8)
 
     def test_valid_tables(self):
         A = pd.DataFrame([{'id': 1, 'attr':'ab cd ef aa bb'},

@@ -1,3 +1,7 @@
+"""Size Filter"""
+
+from joblib import delayed
+from joblib import Parallel
 import pandas as pd
 import pyprind
 
@@ -11,6 +15,7 @@ from py_stringsimjoin.utils.helper_functions import \
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
+from py_stringsimjoin.utils.helper_functions import split_table
 from py_stringsimjoin.utils.tokenizers import tokenize
 
 
@@ -62,7 +67,8 @@ class SizeFilter(Filter):
                       l_key_attr, r_key_attr,
                       l_filter_attr, r_filter_attr,
                       l_out_attrs=None, r_out_attrs=None,
-                      l_out_prefix='l_', r_out_prefix='r_'):
+                      l_out_prefix='l_', r_out_prefix='r_',
+                      n_jobs=1):
         """Filter tables with size filter.
 
         Args:
@@ -75,89 +81,118 @@ class SizeFilter(Filter):
         Returns:
         result : Pandas data frame
         """
-        # find column indices of key attr, filter attr and
-        # output attrs in ltable
-        l_columns = list(ltable.columns.values)
-        l_key_attr_index = l_columns.index(l_key_attr)
-        l_filter_attr_index = l_columns.index(l_filter_attr)
-        l_out_attrs_indices = []
-        l_out_attrs_indices = find_output_attribute_indices(l_columns,
-                                                            l_out_attrs)
+        if n_jobs == 1:
+            output_table = _filter_tables_split(ltable, rtable,
+                                                l_key_attr, r_key_attr,
+                                                l_filter_attr, r_filter_attr,
+                                                self,
+                                                l_out_attrs, r_out_attrs,
+                                                l_out_prefix, r_out_prefix)
+            output_table.insert(0, '_id', range(0, len(output_table)))
+            return output_table
+        else:
+            rtable_splits = split_table(rtable, n_jobs)
+            results = Parallel(n_jobs=n_jobs)(delayed(_filter_tables_split)(
+                                                  ltable, rtable_split,
+                                                  l_key_attr, r_key_attr,
+                                                  l_filter_attr, r_filter_attr,
+                                                  self,
+                                                  l_out_attrs, r_out_attrs,
+                                                  l_out_prefix, r_out_prefix)
+                                              for rtable_split in rtable_splits)
+            output_table = pd.concat(results)
+            output_table.insert(0, '_id', range(0, len(output_table)))
+            return output_table
 
-        # find column indices of key attr, filter attr and
-        # output attrs in rtable
-        r_columns = list(rtable.columns.values)
-        r_key_attr_index = r_columns.index(r_key_attr)
-        r_filter_attr_index = r_columns.index(r_filter_attr)
-        r_out_attrs_indices = find_output_attribute_indices(r_columns,
-                                                            r_out_attrs)
 
-        # build a dictionary on ltable
-        ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                            l_filter_attr_index)
 
-        # build a dictionary on rtable
-        rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                            r_filter_attr_index)
+def _filter_tables_split(ltable, rtable,
+                         l_key_attr, r_key_attr,
+                         l_filter_attr, r_filter_attr,
+                         size_filter, 
+                         l_out_attrs, r_out_attrs,
+                         l_out_prefix, r_out_prefix):
+    # find column indices of key attr, filter attr and output attrs in ltable
+    l_columns = list(ltable.columns.values)
+    l_key_attr_index = l_columns.index(l_key_attr)
+    l_filter_attr_index = l_columns.index(l_filter_attr)
+    l_out_attrs_indices = []
+    l_out_attrs_indices = find_output_attribute_indices(l_columns, l_out_attrs)
 
-        # Build size index over ltable
-        size_index = SizeIndex(ltable_dict.values(),
-                               l_key_attr_index, l_filter_attr_index,
-                               self.tokenizer)
-        size_index.build()
+    # find column indices of key attr, filter attr and output attrs in rtable
+    r_columns = list(rtable.columns.values)
+    r_key_attr_index = r_columns.index(r_key_attr)
+    r_filter_attr_index = r_columns.index(r_filter_attr)
+    r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
-        output_rows = []
-        has_output_attributes = (l_out_attrs is not None or
-                                 r_out_attrs is not None)
-        prog_bar = pyprind.ProgBar(len(rtable.index))
+    # build a dictionary on ltable
+    ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
+                                        l_filter_attr_index)
 
-        for r_row in rtable_dict.values():
-            r_id = r_row[r_key_attr_index]
-            r_string = str(r_row[r_filter_attr_index])
-            # check for empty string
-            if not r_string:
-                continue
-            r_num_tokens = len(tokenize(r_string, self.tokenizer,
-                                        self.sim_measure_type))
+    # build a dictionary on rtable
+    rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
+                                        r_filter_attr_index)
+
+    # Build size index over ltable
+    size_index = SizeIndex(ltable_dict.values(), l_key_attr_index,
+                           l_filter_attr_index, size_filter.tokenizer)
+    size_index.build()
+
+    output_rows = []
+    has_output_attributes = (l_out_attrs is not None or
+                             r_out_attrs is not None)
+    prog_bar = pyprind.ProgBar(len(rtable))
+
+    for r_row in rtable_dict.values():
+        r_id = r_row[r_key_attr_index]
+        r_string = str(r_row[r_filter_attr_index])
+        # check for empty string
+        if not r_string:
+            continue
+        r_num_tokens = len(tokenize(r_string, size_filter.tokenizer,
+                                    size_filter.sim_measure_type))
            
-            size_lower_bound = get_size_lower_bound(r_num_tokens,
-                                                    self.sim_measure_type,
-                                                    self.threshold)
-            size_upper_bound = get_size_upper_bound(r_num_tokens,
-                                                    self.sim_measure_type,
-                                                    self.threshold)
+        size_lower_bound = get_size_lower_bound(r_num_tokens,
+                                                size_filter.sim_measure_type,
+                                                size_filter.threshold)
+        size_upper_bound = get_size_upper_bound(r_num_tokens,
+                                                size_filter.sim_measure_type,
+                                                size_filter.threshold)
 
-            size_lower_bound = (size_index.min_length if
-                                size_lower_bound < size_index.min_length else 
-                                size_lower_bound) 
+        size_lower_bound = (size_index.min_length if
+                            size_lower_bound < size_index.min_length else 
+                            size_lower_bound) 
 
-            size_upper_bound = (size_index.max_length if
-                                size_upper_bound > size_index.max_length else 
-                                size_upper_bound) 
+        size_upper_bound = (size_index.max_length if
+                            size_upper_bound > size_index.max_length else 
+                            size_upper_bound) 
 
-            # probe size index and find candidates
-            candidates = set()
-            for cand_size in xrange(size_lower_bound, size_upper_bound + 1):
-                for cand in size_index.probe(cand_size):
-                    candidates.add(cand)
+        # probe size index and find candidates
+        candidates = _find_candidates(size_lower_bound, size_upper_bound,
+                                      size_index)
 
-            for cand in candidates:
-                if has_output_attributes:
-                    output_row = get_output_row_from_tables(
+        for cand in candidates:
+            if has_output_attributes:
+                output_row = get_output_row_from_tables(
                                      ltable_dict[cand], r_row,
                                      cand, r_id, 
                                      l_out_attrs_indices, r_out_attrs_indices)
-                    output_rows.append(output_row)
-                else:
-                    output_rows.append([cand, r_id])
+                output_rows.append(output_row)
+            else:
+                output_rows.append([cand, r_id])
 
-            prog_bar.update()
+        prog_bar.update()
 
-        output_header = get_output_header_from_tables(
-                            l_key_attr, r_key_attr,
-                            l_out_attrs, r_out_attrs, 
-                            l_out_prefix, r_out_prefix)
+    output_header = get_output_header_from_tables(l_key_attr, r_key_attr,
+                                                  l_out_attrs, r_out_attrs, 
+                                                  l_out_prefix, r_out_prefix)
 
-        output_table = pd.DataFrame(output_rows, columns=output_header)
-        output_table.insert(0, '_id', range(0, len(output_table)))
-        return output_table
+    output_table = pd.DataFrame(output_rows, columns=output_header)
+    return output_table
+
+def _find_candidates(size_lower_bound, size_upper_bound, size_index):
+    candidates = set()
+    for cand_size in xrange(size_lower_bound, size_upper_bound + 1):
+        for cand in size_index.probe(cand_size):
+            candidates.add(cand)
+    return candidates
