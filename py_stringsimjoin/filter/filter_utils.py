@@ -1,7 +1,7 @@
 from math import ceil
 from math import floor
 from math import sqrt
-from sys import maxint
+from sys import maxsize
 
 
 def get_size_lower_bound(num_tokens, sim_measure_type, threshold):
@@ -27,7 +27,7 @@ def get_size_upper_bound(num_tokens, sim_measure_type, threshold):
     elif sim_measure_type == 'JACCARD':
         return int(floor(num_tokens / threshold))
     elif sim_measure_type == 'OVERLAP':
-        return maxint
+        return maxsize
 
 
 def get_prefix_length(num_tokens, sim_measure_type, threshold, tokenizer):
