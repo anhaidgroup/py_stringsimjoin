@@ -2,8 +2,8 @@
 
 from functools import partial
 
-from py_stringmatching.tokenizers import delimiter
-from py_stringmatching.tokenizers import qgram
+from py_stringsimjoin.externals.py_stringmatching.tokenizers import delimiter
+from py_stringsimjoin.externals.py_stringmatching.tokenizers import qgram
 
 
 class Tokenizer:

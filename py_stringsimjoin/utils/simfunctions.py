@@ -1,6 +1,7 @@
-from py_stringmatching.simfunctions import cosine
-from py_stringmatching.simfunctions import jaccard
-from py_stringmatching.simfunctions import levenshtein
+from py_stringsimjoin.externals.py_stringmatching.simfunctions import cosine
+from py_stringsimjoin.externals.py_stringmatching.simfunctions import jaccard
+from py_stringsimjoin.externals.py_stringmatching.simfunctions import \
+                                                                   levenshtein
 
 
 def get_sim_function(sim_measure_type):
