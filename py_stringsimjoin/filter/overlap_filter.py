@@ -2,6 +2,7 @@
 
 from joblib import delayed
 from joblib import Parallel
+from six import iteritems
 import pandas as pd
 import pyprind
 

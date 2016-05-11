@@ -6,6 +6,7 @@ from nose.tools import assert_equal
 from nose.tools import assert_list_equal
 from nose.tools import nottest
 from nose.tools import raises
+from six import iteritems
 import pandas as pd
 
 from py_stringsimjoin.join.join import cosine_join

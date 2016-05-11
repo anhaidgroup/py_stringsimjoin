@@ -1,3 +1,4 @@
+from six.moves import xrange
 import pandas as pd
 
 
@@ -72,6 +73,6 @@ def find_output_attribute_indices(original_columns, output_attributes):
 def split_table(table, num_splits):
     splits = []
     split_size = 1.0/num_splits*len(table)
-    for i in range(num_splits):
+    for i in xrange(num_splits):
         splits.append(table[int(round(i*split_size)):int(round((i+1)*split_size))])
     return splits

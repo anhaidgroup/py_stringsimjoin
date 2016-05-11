@@ -2,6 +2,7 @@
 
 from joblib import delayed
 from joblib import Parallel
+from six.moves import xrange
 import pandas as pd
 import pyprind
 
