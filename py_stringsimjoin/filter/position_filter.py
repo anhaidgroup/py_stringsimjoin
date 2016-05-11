@@ -204,7 +204,7 @@ def _filter_tables_split(ltable, rtable,
         candidate_overlap = _find_candidates(r_ordered_tokens, r_num_tokens,
                                              r_prefix_length, position_filter,
                                              position_index)
-        for cand, overlap in candidate_overlap.iteritems():
+        for cand, overlap in iteritems(candidate_overlap):
             if overlap > 0:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(

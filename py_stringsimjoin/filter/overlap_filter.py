@@ -145,7 +145,7 @@ def _filter_tables_split(ltable, rtable,
         candidate_overlap = _find_candidates(r_filter_attr_tokens,
                                              inverted_index)
 
-        for cand, overlap in candidate_overlap.iteritems():
+        for cand, overlap in iteritems(candidate_overlap):
             if overlap >= overlap_filter.overlap_size:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(

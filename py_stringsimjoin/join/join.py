@@ -418,7 +418,7 @@ def sim_join(ltable, rtable,
         candidate_overlap = find_candidates_position_filter(
                                 r_ordered_tokens, r_num_tokens, r_prefix_length,
                                 pos_filter, position_index)
-        for cand, overlap in candidate_overlap.iteritems():
+        for cand, overlap in iteritems(candidate_overlap):
             if overlap > 0:
                 l_ordered_tokens = l_join_attr_dict[cand]
                 l_num_tokens = position_index.get_size(cand)

@@ -135,10 +135,10 @@ def test_set_sim_join():
 
     # Test each combination of similarity measure, threshold and tokenizer
     # for different test scenarios.
-    for label, scenario in data.iteritems():
+    for label, scenario in iteritems(data):
         for sim_measure_type in sim_measure_types:
             for threshold in thresholds:
-                for tok_type, tok in tokenizers.iteritems():
+                for tok_type, tok in iteritems(tokenizers):
                     test_function = partial(test_valid_join, scenario,
                                                              sim_measure_type,
                                                              (tok, threshold))
