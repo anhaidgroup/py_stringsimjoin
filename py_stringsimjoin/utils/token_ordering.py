@@ -1,4 +1,6 @@
 """Token ordering utilities"""
+from operator import itemgetter 
+
 from py_stringsimjoin.utils.tokenizers import tokenize
 
 
@@ -9,9 +11,11 @@ def gen_token_ordering_for_lists(token_lists):
             token_freq_dict[token] = token_freq_dict.get(token, 0) + 1
             order_idx = 1
 
+    ordered_tokens = sorted(list(token_freq_dict.items()), key=itemgetter(0))
+
     token_ordering = {}
-    for token in sorted(token_freq_dict, key=token_freq_dict.get):
-        token_ordering[token] = order_idx
+    for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):
+        token_ordering[token_freq_tuple[0]] = order_idx
         order_idx += 1
 
     return token_ordering
@@ -28,10 +32,12 @@ def gen_token_ordering_for_tables(table_list, attr_list, tokenizer,
                 token_freq_dict[token] = token_freq_dict.get(token, 0) + 1
         table_index += 1
 
+    ordered_tokens = sorted(list(token_freq_dict.items()), key=itemgetter(0))
+
     token_ordering = {}
     order_idx = 1
-    for token in sorted(token_freq_dict, key=token_freq_dict.get):
-        token_ordering[token] = order_idx
+    for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):
+        token_ordering[token_freq_tuple[0]] = order_idx
         order_idx += 1
 
     return token_ordering
