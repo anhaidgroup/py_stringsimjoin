@@ -1,5 +1,8 @@
 import unittest
 
+from nose.tools import assert_equal
+from nose.tools import assert_list_equal
+from nose.tools import nottest
 import pandas as pd
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
@@ -9,133 +12,210 @@ from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
 # test OverlapFilter.filter_pair method
 class FilterPairTestCases(unittest.TestCase):
     def setUp(self):
-        self.tokenizer = create_delimiter_tokenizer(' ')
-        self.overlap_filter = OverlapFilter(self.tokenizer,
-                                            overlap_size=1)
+        self.dlm = create_delimiter_tokenizer(' ')
 
-    def test_to_be_pruned_pair(self):
-        self.assertTrue(self.overlap_filter.filter_pair('aa bb cc', 'xx yy'))
+    def test_overlap_dlm_1_prune(self):
+        self.test_filter_pair('aa bb cc', 'xx yy',
+                              self.dlm, 1, True)
 
-    def test_to_be_passed_pair(self):
-        self.assertFalse(self.overlap_filter.filter_pair('aa bb cc',
-                                                         'xx yy aa'))
+    def test_overlap_dlm_1_pass(self):
+        self.test_filter_pair('aa bb cc', 'xx yy aa',
+                              self.dlm, 1, False)
 
-    def test_empty_input(self):
-        self.assertTrue(self.overlap_filter.filter_pair('ab', ''))
-        self.assertTrue(self.overlap_filter.filter_pair('', ''))
+    # tests for empty string input
+    def test_empty_lstring(self):
+        self.test_filter_pair('ab', '', self.dlm, 1, True)
+
+    def test_empty_rstring(self):
+        self.test_filter_pair('', 'ab', self.dlm, 1, True)
+
+    def test_empty_strings(self):
+        self.test_filter_pair('', '', self.dlm, 1, True)
+
+    @nottest
+    def test_filter_pair(self, lstring, rstring, tokenizer,
+                         overlap_size, expected_output):
+        overlap_filter = OverlapFilter(tokenizer, overlap_size)
+        actual_output = overlap_filter.filter_pair(lstring, rstring)
+        assert_equal(actual_output, expected_output)
 
 
 # test OverlapFilter.filter_tables method
 class FilterTablesTestCases(unittest.TestCase):
     def setUp(self):
-        self.tokenizer = create_delimiter_tokenizer(' ')
-        self.overlap_filter = OverlapFilter(self.tokenizer,
-                                            overlap_size=1)
+        self.dlm = create_delimiter_tokenizer(' ')
+        self.A = pd.DataFrame([{'id': 1, 'attr':'ab cd ef aa bb'},
+                               {'id': 2, 'attr':''},
+                               {'id': 3, 'attr':'ab'},
+                               {'id': 4, 'attr':'ll oo pp'},
+                               {'id': 5, 'attr':'xy xx zz fg'}])
+        self.B = pd.DataFrame([{'id': 1, 'attr':'mn'},
+                               {'id': 2, 'attr':'he ll'},
+                               {'id': 3, 'attr':'xy pl ou'},
+                               {'id': 4, 'attr':'aa'},
+                               {'id': 5, 'attr':'fg cd aa ef'}])
+        self.empty_table = pd.DataFrame(columns=['id', 'attr'])
+        self.default_l_out_prefix = 'l_'
+        self.default_r_out_prefix = 'r_'
 
-    def test_valid_tables(self):
-        A = pd.DataFrame([{'id': 1, 'attr':'ab cd ef aa bb'},
-                          {'id': 2, 'attr':''},
-                          {'id': 3, 'attr':'ab'},
-                          {'id': 4, 'attr':'ll oo pp'},
-                          {'id': 5, 'attr':'xy xx zz fg'}])
-        B = pd.DataFrame([{'id': 1, 'attr':'mn'},
-                          {'id': 2, 'attr':'he ll'},
-                          {'id': 3, 'attr':'xy pl ou'},
-                          {'id': 4, 'attr':'aa'},
-                          {'id': 5, 'attr':'fg cd aa ef'}])
-        expected_one_overlap_pairs = set(['1,4', '1,5', '4,2', '5,3', '5,5'])
-        C = self.overlap_filter.filter_tables(A, B,
-                                              'id', 'id',
-                                              'attr', 'attr')
-        self.assertEquals(len(C), len(expected_one_overlap_pairs))
-        self.assertListEqual(list(C.columns.values),
-                             ['_id', 'l_id', 'r_id'])
-        actual_one_overlap_pairs = set()
-        for idx, row in C.iterrows():
-            actual_one_overlap_pairs.add(','.join((str(row['l_id']),
-                                                   str(row['r_id']))))
+    def test_overlap_dlm_1(self):
+        expected_pairs = set(['1,4', '1,5', '4,2', '5,3', '5,5'])
+        self.test_filter_tables(self.dlm, 1,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
 
-        self.assertEqual(len(expected_one_overlap_pairs),
-                         len(actual_one_overlap_pairs))
-        common_pairs = actual_one_overlap_pairs.intersection(
-                           expected_one_overlap_pairs)
-        self.assertEqual(len(common_pairs),
-                         len(expected_one_overlap_pairs))
+    def test_overlap_dlm_3(self):
+        expected_pairs = set(['1,5'])
+        self.test_filter_tables(self.dlm, 3,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
+
+    def test_overlap_dlm_1_with_out_attrs(self):
+        expected_pairs = set(['1,4', '1,5', '4,2', '5,3', '5,5'])
+        self.test_filter_tables(self.dlm, 1,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr',
+                                ['attr'], ['attr']),
+                                expected_pairs)
+
+    def test_overlap_dlm_1_with_out_prefix(self):
+        expected_pairs = set(['1,4', '1,5', '4,2', '5,3', '5,5'])
+        self.test_filter_tables(self.dlm, 1,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr',
+                                ['attr'], ['attr'],
+                                'ltable.', 'rtable.'),
+                                expected_pairs)
+
+    # tests for empty table input
+    def test_empty_ltable(self):
+        expected_pairs = set()
+        self.test_filter_tables(self.dlm, 1,
+                                (self.empty_table, self.B,
+                                'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
+
+    def test_empty_rtable(self):
+        expected_pairs = set()
+        self.test_filter_tables(self.dlm, 1,
+                                (self.A, self.empty_table,
+                                'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
 
     def test_empty_tables(self):
-        A = pd.DataFrame(columns=['id', 'attr'])
-        B = pd.DataFrame(columns=['id', 'attr'])
-        C = self.overlap_filter.filter_tables(A, B,
-                                              'id', 'id',
-                                              'attr', 'attr')
-        self.assertEqual(len(C), 0)
-        self.assertListEqual(list(C.columns.values),
-                             ['_id', 'l_id', 'r_id'])
+        expected_pairs = set()
+        self.test_filter_tables(self.dlm, 1,
+                                (self.empty_table, self.empty_table,
+                                'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
+
+    @nottest
+    def test_filter_tables(self, tokenizer, overlap_size, args,
+                           expected_pairs):
+        overlap_filter = OverlapFilter(tokenizer, overlap_size)
+        actual_candset = overlap_filter.filter_tables(*args)
+
+        expected_output_attrs = ['_id']
+        l_out_prefix = self.default_l_out_prefix
+        r_out_prefix = self.default_r_out_prefix
+
+        # Check for l_out_prefix in args.
+        if len(args) > 8:
+            l_out_prefix = args[8]
+        expected_output_attrs.append(l_out_prefix + args[2])
+
+        # Check for l_out_attrs in args.
+        if len(args) > 6:
+            if args[6]:
+                for attr in args[6]:
+                    expected_output_attrs.append(l_out_prefix + attr)
+
+        # Check for r_out_prefix in args.
+        if len(args) > 9:
+            r_out_prefix = args[9]
+        expected_output_attrs.append(r_out_prefix + args[3])
+
+        # Check for r_out_attrs in args.
+        if len(args) > 7:
+            if args[7]:
+                for attr in args[7]:
+                    expected_output_attrs.append(r_out_prefix + attr)
+
+        # verify whether the output table has the necessary attributes.
+        assert_list_equal(list(actual_candset.columns.values),
+                          expected_output_attrs)
+
+        actual_pairs = set()
+        for idx, row in actual_candset.iterrows():
+            actual_pairs.add(','.join((str(row[l_out_prefix + args[2]]),
+                                       str(row[r_out_prefix + args[3]]))))
+
+        # verify whether the actual pairs and the expected pairs match.
+        assert_equal(len(expected_pairs), len(actual_pairs))
+        common_pairs = actual_pairs.intersection(expected_pairs)
+        assert_equal(len(common_pairs), len(expected_pairs))
 
 
 # test OverlapFilter.filter_candset method
 class FilterCandsetTestCases(unittest.TestCase):
     def setUp(self):
-        self.tokenizer = create_delimiter_tokenizer(' ')
-        self.overlap_filter = OverlapFilter(self.tokenizer,
-                                            overlap_size=1)
-
-    def test_valid_candset(self):
-        A = pd.DataFrame([{'l_id': 1, 'l_attr':'ab cd ef aa bb'},
-                          {'l_id': 2, 'l_attr':''},
-                          {'l_id': 3, 'l_attr':'ab'},
-                          {'l_id': 4, 'l_attr':'ll oo pp'},
-                          {'l_id': 5, 'l_attr':'xy xx zz fg'}])
-        B = pd.DataFrame([{'r_id': 1, 'r_attr':'mn'},
-                          {'r_id': 2, 'r_attr':'he ll'},
-                          {'r_id': 3, 'r_attr':'xy pl ou'},
-                          {'r_id': 4, 'r_attr':'aa'},
-                          {'r_id': 5, 'r_attr':'fg cd aa ef'}])
+        self.dlm = create_delimiter_tokenizer(' ')
+        self.A = pd.DataFrame([{'l_id': 1, 'l_attr':'ab cd ef aa bb'},
+                               {'l_id': 2, 'l_attr':''},
+                               {'l_id': 3, 'l_attr':'ab'},
+                               {'l_id': 4, 'l_attr':'ll oo pp'},
+                               {'l_id': 5, 'l_attr':'xy xx zz fg'}])
+        self.B = pd.DataFrame([{'r_id': 1, 'r_attr':'mn'},
+                               {'r_id': 2, 'r_attr':'he ll'},
+                               {'r_id': 3, 'r_attr':'xy pl ou'},
+                               {'r_id': 4, 'r_attr':'aa'},
+                               {'r_id': 5, 'r_attr':'fg cd aa ef'}])
 
         # generate cartesian product A x B to be used as candset
-        A['tmp_join_key'] = 1
-        B['tmp_join_key'] = 1
-        C = pd.merge(A[['l_id', 'tmp_join_key']],
-                     B[['r_id', 'tmp_join_key']],
+        self.A['tmp_join_key'] = 1
+        self.B['tmp_join_key'] = 1
+        self.C = pd.merge(self.A[['l_id', 'tmp_join_key']],
+                          self.B[['r_id', 'tmp_join_key']],
                      on='tmp_join_key').drop('tmp_join_key', 1)
 
-        expected_one_overlap_pairs = set(['1,4', '1,5', '4,2', '5,3', '5,5'])
-        D = self.overlap_filter.filter_candset(C,
-                                               'l_id', 'r_id',
-                                               A, B,
-                                               'l_id', 'r_id',
-                                               'l_attr', 'r_attr')
-        self.assertEquals(len(D), len(expected_one_overlap_pairs))
-        self.assertListEqual(list(D.columns.values),
-                             ['l_id', 'r_id'])
-        actual_one_overlap_pairs = set()
-        for idx, row in D.iterrows():
-            actual_one_overlap_pairs.add(','.join((str(row['l_id']),
-                                                   str(row['r_id']))))
+        self.empty_A = pd.DataFrame(columns=['l_id', 'l_attr'])
+        self.empty_B = pd.DataFrame(columns=['r_id', 'r_attr'])
+        self.empty_candset = pd.DataFrame(columns=['l_id', 'r_id'])
 
-        self.assertEqual(len(expected_one_overlap_pairs),
-                         len(actual_one_overlap_pairs))
-        common_pairs = actual_one_overlap_pairs.intersection(
-                           expected_one_overlap_pairs)
-        self.assertEqual(len(common_pairs),
-                         len(expected_one_overlap_pairs))
+    def test_overlap_dlm_1(self):
+        expected_pairs = set(['1,4', '1,5', '4,2', '5,3', '5,5'])
+        self.test_filter_candset(self.dlm, 1,
+                                (self.C, 'l_id', 'r_id',
+                                 self.A, self.B,
+                                'l_id', 'r_id', 'l_attr', 'r_attr'),
+                                expected_pairs)
 
+    # tests for empty candset input
     def test_empty_candset(self):
-        A = pd.DataFrame(columns=['l_id', 'l_attr'])
-        B = pd.DataFrame(columns=['r_id', 'r_attr'])
+        expected_pairs = set()
+        self.test_filter_candset(self.dlm, 1,
+                                (self.empty_candset, 'l_id', 'r_id',
+                                 self.empty_A, self.empty_B,
+                                'l_id', 'r_id', 'l_attr', 'r_attr'),
+                                expected_pairs)
 
-        # generate cartesian product A x B to be used as candset
-        A['tmp_join_key'] = 1
-        B['tmp_join_key'] = 1
-        C = pd.merge(A[['l_id', 'tmp_join_key']],
-                     B[['r_id', 'tmp_join_key']],
-                     on='tmp_join_key').drop('tmp_join_key', 1)
+    @nottest
+    def test_filter_candset(self, tokenizer, overlap_size, args,
+                           expected_pairs):
+        overlap_filter = OverlapFilter(tokenizer, overlap_size)
+        actual_output_candset = overlap_filter.filter_candset(*args)
 
-        D = self.overlap_filter.filter_candset(C,
-                                               'l_id', 'r_id',
-                                               A, B,
-                                               'l_id', 'r_id',
-                                               'l_attr', 'r_attr')
-        self.assertEqual(len(D), 0)
-        self.assertListEqual(list(D.columns.values),
-                             ['l_id', 'r_id'])
+        # verify whether the output table has the necessary attributes.
+        assert_list_equal(list(actual_output_candset.columns.values),
+                          list(args[0].columns.values))
+
+        actual_pairs = set()
+        for idx, row in actual_output_candset.iterrows():
+            actual_pairs.add(','.join((str(row[args[1]]), str(row[args[2]]))))
+
+        # verify whether the actual pairs and the expected pairs match.
+        assert_equal(len(expected_pairs), len(actual_pairs))
+        common_pairs = actual_pairs.intersection(expected_pairs)
+        assert_equal(len(common_pairs), len(expected_pairs))
