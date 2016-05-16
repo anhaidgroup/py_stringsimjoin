@@ -81,7 +81,7 @@ class SuffixFilter(Filter):
         if l_num_tokens >= r_num_tokens:
             hamming_dist_prefix = l_prefix_num_tokens - r_prefix_num_tokens
         hamming_dist_max = (l_num_tokens + r_num_tokens -
-                            2 * overlap_threshold + hamming_dist_prefix)
+                            2 * overlap_threshold - hamming_dist_prefix)
 
         hamming_dist = self._est_hamming_dist_lower_bound(
                                 l_suffix, r_suffix,
@@ -146,7 +146,7 @@ class SuffixFilter(Filter):
         output_rows = []
         has_output_attributes = (l_out_attrs is not None or
                                  r_out_attrs is not None)
-        prog_bar = pyprind.ProgBar(len(rtable.index))
+        prog_bar = pyprind.ProgBar(len(ltable))
 
         for l_row in ltable_dict.values():
             l_id = l_row[l_key_attr_index]
