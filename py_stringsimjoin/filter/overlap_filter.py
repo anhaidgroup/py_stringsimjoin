@@ -15,6 +15,7 @@ from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
 from py_stringsimjoin.utils.helper_functions import split_table
+from py_stringsimjoin.utils.simfunctions import overlap
 from py_stringsimjoin.utils.tokenizers import tokenize
 
 
@@ -46,7 +47,7 @@ class OverlapFilter(Filter):
         ltokens = tokenize(lstring, self.tokenizer)
         rtokens = tokenize(rstring, self.tokenizer)
  
-        num_overlap = len(set(ltokens).intersection(set(rtokens))) 
+        num_overlap = overlap(ltokens, rtokens) 
 
         if num_overlap < self.overlap_size:
             return True
@@ -58,7 +59,7 @@ class OverlapFilter(Filter):
                       l_filter_attr, r_filter_attr,
                       l_out_attrs=None, r_out_attrs=None,
                       l_out_prefix='l_', r_out_prefix='r_',
-                      n_jobs=1):
+                      out_sim_score=False, n_jobs=1):
         """Filter tables with overlap filter.
 
         Args:
@@ -77,7 +78,8 @@ class OverlapFilter(Filter):
                                                 l_filter_attr, r_filter_attr,
                                                 self,
                                                 l_out_attrs, r_out_attrs,
-                                                l_out_prefix, r_out_prefix)
+                                                l_out_prefix, r_out_prefix,
+                                                out_sim_score)
             output_table.insert(0, '_id', range(0, len(output_table)))
             return output_table
         else:
@@ -88,7 +90,8 @@ class OverlapFilter(Filter):
                                                   l_filter_attr, r_filter_attr,
                                                   self,
                                                   l_out_attrs, r_out_attrs,
-                                                  l_out_prefix, r_out_prefix)
+                                                  l_out_prefix, r_out_prefix,
+                                                  out_sim_score)
                                               for rtable_split in rtable_splits)
             output_table = pd.concat(results)
             output_table.insert(0, '_id', range(0, len(output_table)))
@@ -100,7 +103,8 @@ def _filter_tables_split(ltable, rtable,
                          l_filter_attr, r_filter_attr,
                          overlap_filter,
                          l_out_attrs, r_out_attrs,
-                         l_out_prefix, r_out_prefix):
+                         l_out_prefix, r_out_prefix,
+                         out_sim_score):
     # Find column indices of key attr, filter attr and output attrs in ltable
     l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)
@@ -153,15 +157,22 @@ def _filter_tables_split(ltable, rtable,
                                          cand, r_id, 
                                          l_out_attrs_indices,
                                          r_out_attrs_indices)
+                    if out_sim_score:
+                        output_row.append(overlap)
                     output_rows.append(output_row)
                 else:
-                    output_rows.append([cand, r_id])
+                    output_row = [cand, r_id]
+                    if out_sim_score:
+                        output_row.append(overlap)
+                    output_rows.append(output_row)
 
         prog_bar.update()
 
     output_header = get_output_header_from_tables(l_key_attr, r_key_attr,
                                                   l_out_attrs, r_out_attrs,
                                                   l_out_prefix, r_out_prefix)
+    if out_sim_score:
+        output_header.append("_sim_score")
 
     output_table = pd.DataFrame(output_rows, columns=output_header)
     return output_table

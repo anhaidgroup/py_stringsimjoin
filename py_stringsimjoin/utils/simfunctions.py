@@ -1,7 +1,7 @@
-from py_stringsimjoin.externals.py_stringmatching.simfunctions import cosine
-from py_stringsimjoin.externals.py_stringmatching.simfunctions import jaccard
-from py_stringsimjoin.externals.py_stringmatching.simfunctions import \
-                                                                   levenshtein
+"""Similarity measure utilities"""
+
+from py_stringsimjoin.externals.py_stringmatching.simfunctions import cosine, \
+                                                           jaccard, levenshtein
 
 
 def get_sim_function(sim_measure_type):
@@ -22,3 +22,22 @@ def get_sim_function(sim_measure_type):
         return levenshtein
     elif sim_measure_type == 'JACCARD':
         return jaccard
+    elif sim_measure_type == 'OVERLAP':
+        return overlap
+
+
+def overlap(set1, set2):
+    """
+    Computes the overlap between two sets.
+
+    Args:
+        set1,set2 (set or list): Input sets (or lists). Input lists are converted to sets.
+
+    Returns:
+        overlap (int)
+    """
+    if not isinstance(set1, set):
+        set1 = set(set1)
+    if not isinstance(set2, set):
+        set2 = set(set2)
+    return len(set1.intersection(set2))

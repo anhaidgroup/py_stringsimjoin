@@ -9,8 +9,7 @@ from nose.tools import raises
 from six import iteritems
 import pandas as pd
 
-from py_stringsimjoin.join.join import cosine_join
-from py_stringsimjoin.join.join import jaccard_join
+from py_stringsimjoin.join.join import cosine_join, jaccard_join, overlap_join
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
 from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer
@@ -18,7 +17,8 @@ from py_stringsimjoin.utils.tokenizers import tokenize
 
 
 JOIN_FN_MAP = {'JACCARD': jaccard_join,
-               'COSINE': cosine_join}
+               'COSINE': cosine_join,
+               'OVERLAP': overlap_join}
 
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
@@ -123,10 +123,12 @@ def test_set_sim_join():
     data = {'TEST_SCENARIO_1' : test_scenario_1}
 
     # similarity measures to be tested.
-    sim_measure_types = ['JACCARD', 'COSINE']
+    sim_measure_types = ['JACCARD', 'COSINE', 'OVERLAP']
 
     # similarity thresholds to be tested.
-    thresholds = [0.3, 0.5, 0.7, 0.85, 1]
+    thresholds = {'JACCARD' : [0.3, 0.5, 0.7, 0.85, 1],
+                  'COSINE' : [0.3, 0.5, 0.7, 0.85, 1],
+                  'OVERLAP' : [1, 2, 3]}
 
     # tokenizers to be tested.
     tokenizers = {'SPACE_DELIMITER': create_delimiter_tokenizer(),
@@ -137,7 +139,7 @@ def test_set_sim_join():
     # for different test scenarios.
     for label, scenario in iteritems(data):
         for sim_measure_type in sim_measure_types:
-            for threshold in thresholds:
+            for threshold in thresholds.get(sim_measure_type):
                 for tok_type, tok in iteritems(tokenizers):
                     test_function = partial(test_valid_join, scenario,
                                                              sim_measure_type,
