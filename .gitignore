@@ -55,6 +55,12 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# Performance Testing #
+#######################
+asv_bench/env/
+asv_bench/html/
+asv_bench/results/
+
 # PyBuilder
 target/
 
