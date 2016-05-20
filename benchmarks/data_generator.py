@@ -32,7 +32,7 @@ def generate_tokens(length_distribution, num_tokens):
                 tokens[new_token] = True
                 flag = False
         cnt += 1
-    return tokens.keys()
+    return list(tokens.keys())
 
 
 def generate_table(size_distribution, tokens, num_records,
