@@ -21,7 +21,7 @@ def generate_tokens(length_distribution, num_tokens):
         rand = random.random()
         selected_length = -1
         for i in range(len(cum_prob)):
-            if rand <= cum_prob:
+            if rand <= cum_prob[i]:
                 selected_length = lengths[i]
                 break
         flag = True
