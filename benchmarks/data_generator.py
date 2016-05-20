@@ -55,7 +55,7 @@ def generate_table(size_distribution, tokens, num_records,
         rand = random.random()
         selected_size = -1
         for i in range(len(cum_prob)):
-            if rand <= cum_prob:
+            if rand <= cum_prob[i]:
                 selected_size = sizes[i]
                 break
         new_string = ''
