@@ -57,9 +57,9 @@ docs/_build/
 
 # Performance Testing #
 #######################
-asv_bench/env/
-asv_bench/html/
-asv_bench/results/
+env/
+html/
+results/
 
 # PyBuilder
 target/

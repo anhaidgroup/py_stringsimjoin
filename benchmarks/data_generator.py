@@ -26,7 +26,7 @@ def generate_tokens(length_distribution, num_tokens):
                 break
         flag = True
         while flag:
-            new_token = ''.join(random.choice(string.lowercase)
+            new_token = ''.join(random.choice(string.ascii_lowercase)
                                 for i in range(selected_length))
             if tokens.get(new_token) == None:
                 tokens[new_token] = True
