@@ -135,10 +135,17 @@ def sim_check_for_list_or_set_inputs(*args):
             raise TypeError('Second argument is expected to be a python list or set')
 
 
+def sim_check_tversky_parameters(alpha, beta):
+        if alpha < 0 or beta < 0:
+            raise ValueError('Tversky parameters should be greater than or equal to zero')
+
 def sim_check_for_exact_match(*args):
     if args[0] == args[1]:
         return True
 
+def sim_check_for_zero_len(*args):
+    if len(args[0].strip()) == 0 or len(args[1].strip()) == 0:
+        raise ValueError("Undefined for string of zero length")
 
 def tok_check_for_string_input(*args):
     for i in range(len(args)):
@@ -156,6 +163,43 @@ class Similarity:
         self.first_string = string1
         self.second_string = string2
         self.similarity_score = score
+
+class Editex:
+    letter_groups = dict()
+    letter_groups['A'] = letter_groups['E'] = letter_groups['I'] = letter_groups['O'] \
+        = letter_groups['U'] = letter_groups['Y'] = 0
+    letter_groups['B'] = letter_groups['P'] = 1
+    letter_groups['C'] = letter_groups['K'] = letter_groups['Q'] = 2
+    letter_groups['D'] = letter_groups['T'] = 3
+    letter_groups['L'] = letter_groups['R'] = 4
+    letter_groups['M'] = letter_groups['N'] = 5
+    letter_groups['G'] = letter_groups['J'] = 6
+    letter_groups['F'] = letter_groups['P'] = letter_groups['V'] = 7
+    letter_groups['S'] = letter_groups['X'] = letter_groups['Z'] = 8
+    letter_groups['C'] = letter_groups['S'] = letter_groups['J'] = 9
+    all_letters = frozenset('AEIOUYBPCKQDTLRMNGJFVSXZ')
+
+    def __init__(self, match_cost, mismatch_cost, group_cost):
+        self.match_cost = match_cost
+        self.mismatch_cost = mismatch_cost
+        self.group_cost = group_cost
+
+    def r_cost(self, ch1, ch2):
+        """Return r(a,b) according to Zobel & Dart's definition
+        """
+        if ch1 == ch2:
+            return self.match_cost
+        if ch1 in Editex.all_letters and ch2 in Editex.all_letters:
+            if Editex.letter_groups[ch1] == Editex.letter_groups[ch2]:
+                return self.group_cost
+        return self.mismatch_cost
+
+    def d_cost(self, ch1, ch2):
+        """Return d(a,b) according to Zobel & Dart's definition
+        """
+        if ch1 != ch2 and (ch1 == 'H' or ch1 == 'W'):
+            return self.group_cost
+        return self.r_cost(ch1, ch2)
 
 # # check for NaNs
 # def check_strings_for_nulls(func):

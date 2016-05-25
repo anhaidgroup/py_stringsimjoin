@@ -4,12 +4,14 @@ from __future__ import unicode_literals
 
 import collections
 import math
+import re
+import unicodedata
 
 import numpy as np
 
-from . import utils
+from py_stringmatching import utils
 # noinspection PyProtectedMember,PyProtectedMember
-from .compat import _range
+from .compat import _range, _unicode
 
 
 def sim_ident(s1, s2):
@@ -84,6 +86,137 @@ def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_id
             # the best score given that y_j is aligned to a gap
             y[i][j] = max(gap_start + m[i][j - 1], gap_continuation + y[i][j - 1])
     return max(m[len(string1)][len(string2)], x[len(string1)][len(string2)], y[len(string1)][len(string2)])
+
+
+def bag_distance(string1, string2):
+    """
+    Computes the bag distance between two strings.
+    For two strings X and Y, the Bag distance is:
+    :math:`max( |multiset(string1)-multiset(string2)|, |multiset(string2)-multiset(string1)| )`
+    Args:
+        string1,string2 (str): Input strings
+    Returns:
+        Bag distance (int)
+    Raises:
+        TypeError : If the inputs are not strings
+    Examples:
+        >>> bag_distance('cat', 'hat')
+        1
+        >>> bag_distance('Niall', 'Neil')
+        2
+        >>> bag_distance('aluminum', 'Catalan')
+        5
+        >>> bag_distance('ATCG', 'TAGC')
+        0
+        >>> bag_distance('abcde', 'xyz')
+        5
+    References:
+        * http://www.icmlc.org/icmlc2011/018_icmlc2011.pdf
+    """
+    # input validations
+    utils.sim_check_for_none(string1, string2)
+    utils.sim_check_for_string_inputs(string1, string2)
+    if utils.sim_check_for_exact_match(string1, string2):
+        return 0
+
+    len_str1 = len(string1)
+    len_str2 = len(string2)
+
+    if len_str1 == 0:
+        return len_str2
+
+    if len_str2 == 0:
+        return len_str1
+
+    bag1 = collections.Counter(string1)
+    bag2 = collections.Counter(string2)
+
+    size1 = sum((bag1 - bag2).values())
+    size2 = sum((bag2 - bag1).values())
+    # returning the max of difference of sets
+    return max(size1, size2)
+
+
+def editex(string1, string2, match_cost=0, group_cost=1, mismatch_cost=2, local=False):
+    """
+    Computes the editex distance between two strings.
+
+    As described on pages 3 & 4 of
+    Zobel, Justin and Philip Dart. 1996. Phonetic string matching: Lessons from
+    information retrieval. In: Proceedings of the ACM-SIGIR Conference on
+    Research and Development in Information Retrieval, Zurich, Switzerland.
+    166–173. http://goanna.cs.rmit.edu.au/~jz/fulltext/sigir96.pdf
+
+    The local variant is based on
+    Ring, Nicholas and Alexandra L. Uitdenbogerd. 2009. Finding ‘Lucy in
+    Disguise’: The Misheard Lyric Matching Problem. In: Proceedings of the 5th
+    Asia Information Retrieval Symposium, Sapporo, Japan. 157-167.
+    http://www.seg.rmit.edu.au/research/download.php?manuscript=404
+
+    Args:
+        string1,string2 (str): Input strings
+        match_cost (int): Weight to give the correct char match, default=0
+        group_cost (int): Weight to give if the chars are in the same editex group, default=1
+        mismatch_cost (int): Weight to give the incorrect char match, default=2
+        local (boolean): Local variant on/off, default=False
+
+    Returns:
+        Editex distance (int)
+
+    Raises:
+        TypeError : If the inputs are not strings
+
+    Examples:
+        >>> editex('cat', 'hat')
+        2
+        >>> editex('Niall', 'Neil')
+        2
+        >>> editex('aluminum', 'Catalan')
+        12
+        >>> editex('ATCG', 'TAGC')
+        6
+
+    References:
+        * Abydos Library - https://github.com/chrislit/abydos/blob/master/abydos/distance.py
+    """
+    # input validations
+    utils.sim_check_for_none(string1, string2)
+    utils.sim_check_for_string_inputs(string1, string2)
+    if utils.sim_check_for_exact_match(string1, string2):
+        return 0
+    # convert both the strings to NFKD normalized unicode
+    string1 = unicodedata.normalize('NFKD', _unicode(string1.upper()))
+    string2 = unicodedata.normalize('NFKD', _unicode(string2.upper()))
+    # convert ß to SS (for Python2)
+    string1 = string1.replace('ß', 'SS')
+    string2 = string2.replace('ß', 'SS')
+
+    if string1 == string2:
+        return 0
+    if len(string1) == 0:
+        return len(string2) * mismatch_cost
+    if len(string2) == 0:
+        return len(string1) * mismatch_cost
+
+    d_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.int)
+    len1 = len(string1)
+    len2 = len(string2)
+    string1 = ' ' + string1
+    string2 = ' ' + string2
+    editex_helper = utils.Editex(match_cost, mismatch_cost, group_cost)
+    if not local:
+        for i in _range(1, len1 + 1):
+            d_mat[i, 0] = d_mat[i - 1, 0] + editex_helper.d_cost(string1[i - 1], string1[i])
+    for j in _range(1, len2 + 1):
+        d_mat[0, j] = d_mat[0, j - 1] + editex_helper.d_cost(string2[j - 1], string2[j])
+
+    for i in _range(1, len1 + 1):
+        for j in _range(1, len2 + 1):
+            d_mat[i, j] = min(d_mat[i - 1, j] + editex_helper.d_cost(string1[i - 1], string1[i]),
+                              d_mat[i, j - 1] + editex_helper.d_cost(string2[j - 1], string2[j]),
+                              d_mat[i - 1, j - 1] + editex_helper.r_cost(string1[i], string2[j]))
+
+    return d_mat[len1, len2]
 
 
 # jaro
@@ -314,6 +447,7 @@ def levenshtein(string1, string2):
 
     return d_mat[len_str1, len_str2]
 
+
 def needleman_wunsch(string1, string2, gap_cost=1.0, sim_score=sim_ident):
     """
     Computes the Needleman-Wunsch measure between two strings.
@@ -422,6 +556,76 @@ def smith_waterman(string1, string2, gap_cost=1.0, sim_score=sim_ident):
     return max_value
 
 
+def soundex(string1, string2):
+    """
+    Computes the Soundex phonetic similarity between two strings.
+
+    Phonetic measure such as soundex match string based on their sound. These
+    measures have been especially effective in matching names, since names are
+    often spelled in different ways that sound the same. For example, Meyer, Meier,
+    and Mire sound the same, as do Smith, Smithe, and Smythe.
+
+    Soundex is used primarily to match surnames. It does not work as well for names
+    of East Asian origins, because much of the discriminating power of these names
+    resides in the vowel sounds, which the code ignores.
+
+    Args:
+        string1,string2 (str): Input strings
+
+    Returns:
+        Soundex similarity score (int) is returned
+
+    Raises:
+        TypeError : If the inputs are not strings
+
+    Examples:
+        >>> soundex('Robert', 'Rupert')
+        1
+        >>> soundex('Sue', 's')
+        1
+        >>> soundex('Gough', 'Goff')
+        0
+        >>> soundex('a,,li', 'ali')
+        1
+
+    """
+    # input validations
+    utils.sim_check_for_none(string1, string2)
+    utils.sim_check_for_string_inputs(string1, string2)
+    if utils.sim_check_for_exact_match(string1, string2):
+        return 1
+    utils.sim_check_for_zero_len(string1, string2)
+    string1, string2 = string1.upper(), string2.upper()
+    firstLetter1, firstLetter2 = string1[0], string2[0]
+    string1, string2 = string1[1:], string2[1:]
+    # remove occurrences of vowels, 'y', 'w' and 'h'
+    string1 = re.sub('[AEIOUYWH]', '', string1)
+    string2 = re.sub('[AEIOUYWH]', '', string2)
+
+    # replace (B,F,P,V)->1 (C,G,J,K,Q,S,X,Z)->2 (D,T)->3 (L)->4 (M,N)->5 (R)->6
+    string1 = re.sub('[BFPV]', '1', string1)
+    string1 = re.sub('[CGJKQSXZ]', '2', string1)
+    string1 = re.sub('[DT]', '3', string1)
+    string1 = re.sub('[L]', '4', string1)
+    string1 = re.sub('[MN]', '5', string1)
+    string1 = re.sub('[R]', '6', string1)
+
+    string2 = re.sub('[BFPV]', '1', string2)
+    string2 = re.sub('[CGJKQSXZ]', '2', string2)
+    string2 = re.sub('[DT]', '3', string2)
+    string2 = re.sub('[L]', '4', string2)
+    string2 = re.sub('[MN]', '5', string2)
+    string2 = re.sub('[R]', '6', string2)
+
+    # remove all chars but digits
+    string1 = re.sub("\D", "", string1)
+    string2 = re.sub("\D", "", string2)
+
+    string1 = firstLetter1 + string1[:3]
+    string2 = firstLetter2 + string2[:3]
+    return 1 if string1 == string2 else 0
+
+
 # ---------------------- token based similarity measures  ----------------------
 
 # ---------------------- set based similarity measures  ----------------------
@@ -469,6 +673,117 @@ def cosine(set1, set2):
     if not isinstance(set2, set):
         set2 = set(set2)
     return float(len(set1 & set2)) / (math.sqrt(float(len(set1))) * math.sqrt(float(len(set2))))
+
+
+def generalized_jaccard(set1, set2, sim_func=jaro, threshold=0.5):
+    """
+    Computes the Generalized Jaccard measure between two sets.
+
+    This similarity measure is softened version of the Jaccard measure. The Jaccard measure is
+    promising candidate for tokens which exactly match across the sets. However, in practice tokens
+    are often misspelled, such as energy vs. eneryg. THe generalized Jaccard measure will enable
+    matching in such cases.
+
+    Args:
+        set1,set2 (set or list): Input sets (or lists) of strings. Input lists are converted to sets.
+        sim_func (func): similarity function. This should return a similarity score between two strings in set (optional),
+            default is jaro similarity measure
+        threshold (float): Threshold value (defaults to 0.5). If the similarity of a token pair exceeds the threshold,
+        then the token pair is considered a match.
+
+    Returns:
+        Generalized Jaccard similarity (float)
+
+    Raises:
+        TypeError : If the inputs are not sets (or lists) or if one of the inputs is None.
+        ValueError : If the similarity measure doesn't return values in the range [0.1]
+
+    Examples:
+        >>> generalized_jaccard(['data', 'science'], ['data'])
+        0.5
+        >>> generalized_jaccard(['data', 'management'], ['data', 'data', 'science'])
+        0.3333333333333333
+        >>> generalized_jaccard(['Niall'], ['Neal', 'Njall'])
+        0.43333333333333335
+        >>> generalized_jaccard(['Comp', 'Sci.', 'and', 'Engr', 'Dept.,', 'Universty', 'of', 'Cal,', 'San', 'Deigo'],
+        ['Department', 'of', 'Computer', 'Science,', 'Univ.', 'Calif.,', 'San', 'Diego'],
+        sim_func=jaro_winkler, threshold=0.8)
+        0.45810185185185187
+    """
+    # input validations
+    utils.sim_check_for_none(set1, set2)
+    utils.sim_check_for_list_or_set_inputs(set1, set2)
+    # if exact match return 1.0
+    if utils.sim_check_for_exact_match(set1, set2):
+        return 1.0
+    # if one of the strings is empty return 0
+    if utils.sim_check_for_empty(set1, set2):
+        return 0
+    if not isinstance(set1, set):
+        set1 = set(set1)
+    if not isinstance(set2, set):
+        set2 = set(set2)
+    set1_x = set()
+    set2_y = set()
+    match_score = 0.0
+    match_count = 0
+    list_matches = []
+    for element in set1:
+        for item in set2:
+            score = sim_func(element, item)
+            if score > 1 or score < 0:
+                raise ValueError('Similarity measure should return value in the range [0,1]')
+            if score > threshold:
+                list_matches.append(utils.Similarity(element, item, score))
+    # sort the score of all the pairs
+    list_matches.sort(key=lambda x: x.similarity_score, reverse=True)
+    # select score in increasing order of their weightage, do not reselect the same element from either set.
+    for element in list_matches:
+        if element.first_string not in set1_x and element.second_string not in set2_y:
+            set1_x.add(element.first_string)
+            set2_y.add(element.second_string)
+            match_score += element.similarity_score
+            match_count += 1
+    return float(match_score) / float(len(set1) + len(set2) - match_count)
+
+
+def dice(set1, set2):
+    """
+    Computes the Dice similarity coefficient between two sets.
+    The similarity is defined as twice the shared information (intersection) divided by sum of cardinalities.
+    For two sets X and Y, the Dice similarity coefficient is:
+    :math:`dice(X, Y) = \\frac{2 * |X \\cap Y|}{|X| + |Y|}`
+    Args:
+        set1,set2 (set or list): Input sets (or lists). Input lists are converted to sets.
+    Returns:
+        Dice similarity coefficient (float)
+    Raises:
+        TypeError : If the inputs are not sets (or lists) or if one of the inputs is None.
+    Examples:
+        >>> dice(['data', 'science'], ['data'])
+        0.6666666666666666
+        >>> dice({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8})
+        0.5454545454545454
+        >>> dice(['data', 'management'], ['data', 'data', 'science'])
+        0.5
+    References:
+        * Wikipedia article : https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Dice%27s_coefficient
+        * Simmetrics library
+    """
+    # input validations
+    utils.sim_check_for_none(set1, set2)
+    utils.sim_check_for_list_or_set_inputs(set1, set2)
+    # if exact match return 1.0
+    if utils.sim_check_for_exact_match(set1, set2):
+        return 1.0
+    # if one of the strings is empty return 0
+    if utils.sim_check_for_empty(set1, set2):
+        return 0
+    if not isinstance(set1, set):
+        set1 = set(set1)
+    if not isinstance(set2, set):
+        set2 = set(set2)
+    return 2.0 * float(len(set1 & set2)) / float(len(set1) + len(set2))
 
 
 def jaccard(set1, set2):
@@ -567,6 +882,55 @@ def overlap_coefficient(set1, set2):
         set2 = set(set2)
 
     return float(len(set1 & set2)) / min(len(set1), len(set2))
+
+
+def tversky_index(set1, set2, alpha=0.5, beta=0.5):
+    """
+    Computes the Tversky index similarity between two sets.
+    The Tversky index is an asymmetric similarity measure on sets that compares a variant to a prototype. The
+    Tversky index can be seen as a generalization of Dice's coefficient and Tanimoto coefficient.
+    For sets X and Y the Tversky index is a number between 0 and 1 given by:
+    :math:`tversky_index(X, Y) = \\frac{|X \\cap Y|}{|X \\cap Y| + \alpha |X-Y| + \beta |Y-X|}`
+    where, :math: \alpha, \beta >=0
+
+    Args:
+        set1,set2 (set or list): Input sets (or lists). Input lists are converted to sets.
+
+    Returns:
+        Tversly index similarity (float)
+
+    Raises:
+        TypeError : If the inputs are not sets (or lists) or if one of the inputs is None.
+
+    Examples:
+        >>> tversky_index(['data', 'science'], ['data'])
+        0.6666666666666666
+        >>> tversky_index({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8})
+        0.5454545454545454
+        >>> tversky_index({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}, 0.5, 0.5)
+        0.5454545454545454
+        >>> tversky_index(['data', 'management'], ['data', 'data', 'science'])
+        0.5
+        >>> tversky_index(['data', 'management'], ['data', 'data', 'science'], beta=0.5)
+        0.5
+    """
+    # input validations
+    utils.sim_check_for_none(set1, set2)
+    utils.sim_check_for_list_or_set_inputs(set1, set2)
+    utils.sim_check_tversky_parameters(alpha, beta)
+    # if exact match return 1.0
+    if utils.sim_check_for_exact_match(set1, set2):
+        return 1.0
+    # if one of the strings is empty return 0
+    if utils.sim_check_for_empty(set1, set2):
+        return 0
+    if not isinstance(set1, set):
+        set1 = set(set1)
+    if not isinstance(set2, set):
+        set2 = set(set2)
+    intersection = float(len(set1 & set2))
+    return 1.0 * intersection / (intersection + (alpha * len(set1 - set2))
+                                 + (beta * len(set2 - set1)))
 
 
 # ---------------------- bag based similarity measures  ----------------------

@@ -1,4 +1,4 @@
-from . import utils
+from py_stringmatching import utils
 from .compat import _range
 
 
