@@ -21,7 +21,8 @@ def get_size_upper_bound(num_tokens, sim_measure_type, threshold):
     if sim_measure_type == 'COSINE':
         return int(floor(num_tokens / (threshold * threshold)))
     elif sim_measure_type == 'DICE':
-        return int(floor(((2 - threshold) / threshold) * num_tokens))
+        return int(floor(round(
+            ((2 - threshold) / threshold) * num_tokens, 2)))
     elif sim_measure_type == 'EDIT_DISTANCE':
         return num_tokens + threshold
     elif sim_measure_type == 'JACCARD':

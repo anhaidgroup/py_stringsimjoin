@@ -1,7 +1,7 @@
 """Similarity measure utilities"""
 
-from py_stringsimjoin.externals.py_stringmatching.simfunctions import cosine, \
-                                                           jaccard, levenshtein
+from py_stringsimjoin.externals.py_stringmatching.simfunctions import \
+    cosine, dice, jaccard, levenshtein
 
 
 def get_sim_function(sim_measure_type):
@@ -18,6 +18,8 @@ def get_sim_function(sim_measure_type):
     """
     if sim_measure_type == 'COSINE':
         return cosine
+    elif sim_measure_type == 'DICE':
+        return dice
     elif sim_measure_type == 'EDIT_DISTANCE':
         return levenshtein
     elif sim_measure_type == 'JACCARD':

@@ -32,6 +32,15 @@ class FilterPairTestCases(unittest.TestCase):
         self.test_filter_pair('aa bb cc dd ee', 'xx aa cc dd ee',
                               self.dlm, 'COSINE', 0.8, False)
 
+    # tests for DICE measure 
+    def test_dice_dlm_08_prune(self):
+        self.test_filter_pair('aa bb cc dd ee', 'xx yy cc zz ww',
+                              self.dlm, 'DICE', 0.8, True)
+
+    def test_dice_dlm_08_pass(self):
+        self.test_filter_pair('aa bb cc dd ee', 'xx aa cc dd ee',
+                              self.dlm, 'DICE', 0.8, False)
+
     # tests for empty string input
     def test_empty_lstring(self):
         self.test_filter_pair('ab', '', self.dlm, 'JACCARD', 0.8, True)
@@ -112,6 +121,31 @@ class FilterTablesTestCases(unittest.TestCase):
     def test_cos_dlm_08_with_out_prefix(self):
         expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
         self.test_filter_tables(self.dlm, 'COSINE', 0.8,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr',
+                                ['attr'], ['attr'],
+                                'ltable.', 'rtable.'),
+                                expected_pairs)
+
+    # tests for DICE measure 
+    def test_dice_dlm_08(self):
+        expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
+        self.test_filter_tables(self.dlm, 'DICE', 0.8,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
+
+    def test_dice_dlm_08_with_out_attrs(self):
+        expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
+        self.test_filter_tables(self.dlm, 'DICE', 0.8,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr',
+                                ['attr'], ['attr']),
+                                expected_pairs)
+
+    def test_dice_dlm_08_with_out_prefix(self):
+        expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
+        self.test_filter_tables(self.dlm, 'DICE', 0.8,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr'],
@@ -228,6 +262,15 @@ class FilterCandsetTestCases(unittest.TestCase):
     def test_cos_dlm_08(self):
         expected_pairs = set(['1,5', '3,4', '4,2', '5,1', '5,3'])
         self.test_filter_candset(self.dlm, 'COSINE', 0.8,
+                                (self.C, 'l_id', 'r_id',
+                                 self.A, self.B,
+                                'l_id', 'r_id', 'l_attr', 'r_attr'),
+                                expected_pairs)
+
+    # tests for DICE measure
+    def test_dice_dlm_08(self):
+        expected_pairs = set(['1,5', '3,4', '4,2', '5,1', '5,3'])
+        self.test_filter_candset(self.dlm, 'DICE', 0.8,
                                 (self.C, 'l_id', 'r_id',
                                  self.A, self.B,
                                 'l_id', 'r_id', 'l_attr', 'r_attr'),

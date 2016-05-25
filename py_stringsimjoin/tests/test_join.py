@@ -9,15 +9,17 @@ from nose.tools import raises
 from six import iteritems
 import pandas as pd
 
-from py_stringsimjoin.join.join import cosine_join, jaccard_join, overlap_join
+from py_stringsimjoin.join.join import cosine_join, dice_join, jaccard_join, \
+                                       overlap_join
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
 from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer
 from py_stringsimjoin.utils.tokenizers import tokenize
 
 
-JOIN_FN_MAP = {'JACCARD': jaccard_join,
-               'COSINE': cosine_join,
+JOIN_FN_MAP = {'COSINE': cosine_join,
+               'DICE': dice_join,
+               'JACCARD': jaccard_join, 
                'OVERLAP': overlap_join}
 
 DEFAULT_L_OUT_PREFIX = 'l_'
@@ -123,11 +125,12 @@ def test_set_sim_join():
     data = {'TEST_SCENARIO_1' : test_scenario_1}
 
     # similarity measures to be tested.
-    sim_measure_types = ['JACCARD', 'COSINE', 'OVERLAP']
+    sim_measure_types = ['COSINE', 'DICE', 'JACCARD', 'OVERLAP']
 
     # similarity thresholds to be tested.
     thresholds = {'JACCARD' : [0.3, 0.5, 0.7, 0.85, 1],
                   'COSINE' : [0.3, 0.5, 0.7, 0.85, 1],
+                  'DICE' : [0.3, 0.5, 0.7, 0.85, 1],
                   'OVERLAP' : [1, 2, 3]}
 
     # tokenizers to be tested.
@@ -318,6 +321,68 @@ class SetSimJoinInvalidTestCases(unittest.TestCase):
         cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
                     self.tokenizer, self.threshold,
                     ['A.attr'], ['B.invalid_attr'])
+
+    @raises(TypeError)
+    def test_dice_join_invalid_ltable(self):
+        dice_join([], self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_dice_join_invalid_rtable(self):
+        dice_join(self.A, [], 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_l_key_attr(self):
+        dice_join(self.A, self.B, 'A.invalid_id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_r_key_attr(self):
+        dice_join(self.A, self.B, 'A.id', 'B.invalid_id', 'A.attr', 'B.attr',
+                  self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_l_join_attr(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.invalid_attr', 'B.attr',
+                  self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_r_join_attr(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.invalid_attr',
+                  self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_dice_join_invalid_tokenizer(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  [], self.threshold)
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_threshold_above(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, 1.5)
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_threshold_below(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, -0.1)
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_threshold_zero(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, 0)
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_l_out_attr(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, self.threshold,
+                  ['A.invalid_attr'], ['B.attr'])
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_r_out_attr(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, self.threshold,
+                  ['A.attr'], ['B.invalid_attr'])
 
     @raises(TypeError)
     def test_overlap_join_invalid_ltable(self):
