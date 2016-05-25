@@ -318,3 +318,60 @@ class SetSimJoinInvalidTestCases(unittest.TestCase):
         cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
                     self.tokenizer, self.threshold,
                     ['A.attr'], ['B.invalid_attr'])
+
+    @raises(TypeError)
+    def test_overlap_join_invalid_ltable(self):
+        overlap_join([], self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_overlap_join_invalid_rtable(self):
+        overlap_join(self.A, [], 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_l_key_attr(self):
+        overlap_join(self.A, self.B, 'A.invalid_id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_r_key_attr(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.invalid_id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_l_join_attr(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.invalid_attr', 'B.attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_r_join_attr(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.invalid_attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_overlap_join_invalid_tokenizer(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     [], self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_threshold_below(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, -0.1)
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_threshold_zero(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, 0)
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_l_out_attr(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold,
+                     ['A.invalid_attr'], ['B.attr'])
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_r_out_attr(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold,
+                     ['A.attr'], ['B.invalid_attr'])
