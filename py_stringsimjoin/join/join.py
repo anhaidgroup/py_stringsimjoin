@@ -1,3 +1,7 @@
+"""Join methods"""
+
+from math import floor
+
 from joblib import delayed
 from joblib import Parallel
 from six import iteritems
@@ -5,34 +9,24 @@ import pandas as pd
 import pyprind
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
-from py_stringsimjoin.filter.position_filter import PositionFilter
-from py_stringsimjoin.filter.position_filter import _find_candidates as \
-                                             find_candidates_position_filter
-from py_stringsimjoin.filter.prefix_filter import PrefixFilter
-from py_stringsimjoin.filter.prefix_filter import _find_candidates as \
-                                             find_candidates_prefix_filter
+from py_stringsimjoin.filter.position_filter import PositionFilter, \
+    _find_candidates as find_candidates_position_filter
+from py_stringsimjoin.filter.prefix_filter import PrefixFilter, \
+    _find_candidates as find_candidates_prefix_filter
 from py_stringsimjoin.filter.suffix_filter import SuffixFilter
 from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.index.position_index import PositionIndex
 from py_stringsimjoin.index.prefix_index import PrefixIndex
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table
-from py_stringsimjoin.utils.helper_functions import \
-                                                 find_output_attribute_indices
-from py_stringsimjoin.utils.helper_functions import \
-                                                 get_output_header_from_tables
-from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
-from py_stringsimjoin.utils.helper_functions import split_table
+from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
+    find_output_attribute_indices, get_output_header_from_tables, \
+    get_output_row_from_tables, split_table 
 from py_stringsimjoin.utils.simfunctions import get_sim_function
-from py_stringsimjoin.utils.tokenizers import tokenize
-from py_stringsimjoin.utils.tokenizers import Tokenizer
-from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
-from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
-from py_stringsimjoin.utils.validation import validate_attr
-from py_stringsimjoin.utils.validation import validate_input_table
-from py_stringsimjoin.utils.validation import validate_output_attrs
-from py_stringsimjoin.utils.validation import validate_threshold
-from py_stringsimjoin.utils.validation import validate_tokenizer
-from py_stringsimjoin.utils.validation import validate_key_attr
+from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer, tokenize
+from py_stringsimjoin.utils.token_ordering import \
+    gen_token_ordering_for_tables, order_using_token_ordering
+from py_stringsimjoin.utils.validation import validate_attr, \
+    validate_key_attr, validate_input_table, validate_threshold, \
+    validate_tokenizer, validate_output_attrs
 
 
 def jaccard_join(ltable, rtable,
@@ -91,28 +85,30 @@ def jaccard_join(ltable, rtable,
     validate_key_attr(r_key_attr, rtable, 'right table')
 
     if n_jobs == 1:
-        output_table = sim_join(ltable, rtable,
-                                l_key_attr, r_key_attr,
-                                l_join_attr, r_join_attr,
-                                tokenizer,
-                                'JACCARD',
-                                threshold,
-                                l_out_attrs, r_out_attrs,
-                                l_out_prefix, r_out_prefix,
-                                out_sim_score)
+        output_table = _set_sim_join_split(ltable, rtable,
+                                           l_key_attr, r_key_attr,
+                                           l_join_attr, r_join_attr,
+                                           tokenizer,
+                                           'JACCARD',
+                                           threshold,
+                                           l_out_attrs, r_out_attrs,
+                                           l_out_prefix, r_out_prefix,
+                                           out_sim_score)
         output_table.insert(0, '_id', range(0, len(output_table)))
         return output_table
     else:
         r_splits = split_table(rtable, n_jobs) 
-        results = Parallel(n_jobs=n_jobs)(delayed(sim_join)(ltable, s,
-                                             l_key_attr, r_key_attr,
-                                             l_join_attr, r_join_attr,
-                                             tokenizer,
-                                             'JACCARD',
-                                             threshold,
-                                             l_out_attrs, r_out_attrs,
-                                             l_out_prefix, r_out_prefix,
-                                             out_sim_score) for s in r_splits)
+        results = Parallel(n_jobs=n_jobs)(delayed(_set_sim_join_split)(
+                                              ltable, r_split,
+                                              l_key_attr, r_key_attr,
+                                              l_join_attr, r_join_attr,
+                                              tokenizer,
+                                              'JACCARD',
+                                              threshold,
+                                              l_out_attrs, r_out_attrs,
+                                              l_out_prefix, r_out_prefix,
+                                              out_sim_score)
+                                          for r_split in r_splits)
         output_table = pd.concat(results)
         output_table.insert(0, '_id', range(0, len(output_table)))
         return output_table
@@ -174,28 +170,30 @@ def cosine_join(ltable, rtable,
     validate_key_attr(r_key_attr, rtable, 'right table')
 
     if n_jobs == 1:
-        output_table = sim_join(ltable, rtable,
-                                l_key_attr, r_key_attr,
-                                l_join_attr, r_join_attr,
-                                tokenizer,
-                                'COSINE',
-                                threshold,
-                                l_out_attrs, r_out_attrs,
-                                l_out_prefix, r_out_prefix,
-                                out_sim_score)
+        output_table = _set_sim_join_split(ltable, rtable,
+                                           l_key_attr, r_key_attr,
+                                           l_join_attr, r_join_attr,
+                                           tokenizer,
+                                           'COSINE',
+                                           threshold,
+                                           l_out_attrs, r_out_attrs,
+                                           l_out_prefix, r_out_prefix,
+                                           out_sim_score)
         output_table.insert(0, '_id', range(0, len(output_table)))
         return output_table
     else:
         r_splits = split_table(rtable, n_jobs)
-        results = Parallel(n_jobs=n_jobs)(delayed(sim_join)(ltable, s,
-                                             l_key_attr, r_key_attr,
-                                             l_join_attr, r_join_attr,
-                                             tokenizer,
-                                             'COSINE',
-                                             threshold,
-                                             l_out_attrs, r_out_attrs,
-                                             l_out_prefix, r_out_prefix,
-                                             out_sim_score) for s in r_splits)
+        results = Parallel(n_jobs=n_jobs)(delayed(_set_sim_join_split)(
+                                              ltable, r_split,
+                                              l_key_attr, r_key_attr,
+                                              l_join_attr, r_join_attr,
+                                              tokenizer,
+                                              'COSINE',
+                                              threshold,
+                                              l_out_attrs, r_out_attrs,
+                                              l_out_prefix, r_out_prefix,
+                                              out_sim_score)
+                                          for r_split in r_splits)
         output_table = pd.concat(results)
         output_table.insert(0, '_id', range(0, len(output_table)))
         return output_table
@@ -239,11 +237,11 @@ def overlap_join(ltable, rtable,
 def edit_dist_join(ltable, rtable,
                    l_key_attr, r_key_attr,
                    l_join_attr, r_join_attr,
-                   tokenizer,
                    threshold,
                    l_out_attrs=None, r_out_attrs=None,
                    l_out_prefix='l_', r_out_prefix='r_',
-                   out_sim_score=True):
+                   out_sim_score=True, n_jobs=1,
+                   tokenizer=create_qgram_tokenizer(2)):
     """Join two tables using edit distance similarity measure.
 
     Finds tuple pairs from ltable and rtable such that
@@ -262,7 +260,72 @@ def edit_dist_join(ltable, rtable,
     Returns:
     result : Pandas data frame
     """
-    sim_measure_type = 'EDIT_DISTANCE'
+    # check if the input tables are dataframes
+    validate_input_table(ltable, 'left table')
+    validate_input_table(rtable, 'right table')
+
+    # check if the key attributes and join attributes exist
+    validate_attr(l_key_attr, ltable.columns,
+                  'key attribute', 'left table')
+    validate_attr(r_key_attr, rtable.columns,
+                  'key attribute', 'right table')
+    validate_attr(l_join_attr, ltable.columns,
+                  'join attribute', 'left table')
+    validate_attr(r_join_attr, rtable.columns,
+                  'join attribute', 'right table')
+
+    # check if the input tokenizer is valid
+    validate_tokenizer(tokenizer)
+
+    # check if the input threshold is valid
+    validate_threshold(threshold, 'EDIT_DISTANCE')
+
+    # check if the output attributes exist
+    validate_output_attrs(l_out_attrs, ltable.columns,
+                          r_out_attrs, rtable.columns)
+
+    # check if the key attributes are unique and do not contain missing values
+    validate_key_attr(l_key_attr, ltable, 'left table')
+    validate_key_attr(r_key_attr, rtable, 'right table')
+
+    # convert threshold to integer (incase if it is float)
+    threshold = int(floor(threshold))
+
+    if n_jobs == 1:
+        output_table = _edit_dist_join_split(ltable, rtable,
+                               l_key_attr, r_key_attr,
+                               l_join_attr, r_join_attr,
+                               tokenizer,
+                               threshold,
+                               l_out_attrs, r_out_attrs,
+                               l_out_prefix, r_out_prefix,
+                               out_sim_score)
+        output_table.insert(0, '_id', range(0, len(output_table)))
+        return output_table
+    else:
+        r_splits = split_table(rtable, n_jobs)
+        results = Parallel(n_jobs=n_jobs)(delayed(_edit_dist_join_split)(
+                                             ltable, s,
+                                             l_key_attr, r_key_attr,
+                                             l_join_attr, r_join_attr,
+                                             tokenizer,
+                                             threshold,
+                                             l_out_attrs, r_out_attrs,
+                                             l_out_prefix, r_out_prefix,
+                                             out_sim_score) for s in r_splits)
+        output_table = pd.concat(results)
+        output_table.insert(0, '_id', range(0, len(output_table)))
+        return output_table
+
+
+def _edit_dist_join_split(ltable, rtable,
+                          l_key_attr, r_key_attr,
+                          l_join_attr, r_join_attr,
+                          tokenizer,
+                          threshold,
+                          l_out_attrs, r_out_attrs,
+                          l_out_prefix, r_out_prefix,
+                          out_sim_score):
     # find column indices of key attr, join attr and output attrs in ltable
     l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)
@@ -283,6 +346,7 @@ def edit_dist_join(ltable, rtable,
     rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
                                         r_join_attr_index)
 
+    sim_measure_type = 'EDIT_DISTANCE'
     # generate token ordering using tokens in l_join_attr
     # and r_join_attr
     token_ordering = gen_token_ordering_for_tables(
@@ -305,8 +369,8 @@ def edit_dist_join(ltable, rtable,
                                token_ordering)
     prefix_index.build()
 
-    prefix_filter = PrefixFilter(tokenizer, 'EDIT_DISTANCE', threshold)
-    sim_fn = get_sim_function('EDIT_DISTANCE')
+    prefix_filter = PrefixFilter(tokenizer, sim_measure_type, threshold)
+    sim_fn = get_sim_function(sim_measure_type)
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
@@ -356,37 +420,20 @@ def edit_dist_join(ltable, rtable,
 
     # generate a dataframe from the list of output rows
     output_table = pd.DataFrame(output_rows, columns=output_header)
-    output_table.insert(0, '_id', range(0, len(output_table)))
     return output_table
-    
-def sim_join(ltable, rtable,
-             l_key_attr, r_key_attr,
-             l_join_attr, r_join_attr,
-             tokenizer,
-             sim_measure_type,
-             threshold,
-             l_out_attrs=None, r_out_attrs=None,
-             l_out_prefix='l_', r_out_prefix='r_',
-             out_sim_score=True):
-    """Join two tables using a similarity measure.
 
-    Finds tuple pairs from ltable and rtable such that
-    sim_measure(ltable.l_join_attr, rtable.r_join_attr) >= threshold
 
-    Args:
-    ltable, rtable : Pandas data frame
-    l_key_attr, r_key_attr : String, key attribute from ltable and rtable
-    l_join_attr, r_join_attr : String, join attribute from ltable and rtable
-    tokenizer : Tokenizer object, tokenizer to be used to tokenize join attributes
-    sim_measure_type : String, similarity measure type ('JACCARD', 'COSINE', 'DICE', 'OVERLAP')
-    threshold : float, similarity threshold to be satisfied
-    l_out_attrs, r_out_attrs : list of attributes to be included in the output table from ltable and rtable
-    l_out_prefix, r_out_prefix : String, prefix to be used in the attribute names of the output table
-    out_sim_score : boolean, indicates if similarity score needs to be included in the output table
+def _set_sim_join_split(ltable, rtable,
+                        l_key_attr, r_key_attr,
+                        l_join_attr, r_join_attr,
+                        tokenizer,
+                        sim_measure_type,
+                        threshold,
+                        l_out_attrs, r_out_attrs,
+                        l_out_prefix, r_out_prefix,
+                        out_sim_score):
+    """Perform set similarity join for a split of ltable and rtable"""
 
-    Returns:
-    result : Pandas data frame
-    """
     # find column indices of key attr, join attr and output attrs in ltable
     l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)

@@ -17,6 +17,9 @@ from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
 from py_stringsimjoin.utils.helper_functions import split_table
 from py_stringsimjoin.utils.simfunctions import overlap
 from py_stringsimjoin.utils.tokenizers import tokenize
+from py_stringsimjoin.utils.validation import validate_attr, \
+    validate_key_attr, validate_input_table, validate_threshold, \
+    validate_tokenizer, validate_output_attrs
 
 
 class OverlapFilter(Filter):
@@ -27,6 +30,12 @@ class OverlapFilter(Filter):
         overlap_size: overlap threshold for the filter.
     """
     def __init__(self, tokenizer, overlap_size=1):
+        # check if the input tokenizer is valid
+        validate_tokenizer(tokenizer)
+
+        # check if the overlap size is valid
+        validate_threshold(overlap_size, 'OVERLAP')
+
         self.tokenizer = tokenizer
         self.overlap_size = overlap_size
         super(self.__class__, self).__init__()
@@ -72,6 +81,28 @@ class OverlapFilter(Filter):
         Returns:
         result : Pandas data frame
         """
+        # check if the input tables are dataframes
+        validate_input_table(ltable, 'left table')
+        validate_input_table(rtable, 'right table')
+
+        # check if the key attributes and join attributes exist
+        validate_attr(l_key_attr, ltable.columns,
+                      'key attribute', 'left table')
+        validate_attr(r_key_attr, rtable.columns,
+                      'key attribute', 'right table')
+        validate_attr(l_filter_attr, ltable.columns,
+                      'filter attribute', 'left table')
+        validate_attr(r_filter_attr, rtable.columns,
+                      'filter attribute', 'right table')
+
+        # check if the output attributes exist
+        validate_output_attrs(l_out_attrs, ltable.columns,
+                              r_out_attrs, rtable.columns)
+
+        # check if the key attributes are unique and do not contain missing values
+        validate_key_attr(l_key_attr, ltable, 'left table')
+        validate_key_attr(r_key_attr, rtable, 'right table')
+
         if n_jobs == 1:
             output_table = _filter_tables_split(ltable, rtable,
                                                 l_key_attr, r_key_attr,
