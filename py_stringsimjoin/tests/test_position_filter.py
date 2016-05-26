@@ -3,6 +3,7 @@ import unittest
 from nose.tools import assert_equal
 from nose.tools import assert_list_equal
 from nose.tools import nottest
+from nose.tools import raises
 import pandas as pd
 
 from py_stringsimjoin.filter.position_filter import PositionFilter
@@ -303,3 +304,85 @@ class FilterCandsetTestCases(unittest.TestCase):
         assert_equal(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
         assert_equal(len(common_pairs), len(expected_pairs))
+
+
+class PositionFilterInvalidTestCases(unittest.TestCase):
+    def setUp(self):
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.tokenizer = create_delimiter_tokenizer()
+        self.sim_measure_type = 'JACCARD'
+        self.threshold = 0.8
+
+    @raises(TypeError)
+    def test_invalid_ltable(self):
+        position_filter = PositionFilter(self.tokenizer, self.sim_measure_type,
+                                         self.threshold)
+        position_filter.filter_tables([], self.B, 'A.id', 'B.id',
+                                      'A.attr', 'B.attr')
+
+    @raises(TypeError)
+    def test_invalid_rtable(self):
+        position_filter = PositionFilter(self.tokenizer, self.sim_measure_type,
+                                         self.threshold)
+        position_filter.filter_tables(self.A, [], 'A.id', 'B.id',
+                                      'A.attr', 'B.attr')
+
+    @raises(AssertionError)
+    def test_invalid_l_key_attr(self):
+        position_filter = PositionFilter(self.tokenizer, self.sim_measure_type,
+                                         self.threshold)
+        position_filter.filter_tables(self.A, self.B, 'A.invalid_id', 'B.id',
+                                      'A.attr', 'B.attr')
+
+    @raises(AssertionError)
+    def test_invalid_r_key_attr(self):
+        position_filter = PositionFilter(self.tokenizer, self.sim_measure_type,
+                                         self.threshold)
+        position_filter.filter_tables(self.A, self.B, 'A.id', 'B.invalid_id',
+                                      'A.attr', 'B.attr')
+
+    @raises(AssertionError)
+    def test_invalid_l_filter_attr(self):
+        position_filter = PositionFilter(self.tokenizer, self.sim_measure_type,
+                                         self.threshold)
+        position_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
+                                      'A.invalid_attr', 'B.attr')
+
+    @raises(AssertionError)
+    def test_invalid_r_filter_attr(self):
+        position_filter = PositionFilter(self.tokenizer, self.sim_measure_type,
+                                         self.threshold)
+        position_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
+                                      'A.attr', 'B.invalid_attr')
+
+    @raises(AssertionError)
+    def test_invalid_l_out_attr(self):
+        position_filter = PositionFilter(self.tokenizer, self.sim_measure_type,
+                                         self.threshold)
+        position_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
+                                      'A.attr', 'B.attr',
+                                      ['A.invalid_attr'], ['B.attr'])
+
+    @raises(AssertionError)
+    def test_invalid_r_out_attr(self):
+        position_filter = PositionFilter(self.tokenizer, self.sim_measure_type,
+                                         self.threshold)
+        position_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
+                                      'A.attr', 'B.attr',
+                                      ['A.attr'], ['B.invalid_attr'])
+
+    @raises(TypeError)
+    def test_invalid_tokenizer(self):
+        position_filter = PositionFilter([], self.sim_measure_type,
+                                         self.threshold)
+
+    @raises(TypeError)
+    def test_invalid_sim_measure_type(self):
+        position_filter = PositionFilter(self.tokenizer, 'INVALID_TYPE',
+                                         self.threshold)
+
+    @raises(AssertionError)
+    def test_invalid_threshold(self):
+        position_filter = PositionFilter(self.tokenizer, self.sim_measure_type,
+                                         1.2)

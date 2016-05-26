@@ -85,7 +85,7 @@ class OverlapFilter(Filter):
         validate_input_table(ltable, 'left table')
         validate_input_table(rtable, 'right table')
 
-        # check if the key attributes and join attributes exist
+        # check if the key attributes and filter attributes exist
         validate_attr(l_key_attr, ltable.columns,
                       'key attribute', 'left table')
         validate_attr(r_key_attr, rtable.columns,

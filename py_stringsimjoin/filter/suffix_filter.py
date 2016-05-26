@@ -16,6 +16,9 @@ from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
+from py_stringsimjoin.utils.validation import validate_attr, \
+    validate_key_attr, validate_input_table, validate_threshold, \
+    validate_tokenizer, validate_output_attrs, validate_sim_measure_type
 
 
 class SuffixFilter(Filter):
@@ -27,6 +30,15 @@ class SuffixFilter(Filter):
         threshold: float, similarity threshold to be used by the filter.
     """
     def __init__(self, tokenizer, sim_measure_type, threshold):
+        # check if the input tokenizer is valid
+        validate_tokenizer(tokenizer)
+
+        # check if the sim_measure_type is valid
+        validate_sim_measure_type(sim_measure_type)
+
+        # check if the threshold is valid
+        validate_threshold(threshold, sim_measure_type)
+
         self.tokenizer = tokenizer
         self.sim_measure_type = sim_measure_type
         self.threshold = threshold
@@ -109,6 +121,28 @@ class SuffixFilter(Filter):
         Returns:
         result : Pandas data frame
         """
+        # check if the input tables are dataframes
+        validate_input_table(ltable, 'left table')
+        validate_input_table(rtable, 'right table')
+
+        # check if the key attributes and filter attributes exist
+        validate_attr(l_key_attr, ltable.columns,
+                      'key attribute', 'left table')
+        validate_attr(r_key_attr, rtable.columns,
+                      'key attribute', 'right table')
+        validate_attr(l_filter_attr, ltable.columns,
+                      'filter attribute', 'left table')
+        validate_attr(r_filter_attr, rtable.columns,
+                      'filter attribute', 'right table')
+
+        # check if the output attributes exist
+        validate_output_attrs(l_out_attrs, ltable.columns,
+                              r_out_attrs, rtable.columns)
+
+        # check if the key attributes are unique and do not contain missing values
+        validate_key_attr(l_key_attr, ltable, 'left table')
+        validate_key_attr(r_key_attr, rtable, 'right table')
+
         # find column indices of key attr, filter attr and
         # output attrs in ltable
         l_columns = list(ltable.columns.values)

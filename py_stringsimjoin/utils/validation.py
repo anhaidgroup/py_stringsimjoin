@@ -64,3 +64,14 @@ def validate_tokenizer(tokenizer):
     if not isinstance(tokenizer, Tokenizer):
         raise TypeError('Invalid tokenizer provided as input')
     return True
+
+
+def validate_sim_measure_type(sim_measure_type):
+    """Check if the input sim_measure_type is one of the supported types."""
+    sim_measure_types = ['COSINE', 'DICE', 'EDIT_DISTANCE', 'JACCARD',
+                         'OVERLAP']
+    if sim_measure_type not in sim_measure_types:
+        raise TypeError('\'' + sim_measure_type + '\' is not a valid ' + \
+                        'sim_measure_type. Supported types are COSINE, DICE' + \
+                        ', EDIT_DISTANCE, JACCARD and OVERLAP.')
+    return True 

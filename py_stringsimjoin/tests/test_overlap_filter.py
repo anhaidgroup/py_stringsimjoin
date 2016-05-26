@@ -3,6 +3,7 @@ import unittest
 from nose.tools import assert_equal
 from nose.tools import assert_list_equal
 from nose.tools import nottest
+from nose.tools import raises
 import pandas as pd
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
@@ -219,3 +220,69 @@ class FilterCandsetTestCases(unittest.TestCase):
         assert_equal(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
         assert_equal(len(common_pairs), len(expected_pairs))
+
+
+class OverlapFilterInvalidTestCases(unittest.TestCase):
+    def setUp(self):
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.tokenizer = create_delimiter_tokenizer()
+        self.threshold = 1
+
+    @raises(TypeError)
+    def test_invalid_ltable(self):
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)
+        overlap_filter.filter_tables([], self.B, 'A.id', 'B.id',
+                                     'A.attr', 'B.attr')
+
+    @raises(TypeError)
+    def test_invalid_rtable(self):
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)
+        overlap_filter.filter_tables(self.A, [], 'A.id', 'B.id',
+                                     'A.attr', 'B.attr')
+
+    @raises(AssertionError)
+    def test_invalid_l_key_attr(self):
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)
+        overlap_filter.filter_tables(self.A, self.B, 'A.invalid_id', 'B.id',
+                                     'A.attr', 'B.attr')
+
+    @raises(AssertionError)
+    def test_invalid_r_key_attr(self):
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)
+        overlap_filter.filter_tables(self.A, self.B, 'A.id', 'B.invalid_id',
+                                     'A.attr', 'B.attr')
+
+    @raises(AssertionError)
+    def test_invalid_l_filter_attr(self):
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)
+        overlap_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
+                                     'A.invalid_attr', 'B.attr')
+
+    @raises(AssertionError)
+    def test_invalid_r_filter_attr(self):
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)
+        overlap_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
+                                     'A.attr', 'B.invalid_attr')
+
+    @raises(AssertionError)
+    def test_invalid_l_out_attr(self):
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)
+        overlap_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
+                                     'A.attr', 'B.attr',
+                                     ['A.invalid_attr'], ['B.attr'])
+
+    @raises(AssertionError)
+    def test_invalid_r_out_attr(self):
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)
+        overlap_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
+                                     'A.attr', 'B.attr',
+                                     ['A.attr'], ['B.invalid_attr'])
+
+    @raises(TypeError)
+    def test_invalid_tokenizer(self):
+        overlap_filter = OverlapFilter([], self.threshold)
+
+    @raises(AssertionError)
+    def test_invalid_threshold(self):
+        overlap_filter = OverlapFilter(self.tokenizer, -1)
