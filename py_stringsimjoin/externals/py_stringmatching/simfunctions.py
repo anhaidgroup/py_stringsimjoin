@@ -9,7 +9,7 @@ import unicodedata
 
 import numpy as np
 
-from py_stringmatching import utils
+from . import utils
 # noinspection PyProtectedMember,PyProtectedMember
 from .compat import _range, _unicode
 
