@@ -13,7 +13,6 @@ from py_stringsimjoin.filter.position_filter import PositionFilter, \
     _find_candidates as find_candidates_position_filter
 from py_stringsimjoin.filter.prefix_filter import PrefixFilter, \
     _find_candidates as find_candidates_prefix_filter
-from py_stringsimjoin.filter.suffix_filter import SuffixFilter
 from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.index.position_index import PositionIndex
 from py_stringsimjoin.index.prefix_index import PrefixIndex
@@ -548,7 +547,8 @@ def _set_sim_join_split(ltable, rtable,
                           r_join_attr_index],
                          tokenizer, sim_measure_type)
 
-    # build a dictionary of tokenized l_join_attr
+    # Tokenize l_join_attr and cache it. By doing so,
+    # we tokenize l_join_attr only once.
     l_join_attr_dict = {}
     for row in ltable_dict.values():
         l_join_attr_dict[row[l_key_attr_index]] = order_using_token_ordering(
@@ -563,7 +563,6 @@ def _set_sim_join_split(ltable, rtable,
     position_index.build()
 
     pos_filter = PositionFilter(tokenizer, sim_measure_type, threshold)
-    suffix_filter = SuffixFilter(tokenizer, sim_measure_type, threshold)
     sim_fn = get_sim_function(sim_measure_type)
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
@@ -587,36 +586,26 @@ def _set_sim_join_split(ltable, rtable,
         candidate_overlap = find_candidates_position_filter(
                                 r_ordered_tokens, r_num_tokens, r_prefix_length,
                                 pos_filter, position_index)
+
         for cand, overlap in iteritems(candidate_overlap):
             if overlap > 0:
                 l_ordered_tokens = l_join_attr_dict[cand]
-                l_num_tokens = position_index.get_size(cand)
-                l_prefix_length = get_prefix_length(
-                                      l_num_tokens,
-                                      sim_measure_type,
-                                      threshold, tokenizer)
-                if not suffix_filter._filter_suffix(
-                           l_ordered_tokens[l_prefix_length:],
-                           r_ordered_tokens[r_prefix_length:],
-                           l_prefix_length,
-                           r_prefix_length,
-                           l_num_tokens, r_num_tokens):
-                    sim_score = sim_fn(l_ordered_tokens, r_ordered_tokens)
-                    if sim_score >= threshold:
-                        if has_output_attributes:
-                            output_row = get_output_row_from_tables(
-                                             ltable_dict[cand], r_row,
-                                             cand, r_id,
-                                             l_out_attrs_indices,
-                                             r_out_attrs_indices)
-                            if out_sim_score:
-                                output_row.append(sim_score)
-                            output_rows.append(output_row)
-                        else:
-                            output_row = [cand, r_id]
-                            if out_sim_score:
-                                output_row.append(sim_score)
-                            output_rows.append(output_row)
+                sim_score = sim_fn(l_ordered_tokens, r_ordered_tokens)
+                if sim_score >= threshold:
+                    if has_output_attributes:
+                        output_row = get_output_row_from_tables(
+                                         ltable_dict[cand], r_row,
+                                         cand, r_id,
+                                         l_out_attrs_indices,
+                                         r_out_attrs_indices)
+                        if out_sim_score:
+                            output_row.append(sim_score)
+                        output_rows.append(output_row)
+                    else:
+                        output_row = [cand, r_id]
+                        if out_sim_score:
+                            output_row.append(sim_score)
+                        output_rows.append(output_row)
         prog_bar.update()
 
     output_header = get_output_header_from_tables(
