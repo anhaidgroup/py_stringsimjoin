@@ -116,7 +116,7 @@ def test_valid_join(scenario, tok, threshold, args=()):
     for idx, row in actual_candset.iterrows():
         actual_pairs.add(','.join((str(row[l_out_prefix + l_key_attr]),
                                    str(row[r_out_prefix + r_key_attr]))))
-    print len(actual_pairs), len(expected_pairs) 
+ 
     # verify whether the actual pairs and the expected pairs match.
     assert_equal(len(expected_pairs), len(actual_pairs))
     common_pairs = actual_pairs.intersection(expected_pairs)
