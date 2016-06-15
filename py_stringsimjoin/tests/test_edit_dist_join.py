@@ -9,7 +9,7 @@ from nose.tools import raises
 from six import iteritems
 import pandas as pd
 
-from py_stringsimjoin.join.join import edit_dist_join
+from py_stringsimjoin.join.edit_distance_join import edit_distance_join
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer, \
     create_qgram_tokenizer, tokenize
@@ -77,11 +77,11 @@ def test_valid_join(scenario, tok, threshold, args=()):
                                              str(row[r_key_attr]))))
 
     # use join function to obtain actual output pairs.
-    actual_candset = edit_dist_join(ltable, rtable,
-                                    l_key_attr, r_key_attr,
-                                    l_join_attr, r_join_attr,
-                                    threshold,
-                                    *args, tokenizer=tok)
+    actual_candset = edit_distance_join(ltable, rtable,
+                                        l_key_attr, r_key_attr,
+                                        l_join_attr, r_join_attr,
+                                        threshold,
+                                        *args, tokenizer=tok)
 
     expected_output_attrs = ['_id']
     l_out_prefix = DEFAULT_L_OUT_PREFIX
@@ -130,7 +130,7 @@ def test_valid_join(scenario, tok, threshold, args=()):
     common_pairs = actual_pairs.intersection(expected_pairs)
     assert_equal(len(common_pairs), len(expected_pairs))
 
-def test_edit_dist_join():
+def test_edit_distance_join():
     # data to be tested.
     test_scenario_1 = [('data/table_A.csv', 'A.ID', 'A.name'),
                        ('data/table_B.csv', 'B.ID', 'B.name')]
@@ -197,50 +197,51 @@ class EditDistJoinInvalidTestCases(unittest.TestCase):
         self.threshold = 0.8
 
     @raises(TypeError)
-    def test_edit_dist_join_invalid_ltable(self):
-        edit_dist_join([], self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                       self.threshold)
+    def test_edit_distance_join_invalid_ltable(self):
+        edit_distance_join([], self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold)
 
     @raises(TypeError)
-    def test_edit_dist_join_invalid_rtable(self):
-        edit_dist_join(self.A, [], 'A.id', 'B.id', 'A.attr', 'B.attr',
-                       self.threshold)
+    def test_edit_distance_join_invalid_rtable(self):
+        edit_distance_join(self.A, [], 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold)
 
     @raises(AssertionError)
-    def test_edit_dist_join_invalid_l_key_attr(self):
-        edit_dist_join(self.A, self.B, 'A.invalid_id', 'B.id',
-                       'A.attr', 'B.attr', self.threshold)
+    def test_edit_distance_join_invalid_l_key_attr(self):
+        edit_distance_join(self.A, self.B, 'A.invalid_id', 'B.id',
+                           'A.attr', 'B.attr', self.threshold)
 
     @raises(AssertionError)
-    def test_edit_dist_join_invalid_r_key_attr(self):
-        edit_dist_join(self.A, self.B, 'A.id', 'B.invalid_id',
-                       'A.attr', 'B.attr', self.threshold)
+    def test_edit_distance_join_invalid_r_key_attr(self):
+        edit_distance_join(self.A, self.B, 'A.id', 'B.invalid_id',
+                           'A.attr', 'B.attr', self.threshold)
 
     @raises(AssertionError)
-    def test_edit_dist_join_invalid_l_join_attr(self):
-        edit_dist_join(self.A, self.B, 'A.id', 'B.id',
-                       'A.invalid_attr', 'B.attr', self.threshold)
+    def test_edit_distance_join_invalid_l_join_attr(self):
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id',
+                           'A.invalid_attr', 'B.attr', self.threshold)
 
     @raises(AssertionError)
-    def test_edit_dist_join_invalid_r_join_attr(self):
-        edit_dist_join(self.A, self.B, 'A.id', 'B.id',
-                       'A.attr', 'B.invalid_attr', self.threshold)
+    def test_edit_distance_join_invalid_r_join_attr(self):
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id',
+                           'A.attr', 'B.invalid_attr', self.threshold)
 
     @raises(TypeError)
-    def test_edit_dist_join_invalid_tokenizer(self):
-        edit_dist_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                       self.threshold, tokenizer=[])
+    def test_edit_distance_join_invalid_tokenizer(self):
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold, tokenizer=[])
 
     @raises(AssertionError)
-    def test_edit_dist_join_invalid_threshold_below(self):
-        edit_dist_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr', -0.1)
+    def test_edit_distance_join_invalid_threshold_below(self):
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           -0.1)
 
     @raises(AssertionError)
-    def test_edit_dist_join_invalid_l_out_attr(self):
-        edit_dist_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                       self.threshold, ['A.invalid_attr'], ['B.attr'])
+    def test_edit_distance_join_invalid_l_out_attr(self):
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold, ['A.invalid_attr'], ['B.attr'])
 
     @raises(AssertionError)
-    def test_edit_dist_join_invalid_r_out_attr(self):
-        edit_dist_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                       self.threshold, ['A.attr'], ['B.invalid_attr'])
+    def test_edit_distance_join_invalid_r_out_attr(self):
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold, ['A.attr'], ['B.invalid_attr'])
