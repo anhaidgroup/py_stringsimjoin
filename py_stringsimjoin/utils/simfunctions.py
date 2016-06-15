@@ -1,7 +1,7 @@
 """Similarity measure utilities"""
 
 from py_stringsimjoin.externals.py_stringmatching.simfunctions import \
-    cosine, dice, jaccard, levenshtein
+    cosine, dice, jaccard, levenshtein, overlap_coefficient
 
 
 def get_sim_function(sim_measure_type):
@@ -26,6 +26,8 @@ def get_sim_function(sim_measure_type):
         return jaccard
     elif sim_measure_type == 'OVERLAP':
         return overlap
+    elif sim_measure_type == 'OVERLAP_COEFFICIENT':
+        return overlap_coefficient
 
 
 def overlap(set1, set2):
