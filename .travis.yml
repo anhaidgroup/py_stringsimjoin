@@ -19,6 +19,10 @@ matrix:
   - os: osx
     language: generic
     env:
+    - PYTHON_VERSION=3.3
+  - os: osx
+    language: generic
+    env:
     - PYTHON_VERSION=3.4
   - os: osx
     language: generic
@@ -26,8 +30,8 @@ matrix:
     - PYTHON_VERSION=3.5
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -O miniconda.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://repo.continuum.io/miniconda/Miniconda2-4.0.5-Linux-x86_64.sh -O miniconda.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://repo.continuum.io/miniconda/Miniconda2-4.0.5-MacOSX-x86_64.sh -O miniconda.sh; fi
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
 #  - conda update --yes conda
