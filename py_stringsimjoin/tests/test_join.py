@@ -11,6 +11,7 @@ import pandas as pd
 
 from py_stringsimjoin.join.join import cosine_join, dice_join, jaccard_join, \
                                        overlap_join
+from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
 from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer
@@ -20,7 +21,8 @@ from py_stringsimjoin.utils.tokenizers import tokenize
 JOIN_FN_MAP = {'COSINE': cosine_join,
                'DICE': dice_join,
                'JACCARD': jaccard_join, 
-               'OVERLAP': overlap_join}
+               'OVERLAP': overlap_join,
+               'OVERLAP_COEFFICIENT': overlap_coefficient_join}
 
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
@@ -125,13 +127,15 @@ def test_set_sim_join():
     data = {'TEST_SCENARIO_1' : test_scenario_1}
 
     # similarity measures to be tested.
-    sim_measure_types = ['COSINE', 'DICE', 'JACCARD', 'OVERLAP']
+    sim_measure_types = ['COSINE', 'DICE', 'JACCARD', 'OVERLAP',
+                         'OVERLAP_COEFFICIENT']
 
     # similarity thresholds to be tested.
     thresholds = {'JACCARD' : [0.3, 0.5, 0.7, 0.85, 1],
                   'COSINE' : [0.3, 0.5, 0.7, 0.85, 1],
                   'DICE' : [0.3, 0.5, 0.7, 0.85, 1],
-                  'OVERLAP' : [1, 2, 3]}
+                  'OVERLAP' : [1, 2, 3],
+                  'OVERLAP_COEFFICIENT' : [0.3, 0.5, 0.7, 0.85, 1]}
 
     # tokenizers to be tested.
     tokenizers = {'SPACE_DELIMITER': create_delimiter_tokenizer(),
