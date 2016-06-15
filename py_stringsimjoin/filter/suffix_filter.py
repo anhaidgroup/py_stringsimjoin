@@ -185,9 +185,7 @@ class SuffixFilter(Filter):
         for l_row in ltable_dict.values():
             l_id = l_row[l_key_attr_index]
             l_string = str(l_row[l_filter_attr_index])
-            # check for empty string
-            if not l_string:
-                continue
+
             ltokens = tokenize(l_string, self.tokenizer, self.sim_measure_type)
             ordered_ltokens = order_using_token_ordering(ltokens,
                                                          token_ordering)
@@ -200,9 +198,7 @@ class SuffixFilter(Filter):
             for r_row in rtable_dict.values():
                 r_id = r_row[r_key_attr_index]
                 r_string = str(r_row[r_filter_attr_index])
-                # check for empty string
-                if not r_string:
-                    continue
+
                 rtokens = tokenize(r_string, self.tokenizer, self.sim_measure_type)
                 ordered_rtokens = order_using_token_ordering(rtokens,
                                                              token_ordering)

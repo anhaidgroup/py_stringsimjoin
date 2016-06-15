@@ -464,9 +464,7 @@ def _edit_dist_join_split(ltable, rtable,
         r_id = r_row[r_key_attr_index]
         r_string = str(r_row[r_join_attr_index])
         r_len = len(r_string)
-        # check for empty string
-        if not r_string:
-            continue
+
         r_join_attr_tokens = tokenize(r_string, tokenizer, sim_measure_type)
         r_ordered_tokens = order_using_token_ordering(r_join_attr_tokens,
                                                       token_ordering)
@@ -572,9 +570,7 @@ def _set_sim_join_split(ltable, rtable,
     for r_row in rtable_dict.values():
         r_id = r_row[r_key_attr_index]
         r_string = str(r_row[r_join_attr_index])
-        # check for empty string
-        if not r_string:
-            continue
+
         r_join_attr_tokens = tokenize(r_string, tokenizer, sim_measure_type)
         r_ordered_tokens = order_using_token_ordering(r_join_attr_tokens,
                                                       token_ordering)

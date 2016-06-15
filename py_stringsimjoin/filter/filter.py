@@ -68,11 +68,13 @@ def _filter_candset_split(candset,
     
     # Build a dictionary on ltable
     ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                        l_filter_attr_index)
+                                        l_filter_attr_index,
+                                        remove_null=False, remove_empty=False)
 
     # Build a dictionary on rtable
     rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                        r_filter_attr_index)
+                                        r_filter_attr_index,
+                                        remove_null=False, remove_empty=False)
 
     # Find indices of l_key_attr and r_key_attr in candset
     candset_columns = list(candset.columns.values)
@@ -88,7 +90,9 @@ def _filter_candset_split(candset,
         l_row = ltable_dict[l_id]
         r_row = rtable_dict[r_id]
         if (pd.isnull(l_row[l_filter_attr_index]) or
-            pd.isnull(r_row[r_filter_attr_index])):
+            pd.isnull(r_row[r_filter_attr_index]) or
+            len(str(l_row[l_filter_attr_index])) == 0 or
+            len(str(r_row[r_filter_attr_index])) == 0):
             valid_rows.append(False)
         else:
             valid_rows.append(not filter_object.filter_pair(

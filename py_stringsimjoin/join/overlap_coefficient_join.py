@@ -150,9 +150,7 @@ def _overlap_coefficient_join_split(ltable, rtable,
     for r_row in rtable_dict.values():
         r_id = r_row[r_key_attr_index]
         r_string = str(r_row[r_join_attr_index])
-        # check for empty string
-        if not r_string:
-            continue
+
         r_join_attr_tokens = tokenize(r_string, tokenizer)
         r_num_tokens = len(r_join_attr_tokens)
 

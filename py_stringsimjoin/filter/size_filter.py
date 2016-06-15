@@ -181,9 +181,7 @@ def _filter_tables_split(ltable, rtable,
     for r_row in rtable_dict.values():
         r_id = r_row[r_key_attr_index]
         r_string = str(r_row[r_filter_attr_index])
-        # check for empty string
-        if not r_string:
-            continue
+
         r_num_tokens = len(tokenize(r_string, size_filter.tokenizer,
                                     size_filter.sim_measure_type))
            

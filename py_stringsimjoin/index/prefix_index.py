@@ -20,9 +20,6 @@ class PrefixIndex(Index):
     def build(self):
         for row in self.table:
             index_string = str(row[self.index_attr])
-            # check for empty string
-            if not index_string:
-                continue
             index_attr_tokens = order_using_token_ordering(tokenize(
                                         index_string,
                                         self.tokenizer,

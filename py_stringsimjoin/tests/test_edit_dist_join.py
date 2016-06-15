@@ -29,6 +29,14 @@ def test_valid_join(scenario, tok, threshold, args=()):
     rtable = pd.read_csv(os.path.join(os.path.dirname(__file__),
                                       rtable_path))
 
+    # remove rows with null value in join attribute 
+    ltable = ltable[pd.notnull(ltable[l_join_attr])]
+    rtable = rtable[pd.notnull(rtable[r_join_attr])]
+
+    # remove rows with empty value in join attribute 
+    ltable = ltable[ltable[l_join_attr].apply(len) > 0]
+    rtable = rtable[rtable[r_join_attr].apply(len) > 0]
+
     # generate cartesian product to be used as candset
     ltable['tmp_join_key'] = 1
     rtable['tmp_join_key'] = 1

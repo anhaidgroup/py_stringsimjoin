@@ -39,6 +39,14 @@ def test_valid_join(scenario, sim_measure_type, args):
     rtable = pd.read_csv(os.path.join(os.path.dirname(__file__),
                                       rtable_path))
 
+    # remove rows with null value in join attribute 
+    ltable = ltable[pd.notnull(ltable[l_join_attr])]
+    rtable = rtable[pd.notnull(rtable[r_join_attr])]
+
+    # remove rows with empty value in join attribute 
+    ltable = ltable[ltable[l_join_attr].apply(len) > 0] 
+    rtable = rtable[rtable[r_join_attr].apply(len) > 0]
+
     # generate cartesian product to be used as candset
     ltable['tmp_join_key'] = 1
     rtable['tmp_join_key'] = 1
@@ -161,7 +169,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  1,
+                                                  0.7,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode']))
         test_function.description = 'Test ' + sim_measure_type + \
@@ -173,7 +181,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  1,
+                                                  0.7,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
                                                   'ltable.', 'rtable.'))
@@ -186,7 +194,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  1,
+                                                  0.7,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
                                                   'ltable.', 'rtable.',
@@ -195,7 +203,22 @@ def test_set_sim_join():
                                     ' with sim_score disabled.'
         yield test_function,
 
-class SetSimJoinInvalidTestCases(unittest.TestCase):
+    # Test each similarity measure with n_jobs above 1.
+    for sim_measure_type in sim_measure_types:
+        test_function = partial(test_valid_join, test_scenario_1,
+                                                 sim_measure_type,
+                                                 (tokenizers['SPACE_DELIMITER'],
+                                                  0.3,
+                                                  ['A.birth_year', 'A.zipcode'],
+                                                  ['B.name', 'B.zipcode'],
+                                                  'ltable.', 'rtable.',
+                                                  False, 2))
+        test_function.description = 'Test ' + sim_measure_type + \
+                                    ' with n_jobs above 1.'
+        yield test_function,
+
+
+class JaccardJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
         self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
         self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
@@ -264,6 +287,14 @@ class SetSimJoinInvalidTestCases(unittest.TestCase):
                      self.tokenizer, self.threshold,
                      ['A.attr'], ['B.invalid_attr'])
 
+
+class CosineJoinInvalidTestCases(unittest.TestCase):
+    def setUp(self):
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.tokenizer = create_delimiter_tokenizer()
+        self.threshold = 0.8
+
     @raises(TypeError)
     def test_cosine_join_invalid_ltable(self):
         cosine_join([], self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
@@ -325,6 +356,14 @@ class SetSimJoinInvalidTestCases(unittest.TestCase):
         cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
                     self.tokenizer, self.threshold,
                     ['A.attr'], ['B.invalid_attr'])
+
+
+class DiceJoinInvalidTestCases(unittest.TestCase):
+    def setUp(self):
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.tokenizer = create_delimiter_tokenizer()
+        self.threshold = 0.8
 
     @raises(TypeError)
     def test_dice_join_invalid_ltable(self):
@@ -388,6 +427,14 @@ class SetSimJoinInvalidTestCases(unittest.TestCase):
                   self.tokenizer, self.threshold,
                   ['A.attr'], ['B.invalid_attr'])
 
+
+class OverlapJoinInvalidTestCases(unittest.TestCase):
+    def setUp(self):
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.tokenizer = create_delimiter_tokenizer()
+        self.threshold = 0.8
+
     @raises(TypeError)
     def test_overlap_join_invalid_ltable(self):
         overlap_join([], self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
@@ -444,3 +491,79 @@ class SetSimJoinInvalidTestCases(unittest.TestCase):
         overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
                      self.tokenizer, self.threshold,
                      ['A.attr'], ['B.invalid_attr'])
+
+
+class OverlapCoefficientJoinInvalidTestCases(unittest.TestCase):
+    def setUp(self):
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.tokenizer = create_delimiter_tokenizer()
+        self.threshold = 0.8
+
+    @raises(TypeError)
+    def test_overlap_coefficient_join_invalid_ltable(self):
+        overlap_coefficient_join([], self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                                 self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_overlap_coefficient_join_invalid_rtable(self):
+        overlap_coefficient_join(self.A, [], 'A.id', 'B.id', 'A.attr', 'B.attr',
+                                 self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_l_key_attr(self):
+        overlap_coefficient_join(self.A, self.B, 'A.invalid_id', 'B.id',
+                                 'A.attr', 'B.attr',
+                                 self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_r_key_attr(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.invalid_id',
+                                 'A.attr', 'B.attr',
+                                 self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_l_join_attr(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.invalid_attr', 'B.attr',
+                                 self.tokenizer, self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_r_join_attr(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.attr', 'B.invalid_attr',
+                                 self.tokenizer, self.threshold)
+
+    @raises(TypeError)
+    def test_overlap_coefficient_join_invalid_tokenizer(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.attr', 'B.attr', [], self.threshold)
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_threshold_above(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.attr', 'B.attr', self.tokenizer, 1.5)
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_threshold_below(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.attr', 'B.attr', self.tokenizer, -0.1)
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_threshold_zero(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.attr', 'B.attr', self.tokenizer, 0)
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_l_out_attr(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.attr', 'B.attr',
+                                 self.tokenizer, self.threshold,
+                                 ['A.invalid_attr'], ['B.attr'])
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_r_out_attr(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.attr', 'B.attr',
+                                 self.tokenizer, self.threshold,
+                                 ['A.attr'], ['B.invalid_attr'])
