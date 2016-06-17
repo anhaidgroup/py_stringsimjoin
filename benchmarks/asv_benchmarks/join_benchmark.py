@@ -2,8 +2,9 @@
 
 from .data_generator import generate_table
 from .data_generator import generate_tokens  
-from py_stringsimjoin.join.join import cosine_join, jaccard_join, \
-                                       overlap_join
+from py_stringsimjoin.join.cosine_join import cosine_join
+from py_stringsimjoin.join.jaccard_join import jaccard_join
+from py_stringsimjoin.join.overlap_join import overlap_join
 from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer, \
                                            create_delimiter_tokenizer
 

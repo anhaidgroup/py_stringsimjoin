@@ -9,9 +9,11 @@ from nose.tools import raises
 from six import iteritems
 import pandas as pd
 
-from py_stringsimjoin.join.join import cosine_join, dice_join, jaccard_join, \
-                                       overlap_join
+from py_stringsimjoin.join.cosine_join import cosine_join
+from py_stringsimjoin.join.dice_join import dice_join
+from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
+from py_stringsimjoin.join.overlap_join import overlap_join
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
 from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer
