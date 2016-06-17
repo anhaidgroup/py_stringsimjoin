@@ -30,28 +30,54 @@ def edit_distance_join(ltable, rtable,
                        tokenizer=create_qgram_tokenizer(2)):
     """Join two tables using edit distance measure.
 
-    Finds tuple pairs from ltable and rtable such that
-    EditDistance(ltable.l_join_attr, rtable.r_join_attr) <= threshold
+    Finds tuple pairs from left table and right table such that the edit distance between
+    the join attributes is less than or equal to the input threshold.
+
+    Note:
+        Currently, this method only computes an approximate join result. This is because, to perform the join we
+        transform a edit distance measure between strings into an overlap measure between qgrams of the
+        strings. Hence, we need atleast one qgram to be in common between two input strings, to appear in the join
+        output. For smaller strings, where all qgrams of the strings differ, we cannot process them.
+        
+        We plan to make this method compute exact join result, in the next release.
 
     Args:
         ltable (dataframe): left input table.
+
         rtable (dataframe): right input table.
+
         l_key_attr (string): key attribute in left table.
+
         r_key_attr (string): key attribute in right table.
+
         l_join_attr (string): join attribute in left table.
+
         r_join_attr (string): join attribute in right table.
+
         threshold (float): edit distance threshold to be satisfied.
+
         l_out_attrs (list): list of attributes to be included in the output table from
                             left table (defaults to None).
+
         r_out_attrs (list): list of attributes to be included in the output table from
                             right table (defaults to None).
+
         l_out_prefix (string): prefix to use for the attribute names coming from left
-                               table (defaults to 'l_').
+                               table (defaults to 'l\_').
+
         r_out_prefix (string): prefix to use for the attribute names coming from right
-                               table (defaults to 'r_').
+                               table (defaults to 'r\_').
+
         out_sim_score (boolean): flag to indicate if similarity score needs to be
                                  included in the output table (defaults to True).
-        tokenizer (Tokenizer object): tokenizer to be used for filtering, when an edit distance
+
+        n_jobs (int): The number of jobs to use for the computation (defaults to 1).                                                                                            
+            If -1 all CPUs are used. If 1 is given, no parallel computing code is used at all, 
+            which is useful for debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
+            Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+            then n_jobs is set to 1.
+        
+        tokenizer (Tokenizer object): tokenizer to be used for filtering, when edit distance
                                       measure is transformed into an overlap measure. This must be
                                       a q-gram tokenizer (defaults to 2-gram tokenizer).
 
