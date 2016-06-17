@@ -4,18 +4,19 @@
     "version": 1,
 
     // The name of the project being benchmarked
-    "project": ".",
+    "project": "py_stringsimjoin",
 
     // The project's homepage
     "project_url": "https://github.com/anhaidgroup/py_stringsimjoin/",
 
     // The URL or local path of the source code repository for the
     // project being benchmarked
-    "repo": "https://github.com/anhaidgroup/py_stringsimjoin.git",
+    // "repo": "https://github.com/anhaidgroup/py_stringsimjoin.git",
+    "repo": "..",
 
     // List of branches to benchmark. If not provided, defaults to "master"
     // (for git) or "tip" (for mercurial).
-    "branches": ["master"], // for git
+    // "branches": ["master"], // for git
     // "branches": ["tip"],    // for mercurial
 
     // The DVCS being used.  If not set, it will be automatically
@@ -46,10 +47,16 @@
     // "matrix": {
     //     "numpy": ["1.6", "1.7"]
     // },
+    "matrix": {
+        "pandas": [],
+        "joblib": [],
+        "six": [],
+        "pip+pyprind": []
+    },
 
     // The directory (relative to the current directory) that benchmarks are
     // stored in.  If not provided, defaults to "benchmarks"
-    "benchmark_dir": "benchmarks",
+    "benchmark_dir": "asv_benchmarks",
 
     // The directory (relative to the current directory) to cache the Python
     // environments in.  If not provided, defaults to "env"

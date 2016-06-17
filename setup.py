@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
@@ -12,8 +12,8 @@ setup(
         url='http://github.com/anhaidgroup/py_stringsimjoin',
         author='Paul Suganthan G. C.',
         author_email='paulgc@cs.wisc.edu',
-        license=['BSD'],
-        packages=['py_stringsimjoin'],
+        license='BSD',
+        packages=find_packages(),
         install_requires=[
             'pandas >= 0.16.0',
             'numpy >= 1.7.0',
