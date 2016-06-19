@@ -1,9 +1,12 @@
-"""Benchmarks for join methods"""
+"""Benchmarks for join methods on synthetic data"""
 
 from .data_generator import generate_table
 from .data_generator import generate_tokens  
 from py_stringsimjoin.join.cosine_join import cosine_join
+from py_stringsimjoin.join.dice_join import dice_join
+from py_stringsimjoin.join.edit_distance_join import edit_distance_join
 from py_stringsimjoin.join.jaccard_join import jaccard_join
+from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
 from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer, \
                                            create_delimiter_tokenizer

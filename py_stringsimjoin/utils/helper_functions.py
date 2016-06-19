@@ -1,3 +1,5 @@
+from py_stringsimjoin.utils import install_path
+
 from six.moves import xrange
 import pandas as pd
 
@@ -74,9 +76,15 @@ def find_output_attribute_indices(original_columns, output_attributes):
             output_attribute_indices.append(original_columns.index(attr))
     return output_attribute_indices
 
+
 def split_table(table, num_splits):
     splits = []
     split_size = 1.0/num_splits*len(table)
     for i in xrange(num_splits):
         splits.append(table[int(round(i*split_size)):int(round((i+1)*split_size))])
     return splits
+
+
+def get_install_path():
+    path_list = install_path.split(os.sep)
+    return os.sep.join(path_list[0:len(path_list)-1])
