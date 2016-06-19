@@ -1,7 +1,10 @@
-from py_stringsimjoin.utils import install_path
+
+import os
 
 from six.moves import xrange
 import pandas as pd
+
+from py_stringsimjoin.utils import install_path
 
 
 def get_output_row_from_tables(l_row, r_row,
