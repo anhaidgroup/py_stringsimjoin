@@ -16,7 +16,6 @@ from py_stringsimjoin.utils.helper_functions import \
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
 from py_stringsimjoin.utils.helper_functions import split_table
 from py_stringsimjoin.utils.simfunctions import overlap
-from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_key_attr, validate_input_table, validate_threshold, \
     validate_tokenizer, validate_output_attrs
@@ -61,8 +60,8 @@ class OverlapFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        ltokens = tokenize(lstring, self.tokenizer)
-        rtokens = tokenize(rstring, self.tokenizer)
+        ltokens = self.tokenizer.tokenize(lstring)
+        rtokens = self.tokenizer.tokenize(rstring)
  
         num_overlap = overlap(ltokens, rtokens) 
 
@@ -204,7 +203,7 @@ def _filter_tables_split(ltable, rtable,
     for r_row in rtable_dict.values():
         r_id = r_row[r_key_attr_index]
         r_string = str(r_row[r_filter_attr_index])
-        r_filter_attr_tokens = tokenize(r_string, overlap_filter.tokenizer)
+        r_filter_attr_tokens = overlap_filter.tokenizer.tokenize(r_string)
 
         # probe inverted index and find overlap of candidates          
         candidate_overlap = _find_candidates(r_filter_attr_tokens,

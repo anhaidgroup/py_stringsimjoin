@@ -15,7 +15,6 @@ from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
 from py_stringsimjoin.utils.helper_functions import split_table
-from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
@@ -76,8 +75,8 @@ class PrefixFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        ltokens = tokenize(lstring, self.tokenizer, self.sim_measure_type)
-        rtokens = tokenize(rstring, self.tokenizer, self.sim_measure_type)
+        ltokens = self.tokenizer.tokenize(lstring)
+        rtokens = self.tokenizer.tokenize(rstring)
 
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens])
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
@@ -238,9 +237,7 @@ def _filter_tables_split(ltable, rtable,
         r_id = r_row[r_key_attr_index]
         r_string = str(r_row[r_filter_attr_index])
 
-        r_filter_attr_tokens = tokenize(r_string,
-                                        prefix_filter.tokenizer,
-                                        prefix_filter.sim_measure_type)
+        r_filter_attr_tokens = prefix_filter.tokenizer.tokenize(r_string)
         r_ordered_tokens = order_using_token_ordering(r_filter_attr_tokens,
                                                       token_ordering)
            

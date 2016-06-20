@@ -6,6 +6,8 @@ from nose.tools import assert_equal
 from nose.tools import assert_list_equal
 from nose.tools import nottest
 from nose.tools import raises
+from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
+from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from six import iteritems
 import pandas as pd
 
@@ -15,9 +17,6 @@ from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
 from py_stringsimjoin.utils.simfunctions import get_sim_function
-from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
-from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer
-from py_stringsimjoin.utils.tokenizers import tokenize
 
 
 JOIN_FN_MAP = {'COSINE': cosine_join,
@@ -67,8 +66,8 @@ def test_valid_join(scenario, sim_measure_type, args):
     # apply sim function to the entire cartesian product to obtain
     # the expected set of pairs satisfying the threshold.
     cartprod['sim_score'] = cartprod.apply(lambda row: sim_func(
-                tokenize(str(row[l_join_attr]), args[0], sim_measure_type),
-                tokenize(str(row[r_join_attr]), args[0], sim_measure_type)),
+                args[0].tokenize(str(row[l_join_attr])),
+                args[0].tokenize(str(row[r_join_attr]))),
             axis=1)
 
     expected_pairs = set()
@@ -148,9 +147,10 @@ def test_set_sim_join():
                   'OVERLAP_COEFFICIENT' : [0.3, 0.5, 0.7, 0.85, 1]}
 
     # tokenizers to be tested.
-    tokenizers = {'SPACE_DELIMITER': create_delimiter_tokenizer(),
-                  '2_GRAM': create_qgram_tokenizer(),
-                  '3_GRAM': create_qgram_tokenizer(3)}
+    tokenizers = {'SPACE_DELIMITER': DelimiterTokenizer(delim_set=[' '],
+                                                        return_set=True),
+                  '2_GRAM': QgramTokenizer(qval=2, return_set=True),
+                  '3_GRAM': QgramTokenizer(qval=3, return_set=True)}
 
     # Test each combination of similarity measure, threshold and tokenizer
     # for different test scenarios.
@@ -224,7 +224,7 @@ class JaccardJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
         self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
         self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
-        self.tokenizer = create_delimiter_tokenizer()
+        self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
     @raises(TypeError)
@@ -294,7 +294,7 @@ class CosineJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
         self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
         self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
-        self.tokenizer = create_delimiter_tokenizer()
+        self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
     @raises(TypeError)
@@ -364,7 +364,7 @@ class DiceJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
         self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
         self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
-        self.tokenizer = create_delimiter_tokenizer()
+        self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
     @raises(TypeError)
@@ -434,7 +434,7 @@ class OverlapJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
         self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
         self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
-        self.tokenizer = create_delimiter_tokenizer()
+        self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
     @raises(TypeError)
@@ -499,7 +499,7 @@ class OverlapCoefficientJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
         self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
         self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
-        self.tokenizer = create_delimiter_tokenizer()
+        self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
     @raises(TypeError)

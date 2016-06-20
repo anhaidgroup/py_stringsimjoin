@@ -3,6 +3,8 @@ import json
 import os
 import time
 
+from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
+from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 
 from py_stringsimjoin.join.cosine_join import cosine_join
@@ -12,8 +14,6 @@ from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
 from py_stringsimjoin.utils.helper_functions import get_install_path
-from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
-from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer
 
 
 JOIN_FUNCTIONS = {'COSINE': cosine_join,
@@ -23,9 +23,12 @@ JOIN_FUNCTIONS = {'COSINE': cosine_join,
                   'OVERLAP': overlap_join,
                   'OVERLAP_COEFFICIENT': overlap_coefficient_join}
 
-TOKENIZERS = {'SPACE_DELIMITER': create_delimiter_tokenizer(),
-              '2_GRAM': create_qgram_tokenizer(),
-              '3_GRAM': create_qgram_tokenizer(3)}
+TOKENIZERS = {'SPACE_DELIMITER': DelimiterTokenizer(delim_set=[' '],
+                                                    return_set=True),
+              '2_GRAM': QgramTokenizer(qval=2, return_set=True),
+              '3_GRAM': QgramTokenizer(qval=3, return_set=True),
+              '2_GRAM_BAG': QgramTokenizer(qval=2),
+              '3_GRAM_BAG': QgramTokenizer(qval=3)}
 
 # path where datasets are present
 BASE_PATH = os.sep.join([get_install_path(), 'benchmarks', 'example_datasets'])

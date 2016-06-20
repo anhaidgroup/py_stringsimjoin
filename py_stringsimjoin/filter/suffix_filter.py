@@ -12,7 +12,6 @@ from py_stringsimjoin.utils.helper_functions import \
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
-from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
@@ -73,8 +72,8 @@ class SuffixFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        ltokens = tokenize(lstring, self.tokenizer, self.sim_measure_type)
-        rtokens = tokenize(rstring, self.tokenizer, self.sim_measure_type)    
+        ltokens = self.tokenizer.tokenize(lstring)
+        rtokens = self.tokenizer.tokenize(rstring)    
 
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens]) 
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
@@ -226,7 +225,7 @@ class SuffixFilter(Filter):
             l_id = l_row[l_key_attr_index]
             l_string = str(l_row[l_filter_attr_index])
 
-            ltokens = tokenize(l_string, self.tokenizer, self.sim_measure_type)
+            ltokens = self.tokenizer.tokenize(l_string)
             ordered_ltokens = order_using_token_ordering(ltokens,
                                                          token_ordering)
             l_num_tokens = len(ordered_ltokens)
@@ -239,7 +238,7 @@ class SuffixFilter(Filter):
                 r_id = r_row[r_key_attr_index]
                 r_string = str(r_row[r_filter_attr_index])
 
-                rtokens = tokenize(r_string, self.tokenizer, self.sim_measure_type)
+                rtokens = self.tokenizer.tokenize(r_string)
                 ordered_rtokens = order_using_token_ordering(rtokens,
                                                              token_ordering)
                 r_num_tokens = len(ordered_rtokens)

@@ -1,5 +1,4 @@
 from py_stringsimjoin.index.index import Index
-from py_stringsimjoin.utils.tokenizers import tokenize
 
 
 class InvertedIndex(Index):
@@ -17,7 +16,7 @@ class InvertedIndex(Index):
     def build(self):
         for row in self.table:
             index_string = str(row[self.index_attr])
-            index_attr_tokens = tokenize(index_string, self.tokenizer)
+            index_attr_tokens = self.tokenizer.tokenize(index_string)
 
             row_id = row[self.key_attr]
             for token in index_attr_tokens:

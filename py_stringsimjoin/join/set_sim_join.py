@@ -11,7 +11,6 @@ from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables 
 from py_stringsimjoin.utils.simfunctions import get_sim_function
-from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
 
@@ -59,8 +58,7 @@ def set_sim_join(ltable, rtable,
     l_join_attr_dict = {}
     for row in ltable_dict.values():
         l_join_attr_dict[row[l_key_attr_index]] = order_using_token_ordering(
-            tokenize(str(row[l_join_attr_index]), tokenizer, sim_measure_type),
-                                                  token_ordering)
+            tokenizer.tokenize(str(row[l_join_attr_index])), token_ordering)
 
     # Build position index on l_join_attr
     position_index = PositionIndex(ltable_dict.values(),
@@ -80,9 +78,8 @@ def set_sim_join(ltable, rtable,
         r_id = r_row[r_key_attr_index]
         r_string = str(r_row[r_join_attr_index])
 
-        r_join_attr_tokens = tokenize(r_string, tokenizer, sim_measure_type)
-        r_ordered_tokens = order_using_token_ordering(r_join_attr_tokens,
-                                                      token_ordering)
+        r_ordered_tokens = order_using_token_ordering(
+                tokenizer.tokenize(r_string), token_ordering)
         r_num_tokens = len(r_ordered_tokens)
         r_prefix_length = get_prefix_length(r_num_tokens,
                                             sim_measure_type,

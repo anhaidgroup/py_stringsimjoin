@@ -19,7 +19,8 @@ setup(
             'numpy >= 1.7.0',
             'six',
             'joblib',
-            'PyPrind >= 2.9.3'
+            'PyPrind >= 2.9.3',
+            'py_stringmatching'
         ],
         include_package_data=True,
         zip_safe=False

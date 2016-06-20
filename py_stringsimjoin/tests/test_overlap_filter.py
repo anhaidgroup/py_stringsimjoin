@@ -4,16 +4,16 @@ from nose.tools import assert_equal
 from nose.tools import assert_list_equal
 from nose.tools import nottest
 from nose.tools import raises
+from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
-from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
 
 
 # test OverlapFilter.filter_pair method
 class FilterPairTestCases(unittest.TestCase):
     def setUp(self):
-        self.dlm = create_delimiter_tokenizer(' ')
+        self.dlm = DelimiterTokenizer(delim_set=[' '], return_set=True)
 
     def test_overlap_dlm_1_prune(self):
         self.test_filter_pair('aa bb cc', 'xx yy',
@@ -44,7 +44,7 @@ class FilterPairTestCases(unittest.TestCase):
 # test OverlapFilter.filter_tables method
 class FilterTablesTestCases(unittest.TestCase):
     def setUp(self):
-        self.dlm = create_delimiter_tokenizer(' ')
+        self.dlm = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.A = pd.DataFrame([{'id': 1, 'attr':'ab cd ef aa bb'},
                                {'id': 2, 'attr':''},
                                {'id': 3, 'attr':'ab'},
@@ -162,7 +162,7 @@ class FilterTablesTestCases(unittest.TestCase):
 # test OverlapFilter.filter_candset method
 class FilterCandsetTestCases(unittest.TestCase):
     def setUp(self):
-        self.dlm = create_delimiter_tokenizer(' ')
+        self.dlm = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.A = pd.DataFrame([{'l_id': 1, 'l_attr':'ab cd ef aa bb'},
                                {'l_id': 2, 'l_attr':''},
                                {'l_id': 3, 'l_attr':'ab'},
@@ -226,7 +226,7 @@ class OverlapFilterInvalidTestCases(unittest.TestCase):
     def setUp(self):
         self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
         self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
-        self.tokenizer = create_delimiter_tokenizer()
+        self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 1
 
     @raises(TypeError)

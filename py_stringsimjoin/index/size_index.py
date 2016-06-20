@@ -1,5 +1,4 @@
 from py_stringsimjoin.index.index import Index
-from py_stringsimjoin.utils.tokenizers import tokenize
 
 
 class SizeIndex(Index):
@@ -16,7 +15,7 @@ class SizeIndex(Index):
     def build(self):
         for row in self.table:
             index_string = str(row[self.index_attr])
-            num_tokens = len(tokenize(index_string, self.tokenizer))
+            num_tokens = len(self.tokenizer.tokenize(index_string))
             
             if self.index.get(num_tokens) is None:
                 self.index[num_tokens] = []
