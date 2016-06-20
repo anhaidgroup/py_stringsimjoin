@@ -54,6 +54,7 @@ def overlap_join(ltable, rtable,
     Returns:
         output table (dataframe)
     """
+
     overlap_filter = OverlapFilter(tokenizer, threshold)
     return overlap_filter.filter_tables(ltable, rtable,
                                         l_key_attr, r_key_attr,

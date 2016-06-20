@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    join
+   filter
 
 
 Indices and tables

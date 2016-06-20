@@ -1,4 +1,4 @@
-"""Size Filter"""
+# Size Filter
 
 from joblib import delayed
 from joblib import Parallel
@@ -24,13 +24,28 @@ from py_stringsimjoin.utils.validation import validate_attr, \
 
 
 class SizeFilter(Filter):
-    """Size filter class.
+    """Finds candidate matching pairs of strings using size filtering technique.
+
+    For similarity measures such as cosine, Dice, Jaccard and overlap, the filter finds candidate
+    string pairs that may have similarity score greater than or equal to the input threshold.
+    Where as for distance measure such as edit distance, the filter finds candidate string pairs 
+    that may have distance score less than or equal to the threshold.
+
+    To know about size filtering, refer the `string matching chapter <http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf>`_ 
+    of the "Principles of Data Integration" book.
+
+    Args:
+        tokenizer (Tokenizer object): tokenizer to be used.
+        sim_measure_type (str): similarity measure type. Supported types are 'COSINE',
+                                'DICE', 'EDIT_DISTANCE', 'JACCARD' and 'OVERLAP'.
+        threshold (float): threshold to be used by the filter.
 
     Attributes:
-        tokenizer: Tokenizer object.
-        sim_measure_type: String, similarity measure type.
-        threshold: float, similarity threshold to be used by the filter. 
+        tokenizer (Tokenizer object): An attribute to store the tokenizer.
+        sim_measure_type (str): An attribute to store the similarity measure type.
+        threshold (float): An attribute to store the threshold value.
     """
+
     def __init__(self, tokenizer, sim_measure_type, threshold):
         # check if the input tokenizer is valid
         validate_tokenizer(tokenizer)
@@ -47,14 +62,15 @@ class SizeFilter(Filter):
         super(self.__class__, self).__init__()
 
     def filter_pair(self, lstring, rstring):
-        """Filter two strings with size filter.
+        """Checks if the input strings get dropped by the size filter.
 
         Args:
-        lstring, rstring : input strings
+            lstring,rstring (str): input strings
 
         Returns:
-        result : boolean, True if the tuple pair is dropped.
+            A flag indicating whether the string pair is dropped (boolean).
         """
+
         # check for empty string
         if (not lstring) or (not rstring):
             return True
@@ -82,18 +98,43 @@ class SizeFilter(Filter):
                       l_out_attrs=None, r_out_attrs=None,
                       l_out_prefix='l_', r_out_prefix='r_',
                       n_jobs=1):
-        """Filter tables with size filter.
+        """Finds candidate matching pairs of strings from the input tables.
 
         Args:
-        ltable, rtable : Pandas data frame
-        l_key_attr, r_key_attr : String, key attribute from ltable and rtable
-        l_filter_attr, r_filter_attr : String, filter attribute from ltable and rtable
-        l_out_attrs, r_out_attrs : list of attribtues to be included in the output table from ltable and rtable
-        l_out_prefix, r_out_prefix : String, prefix to be used in the attribute names of the output table 
+            ltable (dataframe): left input table.
+
+            rtable (dataframe): right input table.
+
+            l_key_attr (string): key attribute in left table.
+
+            r_key_attr (string): key attribute in right table.
+
+            l_filter_attr (string): attribute to be used by the filter, in left table.
+
+            r_filter_attr (string): attribute to be used by the filter,  in right table.
+
+            l_out_attrs (list): list of attributes to be included in the output table from
+                                left table (defaults to None).
+
+            r_out_attrs (list): list of attributes to be included in the output table from
+                                right table (defaults to None).
+
+            l_out_prefix (string): prefix to use for the attribute names coming from left
+                                   table (defaults to 'l\_').
+
+            r_out_prefix (string): prefix to use for the attribute names coming from right
+                                   table (defaults to 'r\_').
+
+            n_jobs (int): The number of jobs to use for the computation (defaults to 1).                                                                                            
+                If -1 all CPUs are used. If 1 is given, no parallel computing code is used at all, 
+                which is useful for debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
+                Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+                then n_jobs is set to 1.
 
         Returns:
-        result : Pandas data frame
+            output table (dataframe)
         """
+
         # check if the input tables are dataframes
         validate_input_table(ltable, 'left table')
         validate_input_table(rtable, 'right table')

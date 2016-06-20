@@ -9,24 +9,44 @@ from py_stringsimjoin.utils.helper_functions import split_table
 class Filter(object):
     """Filter base class.
     """
+
     def filter_candset(self, candset,
                        candset_l_key_attr, candset_r_key_attr,
                        ltable, rtable,
                        l_key_attr, r_key_attr,
                        l_filter_attr, r_filter_attr,
                        n_jobs=1):
-        """Filter candidate set.
+        """Finds candidate matching pairs of strings from the input candset.
 
         Args:
-        candset : Pandas data frame
-        candset_l_key_attr, candset_r_key_attr : String, key attributes in candset (that refer to ltable and rtable)
-        ltable, rtable : Pandas data frame, base tables from which candset was obtained
-        l_key_attr, r_key_attr : String, key attribute from ltable and rtable
-        l_filter_attr, r_filter_attr : String, filter attribute from ltable and rtable
+            candset (dataframe): input candidate set.
+
+            candset_l_key_attr (string): attribute in candidate set that is a key in left table.
+
+            candset_r_key_attr (string): attribute in candidate set that is a key in right table.
+
+            ltable (dataframe): left input table.
+
+            rtable (dataframe): right input table.
+
+            l_key_attr (string): key attribute in left table.
+
+            r_key_attr (string): key attribute in right table.
+
+            l_filter_attr (string): attribute to be used by the filter, in left table.
+
+            r_filter_attr (string): attribute to be used by the filter,  in right table.
+
+            n_jobs (int): The number of jobs to use for the computation (defaults to 1).                                                                                            
+                If -1 all CPUs are used. If 1 is given, no parallel computing code is used at all, 
+                which is useful for debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
+                Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+                then n_jobs is set to 1.
 
         Returns:
-        result : Pandas data frame
+            output table (dataframe)
         """
+
         # check for empty candset
         if candset.empty:
             return candset

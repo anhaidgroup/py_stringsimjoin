@@ -17,10 +17,18 @@ def cosine_join(ltable, rtable,
                 l_out_attrs=None, r_out_attrs=None,
                 l_out_prefix='l_', r_out_prefix='r_',
                 out_sim_score=True, n_jobs=1):
-    """Join two tables using cosine similarity measure.
+    """Join two tables using a variant of cosine similarity known as Ochiai coefficient.
 
     Finds tuple pairs from left table and right table such that the cosine similarity between
     the join attributes is greater than or equal to the input threshold.
+
+    Note:
+        This is not the cosine measure that computes the cosine of the angle between two given vectors.
+        Rather, it computes a variant of cosine measure known as Ochiai coefficient 
+        (see the Wikipedia page `Cosine Similarity <https://en.wikipedia.org/wiki/Cosine_similarity>`_).
+        Specifically, for two sets X and Y, this measure computes:
+        
+            :math:`cosine(X, Y) = \\frac{|X \\cap Y|}{\\sqrt{|X| \\cdot |Y|}}`
 
     Args:
         ltable (dataframe): left input table.
@@ -63,6 +71,7 @@ def cosine_join(ltable, rtable,
     Returns:
         output table (dataframe)
     """
+
     # check if the input tables are dataframes
     validate_input_table(ltable, 'left table')
     validate_input_table(rtable, 'right table')

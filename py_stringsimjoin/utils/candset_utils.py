@@ -26,6 +26,63 @@ def apply_candset(candset,
                   l_out_attrs=None, r_out_attrs=None,
                   l_out_prefix='l_', r_out_prefix='r_',
                   out_sim_score=True, n_jobs = 1):
+    """Computes similarity measure on string pairs in candidate set to find matching pairs.
+
+    Specifically, computes the input similarity function on string pairs in the candidate set
+    and checks if the score satisfies the input threshold (depending on the comparison operator).
+
+    Args:
+        candset (dataframe): input candidate set.
+
+        candset_l_key_attr (string): attribute in candidate set that is a key in left table.
+
+        candset_r_key_attr (string): attribute in candidate set that is a key in right table.
+
+        ltable (dataframe): left input table.
+
+        rtable (dataframe): right input table.
+
+        l_key_attr (string): key attribute in left table.
+
+        r_key_attr (string): key attribute in right table.
+
+        l_join_attr (string): join attribute in left table, on which similarity function is computed.
+
+        r_join_attr (string): join attribute in right table, on which similarity function is computed.
+
+        tokenizer (Tokenizer object): tokenizer to be used to tokenize join attributes.
+
+        sim_function (function): similarity function to be computed.
+
+        threshold (float): similarity threshold to be satisfied.
+
+        comparison (function): comparison function to be used (defaults to greater than or equal to).
+
+        l_out_attrs (list): list of attributes to be included in the output table from
+                            left table (defaults to None).
+
+        r_out_attrs (list): list of attributes to be included in the output table from
+                            right table (defaults to None).
+
+        l_out_prefix (string): prefix to use for the attribute names coming from left
+                               table (defaults to 'l\_').
+
+        r_out_prefix (string): prefix to use for the attribute names coming from right
+                               table (defaults to 'r\_').
+
+        out_sim_score (boolean): flag to indicate if similarity score needs to be
+                                 included in the output table (defaults to True).
+
+        n_jobs (int): The number of jobs to use for the computation (defaults to 1).                                                                                            
+            If -1 all CPUs are used. If 1 is given, no parallel computing code is used at all, 
+            which is useful for debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
+            Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+            then n_jobs is set to 1.
+
+    Returns:
+        output table (dataframe)
+    """
+
     # check if the input candset is a dataframe
     validate_input_table(ltable, 'candset')
 

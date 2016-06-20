@@ -63,6 +63,7 @@ def dice_join(ltable, rtable,
     Returns:
         output table (dataframe)
     """
+
     # check if the input tables are dataframes
     validate_input_table(ltable, 'left table')
     validate_input_table(rtable, 'right table')
