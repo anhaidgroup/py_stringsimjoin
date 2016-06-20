@@ -17,7 +17,6 @@ from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
 from py_stringsimjoin.utils.helper_functions import split_table
-from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_key_attr, validate_input_table, validate_threshold, \
     validate_tokenizer, validate_output_attrs, validate_sim_measure_type
@@ -75,10 +74,8 @@ class SizeFilter(Filter):
         if (not lstring) or (not rstring):
             return True
 
-        l_num_tokens = len(tokenize(lstring, self.tokenizer,
-                                    self.sim_measure_type))
-        r_num_tokens = len(tokenize(rstring, self.tokenizer,
-                                    self.sim_measure_type))
+        l_num_tokens = len(self.tokenizer.tokenize(lstring))
+        r_num_tokens = len(self.tokenizer.tokenize(rstring))
 
         size_lower_bound = get_size_lower_bound(l_num_tokens,
                                                 self.sim_measure_type,
@@ -223,8 +220,7 @@ def _filter_tables_split(ltable, rtable,
         r_id = r_row[r_key_attr_index]
         r_string = str(r_row[r_filter_attr_index])
 
-        r_num_tokens = len(tokenize(r_string, size_filter.tokenizer,
-                                    size_filter.sim_measure_type))
+        r_num_tokens = len(size_filter.tokenizer.tokenize(r_string))
            
         size_lower_bound = get_size_lower_bound(r_num_tokens,
                                                 size_filter.sim_measure_type,

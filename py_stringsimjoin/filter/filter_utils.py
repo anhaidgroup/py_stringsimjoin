@@ -39,7 +39,7 @@ def get_prefix_length(num_tokens, sim_measure_type, threshold, tokenizer):
         return int(num_tokens -
                    ceil((threshold / (2 - threshold)) * num_tokens) + 1)
     elif sim_measure_type == 'EDIT_DISTANCE':
-        return min(tokenizer.q_val * threshold + 1, num_tokens)
+        return min(tokenizer.qval * threshold + 1, num_tokens)
     elif sim_measure_type == 'JACCARD':
         return int(num_tokens - ceil(threshold * num_tokens) + 1)
     elif sim_measure_type == 'OVERLAP':
@@ -53,9 +53,9 @@ def get_overlap_threshold(l_num_tokens, r_num_tokens,
     elif sim_measure_type == 'DICE':
         return ceil((threshold / 2) * (l_num_tokens + r_num_tokens))
     elif sim_measure_type == 'EDIT_DISTANCE':
-        return max(l_num_tokens + tokenizer.q_val - 1,
-                   r_num_tokens + tokenizer.q_val - 1) - tokenizer.q_val + 1 - \
-               tokenizer.q_val * threshold
+        return max(l_num_tokens + tokenizer.qval - 1,
+                   r_num_tokens + tokenizer.qval - 1) - tokenizer.qval + 1 - \
+               tokenizer.qval * threshold
     elif sim_measure_type == 'JACCARD':
         return ceil((threshold / (1 + threshold)) * (l_num_tokens + r_num_tokens))
     elif sim_measure_type == 'OVERLAP':

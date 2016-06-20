@@ -6,13 +6,13 @@ from nose.tools import assert_equal
 from nose.tools import assert_list_equal
 from nose.tools import nottest
 from nose.tools import raises
+from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
+from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from six import iteritems
 import pandas as pd
 
 from py_stringsimjoin.join.edit_distance_join import edit_distance_join
 from py_stringsimjoin.utils.simfunctions import get_sim_function
-from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer, \
-    create_qgram_tokenizer, tokenize
 
 
 DEFAULT_L_OUT_PREFIX = 'l_'
@@ -62,8 +62,8 @@ def test_valid_join(scenario, tok, threshold, args=()):
     expected_pairs = set()
     overlap = get_sim_function('OVERLAP')
     for idx, row in cartprod.iterrows():
-        l_tokens = tokenize(str(row[l_join_attr]), tok, sim_measure_type)
-        r_tokens = tokenize(str(row[r_join_attr]), tok, sim_measure_type)
+        l_tokens = tok.tokenize(str(row[l_join_attr]))
+        r_tokens = tok.tokenize(str(row[r_join_attr]))
 
         if len(str(row[l_join_attr])) == 0 or len(str(row[r_join_attr])) == 0:
             continue
@@ -140,8 +140,8 @@ def test_edit_distance_join():
     thresholds = [1, 2, 3, 4, 8, 9, 10]
 
     # tokenizers to be tested.
-    tokenizers = {'2_GRAM': create_qgram_tokenizer(),
-                  '3_GRAM': create_qgram_tokenizer(3)}
+    tokenizers = {'2_GRAM': QgramTokenizer(qval=2),
+                  '3_GRAM': QgramTokenizer(qval=3)}
 
     sim_measure_type = 'EDIT_DISTANCE'
     # Test each combination of threshold and tokenizer

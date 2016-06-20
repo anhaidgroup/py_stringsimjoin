@@ -10,7 +10,6 @@ from py_stringsimjoin.index.inverted_index import InvertedIndex
 from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables, split_table
-from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_key_attr, validate_input_table, validate_threshold, \
     validate_tokenizer, validate_output_attrs
@@ -170,7 +169,7 @@ def _overlap_coefficient_join_split(ltable, rtable,
         r_id = r_row[r_key_attr_index]
         r_string = str(r_row[r_join_attr_index])
 
-        r_join_attr_tokens = tokenize(r_string, tokenizer)
+        r_join_attr_tokens = tokenizer.tokenize(r_string)
         r_num_tokens = len(r_join_attr_tokens)
 
         # probe inverted index and find overlap of candidates 

@@ -4,16 +4,16 @@ from nose.tools import assert_equal
 from nose.tools import assert_list_equal
 from nose.tools import nottest
 from nose.tools import raises
+from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.prefix_filter import PrefixFilter
-from py_stringsimjoin.utils.tokenizers import create_delimiter_tokenizer
 
 
 # test PrefixFilter.filter_pair method
 class FilterPairTestCases(unittest.TestCase):
     def setUp(self):
-        self.dlm = create_delimiter_tokenizer(' ')
+        self.dlm = DelimiterTokenizer(delim_set=[' '], return_set=True)
 
     # tests for JACCARD measure
     def test_jac_dlm_08_prune(self):
@@ -64,7 +64,7 @@ class FilterPairTestCases(unittest.TestCase):
 # test PrefixFilter.filter_tables method
 class FilterTablesTestCases(unittest.TestCase):
     def setUp(self):
-        self.dlm = create_delimiter_tokenizer(' ')
+        self.dlm = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.A = pd.DataFrame([{'id': 1, 'attr':'ab cd ef aa bb'},
                                {'id': 2, 'attr':''},
                                {'id': 3, 'attr':'ab'},
@@ -227,7 +227,7 @@ class FilterTablesTestCases(unittest.TestCase):
 # test PrefixFilter.filter_candset method
 class FilterCandsetTestCases(unittest.TestCase):
     def setUp(self):
-        self.dlm = create_delimiter_tokenizer(' ')
+        self.dlm = DelimiterTokenizer(delim_set=[' '], return_set=True)
 
         self.A = pd.DataFrame([{'l_id': 1, 'l_attr':'ab cd ef aa bb'},
                                {'l_id': 2, 'l_attr':''},
@@ -312,7 +312,7 @@ class PrefixFilterInvalidTestCases(unittest.TestCase):
     def setUp(self):
         self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
         self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
-        self.tokenizer = create_delimiter_tokenizer()
+        self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.sim_measure_type = 'JACCARD'
         self.threshold = 0.8
 

@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from py_stringsimjoin.utils.tokenizers import Tokenizer
+from py_stringmatching.tokenizer.tokenizer import Tokenizer
 
 
 def validate_input_table(table, table_label):

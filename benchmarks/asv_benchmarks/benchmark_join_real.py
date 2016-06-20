@@ -2,6 +2,7 @@
 
 import os
 
+from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 import pandas as pd
 
 from py_stringsimjoin.join.cosine_join import cosine_join
@@ -11,8 +12,6 @@ from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
 from py_stringsimjoin.utils.helper_functions import get_install_path
-from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer, \
-                                           create_delimiter_tokenizer
 
 
 # path where datasets are present
@@ -39,7 +38,7 @@ class RestaurantsJoinBenchmark:
         self.r_id_attr = 'ID'
         self.l_join_attr = 'NAME'
         self.r_join_attr = 'NAME'
-        self.delim_tok = create_delimiter_tokenizer()
+        self.delim_tok = DelimiterTokenizer(delim_set=[' '], return_set=True)
 
     def time_jaccard_delim_07(self):
         jaccard_join(self.ltable, self.rtable,
@@ -98,7 +97,7 @@ class MusicJoinBenchmark:
         self.r_id_attr = 'Sno'
         self.l_join_attr = 'Song_Name'
         self.r_join_attr = 'Song_Name'
-        self.delim_tok = create_delimiter_tokenizer()
+        self.delim_tok = DelimiterTokenizer(delim_set=[' '], return_set=True)
 
     def time_jaccard_delim_07(self):
         jaccard_join(self.ltable, self.rtable,

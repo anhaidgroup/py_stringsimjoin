@@ -10,7 +10,6 @@ import pyprind
 from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables, split_table
-from py_stringsimjoin.utils.tokenizers import tokenize
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_key_attr, validate_input_table, validate_tokenizer, \
     validate_output_attrs
@@ -199,8 +198,8 @@ def _apply_candset_split(candset,
         l_apply_col_value = str(l_row[l_join_attr_index])
         r_apply_col_value = str(r_row[r_join_attr_index])  
         if tokenizer is not None:
-            l_apply_col_value = tokenize(l_apply_col_value, tokenizer)
-            r_apply_col_value = tokenize(r_apply_col_value, tokenizer)       
+            l_apply_col_value = tokenizer.tokenize(l_apply_col_value)
+            r_apply_col_value = tokenizer.tokenize(r_apply_col_value)       
         
         sim_score = sim_function(l_apply_col_value, r_apply_col_value)
 

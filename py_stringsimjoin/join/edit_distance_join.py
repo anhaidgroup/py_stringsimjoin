@@ -3,6 +3,7 @@ from math import floor
 
 from joblib import delayed
 from joblib import Parallel
+from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 import pyprind
 
@@ -12,7 +13,6 @@ from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables, split_table
 from py_stringsimjoin.utils.simfunctions import get_sim_function
-from py_stringsimjoin.utils.tokenizers import create_qgram_tokenizer, tokenize
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
 from py_stringsimjoin.utils.validation import validate_attr, \
@@ -27,7 +27,7 @@ def edit_distance_join(ltable, rtable,
                        l_out_attrs=None, r_out_attrs=None,
                        l_out_prefix='l_', r_out_prefix='r_',
                        out_sim_score=True, n_jobs=1,
-                       tokenizer=create_qgram_tokenizer(2)):
+                       tokenizer=QgramTokenizer(qval=2)):
     """Join two tables using edit distance measure.
 
     Finds tuple pairs from left table and right table such that the edit distance between
@@ -207,9 +207,9 @@ def _edit_distance_join_split(ltable, rtable,
         r_string = str(r_row[r_join_attr_index])
         r_len = len(r_string)
 
-        r_join_attr_tokens = tokenize(r_string, tokenizer, sim_measure_type)
-        r_ordered_tokens = order_using_token_ordering(r_join_attr_tokens,
-                                                      token_ordering)
+        r_ordered_tokens = order_using_token_ordering(
+                tokenizer.tokenize(r_string), token_ordering)
+
         candidates = _find_candidates(r_ordered_tokens, len(r_ordered_tokens),
                                       prefix_filter, prefix_index)
         for cand in candidates:
