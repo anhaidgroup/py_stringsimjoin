@@ -9,7 +9,7 @@ import pyprind
 
 from py_stringsimjoin.filter.prefix_filter import PrefixFilter, _find_candidates
 from py_stringsimjoin.index.prefix_index import PrefixIndex
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
+from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables, split_table
 from py_stringsimjoin.utils.simfunctions import get_sim_function
@@ -164,33 +164,27 @@ def _edit_distance_join_split(ltable, rtable,
     r_join_attr_index = r_columns.index(r_join_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
-    # build a dictionary on ltable
-    ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                        l_join_attr_index)
+    # convert ltable into a list of tuples
+    ltable_list = convert_dataframe_to_list(ltable, l_join_attr_index)
 
-    # build a dictionary on rtable
-    rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                        r_join_attr_index)
+    # convert rtable into a list of tuples
+    rtable_list = convert_dataframe_to_list(rtable, r_join_attr_index)
 
     sim_measure_type = 'EDIT_DISTANCE'
     # generate token ordering using tokens in l_join_attr
     # and r_join_attr
     token_ordering = gen_token_ordering_for_tables(
-                         [ltable_dict.values(),
-                          rtable_dict.values()],
-                         [l_join_attr_index,
-                          r_join_attr_index],
+                         [ltable_list, rtable_list],
+                         [l_join_attr_index, r_join_attr_index],
                          tokenizer, sim_measure_type)
 
-    # build a dictionary of l_join_attr lengths
-    l_join_attr_dict = {}
-    for row in ltable_dict.values():
-        l_join_attr_dict[row[l_key_attr_index]] = len(str(
-                                                      row[l_join_attr_index]))
+    # cache l_join_attr lengths
+    l_join_attr_list = []
+    for row in ltable_list:
+        l_join_attr_list.append(len(str(row[l_join_attr_index])))
 
     # Build prefix index on l_join_attr
-    prefix_index = PrefixIndex(ltable_dict.values(),
-                               l_key_attr_index, l_join_attr_index,
+    prefix_index = PrefixIndex(ltable_list, l_join_attr_index,
                                tokenizer, sim_measure_type, threshold,
                                token_ordering)
     prefix_index.build()
@@ -200,10 +194,9 @@ def _edit_distance_join_split(ltable, rtable,
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
-    prog_bar = pyprind.ProgBar(len(rtable_dict.keys()))
+    prog_bar = pyprind.ProgBar(len(rtable))
 
-    for r_row in rtable_dict.values():
-        r_id = r_row[r_key_attr_index]
+    for r_row in rtable_list:
         r_string = str(r_row[r_join_attr_index])
         r_len = len(r_string)
 
@@ -213,24 +206,23 @@ def _edit_distance_join_split(ltable, rtable,
         candidates = _find_candidates(r_ordered_tokens, len(r_ordered_tokens),
                                       prefix_filter, prefix_index)
         for cand in candidates:
-            if r_len - threshold <= l_join_attr_dict[cand] <= r_len + threshold:
-                edit_dist = sim_fn(str(ltable_dict[cand][l_join_attr_index]),
-                                   r_string)
+            if r_len - threshold <= l_join_attr_list[cand] <= r_len + threshold:
+                l_row = ltable_list[cand]
+                edit_dist = sim_fn(str(l_row[l_join_attr_index]), r_string)
                 if edit_dist <= threshold:
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(
-                                         ltable_dict[cand], r_row,
-                                         cand, r_id,
+                                         l_row, r_row,
+                                         l_key_attr_index, r_key_attr_index,
                                          l_out_attrs_indices,
                                          r_out_attrs_indices)
-                        if out_sim_score:
-                            output_row.append(edit_dist)
-                        output_rows.append(output_row)
                     else:
-                        output_row = [cand, r_id]
-                        if out_sim_score:
-                            output_row.append(edit_dist)
-                        output_rows.append(output_row)
+                        output_row = [l_row[l_key_attr_index],
+                                      r_row[r_key_attr_index]]
+
+                    if out_sim_score:
+                        output_row.append(edit_dist)
+                    output_rows.append(output_row)
 
         prog_bar.update()
 

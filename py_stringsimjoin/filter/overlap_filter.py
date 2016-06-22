@@ -8,7 +8,7 @@ import pyprind
 
 from py_stringsimjoin.filter.filter import Filter
 from py_stringsimjoin.index.inverted_index import InvertedIndex
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table
+from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list
 from py_stringsimjoin.utils.helper_functions import \
                                                  find_output_attribute_indices
 from py_stringsimjoin.utils.helper_functions import \
@@ -181,17 +181,14 @@ def _filter_tables_split(ltable, rtable,
     r_filter_attr_index = r_columns.index(r_filter_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
-    # Build a dictionary on ltable
-    ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                        l_filter_attr_index)
+    # convert ltable into a list of tuples
+    ltable_list = convert_dataframe_to_list(ltable, l_filter_attr_index)
 
-    # Build a dictionary on rtable
-    rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                        r_filter_attr_index)
+    # convert rtable into a list of tuples
+    rtable_list = convert_dataframe_to_list(rtable, r_filter_attr_index)
 
     # Build inverted index over ltable
-    inverted_index = InvertedIndex(ltable_dict.values(),
-                                   l_key_attr_index, l_filter_attr_index,
+    inverted_index = InvertedIndex(ltable_list, l_filter_attr_index,
                                    overlap_filter.tokenizer)
     inverted_index.build()
 
@@ -200,8 +197,7 @@ def _filter_tables_split(ltable, rtable,
                              r_out_attrs is not None)
     prog_bar = pyprind.ProgBar(len(rtable))
 
-    for r_row in rtable_dict.values():
-        r_id = r_row[r_key_attr_index]
+    for r_row in rtable_list:
         r_string = str(r_row[r_filter_attr_index])
         r_filter_attr_tokens = overlap_filter.tokenizer.tokenize(r_string)
 
@@ -213,19 +209,17 @@ def _filter_tables_split(ltable, rtable,
             if overlap >= overlap_filter.overlap_size:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(
-                                         ltable_dict[cand], r_row,
-                                         cand, r_id, 
-                                         l_out_attrs_indices,
-                                         r_out_attrs_indices)
-                    if out_sim_score:
-                        output_row.append(overlap)
-                    output_rows.append(output_row)
+                                     ltable_list[cand], r_row,
+                                     l_key_attr_index, r_key_attr_index, 
+                                     l_out_attrs_indices, r_out_attrs_indices)
                 else:
-                    output_row = [cand, r_id]
-                    if out_sim_score:
-                        output_row.append(overlap)
-                    output_rows.append(output_row)
+                    output_row = [ltable_list[cand][l_key_attr_index],
+                                  r_row[r_key_attr_index]]
 
+                if out_sim_score:
+                    output_row.append(overlap)
+                output_rows.append(output_row)
+ 
         prog_bar.update()
 
     output_header = get_output_header_from_tables(l_key_attr, r_key_attr,

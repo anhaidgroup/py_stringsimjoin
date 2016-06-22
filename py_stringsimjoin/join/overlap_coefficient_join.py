@@ -7,7 +7,7 @@ import pyprind
 
 from py_stringsimjoin.filter.overlap_filter import _find_candidates
 from py_stringsimjoin.index.inverted_index import InvertedIndex
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
+from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables, split_table
 from py_stringsimjoin.utils.validation import validate_attr, \
@@ -146,18 +146,15 @@ def _overlap_coefficient_join_split(ltable, rtable,
     r_join_attr_index = r_columns.index(r_join_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
-    # build a dictionary on ltable
-    ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                        l_join_attr_index)
+    # convert ltable into a list of tuples
+    ltable_list = convert_dataframe_to_list(ltable, l_join_attr_index)
 
-    # build a dictionary on rtable
-    rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                        r_join_attr_index)
+    # convert rtable into a list of tuples
+    rtable_list = convert_dataframe_to_list(rtable, r_join_attr_index)
 
     # Build inverted index over ltable
-    inverted_index = InvertedIndex(ltable_dict.values(),
-                                   l_key_attr_index, l_join_attr_index,
-                                   tokenizer, cache_size_map=True)
+    inverted_index = InvertedIndex(ltable_list, l_join_attr_index,
+                                   tokenizer, cache_size_flag=True)
     inverted_index.build()
 
     output_rows = []
@@ -165,8 +162,7 @@ def _overlap_coefficient_join_split(ltable, rtable,
                              r_out_attrs is not None)
     prog_bar = pyprind.ProgBar(len(rtable))
 
-    for r_row in rtable_dict.values():
-        r_id = r_row[r_key_attr_index]
+    for r_row in rtable_list:
         r_string = str(r_row[r_join_attr_index])
 
         r_join_attr_tokens = tokenizer.tokenize(r_string)
@@ -179,22 +175,19 @@ def _overlap_coefficient_join_split(ltable, rtable,
         for cand, overlap in iteritems(candidate_overlap):
             sim_score = (float(overlap) /
                          float(min(r_num_tokens,
-                                   inverted_index.size_map[cand])))
+                                   inverted_index.size_cache[cand])))
             if sim_score >= threshold:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(
-                                         ltable_dict[cand], r_row,
-                                         cand, r_id,
-                                         l_out_attrs_indices,
-                                         r_out_attrs_indices)
-                    if out_sim_score:
-                        output_row.append(sim_score)
-                    output_rows.append(output_row)
+                                     ltable_list[cand], r_row,
+                                     l_key_attr_index, r_key_attr_index,
+                                     l_out_attrs_indices, r_out_attrs_indices)
                 else:
-                    output_row = [cand, r_id]
-                    if out_sim_score:
-                        output_row.append(sim_score)
-                    output_rows.append(output_row)
+                    output_row = [ltable_list[cand][l_key_attr_index],
+                                  r_row[r_key_attr_index]]
+                if out_sim_score:
+                    output_row.append(sim_score)
+                output_rows.append(output_row)
 
         prog_bar.update()
 

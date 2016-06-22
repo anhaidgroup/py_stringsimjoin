@@ -8,25 +8,26 @@ from py_stringsimjoin.utils import install_path
 
 
 def get_output_row_from_tables(l_row, r_row,
-                               l_id, r_id, 
-                               l_out_attrs=None, r_out_attrs=None):
+                               l_key_attr_index, r_key_attr_index, 
+                               l_out_attrs_indices=None,
+                               r_out_attrs_indices=None):
     output_row = []
     
     # add ltable id attr
-    output_row.append(l_id)
+    output_row.append(l_row[l_key_attr_index])
 
     # add ltable output attributes
-    if l_out_attrs:
-        for l_attr in l_out_attrs:
-            output_row.append(l_row[l_attr])
+    if l_out_attrs_indices:
+        for l_attr_index in l_out_attrs_indices:
+            output_row.append(l_row[l_attr_index])
 
     # add rtable id attr
-    output_row.append(r_id)
+    output_row.append(r_row[r_key_attr_index])
 
     # add rtable output attributes
-    if r_out_attrs:
-        for r_attr in r_out_attrs:
-            output_row.append(r_row[r_attr])
+    if r_out_attrs_indices:
+        for r_attr_index in r_out_attrs_indices:
+            output_row.append(r_row[r_attr_index])
 
     return output_row
 
@@ -58,6 +59,18 @@ def get_output_header_from_tables(l_key_attr, r_key_attr,
             output_header.append(r_out_prefix + r_attr)
 
     return output_header
+
+
+def convert_dataframe_to_list(table, join_attr_index,
+                              remove_null=True, remove_empty=True):
+    table_list = []
+    for row in table.itertuples(index=False):
+        if remove_null and pd.isnull(row[join_attr_index]):
+            continue
+        if remove_empty and len(str(row[join_attr_index])) == 0:
+            continue
+        table_list.append(tuple(row))
+    return table_list
 
 
 def build_dict_from_table(table, key_attr_index, join_attr_index,
