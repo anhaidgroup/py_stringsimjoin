@@ -14,36 +14,47 @@ from py_stringsimjoin.utils.helper_functions import \
 from py_stringsimjoin.utils.helper_functions import \
                                                  get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
-from py_stringsimjoin.utils.helper_functions import split_table
+from py_stringsimjoin.utils.helper_functions import split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import overlap
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_key_attr, validate_input_table, validate_threshold, \
-    validate_tokenizer, validate_output_attrs
+    validate_comp_op, validate_key_attr, validate_input_table, \
+    validate_threshold, validate_tokenizer, validate_output_attrs
 
 
 class OverlapFilter(Filter):
     """Finds candidate matching pairs of strings using overlap filtering technique.
 
+    A string pair is allowed by overlap filter only if the number of common tokens
+    in the strings satisfy the condition on overlap size threshold. That is, if the 
+    comparison operator is '>=', a string pair is allowed if the number of common tokens is
+    greater than or equal to the overlap size threshold.
+
+
     Args:
         tokenizer (Tokenizer object): tokenizer to be used.
-        overlap_size (int): overlap threshold to be used by the filter. A string pair is
-                            allowed by overlap filter only if the strings share atleast
-                            overlap_size number of tokens.
+        overlap_size (int): overlap threshold to be used by the filter.
+        comp_op (string): Comparison operator. Supported values are '>=', '>' and '='
+                          (defaults to '>=').  
 
     Attributes:
         tokenizer (Tokenizer object): An attribute to store the tokenizer.
         overlap_size (int): An attribute to store the overlap threshold value.
+        comp_op (string): An attribute to store the comparison operator.
     """
 
-    def __init__(self, tokenizer, overlap_size=1):
+    def __init__(self, tokenizer, overlap_size=1, comp_op='>='):
         # check if the input tokenizer is valid
         validate_tokenizer(tokenizer)
 
         # check if the overlap size is valid
         validate_threshold(overlap_size, 'OVERLAP')
 
+        # check if the comparison operator is valid
+        validate_comp_op(comp_op, 'OVERLAP')
+
         self.tokenizer = tokenizer
         self.overlap_size = overlap_size
+        self.comp_op = comp_op
         super(self.__class__, self).__init__()
 
     def filter_pair(self, lstring, rstring):
@@ -65,10 +76,10 @@ class OverlapFilter(Filter):
  
         num_overlap = overlap(ltokens, rtokens) 
 
-        if num_overlap < self.overlap_size:
-            return True
-        else:
+        if COMP_OP_MAP[self.comp_op](num_overlap, self.overlap_size):
             return False
+        else:
+            return True
 
     def filter_tables(self, ltable, rtable,
                       l_key_attr, r_key_attr,
@@ -192,6 +203,8 @@ def _filter_tables_split(ltable, rtable,
                                    overlap_filter.tokenizer)
     inverted_index.build()
 
+    comp_fn = COMP_OP_MAP[overlap_filter.comp_op]
+
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
@@ -206,7 +219,7 @@ def _filter_tables_split(ltable, rtable,
                                              inverted_index)
 
         for cand, overlap in iteritems(candidate_overlap):
-            if overlap >= overlap_filter.overlap_size:
+            if comp_fn(overlap, overlap_filter.overlap_size):
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(
                                      ltable_list[cand], r_row,

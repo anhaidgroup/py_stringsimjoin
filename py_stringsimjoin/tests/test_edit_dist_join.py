@@ -12,14 +12,16 @@ from six import iteritems
 import pandas as pd
 
 from py_stringsimjoin.join.edit_distance_join import edit_distance_join
+from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 
 
+DEFAULT_COMP_OP = '<='
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
 
 @nottest
-def test_valid_join(scenario, tok, threshold, args=()):
+def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=()):
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
     (rtable_path, r_key_attr, r_join_attr) = scenario[1]
 
@@ -59,6 +61,8 @@ def test_valid_join(scenario, tok, threshold, args=()):
                 str(row[l_join_attr]), str(row[r_join_attr])),
             axis=1)
 
+    comp_fn = COMP_OP_MAP[comp_op]
+
     expected_pairs = set()
     overlap = get_sim_function('OVERLAP')
     for idx, row in cartprod.iterrows():
@@ -71,7 +75,7 @@ def test_valid_join(scenario, tok, threshold, args=()):
         # current edit distance join is approximate. It cannot find matching
         # strings which don't have any common q-grams. Hence, remove pairs
         # that don't have any common q-grams from expected pairs.
-        if float(row['sim_score']) <= threshold:
+        if comp_fn(float(row['sim_score']), threshold):
             if overlap(l_tokens, r_tokens) > 0:
                 expected_pairs.add(','.join((str(row[l_key_attr]),
                                              str(row[r_key_attr]))))
@@ -80,7 +84,7 @@ def test_valid_join(scenario, tok, threshold, args=()):
     actual_candset = edit_distance_join(ltable, rtable,
                                         l_key_attr, r_key_attr,
                                         l_join_attr, r_join_attr,
-                                        threshold,
+                                        threshold, comp_op,
                                         *args, tokenizer=tok)
 
     expected_output_attrs = ['_id']
@@ -143,23 +147,27 @@ def test_edit_distance_join():
     tokenizers = {'2_GRAM': QgramTokenizer(qval=2),
                   '3_GRAM': QgramTokenizer(qval=3)}
 
+    # comparison operators to be tested.
+    comp_ops = ['<=', '<', '=']
+
     sim_measure_type = 'EDIT_DISTANCE'
     # Test each combination of threshold and tokenizer
     # for different test scenarios.
     for label, scenario in iteritems(data):
         for threshold in thresholds:
             for tok_type, tok in iteritems(tokenizers):
-                test_function = partial(test_valid_join, scenario, tok,
-                                                         threshold)
-                test_function.description = 'Test ' + sim_measure_type + \
-                    ' with ' + str(threshold) + ' threshold and ' + \
-                    tok_type + ' tokenizer for ' + label + '.'
-                yield test_function,
+                for comp_op in comp_ops:
+                    test_function = partial(test_valid_join, scenario, tok,
+                                                         threshold, comp_op)
+                    test_function.description = 'Test ' + sim_measure_type + \
+                        ' with ' + str(threshold) + ' threshold and ' + \
+                        tok_type + ' tokenizer for ' + label + '.'
+                    yield test_function,
 
     # Test with output attributes added.
     test_function = partial(test_valid_join, test_scenario_1,
                                              tokenizers['2_GRAM'],
-                                             1,
+                                             1, '<=',
                                              (['A.birth_year', 'A.zipcode'],
                                               ['B.name', 'B.zipcode']))
     test_function.description = 'Test ' + sim_measure_type + \
@@ -169,7 +177,7 @@ def test_edit_distance_join():
     # Test with a different output prefix.
     test_function = partial(test_valid_join, test_scenario_1,
                                              tokenizers['2_GRAM'],
-                                             1,
+                                             1, '<=',
                                              (['A.birth_year', 'A.zipcode'],
                                               ['B.name', 'B.zipcode'],
                                               'ltable.', 'rtable.'))
@@ -180,7 +188,7 @@ def test_edit_distance_join():
     # Test with output_sim_score disabled.
     test_function = partial(test_valid_join, test_scenario_1,
                                              tokenizers['2_GRAM'],
-                                             1,
+                                             1, '<=',
                                              (['A.birth_year', 'A.zipcode'],
                                               ['B.name', 'B.zipcode'],
                                               'ltable.', 'rtable.',
@@ -194,7 +202,8 @@ class EditDistJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
         self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
         self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
-        self.threshold = 0.8
+        self.threshold = 2
+        self.comp_op = '<='
 
     @raises(TypeError)
     def test_edit_distance_join_invalid_ltable(self):
@@ -237,11 +246,23 @@ class EditDistJoinInvalidTestCases(unittest.TestCase):
                            -0.1)
 
     @raises(AssertionError)
+    def test_edit_distance_join_invalid_comp_op_gt(self):
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold, '>')
+
+    @raises(AssertionError)
+    def test_edit_distance_join_invalid_comp_op_ge(self):
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold, '>=')
+
+    @raises(AssertionError)
     def test_edit_distance_join_invalid_l_out_attr(self):
         edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                           self.threshold, ['A.invalid_attr'], ['B.attr'])
+                           self.threshold, self.comp_op,
+                           ['A.invalid_attr'], ['B.attr'])
 
     @raises(AssertionError)
     def test_edit_distance_join_invalid_r_out_attr(self):
         edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                           self.threshold, ['A.attr'], ['B.invalid_attr'])
+                           self.threshold, self.comp_op,
+                           ['A.attr'], ['B.invalid_attr'])

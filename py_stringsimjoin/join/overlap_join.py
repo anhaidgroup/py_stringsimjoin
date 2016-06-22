@@ -4,14 +4,16 @@ from py_stringsimjoin.filter.overlap_filter import OverlapFilter
 def overlap_join(ltable, rtable,
                  l_key_attr, r_key_attr,
                  l_join_attr, r_join_attr,
-                 tokenizer, threshold,
+                 tokenizer, threshold, comp_op='>=',
                  l_out_attrs=None, r_out_attrs=None,
                  l_out_prefix='l_', r_out_prefix='r_',
                  out_sim_score=True, n_jobs=1):
     """Join two tables using overlap measure.
 
     Finds tuple pairs from left table and right table such that the overlap between
-    the join attributes is greater than or equal to the input threshold.
+    the join attributes satisfies the condition on input threshold. That is, if the comparison
+    operator is '>=', finds tuples pairs whose overlap on the join attributes is
+    greater than or equal to the input threshold.
 
     Args:
         ltable (dataframe): left input table.
@@ -55,7 +57,7 @@ def overlap_join(ltable, rtable,
         output table (dataframe)
     """
 
-    overlap_filter = OverlapFilter(tokenizer, threshold)
+    overlap_filter = OverlapFilter(tokenizer, threshold, comp_op)
     return overlap_filter.filter_tables(ltable, rtable,
                                         l_key_attr, r_key_attr,
                                         l_join_attr, r_join_attr,

@@ -16,6 +16,7 @@ from py_stringsimjoin.join.dice_join import dice_join
 from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
+from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 
 
@@ -25,6 +26,7 @@ JOIN_FN_MAP = {'COSINE': cosine_join,
                'OVERLAP': overlap_join,
                'OVERLAP_COEFFICIENT': overlap_coefficient_join}
 
+DEFAULT_COMP_OP = '>='
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
 
@@ -70,9 +72,14 @@ def test_valid_join(scenario, sim_measure_type, args):
                 args[0].tokenize(str(row[r_join_attr]))),
             axis=1)
 
+    comp_fn = COMP_OP_MAP[DEFAULT_COMP_OP]
+    # Check for comp_op in args.
+    if len(args) > 2:
+        comp_fn = COMP_OP_MAP[args[2]]
+
     expected_pairs = set()
     for idx, row in cartprod.iterrows():
-        if float(row['sim_score']) >= args[1]:
+        if comp_fn(float(row['sim_score']), args[1]):
             expected_pairs.add(','.join((str(row[l_key_attr]),
                                          str(row[r_key_attr]))))
 
@@ -87,30 +94,30 @@ def test_valid_join(scenario, sim_measure_type, args):
     r_out_prefix = DEFAULT_R_OUT_PREFIX
 
     # Check for l_out_prefix in args.
-    if len(args) > 4:
-        l_out_prefix = args[4]
+    if len(args) > 5:
+        l_out_prefix = args[5]
     expected_output_attrs.append(l_out_prefix + l_key_attr)
 
     # Check for l_out_attrs in args.
-    if len(args) > 2:
-        if args[2]:
-            for attr in args[2]:
-                expected_output_attrs.append(l_out_prefix + attr)
-
-    # Check for r_out_prefix in args.
-    if len(args) > 5:
-        r_out_prefix = args[5]
-    expected_output_attrs.append(r_out_prefix + r_key_attr)
-
-    # Check for r_out_attrs in args.
     if len(args) > 3:
         if args[3]:
             for attr in args[3]:
+                expected_output_attrs.append(l_out_prefix + attr)
+
+    # Check for r_out_prefix in args.
+    if len(args) > 6:
+        r_out_prefix = args[6]
+    expected_output_attrs.append(r_out_prefix + r_key_attr)
+
+    # Check for r_out_attrs in args.
+    if len(args) > 4:
+        if args[4]:
+            for attr in args[4]:
                 expected_output_attrs.append(r_out_prefix + attr)
 
     # Check for out_sim_score in args. 
-    if len(args) > 6:
-        if args[6]:
+    if len(args) > 7:
+        if args[7]:
             expected_output_attrs.append('_sim_score')
     else:
         expected_output_attrs.append('_sim_score')
@@ -152,26 +159,29 @@ def test_set_sim_join():
                   '2_GRAM': QgramTokenizer(qval=2, return_set=True),
                   '3_GRAM': QgramTokenizer(qval=3, return_set=True)}
 
+    # comparison operators to be tested.
+    comp_ops = ['>=', '>', '=']    
+
     # Test each combination of similarity measure, threshold and tokenizer
     # for different test scenarios.
     for label, scenario in iteritems(data):
         for sim_measure_type in sim_measure_types:
             for threshold in thresholds.get(sim_measure_type):
                 for tok_type, tok in iteritems(tokenizers):
-                    test_function = partial(test_valid_join, scenario,
-                                                             sim_measure_type,
-                                                             (tok, threshold))
-                    test_function.description = 'Test ' + sim_measure_type + \
-                        ' with ' + str(threshold) + ' threshold and ' + \
-                        tok_type + ' tokenizer for ' + label + '.'
-                    yield test_function,
+                    for comp_op in comp_ops:
+                        test_function = partial(test_valid_join, scenario,
+                                            sim_measure_type, (tok, threshold, comp_op))
+                        test_function.description = 'Test ' + sim_measure_type + \
+                            ' with ' + str(threshold) + ' threshold and ' + \
+                            tok_type + ' tokenizer for ' + label + '.'
+                        yield test_function,
 
     # Test each similarity measure with output attributes added.
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.7,
+                                                  0.7, '>=',
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode']))
         test_function.description = 'Test ' + sim_measure_type + \
@@ -183,7 +193,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.7,
+                                                  0.7, '>=',
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
                                                   'ltable.', 'rtable.'))
@@ -196,7 +206,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.7,
+                                                  0.7, '>=',
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
                                                   'ltable.', 'rtable.',
@@ -210,7 +220,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.3,
+                                                  0.3, '>=',
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
                                                   'ltable.', 'rtable.',
@@ -276,6 +286,16 @@ class JaccardJoinInvalidTestCases(unittest.TestCase):
     def test_jaccard_join_invalid_threshold_zero(self):
         jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
                      self.tokenizer, 0)
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_comp_op_lt(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold, '<')
+
+    @raises(AssertionError)
+    def test_jaccard_join_invalid_comp_op_le(self):
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold, '<=')
 
     @raises(AssertionError)
     def test_jaccard_join_invalid_l_out_attr(self):
@@ -348,6 +368,16 @@ class CosineJoinInvalidTestCases(unittest.TestCase):
                     self.tokenizer, 0)
 
     @raises(AssertionError)
+    def test_cosine_join_invalid_comp_op_lt(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, self.threshold, '<')
+
+    @raises(AssertionError)
+    def test_cosine_join_invalid_comp_op_le(self):
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                    self.tokenizer, self.threshold, '<=')
+
+    @raises(AssertionError)
     def test_cosine_join_invalid_l_out_attr(self):
         cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
                     self.tokenizer, self.threshold,
@@ -418,6 +448,16 @@ class DiceJoinInvalidTestCases(unittest.TestCase):
                   self.tokenizer, 0)
 
     @raises(AssertionError)
+    def test_dice_join_invalid_comp_op_lt(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, self.threshold, '<')
+
+    @raises(AssertionError)
+    def test_dice_join_invalid_comp_op_le(self):
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                  self.tokenizer, self.threshold, '<=')
+
+    @raises(AssertionError)
     def test_dice_join_invalid_l_out_attr(self):
         dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
                   self.tokenizer, self.threshold,
@@ -481,6 +521,16 @@ class OverlapJoinInvalidTestCases(unittest.TestCase):
     def test_overlap_join_invalid_threshold_zero(self):
         overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
                      self.tokenizer, 0)
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_comp_op_lt(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold, '<')
+
+    @raises(AssertionError)
+    def test_overlap_join_invalid_comp_op_le(self):
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                     self.tokenizer, self.threshold, '<=')
 
     @raises(AssertionError)
     def test_overlap_join_invalid_l_out_attr(self):
@@ -555,6 +605,18 @@ class OverlapCoefficientJoinInvalidTestCases(unittest.TestCase):
     def test_overlap_coefficient_join_invalid_threshold_zero(self):
         overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
                                  'A.attr', 'B.attr', self.tokenizer, 0)
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_comp_op_lt(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.attr', 'B.attr',
+                                 self.tokenizer, self.threshold, '<')
+
+    @raises(AssertionError)
+    def test_overlap_coefficient_join_invalid_comp_op_le(self):
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
+                                 'A.attr', 'B.attr',
+                                 self.tokenizer, self.threshold, '<=')
 
     @raises(AssertionError)
     def test_overlap_coefficient_join_invalid_l_out_attr(self):
