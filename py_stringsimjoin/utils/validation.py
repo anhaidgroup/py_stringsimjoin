@@ -74,4 +74,19 @@ def validate_sim_measure_type(sim_measure_type):
         raise TypeError('\'' + sim_measure_type + '\' is not a valid ' + \
                         'sim_measure_type. Supported types are COSINE, DICE' + \
                         ', EDIT_DISTANCE, JACCARD and OVERLAP.')
-    return True 
+    return True
+
+
+def validate_comp_op(comp_op, sim_measure_type):
+    """Check if the comparison operator is valid for the sim_measure_type."""
+    if sim_measure_type == 'EDIT_DISTANCE':
+        if comp_op not in ['<=', '<', '=']:
+            raise AssertionError('Comparison operator not supported. ' + \
+                'Supported comparison operators for ' + sim_measure_type + \
+                ' are <=, < and =.')
+    else:
+        if comp_op not in ['>=', '>', '=']:
+            raise AssertionError('Comparison operator not supported. ' + \
+                'Supported comparison operators for ' + sim_measure_type + \
+                ' are >=, > and =.')
+    return True

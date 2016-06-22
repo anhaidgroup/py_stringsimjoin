@@ -1,10 +1,18 @@
 
+import operator
 import os
 
 from six.moves import xrange
 import pandas as pd
 
 from py_stringsimjoin.utils import install_path
+
+
+COMP_OP_MAP = {'>=': operator.ge,
+               '>': operator.gt,
+               '<=': operator.le,
+               '<': operator.lt,
+               '=': operator.eq}
 
 
 def get_output_row_from_tables(l_row, r_row,

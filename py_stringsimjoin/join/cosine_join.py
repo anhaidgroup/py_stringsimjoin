@@ -6,21 +6,23 @@ import pandas as pd
 from py_stringsimjoin.join.set_sim_join import set_sim_join
 from py_stringsimjoin.utils.helper_functions import split_table
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_key_attr, validate_input_table, validate_threshold, \
-    validate_tokenizer, validate_output_attrs
+    validate_comp_op, validate_key_attr, validate_input_table, \
+    validate_threshold, validate_tokenizer, validate_output_attrs
 
 
 def cosine_join(ltable, rtable,
                 l_key_attr, r_key_attr,
                 l_join_attr, r_join_attr,
-                tokenizer, threshold,
+                tokenizer, threshold, comp_op='>=',
                 l_out_attrs=None, r_out_attrs=None,
                 l_out_prefix='l_', r_out_prefix='r_',
                 out_sim_score=True, n_jobs=1):
     """Join two tables using a variant of cosine similarity known as Ochiai coefficient.
 
     Finds tuple pairs from left table and right table such that the cosine similarity between
-    the join attributes is greater than or equal to the input threshold.
+    the join attributes satisfies the condition on input threshold. That is, if the comparison
+    operator is '>=', finds tuples pairs whose cosine similarity on the join attributes is
+    greater than or equal to the input threshold.
 
     Note:
         This is not the cosine measure that computes the cosine of the angle between two given vectors.
@@ -46,6 +48,9 @@ def cosine_join(ltable, rtable,
         tokenizer (Tokenizer object): tokenizer to be used to tokenize join attributes.
 
         threshold (float): cosine similarity threshold to be satisfied.
+
+        comp_op (string): Comparison operator. Supported values are '>=', '>' and '='
+                          (defaults to '>=').  
 
         l_out_attrs (list): list of attributes to be included in the output table from
                             left table (defaults to None).
@@ -92,6 +97,9 @@ def cosine_join(ltable, rtable,
     # check if the input threshold is valid
     validate_threshold(threshold, 'COSINE')
 
+    # check if the comparison operator is valid
+    validate_comp_op(comp_op, 'COSINE')
+
     # check if the output attributes exist
     validate_output_attrs(l_out_attrs, ltable.columns,
                           r_out_attrs, rtable.columns)
@@ -104,7 +112,8 @@ def cosine_join(ltable, rtable,
         output_table = set_sim_join(ltable, rtable,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
-                                    tokenizer, 'COSINE', threshold,
+                                    tokenizer, 'COSINE',
+                                    threshold, comp_op,
                                     l_out_attrs, r_out_attrs,
                                     l_out_prefix, r_out_prefix,
                                     out_sim_score)
@@ -116,9 +125,8 @@ def cosine_join(ltable, rtable,
                                               ltable, r_split,
                                               l_key_attr, r_key_attr,
                                               l_join_attr, r_join_attr,
-                                              tokenizer,
-                                              'COSINE',
-                                              threshold,
+                                              tokenizer, 'COSINE',
+                                              threshold, comp_op,
                                               l_out_attrs, r_out_attrs,
                                               l_out_prefix, r_out_prefix,
                                               out_sim_score)

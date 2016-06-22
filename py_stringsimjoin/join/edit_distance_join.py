@@ -11,19 +11,19 @@ from py_stringsimjoin.filter.prefix_filter import PrefixFilter, _find_candidates
 from py_stringsimjoin.index.prefix_index import PrefixIndex
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_output_header_from_tables, \
-    get_output_row_from_tables, split_table
+    get_output_row_from_tables, split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_key_attr, validate_input_table, validate_threshold, \
-    validate_tokenizer, validate_output_attrs
+    validate_comp_op, validate_key_attr, validate_input_table, \
+    validate_threshold, validate_tokenizer, validate_output_attrs
 
 
 def edit_distance_join(ltable, rtable,
                        l_key_attr, r_key_attr,
                        l_join_attr, r_join_attr,
-                       threshold,
+                       threshold, comp_op='<=',
                        l_out_attrs=None, r_out_attrs=None,
                        l_out_prefix='l_', r_out_prefix='r_',
                        out_sim_score=True, n_jobs=1,
@@ -31,7 +31,9 @@ def edit_distance_join(ltable, rtable,
     """Join two tables using edit distance measure.
 
     Finds tuple pairs from left table and right table such that the edit distance between
-    the join attributes is less than or equal to the input threshold.
+    the join attributes satisfies the condition on input threshold. That is, if the comparison
+    operator is '<=', finds tuples pairs whose edit distance on the join attributes is
+    less than or equal to the input threshold.
 
     Note:
         Currently, this method only computes an approximate join result. This is because, to perform the join we
@@ -55,6 +57,9 @@ def edit_distance_join(ltable, rtable,
         r_join_attr (string): join attribute in right table.
 
         threshold (float): edit distance threshold to be satisfied.
+
+        comp_op (string): Comparison operator. Supported values are '<=', '<' and '='
+                          (defaults to '<=').  
 
         l_out_attrs (list): list of attributes to be included in the output table from
                             left table (defaults to None).
@@ -105,6 +110,9 @@ def edit_distance_join(ltable, rtable,
     # check if the input threshold is valid
     validate_threshold(threshold, 'EDIT_DISTANCE')
 
+    # check if the comparison operator is valid
+    validate_comp_op(comp_op, 'EDIT_DISTANCE')
+
     # check if the output attributes exist
     validate_output_attrs(l_out_attrs, ltable.columns,
                           r_out_attrs, rtable.columns)
@@ -120,8 +128,7 @@ def edit_distance_join(ltable, rtable,
         output_table = _edit_distance_join_split(ltable, rtable,
                                l_key_attr, r_key_attr,
                                l_join_attr, r_join_attr,
-                               tokenizer,
-                               threshold,
+                               tokenizer, threshold, comp_op,
                                l_out_attrs, r_out_attrs,
                                l_out_prefix, r_out_prefix,
                                out_sim_score)
@@ -133,8 +140,7 @@ def edit_distance_join(ltable, rtable,
                                              ltable, s,
                                              l_key_attr, r_key_attr,
                                              l_join_attr, r_join_attr,
-                                             tokenizer,
-                                             threshold,
+                                             tokenizer, threshold, comp_op,
                                              l_out_attrs, r_out_attrs,
                                              l_out_prefix, r_out_prefix,
                                              out_sim_score) for s in r_splits)
@@ -146,8 +152,7 @@ def edit_distance_join(ltable, rtable,
 def _edit_distance_join_split(ltable, rtable,
                               l_key_attr, r_key_attr,
                               l_join_attr, r_join_attr,
-                              tokenizer,
-                              threshold,
+                              tokenizer, threshold, comp_op,
                               l_out_attrs, r_out_attrs,
                               l_out_prefix, r_out_prefix,
                               out_sim_score):
@@ -190,7 +195,10 @@ def _edit_distance_join_split(ltable, rtable,
     prefix_index.build()
 
     prefix_filter = PrefixFilter(tokenizer, sim_measure_type, threshold)
+
+    comp_fn = COMP_OP_MAP[comp_op]
     sim_fn = get_sim_function(sim_measure_type)
+
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
@@ -209,7 +217,7 @@ def _edit_distance_join_split(ltable, rtable,
             if r_len - threshold <= l_join_attr_list[cand] <= r_len + threshold:
                 l_row = ltable_list[cand]
                 edit_dist = sim_fn(str(l_row[l_join_attr_index]), r_string)
-                if edit_dist <= threshold:
+                if comp_fn(edit_dist, threshold):
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(
                                          l_row, r_row,

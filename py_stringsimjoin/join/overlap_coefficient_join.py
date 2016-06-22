@@ -9,24 +9,25 @@ from py_stringsimjoin.filter.overlap_filter import _find_candidates
 from py_stringsimjoin.index.inverted_index import InvertedIndex
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_output_header_from_tables, \
-    get_output_row_from_tables, split_table
+    get_output_row_from_tables, split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_key_attr, validate_input_table, validate_threshold, \
-    validate_tokenizer, validate_output_attrs
+    validate_comp_op, validate_key_attr, validate_input_table, \
+    validate_threshold, validate_tokenizer, validate_output_attrs
 
 
 def overlap_coefficient_join(ltable, rtable,
                              l_key_attr, r_key_attr,
                              l_join_attr, r_join_attr,
-                             tokenizer,
-                             threshold,
+                             tokenizer, threshold, comp_op='>=',
                              l_out_attrs=None, r_out_attrs=None,
                              l_out_prefix='l_', r_out_prefix='r_',
                              out_sim_score=True, n_jobs=1):
     """Join two tables using overlap coefficient.
 
     Finds tuple pairs from left table and right table such that the overlap coefficient between
-    the join attributes is greater than or equal to the input threshold.
+    the join attributes satisfies the condition on input threshold. That is, if the comparison
+    operator is '>=', finds tuples pairs whose overlap coefficient on the join attributes is
+    greater than or equal to the input threshold.
 
     Args:
         ltable (dataframe): left input table.
@@ -44,6 +45,9 @@ def overlap_coefficient_join(ltable, rtable,
         tokenizer (Tokenizer object): tokenizer to be used to tokenize join attributes.
 
         threshold (float): overlap coefficient threshold to be satisfied.
+
+        comp_op (string): Comparison operator. Supported values are '>=', '>' and '='
+                          (defaults to '>=').  
 
         l_out_attrs (list): list of attributes to be included in the output table from
                             left table (defaults to None).
@@ -90,6 +94,9 @@ def overlap_coefficient_join(ltable, rtable,
     # check if the input threshold is valid
     validate_threshold(threshold, 'OVERLAP_COEFFICIENT')
 
+    # check if the comparison operator is valid
+    validate_comp_op(comp_op, 'OVERLAP_COEFFICIENT')
+
     # check if the output attributes exist
     validate_output_attrs(l_out_attrs, ltable.columns,
                           r_out_attrs, rtable.columns)
@@ -102,8 +109,7 @@ def overlap_coefficient_join(ltable, rtable,
         output_table = _overlap_coefficient_join_split(ltable, rtable,
                                            l_key_attr, r_key_attr,
                                            l_join_attr, r_join_attr,
-                                           tokenizer,
-                                           threshold,
+                                           tokenizer, threshold, comp_op,
                                            l_out_attrs, r_out_attrs,
                                            l_out_prefix, r_out_prefix,
                                            out_sim_score)
@@ -113,8 +119,7 @@ def overlap_coefficient_join(ltable, rtable,
                                               ltable, r_split,
                                               l_key_attr, r_key_attr,
                                               l_join_attr, r_join_attr,
-                                              tokenizer,
-                                              threshold,
+                                              tokenizer, threshold, comp_op,
                                               l_out_attrs, r_out_attrs,
                                               l_out_prefix, r_out_prefix,
                                               out_sim_score)
@@ -128,8 +133,7 @@ def overlap_coefficient_join(ltable, rtable,
 def _overlap_coefficient_join_split(ltable, rtable,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
-                                    tokenizer,
-                                    threshold,
+                                    tokenizer, threshold, comp_op,
                                     l_out_attrs, r_out_attrs,
                                     l_out_prefix, r_out_prefix,
                                     out_sim_score):
@@ -157,6 +161,8 @@ def _overlap_coefficient_join_split(ltable, rtable,
                                    tokenizer, cache_size_flag=True)
     inverted_index.build()
 
+    comp_fn = COMP_OP_MAP[comp_op]
+
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
@@ -176,7 +182,7 @@ def _overlap_coefficient_join_split(ltable, rtable,
             sim_score = (float(overlap) /
                          float(min(r_num_tokens,
                                    inverted_index.size_cache[cand])))
-            if sim_score >= threshold:
+            if comp_fn(sim_score, threshold):
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(
                                      ltable_list[cand], r_row,
