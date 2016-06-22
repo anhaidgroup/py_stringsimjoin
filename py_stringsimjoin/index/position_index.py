@@ -4,20 +4,20 @@ from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
 
 
 class PositionIndex(Index):
-    def __init__(self, table, key_attr, index_attr, tokenizer, 
+    def __init__(self, table, index_attr, tokenizer, 
                  sim_measure_type, threshold, token_ordering):
         self.table = table
-        self.key_attr = key_attr
         self.index_attr = index_attr
         self.tokenizer = tokenizer
         self.sim_measure_type = sim_measure_type
         self.threshold = threshold
         self.token_ordering = token_ordering
         self.index = {}
-        self.size_map = {}
+        self.size_cache = []
         super(self.__class__, self).__init__()
 
     def build(self):
+        row_id = 0
         for row in self.table:
             index_string = str(row[self.index_attr])
             index_attr_tokens = order_using_token_ordering(
@@ -28,7 +28,6 @@ class PositionIndex(Index):
                                 self.sim_measure_type, self.threshold,
                                 self.tokenizer)
  
-            row_id = row[self.key_attr]
             pos = 0
             for token in index_attr_tokens[0:prefix_length]:
                 if self.index.get(token) is None:
@@ -36,7 +35,8 @@ class PositionIndex(Index):
                 self.index.get(token).append((row_id, pos))
                 pos += 1
 
-            self.size_map[row_id] = num_tokens
+            self.size_cache.append(num_tokens)
+            row_id += 1
 
         return True
 
@@ -44,4 +44,4 @@ class PositionIndex(Index):
         return self.index.get(token, [])
 
     def get_size(self, row_id):
-        return self.size_map.get(row_id)
+        return self.size_cache[row_id]

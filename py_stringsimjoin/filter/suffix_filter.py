@@ -6,7 +6,7 @@ import pyprind
 from py_stringsimjoin.filter.filter import Filter
 from py_stringsimjoin.filter.filter_utils import get_overlap_threshold
 from py_stringsimjoin.filter.filter_utils import get_prefix_length
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table
+from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list
 from py_stringsimjoin.utils.helper_functions import \
                                                  find_output_attribute_indices
 from py_stringsimjoin.utils.helper_functions import \
@@ -198,30 +198,25 @@ class SuffixFilter(Filter):
         r_out_attrs_indices = find_output_attribute_indices(r_columns,
                                                             r_out_attrs)
         
-        # build a dictionary on ltable
-        ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                            l_filter_attr_index)
+        # convert ltable into a list of tuples
+        ltable_list = convert_dataframe_to_list(ltable, l_filter_attr_index)
 
-        # build a dictionary on rtable
-        rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                            r_filter_attr_index)
+        # convert rtable into a list of tuples
+        rtable_list = convert_dataframe_to_list(rtable, r_filter_attr_index)
 
         # generate token ordering using tokens in l_filter_attr
         # and r_filter_attr
         token_ordering = gen_token_ordering_for_tables(
-                                            [ltable_dict.values(),
-                                             rtable_dict.values()],
-                                            [l_filter_attr_index,
-                                             r_filter_attr_index],
-                                            self.tokenizer,
-                                            self.sim_measure_type)
+                                    [ltable_list, rtable_list],
+                                    [l_filter_attr_index, r_filter_attr_index],
+                                    self.tokenizer, self.sim_measure_type)
 
         output_rows = []
         has_output_attributes = (l_out_attrs is not None or
                                  r_out_attrs is not None)
         prog_bar = pyprind.ProgBar(len(ltable))
 
-        for l_row in ltable_dict.values():
+        for l_row in ltable_list:
             l_id = l_row[l_key_attr_index]
             l_string = str(l_row[l_filter_attr_index])
 
@@ -234,7 +229,7 @@ class SuffixFilter(Filter):
                                                 self.threshold,
                                                 self.tokenizer)
             l_suffix = ordered_ltokens[l_prefix_length:]
-            for r_row in rtable_dict.values():
+            for r_row in rtable_list:
                 r_id = r_row[r_key_attr_index]
                 r_string = str(r_row[r_filter_attr_index])
 
@@ -253,13 +248,15 @@ class SuffixFilter(Filter):
                                            l_num_tokens, r_num_tokens):
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(
-                                         ltable_dict[l_id], r_row,
-                                         l_id, r_id, 
+                                         l_row, r_row,
+                                         l_key_attr_index, r_key_attr_index, 
                                          l_out_attrs_indices,
                                          r_out_attrs_indices)
-                        output_rows.append(output_row)
                     else:
-                        output_rows.append([l_id, r_id])
+                        output_row = [l_row[l_key_attr_index],
+                                      r_row[r_key_attr_index]]
+
+                    output_rows.append(output_row)
 
             prog_bar.update()
 

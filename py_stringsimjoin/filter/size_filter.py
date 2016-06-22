@@ -10,7 +10,7 @@ from py_stringsimjoin.filter.filter import Filter
 from py_stringsimjoin.filter.filter_utils import get_size_lower_bound
 from py_stringsimjoin.filter.filter_utils import get_size_upper_bound
 from py_stringsimjoin.index.size_index import SizeIndex
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table
+from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list
 from py_stringsimjoin.utils.helper_functions import \
                                                  find_output_attribute_indices
 from py_stringsimjoin.utils.helper_functions import \
@@ -198,17 +198,15 @@ def _filter_tables_split(ltable, rtable,
     r_filter_attr_index = r_columns.index(r_filter_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
-    # build a dictionary on ltable
-    ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                        l_filter_attr_index)
+    # convert ltable into a list of tuples
+    ltable_list = convert_dataframe_to_list(ltable, l_filter_attr_index)
 
-    # build a dictionary on rtable
-    rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                        r_filter_attr_index)
+    # convert rtable into a list of tuples
+    rtable_list = convert_dataframe_to_list(rtable, r_filter_attr_index)
 
     # Build size index over ltable
-    size_index = SizeIndex(ltable_dict.values(), l_key_attr_index,
-                           l_filter_attr_index, size_filter.tokenizer)
+    size_index = SizeIndex(ltable_list, l_filter_attr_index,
+                           size_filter.tokenizer)
     size_index.build()
 
     output_rows = []
@@ -216,8 +214,7 @@ def _filter_tables_split(ltable, rtable,
                              r_out_attrs is not None)
     prog_bar = pyprind.ProgBar(len(rtable))
 
-    for r_row in rtable_dict.values():
-        r_id = r_row[r_key_attr_index]
+    for r_row in rtable_list:
         r_string = str(r_row[r_filter_attr_index])
 
         r_num_tokens = len(size_filter.tokenizer.tokenize(r_string))
@@ -244,12 +241,14 @@ def _filter_tables_split(ltable, rtable,
         for cand in candidates:
             if has_output_attributes:
                 output_row = get_output_row_from_tables(
-                                     ltable_dict[cand], r_row,
-                                     cand, r_id, 
+                                     ltable_list[cand], r_row,
+                                     l_key_attr_index, r_key_attr_index, 
                                      l_out_attrs_indices, r_out_attrs_indices)
-                output_rows.append(output_row)
             else:
-                output_rows.append([cand, r_id])
+                output_row = [ltable_list[cand][l_key_attr_index],
+                              r_row[r_key_attr_index]]
+
+            output_rows.append(output_row)
 
         prog_bar.update()
 

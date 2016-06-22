@@ -7,7 +7,7 @@ from py_stringsimjoin.filter.position_filter import PositionFilter, \
     _find_candidates as find_candidates_position_filter
 from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.index.position_index import PositionIndex
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
+from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables 
 from py_stringsimjoin.utils.simfunctions import get_sim_function
@@ -36,33 +36,29 @@ def set_sim_join(ltable, rtable,
     r_join_attr_index = r_columns.index(r_join_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
-    # build a dictionary on ltable
-    ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                        l_join_attr_index)
+    # convert ltable into a list of tuples
+    ltable_list = convert_dataframe_to_list(ltable, l_join_attr_index)
 
-    # build a dictionary on rtable
-    rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                        r_join_attr_index)
+    # convert rtable into a list of tuples
+    rtable_list = convert_dataframe_to_list(rtable, r_join_attr_index)
 
     # generate token ordering using tokens in l_join_attr
     # and r_join_attr
     token_ordering = gen_token_ordering_for_tables(
-                         [ltable_dict.values(),
-                          rtable_dict.values()],
-                         [l_join_attr_index,
-                          r_join_attr_index],
+                         [ltable_list, rtable_list],
+                         [l_join_attr_index, r_join_attr_index],
                          tokenizer, sim_measure_type)
 
     # Tokenize l_join_attr and cache it. By doing so,
     # we tokenize l_join_attr only once.
-    l_join_attr_dict = {}
-    for row in ltable_dict.values():
-        l_join_attr_dict[row[l_key_attr_index]] = order_using_token_ordering(
+    l_join_attr_list = []
+    for row in ltable_list:
+        l_tokens = order_using_token_ordering(
             tokenizer.tokenize(str(row[l_join_attr_index])), token_ordering)
+        l_join_attr_list.append(l_tokens)
 
     # Build position index on l_join_attr
-    position_index = PositionIndex(ltable_dict.values(),
-                                   l_key_attr_index, l_join_attr_index,
+    position_index = PositionIndex(ltable_list, l_join_attr_index,
                                    tokenizer, sim_measure_type,
                                    threshold, token_ordering)
     position_index.build()
@@ -72,10 +68,9 @@ def set_sim_join(ltable, rtable,
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
-    prog_bar = pyprind.ProgBar(len(rtable_dict.keys()))
+    prog_bar = pyprind.ProgBar(len(rtable))
 
-    for r_row in rtable_dict.values():
-        r_id = r_row[r_key_attr_index]
+    for r_row in rtable_list:
         r_string = str(r_row[r_join_attr_index])
 
         r_ordered_tokens = order_using_token_ordering(
@@ -91,23 +86,23 @@ def set_sim_join(ltable, rtable,
 
         for cand, overlap in iteritems(candidate_overlap):
             if overlap > 0:
-                l_ordered_tokens = l_join_attr_dict[cand]
+                l_ordered_tokens = l_join_attr_list[cand]
                 sim_score = sim_fn(l_ordered_tokens, r_ordered_tokens)
                 if sim_score >= threshold:
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(
-                                         ltable_dict[cand], r_row,
-                                         cand, r_id,
+                                         ltable_list[cand], r_row,
+                                         l_key_attr_index, r_key_attr_index,
                                          l_out_attrs_indices,
                                          r_out_attrs_indices)
-                        if out_sim_score:
-                            output_row.append(sim_score)
-                        output_rows.append(output_row)
                     else:
-                        output_row = [cand, r_id]
-                        if out_sim_score:
-                            output_row.append(sim_score)
-                        output_rows.append(output_row)
+                        output_row = [ltable_list[cand][l_key_attr_index],
+                                      r_row[r_key_attr_index]]
+
+                    if out_sim_score:
+                        output_row.append(sim_score)
+                    output_rows.append(output_row)
+
         prog_bar.update()
 
     output_header = get_output_header_from_tables(

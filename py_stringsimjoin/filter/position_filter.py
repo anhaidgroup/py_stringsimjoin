@@ -13,7 +13,7 @@ from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.filter.filter_utils import get_size_lower_bound
 from py_stringsimjoin.filter.filter_utils import get_size_upper_bound
 from py_stringsimjoin.index.position_index import PositionIndex
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table
+from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list
 from py_stringsimjoin.utils.helper_functions import \
                                                  find_output_attribute_indices
 from py_stringsimjoin.utils.helper_functions import \
@@ -232,24 +232,21 @@ def _filter_tables_split(ltable, rtable,
     r_filter_attr_index = r_columns.index(r_filter_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
-    # build a dictionary on ltable
-    ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                        l_filter_attr_index)
+    # convert ltable into a list of tuples
+    ltable_list = convert_dataframe_to_list(ltable, l_filter_attr_index)
 
-    # build a dictionary on rtable
-    rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                        r_filter_attr_index)
+    # convert rtable into a list of tuples
+    rtable_list = convert_dataframe_to_list(rtable, r_filter_attr_index)
 
     # generate token ordering using tokens in l_filter_attr and r_filter_attr
     token_ordering = gen_token_ordering_for_tables(
-                                 [ltable_dict.values(), rtable_dict.values()],
+                                 [ltable_list, rtable_list],
                                  [l_filter_attr_index, r_filter_attr_index],
                                  position_filter.tokenizer,
                                  position_filter.sim_measure_type)
 
     # Build position index on l_filter_attr
-    position_index = PositionIndex(ltable_dict.values(),
-                                   l_key_attr_index, l_filter_attr_index,
+    position_index = PositionIndex(ltable_list, l_filter_attr_index,
                                    position_filter.tokenizer,
                                    position_filter.sim_measure_type,
                                    position_filter.threshold, token_ordering)
@@ -260,8 +257,7 @@ def _filter_tables_split(ltable, rtable,
                              r_out_attrs is not None)
     prog_bar = pyprind.ProgBar(len(rtable))
 
-    for r_row in rtable_dict.values():
-        r_id = r_row[r_key_attr_index]
+    for r_row in rtable_list:
         r_string = str(r_row[r_filter_attr_index])
 
         r_filter_attr_tokens = position_filter.tokenizer.tokenize(r_string)
@@ -279,12 +275,14 @@ def _filter_tables_split(ltable, rtable,
             if overlap > 0:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(
-                                     ltable_dict[cand], r_row,
-                                     cand, r_id, 
+                                     ltable_list[cand], r_row,
+                                     l_key_attr_index, r_key_attr_index, 
                                      l_out_attrs_indices, r_out_attrs_indices)
-                    output_rows.append(output_row)
                 else:
-                    output_rows.append([cand, r_id])
+                    output_row = [ltable_list[cand][l_key_attr_index],
+                                  r_row[r_key_attr_index]]
+
+                output_rows.append(output_row)
                     
         prog_bar.update()
 
