@@ -11,7 +11,7 @@ from py_stringsimjoin.filter.prefix_filter import PrefixFilter, _find_candidates
 from py_stringsimjoin.index.prefix_index import PrefixIndex
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_output_header_from_tables, \
-    get_output_row_from_tables, split_table, COMP_OP_MAP
+    get_output_row_from_tables, remove_non_ascii, split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
@@ -216,7 +216,14 @@ def _edit_distance_join_split(ltable, rtable,
         for cand in candidates:
             if r_len - threshold <= l_join_attr_list[cand] <= r_len + threshold:
                 l_row = ltable_list[cand]
-                edit_dist = sim_fn(str(l_row[l_join_attr_index]), r_string)
+
+                # Remove non-ascii characters as currently edit distance function
+                # cannot handle non-ascii characters. This can result in inconsistency
+                # in edit distance values for strings containing non-ascii characters.
+                edit_dist = sim_fn(remove_non_ascii(
+                                       str(l_row[l_join_attr_index])),
+                                   remove_non_ascii(r_string))
+
                 if comp_fn(edit_dist, threshold):
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(

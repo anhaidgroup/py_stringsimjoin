@@ -109,6 +109,10 @@ def split_table(table, num_splits):
     return splits
 
 
+def remove_non_ascii(s):
+    return ''.join(i for i in s if ord(i) < 128)
+
+
 def get_install_path():
     path_list = install_path.split(os.sep)
     return os.sep.join(path_list[0:len(path_list)-1])
