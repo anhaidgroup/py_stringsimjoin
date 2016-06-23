@@ -8,11 +8,12 @@ import pandas as pd
 import pyprind
 
 from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
-    find_output_attribute_indices, get_output_header_from_tables, \
-    get_output_row_from_tables, split_table
+    find_output_attribute_indices, get_num_processes_to_launch, \
+    get_output_header_from_tables, get_output_row_from_tables, \
+    split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_key_attr, validate_input_table, validate_tokenizer, \
-    validate_output_attrs
+    validate_comp_op, validate_key_attr, validate_input_table, \
+    validate_tokenizer, validate_output_attrs
 
 
 def apply_candset(candset,
@@ -20,12 +21,12 @@ def apply_candset(candset,
                   ltable, rtable,
                   l_key_attr, r_key_attr,
                   l_join_attr, r_join_attr,
-                  tokenizer, sim_function, threshold,
-                  comparison=operator.ge,
+                  tokenizer, sim_function,
+                  threshold, comp_op='>=',
                   l_out_attrs=None, r_out_attrs=None,
                   l_out_prefix='l_', r_out_prefix='r_',
                   out_sim_score=True, n_jobs = 1):
-    """Computes similarity measure on string pairs in candidate set to find matching pairs.
+    """Find matching string pairs from the candidate set by applying a similarity function.
 
     Specifically, computes the input similarity function on string pairs in the candidate set
     and checks if the score satisfies the input threshold (depending on the comparison operator).
@@ -55,7 +56,8 @@ def apply_candset(candset,
 
         threshold (float): similarity threshold to be satisfied.
 
-        comparison (function): comparison function to be used (defaults to greater than or equal to).
+        comp_op (string): Comparison operator. Supported values are '>=', '>', '<=', '<', '=' and '!='
+                          (defaults to '>=').
 
         l_out_attrs (list): list of attributes to be included in the output table from
                             left table (defaults to None).
@@ -83,7 +85,7 @@ def apply_candset(candset,
     """
 
     # check if the input candset is a dataframe
-    validate_input_table(ltable, 'candset')
+    validate_input_table(candset, 'candset')
 
     # check if the candset key attributes exist
     validate_attr(candset_l_key_attr, candset.columns,
@@ -112,6 +114,9 @@ def apply_candset(candset,
     # check if the input tokenizer is valid
     validate_tokenizer(tokenizer)
 
+    # check if the comparison operator is valid
+    validate_comp_op(comp_op)
+
     # check if the key attributes are unique and do not contain missing values
     validate_key_attr(l_key_attr, ltable, 'left table')
     validate_key_attr(r_key_attr, rtable, 'right table')
@@ -120,17 +125,20 @@ def apply_candset(candset,
     if candset.empty:
         return candset
 
+    # computes the actual number of jobs to launch.
+    n_jobs = get_num_processes_to_launch(n_jobs)
+
     if n_jobs == 1:
         return _apply_candset_split(candset,
-                                        candset_l_key_attr, candset_r_key_attr,
-                                        ltable, rtable,
-                                        l_key_attr, r_key_attr,
-                                        l_join_attr, r_join_attr,
-                                        tokenizer, sim_function, threshold,
-                                        comparison,
-                                        l_out_attrs, r_out_attrs,
-                                        l_out_prefix, r_out_prefix,
-                                        out_sim_score)
+                                    candset_l_key_attr, candset_r_key_attr,
+                                    ltable, rtable,
+                                    l_key_attr, r_key_attr,
+                                    l_join_attr, r_join_attr,
+                                    tokenizer, sim_function,
+                                    threshold, comp_op,
+                                    l_out_attrs, r_out_attrs,
+                                    l_out_prefix, r_out_prefix,
+                                    out_sim_score)
     else:
         candset_splits = split_table(candset, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(_apply_candset_split)(
@@ -139,8 +147,8 @@ def apply_candset(candset,
                                       ltable, rtable,
                                       l_key_attr, r_key_attr,
                                       l_join_attr, r_join_attr,
-                                      tokenizer, sim_function, threshold,
-                                      comparison,
+                                      tokenizer, sim_function,
+                                      threshold, comp_op,
                                       l_out_attrs, r_out_attrs,
                                       l_out_prefix, r_out_prefix,
                                       out_sim_score)
@@ -153,8 +161,8 @@ def _apply_candset_split(candset,
                          ltable, rtable,
                          l_key_attr, r_key_attr,
                          l_join_attr, r_join_attr,
-                         tokenizer, sim_function, threshold,
-                         comparison,
+                         tokenizer, sim_function,
+                         threshold, comp_op,
                          l_out_attrs, r_out_attrs,
                          l_out_prefix, r_out_prefix,
                          out_sim_score):
@@ -183,6 +191,7 @@ def _apply_candset_split(candset,
     candset_l_key_attr_index = candset_columns.index(candset_l_key_attr)
     candset_r_key_attr_index = candset_columns.index(candset_r_key_attr)
 
+    comp_fn = COMP_OP_MAP[comp_op]
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None) 
 
@@ -203,22 +212,19 @@ def _apply_candset_split(candset,
         
         sim_score = sim_function(l_apply_col_value, r_apply_col_value)
 
-        if comparison(sim_score, threshold):
+        if comp_fn(sim_score, threshold):
             if has_output_attributes:
                 output_row = get_output_row_from_tables(
-                                             l_row, r_row,
-                                             l_id, r_id,
-                                             l_out_attrs_indices,
-                                             r_out_attrs_indices)
+                                 l_row, r_row,
+                                 l_key_attr_index, r_key_attr_index,
+                                 l_out_attrs_indices,
+                                 r_out_attrs_indices)
                 output_row.insert(0, candset_row[0])
-                if out_sim_score:
-                    output_row.append(sim_score)
-                output_rows.append(output_row)
             else:
                 output_row = [candset_row[0], l_id, r_id]
-                if out_sim_score:
-                    output_row.append(sim_score)
-                output_rows.append(output_row)
+            if out_sim_score:
+                output_row.append(sim_score)
+            output_rows.append(output_row)
                     
         prog_bar.update()
 

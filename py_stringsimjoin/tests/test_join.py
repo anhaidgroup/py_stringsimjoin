@@ -138,8 +138,8 @@ def test_valid_join(scenario, sim_measure_type, args):
 
 def test_set_sim_join():
     # data to be tested.
-    test_scenario_1 = [('data/table_A.csv', 'A.ID', 'A.name'),
-                       ('data/table_B.csv', 'B.ID', 'B.name')]
+    test_scenario_1 = [(os.sep.join(['data', 'table_A.csv']), 'A.ID', 'A.name'),
+                       (os.sep.join(['data', 'table_B.csv']), 'B.ID', 'B.name')]
     data = {'TEST_SCENARIO_1' : test_scenario_1}
 
     # similarity measures to be tested.

@@ -17,7 +17,7 @@ from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_comp_op, validate_key_attr, validate_input_table, \
+    validate_comp_op_for_sim_measure, validate_key_attr, validate_input_table, \
     validate_threshold, validate_tokenizer, validate_output_attrs
 
 
@@ -112,7 +112,7 @@ def edit_distance_join(ltable, rtable,
     validate_threshold(threshold, 'EDIT_DISTANCE')
 
     # check if the comparison operator is valid
-    validate_comp_op(comp_op, 'EDIT_DISTANCE')
+    validate_comp_op_for_sim_measure(comp_op, 'EDIT_DISTANCE')
 
     # check if the output attributes exist
     validate_output_attrs(l_out_attrs, ltable.columns,

@@ -13,7 +13,8 @@ COMP_OP_MAP = {'>=': operator.ge,
                '>': operator.gt,
                '<=': operator.le,
                '<': operator.lt,
-               '=': operator.eq}
+               '=': operator.eq,
+               '!=': operator.ne}
 
 
 def get_output_row_from_tables(l_row, r_row,

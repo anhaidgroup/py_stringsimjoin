@@ -7,7 +7,7 @@ from py_stringsimjoin.join.set_sim_join import set_sim_join
 from py_stringsimjoin.utils.helper_functions import split_table, \
                                                     get_num_processes_to_launch
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_comp_op, validate_key_attr, validate_input_table, \
+    validate_comp_op_for_sim_measure, validate_key_attr, validate_input_table, \
     validate_threshold, validate_tokenizer, validate_output_attrs
 
 
@@ -91,7 +91,7 @@ def dice_join(ltable, rtable,
     validate_threshold(threshold, 'DICE')
 
     # check if the comparison operator is valid
-    validate_comp_op(comp_op, 'DICE')
+    validate_comp_op_for_sim_measure(comp_op, 'DICE')
 
     # check if the output attributes exist
     validate_output_attrs(l_out_attrs, ltable.columns,

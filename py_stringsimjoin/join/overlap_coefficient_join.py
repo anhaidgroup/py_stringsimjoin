@@ -12,7 +12,7 @@ from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     get_output_header_from_tables, get_output_row_from_tables, split_table, \
     COMP_OP_MAP
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_comp_op, validate_key_attr, validate_input_table, \
+    validate_comp_op_for_sim_measure, validate_key_attr, validate_input_table, \
     validate_threshold, validate_tokenizer, validate_output_attrs
 
 
@@ -96,7 +96,7 @@ def overlap_coefficient_join(ltable, rtable,
     validate_threshold(threshold, 'OVERLAP_COEFFICIENT')
 
     # check if the comparison operator is valid
-    validate_comp_op(comp_op, 'OVERLAP_COEFFICIENT')
+    validate_comp_op_for_sim_measure(comp_op, 'OVERLAP_COEFFICIENT')
 
     # check if the output attributes exist
     validate_output_attrs(l_out_attrs, ltable.columns,

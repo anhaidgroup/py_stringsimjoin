@@ -4,6 +4,8 @@ import pandas as pd
 
 from py_stringmatching.tokenizer.tokenizer import Tokenizer
 
+from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP
+
 
 def validate_input_table(table, table_label):
     """Check if the input table is a dataframe."""
@@ -77,7 +79,7 @@ def validate_sim_measure_type(sim_measure_type):
     return True
 
 
-def validate_comp_op(comp_op, sim_measure_type):
+def validate_comp_op_for_sim_measure(comp_op, sim_measure_type):
     """Check if the comparison operator is valid for the sim_measure_type."""
     if sim_measure_type == 'EDIT_DISTANCE':
         if comp_op not in ['<=', '<', '=']:
@@ -90,3 +92,10 @@ def validate_comp_op(comp_op, sim_measure_type):
                 'Supported comparison operators for ' + sim_measure_type + \
                 ' are >=, > and =.')
     return True
+
+
+def validate_comp_op(comp_op):
+    """Check if the comparison operator is valid."""
+    if comp_op not in COMP_OP_MAP.keys():
+        raise AssertionError('Comparison operator not supported. ' + \
+            'Supported comparison operators are >=, >, <=, <, = and !=.')        

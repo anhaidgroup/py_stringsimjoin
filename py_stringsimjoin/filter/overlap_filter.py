@@ -17,7 +17,7 @@ from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
 from py_stringsimjoin.utils.helper_functions import split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import overlap
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_comp_op, validate_key_attr, validate_input_table, \
+    validate_comp_op_for_sim_measure, validate_key_attr, validate_input_table, \
     validate_threshold, validate_tokenizer, validate_output_attrs
 
 
@@ -50,7 +50,7 @@ class OverlapFilter(Filter):
         validate_threshold(overlap_size, 'OVERLAP')
 
         # check if the comparison operator is valid
-        validate_comp_op(comp_op, 'OVERLAP')
+        validate_comp_op_for_sim_measure(comp_op, 'OVERLAP')
 
         self.tokenizer = tokenizer
         self.overlap_size = overlap_size
