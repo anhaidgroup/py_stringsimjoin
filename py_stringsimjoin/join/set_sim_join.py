@@ -21,7 +21,7 @@ def set_sim_join(ltable, rtable,
                  tokenizer, sim_measure_type, threshold, comp_op,
                  l_out_attrs, r_out_attrs,
                  l_out_prefix, r_out_prefix,
-                 out_sim_score):
+                 out_sim_score, show_progress):
     """Perform set similarity join for a split of ltable and rtable"""
 
     # find column indices of key attr, join attr and output attrs in ltable
@@ -71,7 +71,9 @@ def set_sim_join(ltable, rtable,
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
-    prog_bar = pyprind.ProgBar(len(rtable))
+
+    if show_progress:
+        prog_bar = pyprind.ProgBar(len(rtable_list))
 
     for r_row in rtable_list:
         r_string = str(r_row[r_join_attr_index])
@@ -106,7 +108,8 @@ def set_sim_join(ltable, rtable,
                         output_row.append(sim_score)
                     output_rows.append(output_row)
 
-        prog_bar.update()
+        if show_progress:
+            prog_bar.update()
 
     output_header = get_output_header_from_tables(
                         l_key_attr, r_key_attr,

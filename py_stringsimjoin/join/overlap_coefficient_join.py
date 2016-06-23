@@ -22,7 +22,7 @@ def overlap_coefficient_join(ltable, rtable,
                              tokenizer, threshold, comp_op='>=',
                              l_out_attrs=None, r_out_attrs=None,
                              l_out_prefix='l_', r_out_prefix='r_',
-                             out_sim_score=True, n_jobs=1):
+                             out_sim_score=True, n_jobs=1, show_progress=True):
     """Join two tables using overlap coefficient.
 
     Finds tuple pairs from left table and right table such that the overlap coefficient between
@@ -116,18 +116,19 @@ def overlap_coefficient_join(ltable, rtable,
                                            tokenizer, threshold, comp_op,
                                            l_out_attrs, r_out_attrs,
                                            l_out_prefix, r_out_prefix,
-                                           out_sim_score)
+                                           out_sim_score, show_progress)
     else:
         r_splits = split_table(rtable, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(_overlap_coefficient_join_split)(
-                                              ltable, r_split,
+                                              ltable, r_splits[job_index],
                                               l_key_attr, r_key_attr,
                                               l_join_attr, r_join_attr,
                                               tokenizer, threshold, comp_op,
                                               l_out_attrs, r_out_attrs,
                                               l_out_prefix, r_out_prefix,
-                                              out_sim_score)
-                                          for r_split in r_splits)
+                                              out_sim_score,
+                                      (show_progress and (job_index==n_jobs-1)))
+                                          for job_index in range(n_jobs))
         output_table = pd.concat(results)
 
     output_table.insert(0, '_id', range(0, len(output_table)))
@@ -140,7 +141,7 @@ def _overlap_coefficient_join_split(ltable, rtable,
                                     tokenizer, threshold, comp_op,
                                     l_out_attrs, r_out_attrs,
                                     l_out_prefix, r_out_prefix,
-                                    out_sim_score):
+                                    out_sim_score, show_progress):
     """Perform overlap coefficient join for a split of ltable and rtable"""
     # find column indices of key attr, join attr and output attrs in ltable
     l_columns = list(ltable.columns.values)
@@ -170,7 +171,9 @@ def _overlap_coefficient_join_split(ltable, rtable,
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
-    prog_bar = pyprind.ProgBar(len(rtable))
+
+    if show_progress:
+        prog_bar = pyprind.ProgBar(len(rtable_list))
 
     for r_row in rtable_list:
         r_string = str(r_row[r_join_attr_index])
@@ -199,7 +202,8 @@ def _overlap_coefficient_join_split(ltable, rtable,
                     output_row.append(sim_score)
                 output_rows.append(output_row)
 
-        prog_bar.update()
+        if show_progress:
+            prog_bar.update()
 
     output_header = get_output_header_from_tables(l_key_attr, r_key_attr,
                                                   l_out_attrs, r_out_attrs,

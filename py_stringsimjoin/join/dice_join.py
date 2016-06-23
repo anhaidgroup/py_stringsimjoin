@@ -17,7 +17,7 @@ def dice_join(ltable, rtable,
               tokenizer, threshold, comp_op='>=',
               l_out_attrs=None, r_out_attrs=None,
               l_out_prefix='l_', r_out_prefix='r_',
-              out_sim_score=True, n_jobs=1):
+              out_sim_score=True, n_jobs=1, show_progress=True):
     """Join two tables using Dice similarity measure.
 
     Finds tuple pairs from left table and right table such that the Dice similarity between
@@ -112,21 +112,22 @@ def dice_join(ltable, rtable,
                                     threshold, comp_op,
                                     l_out_attrs, r_out_attrs,
                                     l_out_prefix, r_out_prefix,
-                                    out_sim_score)
+                                    out_sim_score, show_progress)
         output_table.insert(0, '_id', range(0, len(output_table)))
         return output_table
     else:
         r_splits = split_table(rtable, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(set_sim_join)(
-                                              ltable, r_split,
+                                              ltable, r_splits[job_index],
                                               l_key_attr, r_key_attr,
                                               l_join_attr, r_join_attr,
                                               tokenizer, 'DICE',
                                               threshold, comp_op,
                                               l_out_attrs, r_out_attrs,
                                               l_out_prefix, r_out_prefix,
-                                              out_sim_score)
-                                          for r_split in r_splits)
+                                              out_sim_score,
+                                      (show_progress and (job_index==n_jobs-1)))
+                                          for job_index in range(n_jobs))
         output_table = pd.concat(results)
         output_table.insert(0, '_id', range(0, len(output_table)))
         return output_table

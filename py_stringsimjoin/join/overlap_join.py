@@ -7,7 +7,7 @@ def overlap_join(ltable, rtable,
                  tokenizer, threshold, comp_op='>=',
                  l_out_attrs=None, r_out_attrs=None,
                  l_out_prefix='l_', r_out_prefix='r_',
-                 out_sim_score=True, n_jobs=1):
+                 out_sim_score=True, n_jobs=1, show_progress=True):
     """Join two tables using overlap measure.
 
     Finds tuple pairs from left table and right table such that the overlap between
@@ -63,4 +63,4 @@ def overlap_join(ltable, rtable,
                                         l_join_attr, r_join_attr,
                                         l_out_attrs, r_out_attrs,
                                         l_out_prefix, r_out_prefix,
-                                        out_sim_score, n_jobs)
+                                        out_sim_score, n_jobs, show_progress)

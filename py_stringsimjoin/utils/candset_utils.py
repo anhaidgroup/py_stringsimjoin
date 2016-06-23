@@ -25,7 +25,7 @@ def apply_candset(candset,
                   threshold, comp_op='>=',
                   l_out_attrs=None, r_out_attrs=None,
                   l_out_prefix='l_', r_out_prefix='r_',
-                  out_sim_score=True, n_jobs = 1):
+                  out_sim_score=True, n_jobs = 1, show_progress=True):
     """Find matching string pairs from the candidate set by applying a similarity function.
 
     Specifically, computes the input similarity function on string pairs in the candidate set
@@ -138,11 +138,11 @@ def apply_candset(candset,
                                     threshold, comp_op,
                                     l_out_attrs, r_out_attrs,
                                     l_out_prefix, r_out_prefix,
-                                    out_sim_score)
+                                    out_sim_score, show_progress)
     else:
         candset_splits = split_table(candset, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(_apply_candset_split)(
-                                      candset_split,
+                                      candset_splits[job_index],
                                       candset_l_key_attr, candset_r_key_attr,
                                       ltable, rtable,
                                       l_key_attr, r_key_attr,
@@ -151,8 +151,9 @@ def apply_candset(candset,
                                       threshold, comp_op,
                                       l_out_attrs, r_out_attrs,
                                       l_out_prefix, r_out_prefix,
-                                      out_sim_score)
-                                  for candset_split in candset_splits)
+                                      out_sim_score,
+                                      (show_progress and (job_index==n_jobs-1)))
+                                          for job_index in range(n_jobs))
         return pd.concat(results)
 
 
@@ -165,7 +166,7 @@ def _apply_candset_split(candset,
                          threshold, comp_op,
                          l_out_attrs, r_out_attrs,
                          l_out_prefix, r_out_prefix,
-                         out_sim_score):
+                         out_sim_score, show_progress):
     # find column indices of key attr, join attr and output attrs in ltable
     l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)
@@ -196,7 +197,10 @@ def _apply_candset_split(candset,
                              r_out_attrs is not None) 
 
     output_rows = []
-    prog_bar = pyprind.ProgBar(len(candset))
+
+    if show_progress:
+        prog_bar = pyprind.ProgBar(len(candset))
+
     for candset_row in candset.itertuples(index = False):
         l_id = candset_row[candset_l_key_attr_index]
         r_id = candset_row[candset_r_key_attr_index]
@@ -225,8 +229,9 @@ def _apply_candset_split(candset,
             if out_sim_score:
                 output_row.append(sim_score)
             output_rows.append(output_row)
-                    
-        prog_bar.update()
+
+        if show_progress:                    
+            prog_bar.update()
 
     output_header = get_output_header_from_tables(
                         l_key_attr, r_key_attr,

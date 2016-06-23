@@ -122,7 +122,7 @@ class SuffixFilter(Filter):
                       l_key_attr, r_key_attr,
                       l_filter_attr, r_filter_attr,
                       l_out_attrs=None, r_out_attrs=None,
-                      l_out_prefix='l_', r_out_prefix='r_'):
+                      l_out_prefix='l_', r_out_prefix='r_', show_progress=True):
         """Finds candidate matching pairs of strings from the input tables.
 
         Args:
@@ -214,7 +214,9 @@ class SuffixFilter(Filter):
         output_rows = []
         has_output_attributes = (l_out_attrs is not None or
                                  r_out_attrs is not None)
-        prog_bar = pyprind.ProgBar(len(ltable))
+
+        if show_progress:
+            prog_bar = pyprind.ProgBar(len(ltable_list))
 
         for l_row in ltable_list:
             l_id = l_row[l_key_attr_index]
@@ -258,7 +260,8 @@ class SuffixFilter(Filter):
 
                     output_rows.append(output_row)
 
-            prog_bar.update()
+            if show_progress:
+                prog_bar.update()
 
         output_header = get_output_header_from_tables(
                             l_key_attr, r_key_attr,

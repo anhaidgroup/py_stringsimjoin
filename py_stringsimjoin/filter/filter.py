@@ -1,9 +1,10 @@
 from joblib import delayed
 from joblib import Parallel
 import pandas as pd
+import pyprind
 
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table
-from py_stringsimjoin.utils.helper_functions import split_table
+from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
+    get_num_processes_to_launch, split_table
 
 
 class Filter(object):
@@ -15,7 +16,7 @@ class Filter(object):
                        ltable, rtable,
                        l_key_attr, r_key_attr,
                        l_filter_attr, r_filter_attr,
-                       n_jobs=1):
+                       n_jobs=1, show_progress=True):
         """Finds candidate matching pairs of strings from the input candset.
 
         Args:
@@ -50,23 +51,28 @@ class Filter(object):
         # check for empty candset
         if candset.empty:
             return candset
+
+        # computes the actual number of jobs to launch.
+        n_jobs = get_num_processes_to_launch(n_jobs)
+
         if n_jobs == 1:
             return _filter_candset_split(candset,
                                          candset_l_key_attr, candset_r_key_attr,
                                          ltable, rtable,
                                          l_key_attr, r_key_attr,
                                          l_filter_attr, r_filter_attr,
-                                         self)
+                                         self, show_progress)
         else:
             candset_splits = split_table(candset, n_jobs)
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_candset_split)(
-                                      candset_split,
+                                      candset_splits[job_index],
                                       candset_l_key_attr, candset_r_key_attr,
                                       ltable, rtable,
                                       l_key_attr, r_key_attr,
                                       l_filter_attr, r_filter_attr,
-                                      self)
-                                  for candset_split in candset_splits)
+                                      self,
+                                      (show_progress and (job_index==n_jobs-1)))
+                                          for job_index in range(n_jobs))
             return pd.concat(results)
 
 
@@ -75,7 +81,7 @@ def _filter_candset_split(candset,
                           ltable, rtable,
                           l_key_attr, r_key_attr,
                           l_filter_attr, r_filter_attr,
-                          filter_object):
+                          filter_object, show_progress):
     # Find column indices of key attr and filter attr in ltable
     l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)
@@ -103,12 +109,16 @@ def _filter_candset_split(candset,
 
     valid_rows = []
 
+    if show_progress:
+        prog_bar = pyprind.ProgBar(len(candset))
+
     for candset_row in candset.itertuples(index = False):
         l_id = candset_row[candset_l_key_attr_index]
         r_id = candset_row[candset_r_key_attr_index]
 
         l_row = ltable_dict[l_id]
         r_row = rtable_dict[r_id]
+
         if (pd.isnull(l_row[l_filter_attr_index]) or
             pd.isnull(r_row[r_filter_attr_index]) or
             len(str(l_row[l_filter_attr_index])) == 0 or
@@ -118,5 +128,8 @@ def _filter_candset_split(candset,
             valid_rows.append(not filter_object.filter_pair(
                                                     l_row[l_filter_attr_index],
                                                     r_row[r_filter_attr_index]))
+
+        if show_progress:
+            prog_bar.update()
 
     return candset[valid_rows]
