@@ -1,4 +1,3 @@
-"""Candidate set utilities"""
 
 import operator
 
@@ -16,7 +15,7 @@ from py_stringsimjoin.utils.validation import validate_attr, \
     validate_tokenizer, validate_output_attrs
 
 
-def apply_candset(candset,
+def apply_matcher(candset,
                   candset_l_key_attr, candset_r_key_attr,
                   ltable, rtable,
                   l_key_attr, r_key_attr,
@@ -26,9 +25,9 @@ def apply_candset(candset,
                   l_out_attrs=None, r_out_attrs=None,
                   l_out_prefix='l_', r_out_prefix='r_',
                   out_sim_score=True, n_jobs = 1, show_progress=True):
-    """Find matching string pairs from the candidate set by applying a similarity function.
+    """Find matching string pairs from the candidate set by applying a matcher of form (sim_function comp_op threshold).
 
-    Specifically, computes the input similarity function on string pairs in the candidate set
+    Specifically, this method computes the input similarity function on string pairs in the candidate set
     and checks if the score satisfies the input threshold (depending on the comparison operator).
 
     Args:
@@ -129,7 +128,7 @@ def apply_candset(candset,
     n_jobs = get_num_processes_to_launch(n_jobs)
 
     if n_jobs == 1:
-        return _apply_candset_split(candset,
+        return _apply_matcher_split(candset,
                                     candset_l_key_attr, candset_r_key_attr,
                                     ltable, rtable,
                                     l_key_attr, r_key_attr,
@@ -141,7 +140,7 @@ def apply_candset(candset,
                                     out_sim_score, show_progress)
     else:
         candset_splits = split_table(candset, n_jobs)
-        results = Parallel(n_jobs=n_jobs)(delayed(_apply_candset_split)(
+        results = Parallel(n_jobs=n_jobs)(delayed(_apply_matcher_split)(
                                       candset_splits[job_index],
                                       candset_l_key_attr, candset_r_key_attr,
                                       ltable, rtable,
@@ -157,7 +156,7 @@ def apply_candset(candset,
         return pd.concat(results)
 
 
-def _apply_candset_split(candset,
+def _apply_matcher_split(candset,
                          candset_l_key_attr, candset_r_key_attr,
                          ltable, rtable,
                          l_key_attr, r_key_attr,

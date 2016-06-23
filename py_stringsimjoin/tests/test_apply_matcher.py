@@ -6,7 +6,7 @@ from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from py_stringmatching.similarity_measure.jaccard import Jaccard
 import pandas as pd
 
-from py_stringsimjoin.utils.candset_utils import apply_candset
+from py_stringsimjoin.matcher.apply_matcher import apply_matcher
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
 from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import get_sim_function
@@ -21,7 +21,7 @@ jaccard = Jaccard()
 def global_jaccard_func(a, b):
     return jaccard.get_raw_score(a, b)
 
-class ApplyCandsetTestCases(unittest.TestCase):
+class ApplyMatcherTestCases(unittest.TestCase):
     def setUp(self):
         ltable_path = os.sep.join(['data', 'table_A.csv'])
         rtable_path = os.sep.join(['data', 'table_B.csv'])
@@ -63,7 +63,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         self.ltable.drop('tmp_join_key', 1)
         self.rtable.drop('tmp_join_key', 1)
 
-    def test_apply_candset(self):
+    def test_apply_matcher(self):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
@@ -89,7 +89,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
                               self.l_key_attr, self.r_key_attr,
                               self.l_join_attr, self.r_join_attr)
 
-        output_candset = apply_candset(candset,
+        output_candset = apply_matcher(candset,
             DEFAULT_L_OUT_PREFIX+self.l_key_attr, DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable, self.l_key_attr, self.r_key_attr,
             self.l_join_attr, self.r_join_attr, tok, sim_func, threshold, comp_op,
@@ -115,7 +115,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         common_pairs = actual_pairs.intersection(expected_pairs)
         assert_equal(len(common_pairs), len(expected_pairs))
 
-    def test_apply_candset_n_jobs_above_1(self):
+    def test_apply_matcher_n_jobs_above_1(self):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
@@ -141,7 +141,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
                               self.l_key_attr, self.r_key_attr,
                               self.l_join_attr, self.r_join_attr)
 
-        output_candset = apply_candset(candset,
+        output_candset = apply_matcher(candset,
             DEFAULT_L_OUT_PREFIX+self.l_key_attr, DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable, self.l_key_attr, self.r_key_attr,
             self.l_join_attr, self.r_join_attr, tok, global_jaccard_func, threshold, comp_op,
@@ -172,7 +172,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset([],
+        apply_matcher([],
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
@@ -185,7 +185,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             'invalid_attr',
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
@@ -198,7 +198,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             'invalid_attr',
             self.ltable, self.rtable,
@@ -211,7 +211,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             [], self.rtable,
@@ -224,7 +224,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, [],
@@ -237,7 +237,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
@@ -250,7 +250,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
@@ -263,7 +263,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
@@ -276,7 +276,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
@@ -288,7 +288,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
     def test_invalid_tokenizer(self):
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
@@ -301,7 +301,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
@@ -314,7 +314,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
@@ -327,7 +327,7 @@ class ApplyCandsetTestCases(unittest.TestCase):
         tok = QgramTokenizer(qval=2, return_set=True)
         sim_func = get_sim_function('JACCARD')
         threshold = 0.3
-        apply_candset(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
+        apply_matcher(pd.DataFrame([], columns=['_id', 'l_A.ID', 'r_B.ID']),
             DEFAULT_L_OUT_PREFIX+self.l_key_attr,
             DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable,
