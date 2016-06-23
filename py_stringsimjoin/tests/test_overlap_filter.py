@@ -149,16 +149,16 @@ class FilterTablesTestCases(unittest.TestCase):
             l_out_prefix = args[8]
         expected_output_attrs.append(l_out_prefix + args[2])
 
+        # Check for r_out_prefix in args.
+        if len(args) > 9:
+            r_out_prefix = args[9]
+        expected_output_attrs.append(r_out_prefix + args[3])
+
         # Check for l_out_attrs in args.
         if len(args) > 6:
             if args[6]:
                 for attr in args[6]:
                     expected_output_attrs.append(l_out_prefix + attr)
-
-        # Check for r_out_prefix in args.
-        if len(args) > 9:
-            r_out_prefix = args[9]
-        expected_output_attrs.append(r_out_prefix + args[3])
 
         # Check for r_out_attrs in args.
         if len(args) > 7:

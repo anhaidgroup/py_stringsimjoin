@@ -96,16 +96,16 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=()):
         l_out_prefix = args[2]
     expected_output_attrs.append(l_out_prefix + l_key_attr)
 
+    # Check for r_out_prefix in args.
+    if len(args) > 3:
+        r_out_prefix = args[3]
+    expected_output_attrs.append(r_out_prefix + r_key_attr)
+
     # Check for l_out_attrs in args.
     if len(args) > 0:
         if args[0]:
             for attr in args[0]:
                 expected_output_attrs.append(l_out_prefix + attr)
-
-    # Check for r_out_prefix in args.
-    if len(args) > 3:
-        r_out_prefix = args[3]
-    expected_output_attrs.append(r_out_prefix + r_key_attr)
 
     # Check for r_out_attrs in args.
     if len(args) > 1:

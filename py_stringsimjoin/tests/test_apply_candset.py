@@ -97,8 +97,8 @@ class ApplyCandsetTestCases(unittest.TestCase):
 
         expected_output_attrs=['_id',
                                DEFAULT_L_OUT_PREFIX + self.l_key_attr,
-                               DEFAULT_L_OUT_PREFIX + self.l_join_attr,
                                DEFAULT_R_OUT_PREFIX + self.r_key_attr,
+                               DEFAULT_L_OUT_PREFIX + self.l_join_attr,
                                DEFAULT_R_OUT_PREFIX + self.r_join_attr,
                                '_sim_score']
 
@@ -149,8 +149,8 @@ class ApplyCandsetTestCases(unittest.TestCase):
 
         expected_output_attrs=['_id',
                                DEFAULT_L_OUT_PREFIX + self.l_key_attr,
-                               DEFAULT_L_OUT_PREFIX + self.l_join_attr,
                                DEFAULT_R_OUT_PREFIX + self.r_key_attr,
+                               DEFAULT_L_OUT_PREFIX + self.l_join_attr,
                                DEFAULT_R_OUT_PREFIX + self.r_join_attr,
                                '_sim_score']
 

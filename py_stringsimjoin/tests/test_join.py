@@ -98,16 +98,16 @@ def test_valid_join(scenario, sim_measure_type, args):
         l_out_prefix = args[5]
     expected_output_attrs.append(l_out_prefix + l_key_attr)
 
+    # Check for r_out_prefix in args.
+    if len(args) > 6:
+        r_out_prefix = args[6]
+    expected_output_attrs.append(r_out_prefix + r_key_attr)
+
     # Check for l_out_attrs in args.
     if len(args) > 3:
         if args[3]:
             for attr in args[3]:
                 expected_output_attrs.append(l_out_prefix + attr)
-
-    # Check for r_out_prefix in args.
-    if len(args) > 6:
-        r_out_prefix = args[6]
-    expected_output_attrs.append(r_out_prefix + r_key_attr)
 
     # Check for r_out_attrs in args.
     if len(args) > 4:

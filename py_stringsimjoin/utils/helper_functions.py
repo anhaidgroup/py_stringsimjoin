@@ -26,13 +26,13 @@ def get_output_row_from_tables(l_row, r_row,
     # add ltable id attr
     output_row.append(l_row[l_key_attr_index])
 
+    # add rtable id attr
+    output_row.append(r_row[r_key_attr_index])
+
     # add ltable output attributes
     if l_out_attrs_indices:
         for l_attr_index in l_out_attrs_indices:
             output_row.append(l_row[l_attr_index])
-
-    # add rtable id attr
-    output_row.append(r_row[r_key_attr_index])
 
     # add rtable output attributes
     if r_out_attrs_indices:
@@ -58,11 +58,11 @@ def get_output_header_from_tables(l_key_attr, r_key_attr,
 
     output_header.append(l_out_prefix + l_key_attr)
 
+    output_header.append(r_out_prefix + r_key_attr)
+
     if l_out_attrs:
         for l_attr in l_out_attrs:
             output_header.append(l_out_prefix + l_attr)
-
-    output_header.append(r_out_prefix + r_key_attr)
 
     if r_out_attrs:
         for r_attr in r_out_attrs:
