@@ -10,8 +10,9 @@ import pyprind
 from py_stringsimjoin.filter.prefix_filter import PrefixFilter, _find_candidates
 from py_stringsimjoin.index.prefix_index import PrefixIndex
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
-    find_output_attribute_indices, get_output_header_from_tables, \
-    get_output_row_from_tables, remove_non_ascii, split_table, COMP_OP_MAP
+    find_output_attribute_indices, get_num_processes_to_launch, \
+    get_output_header_from_tables, get_output_row_from_tables, \
+    remove_non_ascii, split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
@@ -123,6 +124,9 @@ def edit_distance_join(ltable, rtable,
 
     # convert threshold to integer (incase if it is float)
     threshold = int(floor(threshold))
+
+    # computes the actual number of jobs to launch.
+    n_jobs = get_num_processes_to_launch(n_jobs)
 
     if n_jobs == 1:
         output_table = _edit_distance_join_split(ltable, rtable,

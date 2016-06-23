@@ -8,8 +8,9 @@ import pyprind
 from py_stringsimjoin.filter.overlap_filter import _find_candidates
 from py_stringsimjoin.index.inverted_index import InvertedIndex
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
-    find_output_attribute_indices, get_output_header_from_tables, \
-    get_output_row_from_tables, split_table, COMP_OP_MAP
+    find_output_attribute_indices, get_num_processes_to_launch, \
+    get_output_header_from_tables, get_output_row_from_tables, split_table, \
+    COMP_OP_MAP
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_comp_op, validate_key_attr, validate_input_table, \
     validate_threshold, validate_tokenizer, validate_output_attrs
@@ -104,6 +105,9 @@ def overlap_coefficient_join(ltable, rtable,
     # check if the key attributes are unique and do not contain missing values
     validate_key_attr(l_key_attr, ltable, 'left table')
     validate_key_attr(r_key_attr, rtable, 'right table')
+
+    # computes the actual number of jobs to launch.
+    n_jobs = get_num_processes_to_launch(n_jobs)
 
     if n_jobs == 1:
         output_table = _overlap_coefficient_join_split(ltable, rtable,

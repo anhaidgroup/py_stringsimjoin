@@ -1,4 +1,5 @@
 
+import multiprocessing
 import operator
 import os
 
@@ -111,6 +112,15 @@ def split_table(table, num_splits):
 
 def remove_non_ascii(s):
     return ''.join(i for i in s if ord(i) < 128)
+
+
+def get_num_processes_to_launch(n_jobs):        
+    # determine number of processes to launch parallely
+    num_procs = n_jobs
+    if n_jobs < 0:
+        num_cpus = multiprocessing.cpu_count()
+        num_procs = num_cpus + 1 + n_jobs
+    return max(num_procs, 1)
 
 
 def get_install_path():

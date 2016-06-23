@@ -12,7 +12,7 @@ from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list
 from py_stringsimjoin.utils.helper_functions import \
                                                  find_output_attribute_indices
 from py_stringsimjoin.utils.helper_functions import \
-                                                 get_output_header_from_tables
+        get_num_processes_to_launch, get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
 from py_stringsimjoin.utils.helper_functions import split_table
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
@@ -162,6 +162,9 @@ class PrefixFilter(Filter):
         # check if the key attributes are unique and do not contain missing values
         validate_key_attr(l_key_attr, ltable, 'left table')
         validate_key_attr(r_key_attr, rtable, 'right table')
+
+        # computes the actual number of jobs to launch.
+        n_jobs = get_num_processes_to_launch(n_jobs)
 
         if n_jobs == 1:
             output_table = _filter_tables_split(ltable, rtable,

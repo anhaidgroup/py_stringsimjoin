@@ -4,7 +4,8 @@ from joblib import Parallel
 import pandas as pd
 
 from py_stringsimjoin.join.set_sim_join import set_sim_join
-from py_stringsimjoin.utils.helper_functions import split_table
+from py_stringsimjoin.utils.helper_functions import split_table, \
+                                                    get_num_processes_to_launch
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_comp_op, validate_key_attr, validate_input_table, \
     validate_threshold, validate_tokenizer, validate_output_attrs
@@ -99,6 +100,9 @@ def jaccard_join(ltable, rtable,
     # check if the key attributes are unique and do not contain missing values
     validate_key_attr(l_key_attr, ltable, 'left table')
     validate_key_attr(r_key_attr, rtable, 'right table')
+
+    # computes the actual number of jobs to launch.
+    n_jobs = get_num_processes_to_launch(n_jobs)
 
     if n_jobs == 1:
         output_table = set_sim_join(ltable, rtable,
