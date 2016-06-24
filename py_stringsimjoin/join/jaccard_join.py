@@ -66,6 +66,8 @@ def jaccard_join(ltable, rtable,
             Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
             then n_jobs is set to 1.
 
+        show_progress (boolean): flag to indicate if task progress need to be shown (defaults to True).
+
     Returns:
         output table (dataframe)
     """

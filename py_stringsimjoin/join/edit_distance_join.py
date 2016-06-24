@@ -42,8 +42,6 @@ def edit_distance_join(ltable, rtable,
         strings. Hence, we need atleast one qgram to be in common between two input strings, to appear in the join
         output. For smaller strings, where all qgrams of the strings differ, we cannot process them.
         
-        We plan to make this method compute exact join result, in the next release.
-
     Args:
         ltable (dataframe): left input table.
 
@@ -82,6 +80,8 @@ def edit_distance_join(ltable, rtable,
             which is useful for debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
             Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
             then n_jobs is set to 1.
+
+        show_progress (boolean): flag to indicate if task progress need to be shown (defaults to True).
         
         tokenizer (Tokenizer object): tokenizer to be used for filtering, when edit distance
                                       measure is transformed into an overlap measure. This must be

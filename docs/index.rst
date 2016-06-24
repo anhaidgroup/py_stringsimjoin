@@ -13,7 +13,8 @@ Contents:
 
    join
    filter
-
+   matcher
+   profiler
 
 Indices and tables
 ==================
