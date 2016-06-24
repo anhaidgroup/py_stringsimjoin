@@ -10,6 +10,14 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
+   :caption: Getting Started
+
+   installation
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference
 
    join
    filter
