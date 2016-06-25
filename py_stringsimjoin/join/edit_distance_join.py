@@ -13,6 +13,8 @@ from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_num_processes_to_launch, \
     get_output_header_from_tables, get_output_row_from_tables, \
     remove_non_ascii, split_table, COMP_OP_MAP
+from py_stringsimjoin.utils.missing_value_handler import \
+    get_pairs_with_missing_value
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering

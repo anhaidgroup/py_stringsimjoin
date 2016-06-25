@@ -42,26 +42,34 @@ def test_valid_join(scenario, sim_measure_type, args):
     rtable = pd.read_csv(os.path.join(os.path.dirname(__file__),
                                       rtable_path))
 
-    # remove rows with null value in join attribute 
-    ltable = ltable[pd.notnull(ltable[l_join_attr])]
-    rtable = rtable[pd.notnull(rtable[r_join_attr])]
 
-    # remove rows with empty value in join attribute 
-    ltable = ltable[ltable[l_join_attr].apply(len) > 0] 
-    rtable = rtable[rtable[r_join_attr].apply(len) > 0]
+    missing_pairs = set()
+    # if allow_missing flag is set, compute missing pairs.
+    if len(args) > 3 and args[3]:
+        for l_idx, l_row in ltable.iterrows():
+            for r_idx, r_row in rtable.iterrows(): 
+                if (pd.isnull(l_row[l_join_attr]) or
+                    pd.isnull(r_row[r_join_attr])):
+                    missing_pairs.add(','.join((str(l_row[l_key_attr]),
+                                                str(r_row[r_key_attr]))))
+
+    # remove rows with missing value in join attribute and create new dataframes
+    # consisting of rows with non-missing values.
+    ltable_not_missing = ltable[pd.notnull(ltable[l_join_attr])].copy()
+    rtable_not_missing = rtable[pd.notnull(rtable[r_join_attr])].copy()
 
     # generate cartesian product to be used as candset
-    ltable['tmp_join_key'] = 1
-    rtable['tmp_join_key'] = 1
-    cartprod = pd.merge(ltable[[l_key_attr,
+    ltable_not_missing['tmp_join_key'] = 1
+    rtable_not_missing['tmp_join_key'] = 1
+    cartprod = pd.merge(ltable_not_missing[[l_key_attr,
                                 l_join_attr,
                                 'tmp_join_key']],
-                        rtable[[r_key_attr,
+                        rtable_not_missing[[r_key_attr,
                                 r_join_attr,
                                 'tmp_join_key']],
                         on='tmp_join_key').drop('tmp_join_key', 1)
-    ltable.drop('tmp_join_key', 1)
-    rtable.drop('tmp_join_key', 1)
+    ltable_not_missing.drop('tmp_join_key', 1)
+    rtable_not_missing.drop('tmp_join_key', 1)
 
     sim_func = get_sim_function(sim_measure_type)
 
@@ -71,7 +79,7 @@ def test_valid_join(scenario, sim_measure_type, args):
                 args[0].tokenize(str(row[l_join_attr])),
                 args[0].tokenize(str(row[r_join_attr]))),
             axis=1)
-
+   
     comp_fn = COMP_OP_MAP[DEFAULT_COMP_OP]
     # Check for comp_op in args.
     if len(args) > 2:
@@ -82,6 +90,8 @@ def test_valid_join(scenario, sim_measure_type, args):
         if comp_fn(float(row['sim_score']), args[1]):
             expected_pairs.add(','.join((str(row[l_key_attr]),
                                          str(row[r_key_attr]))))
+
+    expected_pairs = expected_pairs.union(missing_pairs)
 
     # use join function to obtain actual output pairs.
     actual_candset = join_fn(ltable, rtable,
@@ -94,30 +104,30 @@ def test_valid_join(scenario, sim_measure_type, args):
     r_out_prefix = DEFAULT_R_OUT_PREFIX
 
     # Check for l_out_prefix in args.
-    if len(args) > 5:
-        l_out_prefix = args[5]
+    if len(args) > 6:
+        l_out_prefix = args[6]
     expected_output_attrs.append(l_out_prefix + l_key_attr)
 
     # Check for r_out_prefix in args.
-    if len(args) > 6:
-        r_out_prefix = args[6]
+    if len(args) > 7:
+        r_out_prefix = args[7]
     expected_output_attrs.append(r_out_prefix + r_key_attr)
 
     # Check for l_out_attrs in args.
-    if len(args) > 3:
-        if args[3]:
-            for attr in args[3]:
-                expected_output_attrs.append(l_out_prefix + attr)
-
-    # Check for r_out_attrs in args.
     if len(args) > 4:
         if args[4]:
             for attr in args[4]:
+                expected_output_attrs.append(l_out_prefix + attr)
+
+    # Check for r_out_attrs in args.
+    if len(args) > 5:
+        if args[5]:
+            for attr in args[5]:
                 expected_output_attrs.append(r_out_prefix + attr)
 
     # Check for out_sim_score in args. 
-    if len(args) > 7:
-        if args[7]:
+    if len(args) > 8:
+        if args[8]:
             expected_output_attrs.append('_sim_score')
     else:
         expected_output_attrs.append('_sim_score')
@@ -130,7 +140,7 @@ def test_valid_join(scenario, sim_measure_type, args):
     for idx, row in actual_candset.iterrows():
         actual_pairs.add(','.join((str(row[l_out_prefix + l_key_attr]),
                                    str(row[r_out_prefix + r_key_attr]))))
-
+   
     # verify whether the actual pairs and the expected pairs match.
     assert_equal(len(expected_pairs), len(actual_pairs))
     common_pairs = actual_pairs.intersection(expected_pairs)
@@ -157,10 +167,7 @@ def test_set_sim_join():
     tokenizers = {'SPACE_DELIMITER': DelimiterTokenizer(delim_set=[' '],
                                                         return_set=True),
                   '2_GRAM': QgramTokenizer(qval=2, return_set=True),
-                  '3_GRAM': QgramTokenizer(qval=3, return_set=True)}
-
-    # comparison operators to be tested.
-    comp_ops = ['>=', '>', '=']    
+                  '3_GRAM': QgramTokenizer(qval=3, return_set=True)}    
 
     # Test each combination of similarity measure, threshold and tokenizer
     # for different test scenarios.
@@ -168,20 +175,40 @@ def test_set_sim_join():
         for sim_measure_type in sim_measure_types:
             for threshold in thresholds.get(sim_measure_type):
                 for tok_type, tok in iteritems(tokenizers):
-                    for comp_op in comp_ops:
-                        test_function = partial(test_valid_join, scenario,
-                                            sim_measure_type, (tok, threshold, comp_op))
-                        test_function.description = 'Test ' + sim_measure_type + \
-                            ' with ' + str(threshold) + ' threshold and ' + \
-                            tok_type + ' tokenizer for ' + label + '.'
-                        yield test_function,
+                    test_function = partial(test_valid_join, scenario,
+                                        sim_measure_type, (tok, threshold))
+                    test_function.description = 'Test ' + sim_measure_type + \
+                        ' with ' + str(threshold) + ' threshold and ' + \
+                        tok_type + ' tokenizer for ' + label + '.'
+                    yield test_function,
+
+   # Test each similarity measure with different comparison operators.
+    for sim_measure_type in sim_measure_types:
+        for comp_op in ['>', '=']:
+            test_function = partial(test_valid_join, test_scenario_1,
+                                                 sim_measure_type,
+                                                 (tokenizers['SPACE_DELIMITER'],
+                                                  0.3, '>='))
+            test_function.description = 'Test ' + sim_measure_type + \
+                                        ' with comp_op ' + comp_op + '.'
+            yield test_function,
+
+    # Test each similarity measure with allow_missing set to True.
+    for sim_measure_type in sim_measure_types:
+        test_function = partial(test_valid_join, test_scenario_1,
+                                                 sim_measure_type,
+                                                 (tokenizers['SPACE_DELIMITER'],
+                                                  0.7, '>=', True))
+        test_function.description = 'Test ' + sim_measure_type + \
+                                    ' with allow_missing set to True.'
+        yield test_function,
 
     # Test each similarity measure with output attributes added.
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.7, '>=',
+                                                  0.7, '>=', False,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode']))
         test_function.description = 'Test ' + sim_measure_type + \
@@ -193,7 +220,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.7, '>=',
+                                                  0.7, '>=', False,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
                                                   'ltable.', 'rtable.'))
@@ -206,7 +233,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.7, '>=',
+                                                  0.7, '>=', False,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
                                                   'ltable.', 'rtable.',
@@ -220,7 +247,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.3, '>=',
+                                                  0.3, '>=', False,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
                                                   'ltable.', 'rtable.',
@@ -300,13 +327,13 @@ class JaccardJoinInvalidTestCases(unittest.TestCase):
     @raises(AssertionError)
     def test_jaccard_join_invalid_l_out_attr(self):
         jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                     self.tokenizer, self.threshold,
+                     self.tokenizer, self.threshold, '>=', False,
                      ['A.invalid_attr'], ['B.attr'])
 
     @raises(AssertionError)
     def test_jaccard_join_invalid_r_out_attr(self):
         jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                     self.tokenizer, self.threshold,
+                     self.tokenizer, self.threshold, '>=', False,
                      ['A.attr'], ['B.invalid_attr'])
 
 
@@ -380,13 +407,13 @@ class CosineJoinInvalidTestCases(unittest.TestCase):
     @raises(AssertionError)
     def test_cosine_join_invalid_l_out_attr(self):
         cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                    self.tokenizer, self.threshold,
+                    self.tokenizer, self.threshold, '>=', False,
                     ['A.invalid_attr'], ['B.attr'])
 
     @raises(AssertionError)
     def test_cosine_join_invalid_r_out_attr(self):
         cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                    self.tokenizer, self.threshold,
+                    self.tokenizer, self.threshold, '>=', False,
                     ['A.attr'], ['B.invalid_attr'])
 
 
@@ -460,13 +487,13 @@ class DiceJoinInvalidTestCases(unittest.TestCase):
     @raises(AssertionError)
     def test_dice_join_invalid_l_out_attr(self):
         dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                  self.tokenizer, self.threshold,
+                  self.tokenizer, self.threshold, '>=', False,
                   ['A.invalid_attr'], ['B.attr'])
 
     @raises(AssertionError)
     def test_dice_join_invalid_r_out_attr(self):
         dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                  self.tokenizer, self.threshold,
+                  self.tokenizer, self.threshold, '>=', False,
                   ['A.attr'], ['B.invalid_attr'])
 
 
@@ -622,12 +649,12 @@ class OverlapCoefficientJoinInvalidTestCases(unittest.TestCase):
     def test_overlap_coefficient_join_invalid_l_out_attr(self):
         overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
                                  'A.attr', 'B.attr',
-                                 self.tokenizer, self.threshold,
+                                 self.tokenizer, self.threshold, '>=', False,
                                  ['A.invalid_attr'], ['B.attr'])
 
     @raises(AssertionError)
     def test_overlap_coefficient_join_invalid_r_out_attr(self):
         overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
                                  'A.attr', 'B.attr',
-                                 self.tokenizer, self.threshold,
+                                 self.tokenizer, self.threshold, '>=', False,
                                  ['A.attr'], ['B.invalid_attr'])
