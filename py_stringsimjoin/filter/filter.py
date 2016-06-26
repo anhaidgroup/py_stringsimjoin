@@ -10,6 +10,8 @@ from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
 class Filter(object):
     """Filter base class.
     """
+    def __init__(self, allow_missing=False):
+        self.allow_missing = allow_missing
 
     def filter_candset(self, candset,
                        candset_l_key_attr, candset_r_key_attr,
@@ -121,15 +123,9 @@ def _filter_candset_split(candset,
         l_row = ltable_dict[l_id]
         r_row = rtable_dict[r_id]
 
-        if (pd.isnull(l_row[l_filter_attr_index]) or
-            pd.isnull(r_row[r_filter_attr_index]) or
-            len(str(l_row[l_filter_attr_index])) == 0 or
-            len(str(r_row[r_filter_attr_index])) == 0):
-            valid_rows.append(False)
-        else:
-            valid_rows.append(not filter_object.filter_pair(
-                                                    l_row[l_filter_attr_index],
-                                                    r_row[r_filter_attr_index]))
+        valid_rows.append(not filter_object.filter_pair(
+                                  l_row[l_filter_attr_index],
+                                  r_row[r_filter_attr_index]))
 
         if show_progress:
             prog_bar.update()

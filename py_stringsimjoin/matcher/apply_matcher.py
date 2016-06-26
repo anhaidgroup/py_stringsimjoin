@@ -22,6 +22,7 @@ def apply_matcher(candset,
                   l_join_attr, r_join_attr,
                   tokenizer, sim_function,
                   threshold, comp_op='>=',
+                  allow_missing=False,
                   l_out_attrs=None, r_out_attrs=None,
                   l_out_prefix='l_', r_out_prefix='r_',
                   out_sim_score=True, n_jobs = 1, show_progress=True):
@@ -136,7 +137,7 @@ def apply_matcher(candset,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
                                     tokenizer, sim_function,
-                                    threshold, comp_op,
+                                    threshold, comp_op, allow_missing,
                                     l_out_attrs, r_out_attrs,
                                     l_out_prefix, r_out_prefix,
                                     out_sim_score, show_progress)
@@ -149,7 +150,7 @@ def apply_matcher(candset,
                                       l_key_attr, r_key_attr,
                                       l_join_attr, r_join_attr,
                                       tokenizer, sim_function,
-                                      threshold, comp_op,
+                                      threshold, comp_op, allow_missing,
                                       l_out_attrs, r_out_attrs,
                                       l_out_prefix, r_out_prefix,
                                       out_sim_score,
@@ -164,7 +165,7 @@ def _apply_matcher_split(candset,
                          l_key_attr, r_key_attr,
                          l_join_attr, r_join_attr,
                          tokenizer, sim_function,
-                         threshold, comp_op,
+                         threshold, comp_op, allow_missing,
                          l_out_attrs, r_out_attrs,
                          l_out_prefix, r_out_prefix,
                          out_sim_score, show_progress):
@@ -182,11 +183,11 @@ def _apply_matcher_split(candset,
 
     # Build a dictionary on ltable
     ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                        l_join_attr_index)
+                                        l_join_attr_index, remove_null=False)
 
     # Build a dictionary on rtable
     rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                        r_join_attr_index)
+                                        r_join_attr_index, remove_null=False)
 
     # Find indices of l_key_attr and r_key_attr in candset
     candset_columns = list(candset.columns.values)
@@ -209,15 +210,28 @@ def _apply_matcher_split(candset,
         l_row = ltable_dict[l_id]
         r_row = rtable_dict[r_id]
         
-        l_apply_col_value = str(l_row[l_join_attr_index])
-        r_apply_col_value = str(r_row[r_join_attr_index])  
-        if tokenizer is not None:
-            l_apply_col_value = tokenizer.tokenize(l_apply_col_value)
-            r_apply_col_value = tokenizer.tokenize(r_apply_col_value)       
-        
-        sim_score = sim_function(l_apply_col_value, r_apply_col_value)
+        l_apply_col_value = l_row[l_join_attr_index]
+        r_apply_col_value = r_row[r_join_attr_index]
 
-        if comp_fn(sim_score, threshold):
+        allow_pair = False
+        # Check if one of the inputs is missing. If yes, check the allow_missing
+        # flag. If it is True, then add the pair to output. Else, continue.
+        # If none of the input is missing, then proceed to apply the sim_function. 
+        if pd.isnull(l_apply_col_value) or pd.isnull(r_apply_col_value):
+            if allow_missing:
+                allow_pair = True
+                sim_score = pd.np.NaN
+            else:
+                continue   
+        else:
+            if tokenizer is not None:
+                l_apply_col_value = tokenizer.tokenize(l_apply_col_value)
+                r_apply_col_value = tokenizer.tokenize(r_apply_col_value)       
+        
+            sim_score = sim_function(l_apply_col_value, r_apply_col_value)
+            allow_pair = comp_fn(sim_score, threshold)
+
+        if allow_pair: 
             if has_output_attributes:
                 output_row = get_output_row_from_tables(
                                  l_row, r_row,

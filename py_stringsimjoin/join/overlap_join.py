@@ -5,6 +5,7 @@ def overlap_join(ltable, rtable,
                  l_key_attr, r_key_attr,
                  l_join_attr, r_join_attr,
                  tokenizer, threshold, comp_op='>=',
+                 allow_missing=False,
                  l_out_attrs=None, r_out_attrs=None,
                  l_out_prefix='l_', r_out_prefix='r_',
                  out_sim_score=True, n_jobs=1, show_progress=True):
@@ -59,7 +60,7 @@ def overlap_join(ltable, rtable,
         output table (dataframe)
     """
 
-    overlap_filter = OverlapFilter(tokenizer, threshold, comp_op)
+    overlap_filter = OverlapFilter(tokenizer, threshold, comp_op, allow_missing)
     return overlap_filter.filter_tables(ltable, rtable,
                                         l_key_attr, r_key_attr,
                                         l_join_attr, r_join_attr,

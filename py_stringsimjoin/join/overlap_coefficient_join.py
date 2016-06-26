@@ -11,6 +11,8 @@ from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_num_processes_to_launch, \
     get_output_header_from_tables, get_output_row_from_tables, split_table, \
     COMP_OP_MAP
+from py_stringsimjoin.utils.missing_value_handler import \
+    get_pairs_with_missing_value
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_comp_op_for_sim_measure, validate_key_attr, validate_input_table, \
     validate_threshold, validate_tokenizer, validate_output_attrs
@@ -20,6 +22,7 @@ def overlap_coefficient_join(ltable, rtable,
                              l_key_attr, r_key_attr,
                              l_join_attr, r_join_attr,
                              tokenizer, threshold, comp_op='>=',
+                             allow_missing=False,
                              l_out_attrs=None, r_out_attrs=None,
                              l_out_prefix='l_', r_out_prefix='r_',
                              out_sim_score=True, n_jobs=1, show_progress=True):
@@ -132,6 +135,15 @@ def overlap_coefficient_join(ltable, rtable,
                                       (show_progress and (job_index==n_jobs-1)))
                                           for job_index in range(n_jobs))
         output_table = pd.concat(results)
+
+    if allow_missing:
+        missing_pairs = get_pairs_with_missing_value(ltable, rtable,
+                                                     l_key_attr, r_key_attr,
+                                                     l_join_attr, r_join_attr,
+                                                     l_out_attrs, r_out_attrs,
+                                                     l_out_prefix, r_out_prefix,
+                                                     out_sim_score, show_progress)
+        output_table = pd.concat([output_table, missing_pairs])
 
     output_table.insert(0, '_id', range(0, len(output_table)))
     return output_table

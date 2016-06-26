@@ -15,6 +15,8 @@ from py_stringsimjoin.utils.helper_functions import \
         get_num_processes_to_launch, get_output_header_from_tables
 from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
 from py_stringsimjoin.utils.helper_functions import split_table, COMP_OP_MAP
+from py_stringsimjoin.utils.missing_value_handler import \
+    get_pairs_with_missing_value
 from py_stringsimjoin.utils.simfunctions import overlap
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_comp_op_for_sim_measure, validate_key_attr, validate_input_table, \
@@ -42,7 +44,8 @@ class OverlapFilter(Filter):
         comp_op (string): An attribute to store the comparison operator.
     """
 
-    def __init__(self, tokenizer, overlap_size=1, comp_op='>='):
+    def __init__(self, tokenizer, overlap_size=1, comp_op='>=',
+                 allow_missing=False):
         # check if the input tokenizer is valid
         validate_tokenizer(tokenizer)
 
@@ -55,7 +58,8 @@ class OverlapFilter(Filter):
         self.tokenizer = tokenizer
         self.overlap_size = overlap_size
         self.comp_op = comp_op
-        super(self.__class__, self).__init__()
+
+        super(self.__class__, self).__init__(allow_missing)
 
     def filter_pair(self, lstring, rstring):
         """Checks if the input strings get dropped by the overlap filter.
@@ -66,6 +70,11 @@ class OverlapFilter(Filter):
         Returns:
             A flag indicating whether the string pair is dropped (boolean).
         """
+
+        # If one of the inputs is missing, then check the allow_missing flag.
+        # If it is set to True, then pass the pair. Else drop the pair.
+        if pd.isnull(lstring) or pd.isnull(rstring):
+            return (not self.allow_missing)
 
         # check for empty string
         if (not lstring) or (not rstring):
@@ -159,8 +168,6 @@ class OverlapFilter(Filter):
                                                 l_out_attrs, r_out_attrs,
                                                 l_out_prefix, r_out_prefix,
                                                 out_sim_score, show_progress)
-            output_table.insert(0, '_id', range(0, len(output_table)))
-            return output_table
         else:
             r_splits = split_table(rtable, n_jobs)
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_tables_split)(
@@ -174,8 +181,18 @@ class OverlapFilter(Filter):
                                       (show_progress and (job_index==n_jobs-1)))
                                           for job_index in range(n_jobs))
             output_table = pd.concat(results)
-            output_table.insert(0, '_id', range(0, len(output_table)))
-            return output_table
+
+        if self.allow_missing:
+            missing_pairs = get_pairs_with_missing_value(ltable, rtable,
+                                            l_key_attr, r_key_attr,
+                                            l_filter_attr, r_filter_attr,
+                                            l_out_attrs, r_out_attrs,
+                                            l_out_prefix, r_out_prefix,
+                                            out_sim_score, show_progress)
+            output_table = pd.concat([output_table, missing_pairs])
+
+        output_table.insert(0, '_id', range(0, len(output_table)))
+        return output_table
 
 
 def _filter_tables_split(ltable, rtable,

@@ -13,6 +13,8 @@ from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_num_processes_to_launch, \
     get_output_header_from_tables, get_output_row_from_tables, \
     remove_non_ascii, split_table, COMP_OP_MAP
+from py_stringsimjoin.utils.missing_value_handler import \
+    get_pairs_with_missing_value
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
@@ -25,6 +27,7 @@ def edit_distance_join(ltable, rtable,
                        l_key_attr, r_key_attr,
                        l_join_attr, r_join_attr,
                        threshold, comp_op='<=',
+                       allow_missing=False,
                        l_out_attrs=None, r_out_attrs=None,
                        l_out_prefix='l_', r_out_prefix='r_',
                        out_sim_score=True, n_jobs=1, show_progress=True,
@@ -136,8 +139,6 @@ def edit_distance_join(ltable, rtable,
                                l_out_attrs, r_out_attrs,
                                l_out_prefix, r_out_prefix,
                                out_sim_score, show_progress)
-        output_table.insert(0, '_id', range(0, len(output_table)))
-        return output_table
     else:
         r_splits = split_table(rtable, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(_edit_distance_join_split)(
@@ -151,8 +152,18 @@ def edit_distance_join(ltable, rtable,
                                       (show_progress and (job_index==n_jobs-1)))
                                           for job_index in range(n_jobs))
         output_table = pd.concat(results)
-        output_table.insert(0, '_id', range(0, len(output_table)))
-        return output_table
+
+    if allow_missing:
+        missing_pairs = get_pairs_with_missing_value(ltable, rtable,
+                                                     l_key_attr, r_key_attr,
+                                                     l_join_attr, r_join_attr,
+                                                     l_out_attrs, r_out_attrs,
+                                                     l_out_prefix, r_out_prefix,
+                                                     out_sim_score, show_progress)
+        output_table = pd.concat([output_table, missing_pairs])
+
+    output_table.insert(0, '_id', range(0, len(output_table)))
+    return output_table
 
 
 def _edit_distance_join_split(ltable, rtable,

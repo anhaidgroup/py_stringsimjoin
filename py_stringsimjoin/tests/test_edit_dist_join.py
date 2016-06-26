@@ -31,26 +31,33 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=()):
     rtable = pd.read_csv(os.path.join(os.path.dirname(__file__),
                                       rtable_path))
 
-    # remove rows with null value in join attribute 
-    ltable = ltable[pd.notnull(ltable[l_join_attr])]
-    rtable = rtable[pd.notnull(rtable[r_join_attr])]
+    missing_pairs = set()
+    # if allow_missing flag is set, compute missing pairs.
+    if len(args) > 0 and args[0]:
+        for l_idx, l_row in ltable.iterrows():
+            for r_idx, r_row in rtable.iterrows():
+                if (pd.isnull(l_row[l_join_attr]) or
+                    pd.isnull(r_row[r_join_attr])):
+                    missing_pairs.add(','.join((str(l_row[l_key_attr]),
+                                                str(r_row[r_key_attr]))))
 
-    # remove rows with empty value in join attribute 
-    ltable = ltable[ltable[l_join_attr].apply(len) > 0]
-    rtable = rtable[rtable[r_join_attr].apply(len) > 0]
+    # remove rows with missing value in join attribute and create new dataframes
+    # consisting of rows with non-missing values.
+    ltable_not_missing = ltable[pd.notnull(ltable[l_join_attr])].copy()
+    rtable_not_missing = rtable[pd.notnull(rtable[r_join_attr])].copy()
 
     # generate cartesian product to be used as candset
-    ltable['tmp_join_key'] = 1
-    rtable['tmp_join_key'] = 1
-    cartprod = pd.merge(ltable[[l_key_attr,
+    ltable_not_missing['tmp_join_key'] = 1
+    rtable_not_missing['tmp_join_key'] = 1
+    cartprod = pd.merge(ltable_not_missing[[l_key_attr,
                                 l_join_attr,
                                 'tmp_join_key']],
-                        rtable[[r_key_attr,
+                        rtable_not_missing[[r_key_attr,
                                 r_join_attr,
                                 'tmp_join_key']],
                         on='tmp_join_key').drop('tmp_join_key', 1)
-    ltable.drop('tmp_join_key', 1)
-    rtable.drop('tmp_join_key', 1)
+    ltable_not_missing.drop('tmp_join_key', 1)
+    rtable_not_missing.drop('tmp_join_key', 1)
 
     sim_measure_type = 'EDIT_DISTANCE'
     sim_func = get_sim_function(sim_measure_type)
@@ -80,6 +87,8 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=()):
                 expected_pairs.add(','.join((str(row[l_key_attr]),
                                              str(row[r_key_attr]))))
 
+    expected_pairs = expected_pairs.union(missing_pairs)
+
     # use join function to obtain actual output pairs.
     actual_candset = edit_distance_join(ltable, rtable,
                                         l_key_attr, r_key_attr,
@@ -92,30 +101,30 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=()):
     r_out_prefix = DEFAULT_R_OUT_PREFIX
 
     # Check for l_out_prefix in args.
-    if len(args) > 2:
-        l_out_prefix = args[2]
+    if len(args) > 3:
+        l_out_prefix = args[3]
     expected_output_attrs.append(l_out_prefix + l_key_attr)
 
     # Check for r_out_prefix in args.
-    if len(args) > 3:
-        r_out_prefix = args[3]
+    if len(args) > 4:
+        r_out_prefix = args[4]
     expected_output_attrs.append(r_out_prefix + r_key_attr)
 
     # Check for l_out_attrs in args.
-    if len(args) > 0:
-        if args[0]:
-            for attr in args[0]:
-                expected_output_attrs.append(l_out_prefix + attr)
-
-    # Check for r_out_attrs in args.
     if len(args) > 1:
         if args[1]:
             for attr in args[1]:
+                expected_output_attrs.append(l_out_prefix + attr)
+
+    # Check for r_out_attrs in args.
+    if len(args) > 2:
+        if args[2]:
+            for attr in args[2]:
                 expected_output_attrs.append(r_out_prefix + attr)
 
     # Check for out_sim_score in args. 
-    if len(args) > 4:
-        if args[4]:
+    if len(args) > 5:
+        if args[5]:
             expected_output_attrs.append('_sim_score')
     else:
         expected_output_attrs.append('_sim_score')
@@ -141,7 +150,7 @@ def test_edit_distance_join():
     data = {'TEST_SCENARIO_1' : test_scenario_1}
 
     # edit distance thresholds to be tested.
-    thresholds = [1, 2, 3, 4, 8, 9, 10]
+    thresholds = [1, 2, 3, 4, 8, 9]
 
     # tokenizers to be tested.
     tokenizers = {'2_GRAM': QgramTokenizer(qval=2),
@@ -164,11 +173,23 @@ def test_edit_distance_join():
                         tok_type + ' tokenizer for ' + label + '.'
                     yield test_function,
 
+    # Test with allow_missing flag set to True.
+    test_function = partial(test_valid_join, test_scenario_1,
+                                             tokenizers['2_GRAM'],
+                                             9, '<=',
+                                             (True,
+                                              ['A.birth_year', 'A.zipcode'],
+                                              ['B.name', 'B.zipcode']))
+    test_function.description = 'Test ' + sim_measure_type + \
+                                ' with allow_missing set to True.'
+    yield test_function,
+
     # Test with output attributes added.
     test_function = partial(test_valid_join, test_scenario_1,
                                              tokenizers['2_GRAM'],
-                                             1, '<=',
-                                             (['A.birth_year', 'A.zipcode'],
+                                             9, '<=',
+                                             (False, 
+                                              ['A.birth_year', 'A.zipcode'],
                                               ['B.name', 'B.zipcode']))
     test_function.description = 'Test ' + sim_measure_type + \
                                 ' with output attributes.'
@@ -177,8 +198,9 @@ def test_edit_distance_join():
     # Test with a different output prefix.
     test_function = partial(test_valid_join, test_scenario_1,
                                              tokenizers['2_GRAM'],
-                                             1, '<=',
-                                             (['A.birth_year', 'A.zipcode'],
+                                             9, '<=',
+                                             (False,
+                                              ['A.birth_year', 'A.zipcode'],
                                               ['B.name', 'B.zipcode'],
                                               'ltable.', 'rtable.'))
     test_function.description = 'Test ' + sim_measure_type + \
@@ -188,8 +210,9 @@ def test_edit_distance_join():
     # Test with output_sim_score disabled.
     test_function = partial(test_valid_join, test_scenario_1,
                                              tokenizers['2_GRAM'],
-                                             1, '<=',
-                                             (['A.birth_year', 'A.zipcode'],
+                                             9, '<=',
+                                             (False,
+                                              ['A.birth_year', 'A.zipcode'],
                                               ['B.name', 'B.zipcode'],
                                               'ltable.', 'rtable.',
                                               False))
@@ -258,11 +281,11 @@ class EditDistJoinInvalidTestCases(unittest.TestCase):
     @raises(AssertionError)
     def test_edit_distance_join_invalid_l_out_attr(self):
         edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                           self.threshold, self.comp_op,
+                           self.threshold, self.comp_op, False,
                            ['A.invalid_attr'], ['B.attr'])
 
     @raises(AssertionError)
     def test_edit_distance_join_invalid_r_out_attr(self):
         edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                           self.threshold, self.comp_op,
+                           self.threshold, self.comp_op, False,
                            ['A.attr'], ['B.invalid_attr'])

@@ -36,17 +36,16 @@ class ApplyMatcherTestCases(unittest.TestCase):
         self.l_join_attr = 'A.name'
         self.r_join_attr = 'B.name'
 
+        # copy of tables without removing any rows with missing value.
+        # needed to test allow_missing option.
+        self.orig_ltable = self.ltable.copy()
+        self.orig_rtable = self.rtable.copy()
+
         # remove rows with null value in join attribute 
         self.ltable = self.ltable[pd.notnull(
                           self.ltable[self.l_join_attr])]
         self.rtable = self.rtable[pd.notnull(
                           self.rtable[self.r_join_attr])]
-
-        # remove rows with empty value in join attribute 
-        self.ltable = self.ltable[
-            self.ltable[self.l_join_attr].apply(len) > 0]
-        self.rtable = self.rtable[
-            self.rtable[self.r_join_attr].apply(len) > 0]
 
         # generate cartesian product to be used as candset
         self.ltable['tmp_join_key'] = 1
@@ -78,21 +77,25 @@ class ApplyMatcherTestCases(unittest.TestCase):
             axis=1)
 
         comp_fn = COMP_OP_MAP[comp_op]
+        # compute expected output pairs
         expected_pairs = set()
         for idx, row in cartprod.iterrows():
             if comp_fn(float(row['sim_score']), threshold):
                 expected_pairs.add(','.join((str(row[self.l_key_attr]),
                                              str(row[self.r_key_attr]))))
 
+        # use overlap filter to obtain a candset.
         overlap_filter = OverlapFilter(tok, 1, comp_op)
         candset = overlap_filter.filter_tables(self.ltable, self.rtable,
                               self.l_key_attr, self.r_key_attr,
                               self.l_join_attr, self.r_join_attr)
 
+        # apply a jaccard matcher to the candset
         output_candset = apply_matcher(candset,
             DEFAULT_L_OUT_PREFIX+self.l_key_attr, DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable, self.l_key_attr, self.r_key_attr,
-            self.l_join_attr, self.r_join_attr, tok, sim_func, threshold, comp_op,
+            self.l_join_attr, self.r_join_attr, tok, sim_func, threshold,
+            comp_op, False,
             [self.l_join_attr], [self.r_join_attr], out_sim_score=True)
 
         expected_output_attrs=['_id',
@@ -130,22 +133,95 @@ class ApplyMatcherTestCases(unittest.TestCase):
             axis=1)
 
         comp_fn = COMP_OP_MAP[comp_op]
+        # compute expected output pairs
         expected_pairs = set()
         for idx, row in cartprod.iterrows():
             if comp_fn(float(row['sim_score']), threshold):
                 expected_pairs.add(','.join((str(row[self.l_key_attr]),
                                              str(row[self.r_key_attr]))))
 
+        # use overlap filter to obtain a candset.
         overlap_filter = OverlapFilter(tok, 1, comp_op)
         candset = overlap_filter.filter_tables(self.ltable, self.rtable,
                               self.l_key_attr, self.r_key_attr,
                               self.l_join_attr, self.r_join_attr)
 
+        # apply a jaccard matcher to the candset
         output_candset = apply_matcher(candset,
             DEFAULT_L_OUT_PREFIX+self.l_key_attr, DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable, self.l_key_attr, self.r_key_attr,
-            self.l_join_attr, self.r_join_attr, tok, global_jaccard_func, threshold, comp_op,
+            self.l_join_attr, self.r_join_attr, tok, global_jaccard_func,
+            threshold, comp_op, False,
             [self.l_join_attr], [self.r_join_attr], out_sim_score=True, n_jobs=2)
+
+        expected_output_attrs=['_id',
+                               DEFAULT_L_OUT_PREFIX + self.l_key_attr,
+                               DEFAULT_R_OUT_PREFIX + self.r_key_attr,
+                               DEFAULT_L_OUT_PREFIX + self.l_join_attr,
+                               DEFAULT_R_OUT_PREFIX + self.r_join_attr,
+                               '_sim_score']
+
+        # verify whether the output table has the necessary attributes.
+        assert_list_equal(list(output_candset.columns.values),
+                          expected_output_attrs)
+        actual_pairs = set()
+        for idx, row in output_candset.iterrows():
+            actual_pairs.add(','.join((str(row[DEFAULT_L_OUT_PREFIX + self.l_key_attr]),
+                                       str(row[DEFAULT_R_OUT_PREFIX + self.r_key_attr]))))
+
+        # verify whether the actual pairs and the expected pairs match.
+        assert_equal(len(expected_pairs), len(actual_pairs))
+        common_pairs = actual_pairs.intersection(expected_pairs)
+        assert_equal(len(common_pairs), len(expected_pairs))
+
+    def test_apply_matcher_with_allow_missing(self):
+        tok = QgramTokenizer(qval=2, return_set=True)
+        sim_func = get_sim_function('JACCARD')
+        threshold = 0.3
+        comp_op = '>='
+
+        # apply sim function to the entire cartesian product to obtain
+        # the expected set of pairs satisfying the threshold.
+        cartprod = self.cartprod
+        cartprod['sim_score'] = cartprod.apply(lambda row: sim_func(
+                tok.tokenize(str(row[self.l_join_attr])),
+                tok.tokenize(str(row[self.r_join_attr]))),
+            axis=1)
+
+        # compute expected output pairs
+        comp_fn = COMP_OP_MAP[comp_op]
+        expected_pairs = set()
+        for idx, row in cartprod.iterrows():
+            if comp_fn(float(row['sim_score']), threshold):
+                expected_pairs.add(','.join((str(row[self.l_key_attr]),
+                                             str(row[self.r_key_attr]))))
+
+        # find pairs that need to be included in output due to
+        # the presence of missing value in one of the join attributes.
+        missing_pairs = set()
+        for l_idx, l_row in self.orig_ltable.iterrows():
+            for r_idx, r_row in self.orig_rtable.iterrows():
+                if (pd.isnull(l_row[self.l_join_attr]) or
+                    pd.isnull(r_row[self.r_join_attr])):
+                    missing_pairs.add(','.join((str(l_row[self.l_key_attr]),
+                                                str(r_row[self.r_key_attr]))))
+
+        # add the pairs containing missing value to the set of expected pairs.
+        expected_pairs = expected_pairs.union(missing_pairs)
+
+        # use overlap filter to obtain a candset with allow_missing set to True. 
+        overlap_filter = OverlapFilter(tok, 1, comp_op, allow_missing=True)
+        candset = overlap_filter.filter_tables(self.orig_ltable, self.orig_rtable,
+                              self.l_key_attr, self.r_key_attr,
+                              self.l_join_attr, self.r_join_attr)
+
+        # apply a jaccard matcher to the candset with allow_missing set to True.
+        output_candset = apply_matcher(candset,
+            DEFAULT_L_OUT_PREFIX+self.l_key_attr, DEFAULT_R_OUT_PREFIX+self.r_key_attr,
+            self.orig_ltable, self.orig_rtable, self.l_key_attr, self.r_key_attr,
+            self.l_join_attr, self.r_join_attr, tok, sim_func, threshold,
+            comp_op, True,
+            [self.l_join_attr], [self.r_join_attr], out_sim_score=True)
 
         expected_output_attrs=['_id',
                                DEFAULT_L_OUT_PREFIX + self.l_key_attr,
