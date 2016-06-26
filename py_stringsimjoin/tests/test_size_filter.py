@@ -18,48 +18,62 @@ class FilterPairTestCases(unittest.TestCase):
     # tests for JACCARD measure
     def test_jac_dlm_08_prune(self):
         self.test_filter_pair('aa bb cc dd ee', 'xx yy',
-                              self.dlm, 'JACCARD', 0.8, True)
+                              self.dlm, 'JACCARD', 0.8, False, True)
 
     def test_jac_dlm_08_pass(self):
         self.test_filter_pair('aa bb cc dd ee', 'xx yy aa tt',
-                              self.dlm, 'JACCARD', 0.8, False)
+                              self.dlm, 'JACCARD', 0.8, False, False)
 
     # tests for COSINE measure 
     def test_cos_dlm_08_prune(self):
         self.test_filter_pair('aa bb cc dd ee', 'xx yy',
-                              self.dlm, 'COSINE', 0.8, True)
+                              self.dlm, 'COSINE', 0.8, False, True)
 
     def test_cos_dlm_08_pass(self):
         self.test_filter_pair('aa bb cc dd ee', 'xx yy aa tt',
-                              self.dlm, 'COSINE', 0.8, False)
+                              self.dlm, 'COSINE', 0.8, False, False)
 
     # tests for DICE measure 
     def test_dice_dlm_08_prune_lower(self):
         self.test_filter_pair('aa bb cc dd ee', 'xx yy uu',
-                              self.dlm, 'DICE', 0.8, True)
+                              self.dlm, 'DICE', 0.8, False, True)
 
     def test_dice_dlm_08_prune_upper(self):
         self.test_filter_pair('aa bb cc dd ee', 'cc xx yy aa tt uu ii oo',
-                              self.dlm, 'DICE', 0.8, True)
+                              self.dlm, 'DICE', 0.8, False, True)
 
     def test_dice_dlm_08_pass(self):
         self.test_filter_pair('aa bb cc dd ee', 'xx yy aa tt',
-                              self.dlm, 'DICE', 0.8, False)
+                              self.dlm, 'DICE', 0.8, False, False)
+
+    # test allow_missing flag
+    def test_size_filter_pass_missing_left(self):
+        self.test_filter_pair(None, 'fg ty',
+                              self.dlm, 'DICE', 0.8, True, False)
+
+    def test_size_filter_pass_missing_right(self):
+        self.test_filter_pair('fg ty', pd.np.NaN,
+                              self.dlm, 'DICE', 0.8, True, False)
+
+    def test_size_filter_pass_missing_both(self):
+        self.test_filter_pair(None, pd.np.NaN,
+                              self.dlm, 'DICE', 0.8, True, False)
 
     # tests for empty string input
     def test_empty_lstring(self):
-        self.test_filter_pair('ab', '', self.dlm, 'JACCARD', 0.8, True)
+        self.test_filter_pair('ab', '', self.dlm, 'JACCARD', 0.8, False, True)
 
     def test_empty_rstring(self):
-        self.test_filter_pair('', 'ab', self.dlm, 'JACCARD', 0.8, True)
+        self.test_filter_pair('', 'ab', self.dlm, 'JACCARD', 0.8, False, True)
 
     def test_empty_strings(self):
-        self.test_filter_pair('', '', self.dlm, 'JACCARD', 0.8, True)
+        self.test_filter_pair('', '', self.dlm, 'JACCARD', 0.8, False, True)
 
     @nottest
     def test_filter_pair(self, lstring, rstring, tokenizer, sim_measure_type,
-                         threshold, expected_output):
-        size_filter = SizeFilter(tokenizer, sim_measure_type, threshold)
+                         threshold, allow_missing, expected_output):
+        size_filter = SizeFilter(tokenizer, sim_measure_type, threshold,
+                                 allow_missing)
         actual_output = size_filter.filter_pair(lstring, rstring)
         assert_equal(actual_output, expected_output)
 
@@ -72,12 +86,14 @@ class FilterTablesTestCases(unittest.TestCase):
                                {'id': 2, 'attr':''},
                                {'id': 3, 'attr':'ab'},
                                {'id': 4, 'attr':'ll oo pp'},
-                               {'id': 5, 'attr':'xy xx zz fg'}])
+                               {'id': 5, 'attr':'xy xx zz fg'},
+                               {'id': 6, 'attr':None}])
         self.B = pd.DataFrame([{'id': 1, 'attr':'mn'},
                                {'id': 2, 'attr':'he ll'},
                                {'id': 3, 'attr':'xy pl ou'},
                                {'id': 4, 'attr':'aa'},
-                               {'id': 5, 'attr':'fg cd aa ef'}])
+                               {'id': 5, 'attr':'fg cd aa ef'},
+                               {'id': 6, 'attr':pd.np.NaN}])
 
         self.empty_table = pd.DataFrame(columns=['id', 'attr'])
         self.default_l_out_prefix = 'l_'
@@ -86,14 +102,14 @@ class FilterTablesTestCases(unittest.TestCase):
     # tests for JACCARD measure
     def test_jac_dlm_08(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,3', '5,5'])
-        self.test_filter_tables(self.dlm, 'JACCARD', 0.8,
+        self.test_filter_tables(self.dlm, 'JACCARD', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
 
     def test_jac_dlm_08_with_out_attrs(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,3', '5,5'])
-        self.test_filter_tables(self.dlm, 'JACCARD', 0.8,
+        self.test_filter_tables(self.dlm, 'JACCARD', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr']),
@@ -101,7 +117,7 @@ class FilterTablesTestCases(unittest.TestCase):
 
     def test_jac_dlm_08_with_out_prefix(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,3', '5,5'])
-        self.test_filter_tables(self.dlm, 'JACCARD', 0.8,
+        self.test_filter_tables(self.dlm, 'JACCARD', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr'],
@@ -112,7 +128,7 @@ class FilterTablesTestCases(unittest.TestCase):
     def test_cos_dlm_08(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,2', '4,3',
                               '4,5', '5,3', '5,5'])
-        self.test_filter_tables(self.dlm, 'COSINE', 0.8,
+        self.test_filter_tables(self.dlm, 'COSINE', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
@@ -120,7 +136,7 @@ class FilterTablesTestCases(unittest.TestCase):
     def test_cos_dlm_08_with_out_attrs(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,2', '4,3',
                               '4,5', '5,3', '5,5'])
-        self.test_filter_tables(self.dlm, 'COSINE', 0.8,
+        self.test_filter_tables(self.dlm, 'COSINE', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr']),
@@ -129,7 +145,7 @@ class FilterTablesTestCases(unittest.TestCase):
     def test_cos_dlm_08_with_out_prefix(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,2', '4,3',
                               '4,5', '5,3', '5,5'])
-        self.test_filter_tables(self.dlm, 'COSINE', 0.8,
+        self.test_filter_tables(self.dlm, 'COSINE', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr'],
@@ -140,7 +156,7 @@ class FilterTablesTestCases(unittest.TestCase):
     def test_dice_dlm_08(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,2', '4,3',
                               '4,5', '5,3', '5,5'])
-        self.test_filter_tables(self.dlm, 'DICE', 0.8,
+        self.test_filter_tables(self.dlm, 'DICE', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
@@ -148,7 +164,7 @@ class FilterTablesTestCases(unittest.TestCase):
     def test_dice_dlm_08_with_out_attrs(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,2', '4,3',
                               '4,5', '5,3', '5,5'])
-        self.test_filter_tables(self.dlm, 'DICE', 0.8,
+        self.test_filter_tables(self.dlm, 'DICE', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr']),
@@ -157,39 +173,50 @@ class FilterTablesTestCases(unittest.TestCase):
     def test_dice_dlm_08_with_out_prefix(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,2', '4,3',
                               '4,5', '5,3', '5,5'])
-        self.test_filter_tables(self.dlm, 'DICE', 0.8,
+        self.test_filter_tables(self.dlm, 'DICE', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr'],
                                 'ltable.', 'rtable.'),
                                 expected_pairs)
 
+    # test allow_missing flag
+    def test_jac_dlm_08_allow_missing(self):
+        expected_pairs = set(['1,5', '3,1', '3,4', '4,3', '5,5',
+                              '6,1', '6,2', '6,3', '6,4', '6,5',
+                              '6,6', '1,6', '2,6', '3,6', '4,6', '5,6'])
+        self.test_filter_tables(self.dlm, 'JACCARD', 0.8, True,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
+
     # tests for empty table input
     def test_empty_ltable(self):
         expected_pairs = set()
-        self.test_filter_tables(self.dlm, 'JACCARD', 0.8,
+        self.test_filter_tables(self.dlm, 'JACCARD', 0.8, False,
                                 (self.empty_table, self.B,
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
 
     def test_empty_rtable(self):
         expected_pairs = set()
-        self.test_filter_tables(self.dlm, 'JACCARD', 0.8,
+        self.test_filter_tables(self.dlm, 'JACCARD', 0.8, False,
                                 (self.A, self.empty_table,
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
 
     def test_empty_tables(self):
         expected_pairs = set()
-        self.test_filter_tables(self.dlm, 'JACCARD', 0.8,
+        self.test_filter_tables(self.dlm, 'JACCARD', 0.8, False,
                                 (self.empty_table, self.empty_table,
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
 
     @nottest
-    def test_filter_tables(self, tokenizer, sim_measure_type, threshold, args,
-                           expected_pairs):
-        size_filter = SizeFilter(tokenizer, sim_measure_type, threshold)
+    def test_filter_tables(self, tokenizer, sim_measure_type, threshold,
+                           allow_missing, args, expected_pairs):
+        size_filter = SizeFilter(tokenizer, sim_measure_type, threshold,
+                                 allow_missing)
         actual_candset = size_filter.filter_tables(*args)
 
         expected_output_attrs = ['_id']
@@ -241,12 +268,14 @@ class FilterCandsetTestCases(unittest.TestCase):
                                {'l_id': 2, 'l_attr':''},
                                {'l_id': 3, 'l_attr':'ab'},
                                {'l_id': 4, 'l_attr':'ll oo pp'},
-                               {'l_id': 5, 'l_attr':'xy xx zz fg'}])
+                               {'l_id': 5, 'l_attr':'xy xx zz fg'},
+                               {'l_id': 6, 'l_attr': pd.np.NaN}])
         self.B = pd.DataFrame([{'r_id': 1, 'r_attr':'mn'},
                                {'r_id': 2, 'r_attr':'he ll'},
                                {'r_id': 3, 'r_attr':'xy pl ou'},
                                {'r_id': 4, 'r_attr':'aa'},
-                               {'r_id': 5, 'r_attr':'fg cd aa ef'}])
+                               {'r_id': 5, 'r_attr':'fg cd aa ef'},
+                               {'r_id': 6, 'r_attr':None}])
 
         # generate cartesian product A x B to be used as candset
         self.A['tmp_join_key'] = 1
@@ -263,7 +292,7 @@ class FilterCandsetTestCases(unittest.TestCase):
     # tests for JACCARD measure
     def test_jac_dlm_08(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,3', '5,5'])
-        self.test_filter_candset(self.dlm, 'JACCARD', 0.8,
+        self.test_filter_candset(self.dlm, 'JACCARD', 0.8, False,
                                 (self.C, 'l_id', 'r_id',
                                  self.A, self.B,
                                 'l_id', 'r_id', 'l_attr', 'r_attr'),
@@ -273,7 +302,7 @@ class FilterCandsetTestCases(unittest.TestCase):
     def test_cos_dlm_08(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,2', '4,3',
                               '4,5', '5,3', '5,5'])
-        self.test_filter_candset(self.dlm, 'COSINE', 0.8,
+        self.test_filter_candset(self.dlm, 'COSINE', 0.8, False,
                                 (self.C, 'l_id', 'r_id',
                                  self.A, self.B,
                                 'l_id', 'r_id', 'l_attr', 'r_attr'),
@@ -283,7 +312,18 @@ class FilterCandsetTestCases(unittest.TestCase):
     def test_dice_dlm_08(self):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,2', '4,3',
                               '4,5', '5,3', '5,5'])
-        self.test_filter_candset(self.dlm, 'DICE', 0.8,
+        self.test_filter_candset(self.dlm, 'DICE', 0.8, False,
+                                (self.C, 'l_id', 'r_id',
+                                 self.A, self.B,
+                                'l_id', 'r_id', 'l_attr', 'r_attr'),
+                                expected_pairs)
+
+    # test allow_missing flag
+    def test_jac_dlm_08_allow_missing(self):
+        expected_pairs = set(['1,5', '3,1', '3,4', '4,3', '5,5',
+                              '6,1', '6,2', '6,3', '6,4', '6,5',
+                              '6,6', '1,6', '2,6', '3,6', '4,6', '5,6'])
+        self.test_filter_candset(self.dlm, 'JACCARD', 0.8, True,
                                 (self.C, 'l_id', 'r_id',
                                  self.A, self.B,
                                 'l_id', 'r_id', 'l_attr', 'r_attr'),
@@ -292,16 +332,17 @@ class FilterCandsetTestCases(unittest.TestCase):
     # tests for empty candset input
     def test_empty_candset(self):
         expected_pairs = set()
-        self.test_filter_candset(self.dlm, 'JACCARD', 0.8,
+        self.test_filter_candset(self.dlm, 'JACCARD', 0.8, False,
                                 (self.empty_candset, 'l_id', 'r_id',
                                  self.empty_A, self.empty_B,
                                 'l_id', 'r_id', 'l_attr', 'r_attr'),
                                 expected_pairs)
 
     @nottest
-    def test_filter_candset(self, tokenizer, sim_measure_type, threshold, args,
-                           expected_pairs):
-        size_filter = SizeFilter(tokenizer, sim_measure_type, threshold)
+    def test_filter_candset(self, tokenizer, sim_measure_type, threshold,
+                            allow_missing, args, expected_pairs):
+        size_filter = SizeFilter(tokenizer, sim_measure_type, threshold,
+                                 allow_missing)
         actual_output_candset = size_filter.filter_candset(*args)
 
         # verify whether the output table has the necessary attributes.

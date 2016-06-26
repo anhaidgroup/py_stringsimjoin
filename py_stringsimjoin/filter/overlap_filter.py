@@ -58,8 +58,8 @@ class OverlapFilter(Filter):
         self.tokenizer = tokenizer
         self.overlap_size = overlap_size
         self.comp_op = comp_op
-        self.allow_missing = allow_missing
-        super(self.__class__, self).__init__()
+
+        super(self.__class__, self).__init__(allow_missing)
 
     def filter_pair(self, lstring, rstring):
         """Checks if the input strings get dropped by the overlap filter.
@@ -70,6 +70,11 @@ class OverlapFilter(Filter):
         Returns:
             A flag indicating whether the string pair is dropped (boolean).
         """
+
+        # If one of the inputs is missing, then check the allow_missing flag.
+        # If it is set to True, then pass the pair. Else drop the pair.
+        if pd.isnull(lstring) or pd.isnull(rstring):
+            return (not self.allow_missing)
 
         # check for empty string
         if (not lstring) or (not rstring):
