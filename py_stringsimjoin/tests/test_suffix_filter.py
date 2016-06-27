@@ -226,7 +226,7 @@ class FilterTablesTestCases(unittest.TestCase):
         for idx, row in actual_candset.iterrows():
             actual_pairs.add(','.join((str(int(row[l_out_prefix + args[2]])),
                                        str(int(row[r_out_prefix + args[3]])))))
-        print actual_pairs, expected_pairs
+
         # verify whether the actual pairs and the expected pairs match.
         assert_equal(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
@@ -309,7 +309,7 @@ class FilterCandsetTestCases(unittest.TestCase):
         actual_pairs = set()
         for idx, row in actual_output_candset.iterrows():
             actual_pairs.add(','.join((str(row[args[1]]), str(row[args[2]]))))
-        print expected_pairs, actual_pairs
+
         # verify whether the actual pairs and the expected pairs match.
         assert_equal(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)

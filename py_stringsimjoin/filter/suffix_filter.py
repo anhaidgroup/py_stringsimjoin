@@ -101,8 +101,7 @@ class SuffixFilter(Filter):
                                                   self.threshold,
                                                   self.tokenizer)
 
-        hamming_dist_max = (l_num_tokens + r_num_tokens -
-                            2 * overlap_threshold)
+        hamming_dist_max = (l_num_tokens + r_num_tokens - 2 * overlap_threshold)
 
         hamming_dist = self._est_hamming_dist_lower_bound(
                                 l_suffix, r_suffix,
