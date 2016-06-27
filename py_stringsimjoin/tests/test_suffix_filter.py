@@ -153,6 +153,16 @@ class FilterTablesTestCases(unittest.TestCase):
                                 'ltable.', 'rtable.'),
                                 expected_pairs)
 
+    # test with n_jobs above 1
+    def test_jac_dlm_075_with_njobs_above_1(self):
+        expected_pairs = set(['3,4', '5,1'])
+        self.test_filter_tables(self.dlm, 'JACCARD', 0.75,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr',
+                                ['attr'], ['attr'],
+                                'ltable.', 'rtable.', 2),
+                                expected_pairs)
+
     # tests for empty table input
     def test_empty_ltable(self):
         expected_pairs = set()
@@ -211,12 +221,12 @@ class FilterTablesTestCases(unittest.TestCase):
         # verify whether the output table has the necessary attributes.
         assert_list_equal(list(actual_candset.columns.values),
                           expected_output_attrs)
-
+ 
         actual_pairs = set()
         for idx, row in actual_candset.iterrows():
-            actual_pairs.add(','.join((str(row[l_out_prefix + args[2]]),
-                                       str(row[r_out_prefix + args[3]]))))
-
+            actual_pairs.add(','.join((str(int(row[l_out_prefix + args[2]])),
+                                       str(int(row[r_out_prefix + args[3]])))))
+        print actual_pairs, expected_pairs
         # verify whether the actual pairs and the expected pairs match.
         assert_equal(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
@@ -252,7 +262,7 @@ class FilterCandsetTestCases(unittest.TestCase):
 
     # tests for JACCARD measure
     def test_jac_dlm_075(self):
-        expected_pairs = set(['1,5', '3,4', '5,1'])
+        expected_pairs = set(['1,5', '3,4', '5,1', '5,3'])
         self.test_filter_candset(self.dlm, 'JACCARD', 0.75,
                                 (self.C, 'l_id', 'r_id',
                                  self.A, self.B,
@@ -299,7 +309,7 @@ class FilterCandsetTestCases(unittest.TestCase):
         actual_pairs = set()
         for idx, row in actual_output_candset.iterrows():
             actual_pairs.add(','.join((str(row[args[1]]), str(row[args[2]]))))
-
+        print expected_pairs, actual_pairs
         # verify whether the actual pairs and the expected pairs match.
         assert_equal(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
