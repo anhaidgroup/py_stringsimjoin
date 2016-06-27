@@ -1,8 +1,9 @@
 
 import operator
+import types
 
-from joblib import delayed
-from joblib import Parallel
+from joblib import delayed, Parallel
+from six.moves import copyreg
 import pandas as pd
 import pyprind
 
@@ -10,9 +11,21 @@ from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
     find_output_attribute_indices, get_num_processes_to_launch, \
     get_output_header_from_tables, get_output_row_from_tables, \
     split_table, COMP_OP_MAP
+from py_stringsimjoin.utils.pickle import pickle_instance_method, \
+                                          unpickle_instance_method
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_comp_op, validate_key_attr, validate_input_table, \
     validate_tokenizer, validate_output_attrs
+
+
+# Register pickle and unpickle methods for handling instance methods.
+# This is because joblib doesn't pickle instance methods, by default.
+# Hence, if the sim_function supplied to apply_matcher is an instance
+# method, it will result in an error. To avoid this, we register custom
+# functions to pickle and unpickle instance methods. 
+copyreg.pickle(types.MethodType,
+               pickle_instance_method,
+               unpickle_instance_method)
 
 
 def apply_matcher(candset,

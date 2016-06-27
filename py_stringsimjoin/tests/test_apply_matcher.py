@@ -15,11 +15,6 @@ from py_stringsimjoin.utils.simfunctions import get_sim_function
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
 
-# define sim function wrapper to convert instance methods into a 
-# global function. So that, multiprocessing can pickle the sim function.  
-jaccard = Jaccard()
-def global_jaccard_func(a, b):
-    return jaccard.get_raw_score(a, b)
 
 class ApplyMatcherTestCases(unittest.TestCase):
     def setUp(self):
@@ -150,7 +145,7 @@ class ApplyMatcherTestCases(unittest.TestCase):
         output_candset = apply_matcher(candset,
             DEFAULT_L_OUT_PREFIX+self.l_key_attr, DEFAULT_R_OUT_PREFIX+self.r_key_attr,
             self.ltable, self.rtable, self.l_key_attr, self.r_key_attr,
-            self.l_join_attr, self.r_join_attr, tok, global_jaccard_func,
+            self.l_join_attr, self.r_join_attr, tok, Jaccard().get_raw_score,
             threshold, comp_op, False,
             [self.l_join_attr], [self.r_join_attr], out_sim_score=True, n_jobs=2)
 
