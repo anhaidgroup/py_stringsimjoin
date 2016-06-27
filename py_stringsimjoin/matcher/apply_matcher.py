@@ -8,9 +8,9 @@ import pandas as pd
 import pyprind
 
 from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
-    find_output_attribute_indices, get_num_processes_to_launch, \
-    get_output_header_from_tables, get_output_row_from_tables, \
-    split_table, COMP_OP_MAP
+    find_output_attribute_indices, get_attrs_to_project, \
+    get_num_processes_to_launch, get_output_header_from_tables, \
+    get_output_row_from_tables, remove_redundant_attrs, split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.pickle import pickle_instance_method, \
                                           unpickle_instance_method
 from py_stringsimjoin.utils.validation import validate_attr, \
@@ -140,13 +140,26 @@ def apply_matcher(candset,
     if candset.empty:
         return candset
 
+    # remove redundant attrs from output attrs.
+    l_out_attrs = remove_redundant_attrs(l_out_attrs, l_key_attr)
+    r_out_attrs = remove_redundant_attrs(r_out_attrs, r_key_attr)
+
+    # get attributes to project.  
+    l_proj_attrs = get_attrs_to_project(l_out_attrs, l_key_attr, l_join_attr)
+    r_proj_attrs = get_attrs_to_project(r_out_attrs, r_key_attr, r_join_attr)
+
+    # do a projection on the input dataframes. Note that this doesn't create a copy
+    # of the dataframes. It only creates a view on original dataframes.
+    ltable_projected = ltable[l_proj_attrs]
+    rtable_projected = rtable[r_proj_attrs]
+
     # computes the actual number of jobs to launch.
     n_jobs = get_num_processes_to_launch(n_jobs)
 
     if n_jobs == 1:
         return _apply_matcher_split(candset,
                                     candset_l_key_attr, candset_r_key_attr,
-                                    ltable, rtable,
+                                    ltable_projected, rtable_projected,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
                                     tokenizer, sim_function,
@@ -159,7 +172,7 @@ def apply_matcher(candset,
         results = Parallel(n_jobs=n_jobs)(delayed(_apply_matcher_split)(
                                       candset_splits[job_index],
                                       candset_l_key_attr, candset_r_key_attr,
-                                      ltable, rtable,
+                                      ltable_projected, rtable_projected,
                                       l_key_attr, r_key_attr,
                                       l_join_attr, r_join_attr,
                                       tokenizer, sim_function,

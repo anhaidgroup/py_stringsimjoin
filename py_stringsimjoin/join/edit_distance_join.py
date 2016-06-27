@@ -10,9 +10,10 @@ import pyprind
 from py_stringsimjoin.filter.prefix_filter import PrefixFilter, _find_candidates
 from py_stringsimjoin.index.prefix_index import PrefixIndex
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
-    find_output_attribute_indices, get_num_processes_to_launch, \
-    get_output_header_from_tables, get_output_row_from_tables, \
-    remove_non_ascii, split_table, COMP_OP_MAP
+    find_output_attribute_indices, get_attrs_to_project, \
+    get_num_processes_to_launch, get_output_header_from_tables, \
+    get_output_row_from_tables, remove_non_ascii, remove_redundant_attrs, \
+    split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.simfunctions import get_sim_function
@@ -128,11 +129,25 @@ def edit_distance_join(ltable, rtable,
     # convert threshold to integer (incase if it is float)
     threshold = int(floor(threshold))
 
+    # remove redundant attrs from output attrs.
+    l_out_attrs = remove_redundant_attrs(l_out_attrs, l_key_attr)
+    r_out_attrs = remove_redundant_attrs(r_out_attrs, r_key_attr)
+
+    # get attributes to project.  
+    l_proj_attrs = get_attrs_to_project(l_out_attrs, l_key_attr, l_join_attr)
+    r_proj_attrs = get_attrs_to_project(r_out_attrs, r_key_attr, r_join_attr)
+
+    # do a projection on the input dataframes. Note that this doesn't create a copy
+    # of the dataframes. It only creates a view on original dataframes.
+    ltable_projected = ltable[l_proj_attrs]
+    rtable_projected = rtable[r_proj_attrs]
+
     # computes the actual number of jobs to launch.
     n_jobs = get_num_processes_to_launch(n_jobs)
 
     if n_jobs == 1:
-        output_table = _edit_distance_join_split(ltable, rtable,
+        output_table = _edit_distance_join_split(
+                               ltable_projected, rtable_projected,
                                l_key_attr, r_key_attr,
                                l_join_attr, r_join_attr,
                                tokenizer, threshold, comp_op,
@@ -140,9 +155,9 @@ def edit_distance_join(ltable, rtable,
                                l_out_prefix, r_out_prefix,
                                out_sim_score, show_progress)
     else:
-        r_splits = split_table(rtable, n_jobs)
+        r_splits = split_table(rtable_projected, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(_edit_distance_join_split)(
-                                             ltable, r_splits[job_index],
+                                             ltable_projected, r_splits[job_index],
                                              l_key_attr, r_key_attr,
                                              l_join_attr, r_join_attr,
                                              tokenizer, threshold, comp_op,
@@ -154,12 +169,13 @@ def edit_distance_join(ltable, rtable,
         output_table = pd.concat(results)
 
     if allow_missing:
-        missing_pairs = get_pairs_with_missing_value(ltable, rtable,
-                                                     l_key_attr, r_key_attr,
-                                                     l_join_attr, r_join_attr,
-                                                     l_out_attrs, r_out_attrs,
-                                                     l_out_prefix, r_out_prefix,
-                                                     out_sim_score, show_progress)
+        missing_pairs = get_pairs_with_missing_value(
+                                            ltable_projected, rtable_projected,
+                                            l_key_attr, r_key_attr,
+                                            l_join_attr, r_join_attr,
+                                            l_out_attrs, r_out_attrs,
+                                            l_out_prefix, r_out_prefix,
+                                            out_sim_score, show_progress)
         output_table = pd.concat([output_table, missing_pairs])
 
     output_table.insert(0, '_id', range(0, len(output_table)))

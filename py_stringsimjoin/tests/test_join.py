@@ -16,7 +16,8 @@ from py_stringsimjoin.join.dice_join import dice_join
 from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
-from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP
+from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP, \
+                                                    remove_redundant_attrs
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 
 
@@ -116,13 +117,15 @@ def test_valid_join(scenario, sim_measure_type, args):
     # Check for l_out_attrs in args.
     if len(args) > 4:
         if args[4]:
-            for attr in args[4]:
+            l_out_attrs = remove_redundant_attrs(args[4], l_key_attr)
+            for attr in l_out_attrs:
                 expected_output_attrs.append(l_out_prefix + attr)
 
     # Check for r_out_attrs in args.
     if len(args) > 5:
         if args[5]:
-            for attr in args[5]:
+            r_out_attrs = remove_redundant_attrs(args[5], r_key_attr)
+            for attr in r_out_attrs:
                 expected_output_attrs.append(r_out_prefix + attr)
 
     # Check for out_sim_score in args. 
@@ -209,8 +212,8 @@ def test_set_sim_join():
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
                                                   0.7, '>=', False,
-                                                  ['A.birth_year', 'A.zipcode'],
-                                                  ['B.name', 'B.zipcode']))
+                                                  ['A.ID', 'A.birth_year', 'A.zipcode'],
+                                                  ['B.ID', 'B.name', 'B.zipcode']))
         test_function.description = 'Test ' + sim_measure_type + \
                                     ' with output attributes.'
         yield test_function,

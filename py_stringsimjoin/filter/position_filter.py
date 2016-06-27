@@ -13,13 +13,10 @@ from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.filter.filter_utils import get_size_lower_bound
 from py_stringsimjoin.filter.filter_utils import get_size_upper_bound
 from py_stringsimjoin.index.position_index import PositionIndex
-from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list
-from py_stringsimjoin.utils.helper_functions import \
-                                                 find_output_attribute_indices
-from py_stringsimjoin.utils.helper_functions import \
-        get_num_processes_to_launch, get_output_header_from_tables
-from py_stringsimjoin.utils.helper_functions import get_output_row_from_tables
-from py_stringsimjoin.utils.helper_functions import split_table
+from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
+    find_output_attribute_indices, get_attrs_to_project, \
+    get_num_processes_to_launch, get_output_header_from_tables, \
+    get_output_row_from_tables, remove_redundant_attrs, split_table
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
@@ -199,32 +196,49 @@ class PositionFilter(Filter):
         validate_key_attr(l_key_attr, ltable, 'left table')
         validate_key_attr(r_key_attr, rtable, 'right table')
 
+        # remove redundant attrs from output attrs.
+        l_out_attrs = remove_redundant_attrs(l_out_attrs, l_key_attr)
+        r_out_attrs = remove_redundant_attrs(r_out_attrs, r_key_attr)
+
+        # get attributes to project.  
+        l_proj_attrs = get_attrs_to_project(l_out_attrs,
+                                            l_key_attr, l_filter_attr)
+        r_proj_attrs = get_attrs_to_project(r_out_attrs,
+                                            r_key_attr, r_filter_attr)
+
+        # do a projection on the input dataframes. Note that this doesn't create
+        # a copy of the dataframes. It only creates a view on original dataframes.
+        ltable_projected = ltable[l_proj_attrs]
+        rtable_projected = rtable[r_proj_attrs]
+
         # computes the actual number of jobs to launch.
         n_jobs = get_num_processes_to_launch(n_jobs)
 
         if n_jobs == 1:
-            output_table = _filter_tables_split(ltable, rtable,
-                                                l_key_attr, r_key_attr,
-                                                l_filter_attr, r_filter_attr,
-                                                self,
-                                                l_out_attrs, r_out_attrs,
-                                                l_out_prefix, r_out_prefix,
-                                                show_progress)
+            output_table = _filter_tables_split(
+                                           ltable_projected, rtable_projected,
+                                           l_key_attr, r_key_attr,
+                                           l_filter_attr, r_filter_attr,
+                                           self,
+                                           l_out_attrs, r_out_attrs,
+                                           l_out_prefix, r_out_prefix,
+                                           show_progress)
         else:
-            r_splits = split_table(rtable, n_jobs)
+            r_splits = split_table(rtable_projected, n_jobs)
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_tables_split)(
-                                                  ltable, r_splits[job_index],
-                                                  l_key_attr, r_key_attr,
-                                                  l_filter_attr, r_filter_attr,
-                                                  self,
-                                                  l_out_attrs, r_out_attrs,
-                                                  l_out_prefix, r_out_prefix,
+                                              ltable_projected, r_splits[job_index],
+                                              l_key_attr, r_key_attr,
+                                              l_filter_attr, r_filter_attr,
+                                              self,
+                                              l_out_attrs, r_out_attrs,
+                                              l_out_prefix, r_out_prefix,
                                       (show_progress and (job_index==n_jobs-1)))
                                           for job_index in range(n_jobs))
             output_table = pd.concat(results)
 
         if self.allow_missing:
-            missing_pairs = get_pairs_with_missing_value(ltable, rtable,
+            missing_pairs = get_pairs_with_missing_value(
+                                            ltable_projected, rtable_projected,
                                             l_key_attr, r_key_attr,
                                             l_filter_attr, r_filter_attr,
                                             l_out_attrs, r_out_attrs,

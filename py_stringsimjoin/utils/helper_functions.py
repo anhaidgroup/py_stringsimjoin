@@ -127,3 +127,34 @@ def get_num_processes_to_launch(n_jobs):
 def get_install_path():
     path_list = install_path.split(os.sep)
     return os.sep.join(path_list[0:len(path_list)-1])
+
+
+def remove_redundant_attrs(out_attrs, key_attr):
+    # this method removes key_attr from out_attrs, if present.
+    # further it removes redundant attributes in out_attrs, 
+    # but preserves the order of attributes.
+    if out_attrs is None:
+        return out_attrs
+
+    uniq_attrs = []
+    seen_attrs = {}
+    for attr in out_attrs:
+        if attr == key_attr or seen_attrs.get(attr) is not None:
+            continue
+        uniq_attrs.append(attr)
+        seen_attrs[attr] = True
+
+    return uniq_attrs
+
+    
+def get_attrs_to_project(out_attrs, key_attr, join_attr):
+    # this method assumes key_attr has already been removed from
+    # out_attrs, if present.
+    proj_attrs = [key_attr, join_attr]
+
+    if out_attrs is not None:
+        for attr in out_attrs:
+            if attr != join_attr:
+                proj_attrs.append(attr)
+
+    return proj_attrs

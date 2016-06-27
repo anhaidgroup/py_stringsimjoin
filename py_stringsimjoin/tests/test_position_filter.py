@@ -8,6 +8,7 @@ from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.position_filter import PositionFilter
+from py_stringsimjoin.utils.helper_functions import remove_redundant_attrs
 
 
 # test PositionFilter.filter_pair method
@@ -108,7 +109,7 @@ class FilterTablesTestCases(unittest.TestCase):
         self.test_filter_tables(self.dlm, 'JACCARD', 0.8, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
-                                ['attr'], ['attr']),
+                                ['id', 'attr'], ['id', 'attr']),
                                 expected_pairs)
 
     def test_jac_dlm_08_with_out_prefix(self):
@@ -226,13 +227,15 @@ class FilterTablesTestCases(unittest.TestCase):
         # Check for l_out_attrs in args.
         if len(args) > 6:
             if args[6]:
-                for attr in args[6]:
+                l_out_attrs = remove_redundant_attrs(args[6], args[2])
+                for attr in l_out_attrs:
                     expected_output_attrs.append(l_out_prefix + attr)
 
         # Check for r_out_attrs in args.
         if len(args) > 7:
             if args[7]:
-                for attr in args[7]:
+                r_out_attrs = remove_redundant_attrs(args[7], args[3])
+                for attr in r_out_attrs:
                     expected_output_attrs.append(r_out_prefix + attr)
 
         # verify whether the output table has the necessary attributes.

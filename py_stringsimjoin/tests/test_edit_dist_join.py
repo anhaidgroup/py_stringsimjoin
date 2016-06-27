@@ -12,7 +12,8 @@ from six import iteritems
 import pandas as pd
 
 from py_stringsimjoin.join.edit_distance_join import edit_distance_join
-from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP
+from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP, \
+                                                    remove_redundant_attrs
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 
 
@@ -113,13 +114,15 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=()):
     # Check for l_out_attrs in args.
     if len(args) > 1:
         if args[1]:
-            for attr in args[1]:
+            l_out_attrs = remove_redundant_attrs(args[1], l_key_attr)
+            for attr in l_out_attrs:
                 expected_output_attrs.append(l_out_prefix + attr)
 
     # Check for r_out_attrs in args.
     if len(args) > 2:
         if args[2]:
-            for attr in args[2]:
+            r_out_attrs = remove_redundant_attrs(args[2], r_key_attr)
+            for attr in r_out_attrs:
                 expected_output_attrs.append(r_out_prefix + attr)
 
     # Check for out_sim_score in args. 
@@ -189,8 +192,8 @@ def test_edit_distance_join():
                                              tokenizers['2_GRAM'],
                                              9, '<=',
                                              (False, 
-                                              ['A.birth_year', 'A.zipcode'],
-                                              ['B.name', 'B.zipcode']))
+                                              ['A.ID', 'A.birth_year', 'A.zipcode'],
+                                              ['B.ID', 'B.name', 'B.zipcode']))
     test_function.description = 'Test ' + sim_measure_type + \
                                 ' with output attributes.'
     yield test_function,

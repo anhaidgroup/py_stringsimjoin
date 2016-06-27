@@ -4,8 +4,8 @@ from joblib import Parallel
 import pandas as pd
 
 from py_stringsimjoin.join.set_sim_join import set_sim_join
-from py_stringsimjoin.utils.helper_functions import split_table, \
-                                                    get_num_processes_to_launch
+from py_stringsimjoin.utils.helper_functions import get_attrs_to_project, \
+    get_num_processes_to_launch, remove_redundant_attrs, split_table
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.validation import validate_attr, \
@@ -106,11 +106,24 @@ def dice_join(ltable, rtable,
     validate_key_attr(l_key_attr, ltable, 'left table')
     validate_key_attr(r_key_attr, rtable, 'right table')
 
+    # remove redundant attrs from output attrs.
+    l_out_attrs = remove_redundant_attrs(l_out_attrs, l_key_attr)
+    r_out_attrs = remove_redundant_attrs(r_out_attrs, r_key_attr)
+
+    # get attributes to project.  
+    l_proj_attrs = get_attrs_to_project(l_out_attrs, l_key_attr, l_join_attr)
+    r_proj_attrs = get_attrs_to_project(r_out_attrs, r_key_attr, r_join_attr)
+
+    # do a projection on the input dataframes. Note that this doesn't create a copy
+    # of the dataframes. It only creates a view on original dataframes.
+    ltable_projected = ltable[l_proj_attrs]
+    rtable_projected = rtable[r_proj_attrs]
+
     # computes the actual number of jobs to launch.
     n_jobs = get_num_processes_to_launch(n_jobs)
 
     if n_jobs == 1:
-        output_table = set_sim_join(ltable, rtable,
+        output_table = set_sim_join(ltable_projected, rtable_projected,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
                                     tokenizer, 'DICE',
@@ -119,27 +132,28 @@ def dice_join(ltable, rtable,
                                     l_out_prefix, r_out_prefix,
                                     out_sim_score, show_progress)
     else:
-        r_splits = split_table(rtable, n_jobs)
+        r_splits = split_table(rtable_projected, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(set_sim_join)(
-                                              ltable, r_splits[job_index],
-                                              l_key_attr, r_key_attr,
-                                              l_join_attr, r_join_attr,
-                                              tokenizer, 'DICE',
-                                              threshold, comp_op,
-                                              l_out_attrs, r_out_attrs,
-                                              l_out_prefix, r_out_prefix,
-                                              out_sim_score,
+                                          ltable_projected, r_splits[job_index],
+                                          l_key_attr, r_key_attr,
+                                          l_join_attr, r_join_attr,
+                                          tokenizer, 'DICE',
+                                          threshold, comp_op,
+                                          l_out_attrs, r_out_attrs,
+                                          l_out_prefix, r_out_prefix,
+                                          out_sim_score,
                                       (show_progress and (job_index==n_jobs-1)))
                                           for job_index in range(n_jobs))
         output_table = pd.concat(results)
 
     if allow_missing:
-        missing_pairs = get_pairs_with_missing_value(ltable, rtable,
-                                                     l_key_attr, r_key_attr,
-                                                     l_join_attr, r_join_attr,
-                                                     l_out_attrs, r_out_attrs,
-                                                     l_out_prefix, r_out_prefix,
-                                                     out_sim_score, show_progress)
+        missing_pairs = get_pairs_with_missing_value(
+                                            ltable_projected, rtable_projected,
+                                            l_key_attr, r_key_attr,
+                                            l_join_attr, r_join_attr,
+                                            l_out_attrs, r_out_attrs,
+                                            l_out_prefix, r_out_prefix,
+                                            out_sim_score, show_progress)
         output_table = pd.concat([output_table, missing_pairs])
 
     output_table.insert(0, '_id', range(0, len(output_table)))
