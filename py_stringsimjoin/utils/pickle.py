@@ -3,9 +3,9 @@
 
 def pickle_instance_method(method):
     """Pickle class instance method."""
-    func_name = method.im_func.__name__
-    obj = method.im_self
-    cls = method.im_class
+    func_name = method.__func__.__name__
+    obj = method.__self__
+    cls = method.__self__.__class__
     return unpickle_instance_method, (func_name, obj, cls)
 
 
