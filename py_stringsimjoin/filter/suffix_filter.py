@@ -10,6 +10,8 @@ from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
         find_output_attribute_indices, get_num_processes_to_launch, \
         get_output_header_from_tables, get_output_row_from_tables, split_table
+from py_stringsimjoin.utils.missing_value_handler import \
+    get_pairs_with_missing_value
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
@@ -40,7 +42,8 @@ class SuffixFilter(Filter):
         threshold (float): An attribute to store the threshold value.
     """
 
-    def __init__(self, tokenizer, sim_measure_type, threshold):
+    def __init__(self, tokenizer, sim_measure_type, threshold,
+                 allow_missing=False):
         # check if the input tokenizer is valid
         validate_tokenizer(tokenizer)
 
@@ -54,7 +57,7 @@ class SuffixFilter(Filter):
         self.sim_measure_type = sim_measure_type
         self.threshold = threshold
         self.max_depth = 2
-        super(self.__class__, self).__init__()
+        super(self.__class__, self).__init__(allow_missing)
 
     def filter_pair(self, lstring, rstring):
         """Checks if the input strings get dropped by the suffix filter.
@@ -65,6 +68,11 @@ class SuffixFilter(Filter):
         Returns:
             A flag indicating whether the string pair is dropped (boolean).
         """
+
+        # If one of the inputs is missing, then check the allow_missing flag.
+        # If it is set to True, then pass the pair. Else drop the pair.
+        if pd.isnull(lstring) or pd.isnull(rstring):
+            return (not self.allow_missing)
 
         # check for empty string
         if (not lstring) or (not rstring):
@@ -202,6 +210,15 @@ class SuffixFilter(Filter):
                                       (show_progress and (job_index==n_jobs-1)))
                                           for job_index in range(n_jobs))
             output_table = pd.concat(results)
+
+        if self.allow_missing:
+            missing_pairs = get_pairs_with_missing_value(ltable, rtable,
+                                            l_key_attr, r_key_attr,
+                                            l_filter_attr, r_filter_attr,
+                                            l_out_attrs, r_out_attrs,
+                                            l_out_prefix, r_out_prefix,
+                                            False, show_progress)
+            output_table = pd.concat([output_table, missing_pairs])
 
         output_table.insert(0, '_id', range(0, len(output_table)))
         return output_table
