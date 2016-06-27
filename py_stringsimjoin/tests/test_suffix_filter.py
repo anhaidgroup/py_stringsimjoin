@@ -8,6 +8,7 @@ from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.suffix_filter import SuffixFilter
+from py_stringsimjoin.utils.simfunctions import get_sim_function
 
 
 # test SuffixFilter.filter_pair method
@@ -80,116 +81,100 @@ class FilterTablesTestCases(unittest.TestCase):
 
     # tests for JACCARD measure
     def test_jac_dlm_075(self):
-        expected_pairs = set(['3,4', '5,1'])
         self.test_filter_tables(self.dlm, 'JACCARD', 0.75,
                                 (self.A, self.B,
-                                'id', 'id', 'attr', 'attr'),
-                                expected_pairs)
+                                'id', 'id', 'attr', 'attr'))
 
     def test_jac_dlm_075_with_out_attrs(self):
-        expected_pairs = set(['3,4', '5,1'])
         self.test_filter_tables(self.dlm, 'JACCARD', 0.75,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
-                                ['attr'], ['attr']),
-                                expected_pairs)
+                                ['attr'], ['attr']))
 
     def test_jac_dlm_075_with_out_prefix(self):
-        expected_pairs = set(['3,4', '5,1'])
         self.test_filter_tables(self.dlm, 'JACCARD', 0.75,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr'],
-                                'ltable.', 'rtable.'),
-                                expected_pairs)
+                                'ltable.', 'rtable.'))
 
     # tests for COSINE measure 
     def test_cos_dlm_08(self):
-        expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
         self.test_filter_tables(self.dlm, 'COSINE', 0.8,
                                 (self.A, self.B,
-                                'id', 'id', 'attr', 'attr'),
-                                expected_pairs)
+                                'id', 'id', 'attr', 'attr'))
 
     def test_cos_dlm_08_with_out_attrs(self):
-        expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
         self.test_filter_tables(self.dlm, 'COSINE', 0.8,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
-                                ['attr'], ['attr']),
-                                expected_pairs)
+                                ['attr'], ['attr']))
 
     def test_cos_dlm_08_with_out_prefix(self):
-        expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
         self.test_filter_tables(self.dlm, 'COSINE', 0.8,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr'],
-                                'ltable.', 'rtable.'),
-                                expected_pairs)
+                                'ltable.', 'rtable.'))
 
     # tests for DICE measure 
     def test_dice_dlm_08(self):
-        expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
         self.test_filter_tables(self.dlm, 'DICE', 0.8,
                                 (self.A, self.B,
-                                'id', 'id', 'attr', 'attr'),
-                                expected_pairs)
+                                'id', 'id', 'attr', 'attr'))
 
     def test_dice_dlm_08_with_out_attrs(self):
-        expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
         self.test_filter_tables(self.dlm, 'DICE', 0.8,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
-                                ['attr'], ['attr']),
-                                expected_pairs)
+                                ['attr'], ['attr']))
 
     def test_dice_dlm_08_with_out_prefix(self):
-        expected_pairs = set(['1,5', '3,4', '4,2', '5,1'])
         self.test_filter_tables(self.dlm, 'DICE', 0.8,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr'],
-                                'ltable.', 'rtable.'),
-                                expected_pairs)
+                                'ltable.', 'rtable.'))
 
     # test with n_jobs above 1
     def test_jac_dlm_075_with_njobs_above_1(self):
-        expected_pairs = set(['3,4', '5,1'])
         self.test_filter_tables(self.dlm, 'JACCARD', 0.75,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr',
                                 ['attr'], ['attr'],
-                                'ltable.', 'rtable.', 2),
-                                expected_pairs)
+                                'ltable.', 'rtable.', 2))
 
     # tests for empty table input
     def test_empty_ltable(self):
-        expected_pairs = set()
         self.test_filter_tables(self.dlm, 'JACCARD', 0.8,
                                 (self.empty_table, self.B,
-                                'id', 'id', 'attr', 'attr'),
-                                expected_pairs)
+                                'id', 'id', 'attr', 'attr'))
 
     def test_empty_rtable(self):
-        expected_pairs = set()
         self.test_filter_tables(self.dlm, 'JACCARD', 0.8,
                                 (self.A, self.empty_table,
-                                'id', 'id', 'attr', 'attr'),
-                                expected_pairs)
+                                'id', 'id', 'attr', 'attr'))
 
     def test_empty_tables(self):
-        expected_pairs = set()
         self.test_filter_tables(self.dlm, 'JACCARD', 0.8,
                                 (self.empty_table, self.empty_table,
-                                'id', 'id', 'attr', 'attr'),
-                                expected_pairs)
-
+                                'id', 'id', 'attr', 'attr'))
 
     @nottest
-    def test_filter_tables(self, tokenizer, sim_measure_type, threshold, args,
-                           expected_pairs):
+    def test_filter_tables(self, tokenizer, sim_measure_type, threshold, args):
         suffix_filter = SuffixFilter(tokenizer, sim_measure_type, threshold)
+        
+        sim_fn = get_sim_function(sim_measure_type)
+        # compute the join output pairs
+        join_output_pairs = set()
+        for l_idx, l_row in args[0].iterrows():
+            for r_idx, r_row in args[1].iterrows():
+                if sim_fn(tokenizer.tokenize(l_row[args[4]]),
+                          tokenizer.tokenize(r_row[args[5]])) >= threshold:
+                    join_output_pairs.add(','.join((str(l_row[args[2]]),
+                                                    str(r_row[args[3]]))))
+
+        
         actual_candset = suffix_filter.filter_tables(*args)
 
         expected_output_attrs = ['_id']
@@ -227,10 +212,10 @@ class FilterTablesTestCases(unittest.TestCase):
             actual_pairs.add(','.join((str(int(row[l_out_prefix + args[2]])),
                                        str(int(row[r_out_prefix + args[3]])))))
 
-        # verify whether the actual pairs and the expected pairs match.
-        assert_equal(len(expected_pairs), len(actual_pairs))
-        common_pairs = actual_pairs.intersection(expected_pairs)
-        assert_equal(len(common_pairs), len(expected_pairs))
+        # verify whether all the join output pairs are 
+        # present in the actual output pairs
+        common_pairs = actual_pairs.intersection(join_output_pairs)
+        assert_equal(len(common_pairs), len(join_output_pairs))
 
 
 # test SuffixFilter.filter_candset method
