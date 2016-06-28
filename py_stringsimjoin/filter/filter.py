@@ -5,6 +5,8 @@ import pyprind
 
 from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
     get_num_processes_to_launch, split_table
+from py_stringsimjoin.utils.validation import validate_attr, \
+    validate_key_attr, validate_input_table
 
 
 class Filter(object):
@@ -52,6 +54,33 @@ class Filter(object):
             output table (dataframe)
         """
 
+        # check if the input candset is a dataframe
+        validate_input_table(candset, 'candset')
+
+        # check if the candset key attributes exist
+        validate_attr(candset_l_key_attr, candset.columns,
+                      'left key attribute', 'candset')
+        validate_attr(candset_r_key_attr, candset.columns,
+                      'right key attribute', 'candset')
+
+        # check if the input tables are dataframes
+        validate_input_table(ltable, 'left table')
+        validate_input_table(rtable, 'right table')
+
+        # check if the key attributes filter join attributes exist
+        validate_attr(l_key_attr, ltable.columns,
+                      'key attribute', 'left table')
+        validate_attr(r_key_attr, rtable.columns,
+                      'key attribute', 'right table')
+        validate_attr(l_filter_attr, ltable.columns,
+                      'filter attribute', 'left table')
+        validate_attr(r_filter_attr, rtable.columns,
+                      'filter attribute', 'right table')
+
+        # check if the key attributes are unique and do not contain missing values
+        validate_key_attr(l_key_attr, ltable, 'left table')
+        validate_key_attr(r_key_attr, rtable, 'right table')
+
         # check for empty candset
         if candset.empty:
             return candset
@@ -71,13 +100,19 @@ class Filter(object):
             rtable[r_filter_attr] = rtable[r_filter_attr].astype(str)
             revert_r_filter_attr_type = True
 
+        # Do a projection on the input dataframes to keep only required attributes.
+        # Note that this doesn't create a copy of the dataframes. It only creates
+        # a view on original dataframes.
+        ltable_projected = ltable[[l_key_attr, l_filter_attr]]
+        rtable_projected = rtable[[r_key_attr, r_filter_attr]]
+
         # computes the actual number of jobs to launch.
         n_jobs = get_num_processes_to_launch(n_jobs)
-
+        
         if n_jobs == 1:
             output_table =  _filter_candset_split(candset,
                                          candset_l_key_attr, candset_r_key_attr,
-                                         ltable, rtable,
+                                         ltable_projected, rtable_projected,
                                          l_key_attr, r_key_attr,
                                          l_filter_attr, r_filter_attr,
                                          self, show_progress)
@@ -86,7 +121,7 @@ class Filter(object):
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_candset_split)(
                                       candset_splits[job_index],
                                       candset_l_key_attr, candset_r_key_attr,
-                                      ltable, rtable,
+                                      ltable_projected, rtable_projected,
                                       l_key_attr, r_key_attr,
                                       l_filter_attr, r_filter_attr,
                                       self,

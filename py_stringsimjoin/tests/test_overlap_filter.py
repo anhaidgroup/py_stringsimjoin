@@ -264,6 +264,94 @@ class FilterCandsetTestCases(unittest.TestCase):
                                 'l_id', 'r_id', 'l_attr', 'r_attr'),
                                 expected_pairs)
 
+    @raises(TypeError)
+    def test_invalid_candset(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset([], 'l_id', 'r_id',
+                                      self.A, self.B,
+                                     'l_id', 'r_id',
+                                     'l_attr', 'r_attr')
+
+    @raises(TypeError)
+    def test_invalid_ltable(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'l_id', 'r_id',
+                                      [], self.B,
+                                     'l_id', 'r_id',
+                                     'l_attr', 'r_attr')
+
+    @raises(TypeError)
+    def test_invalid_rtable(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'l_id', 'r_id',
+                                      self.A, [],
+                                     'l_id', 'r_id',
+                                     'l_attr', 'r_attr')
+
+    @raises(AssertionError)
+    def test_invalid_candset_l_key_attr(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'invalid_attr', 'r_id',
+                                      self.A, self.B,
+                                     'l_id', 'r_id',
+                                     'l_attr', 'r_attr')
+
+    @raises(AssertionError)
+    def test_invalid_candset_r_key_attr(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'l_id', 'invalid_attr',
+                                      self.A, self.B,
+                                     'l_id', 'r_id',
+                                     'l_attr', 'r_attr')
+
+    @raises(AssertionError)
+    def test_invalid_ltable_l_key_attr(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'l_id', 'r_id',
+                                      self.A, self.B,
+                                     'invalid_attr', 'r_id',
+                                     'l_attr', 'r_attr')
+
+    @raises(AssertionError)
+    def test_invalid_ltable_l_filter_attr(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'l_id', 'r_id',
+                                      self.A, self.B,
+                                     'l_id', 'r_id',
+                                     'invalid_attr', 'r_attr')
+
+    @raises(AssertionError)
+    def test_invalid_rtable_r_key_attr(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'l_id', 'r_id',
+                                      self.A, self.B,
+                                     'l_id', 'invalid_attr',
+                                     'l_attr', 'r_attr')
+
+    @raises(AssertionError)
+    def test_invalid_rtable_r_filter_attr(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'l_id', 'r_id',
+                                      self.A, self.B,
+                                     'l_id', 'r_id',
+                                     'l_attr', 'invalid_attr')
+
+    @raises(AssertionError)
+    def test_ltable_l_key_attr_with_missing_value(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'l_id', 'r_id',
+                                      self.A, self.B,
+                                     'l_attr', 'r_id',
+                                     'l_attr', 'r_attr')
+
+    @raises(AssertionError)
+    def test_rtable_r_key_attr_with_missing_value(self):
+        overlap_filter = OverlapFilter(self.dlm)
+        overlap_filter.filter_candset(self.C, 'l_id', 'r_id',
+                                      self.A, self.B,
+                                     'l_id', 'r_attr',
+                                     'l_attr', 'r_attr')
+
     @nottest
     def test_filter_candset(self, tokenizer, overlap_size, comp_op,
                             allow_missing, args, expected_pairs):
