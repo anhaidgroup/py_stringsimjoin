@@ -13,6 +13,7 @@ from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
     get_output_row_from_tables, remove_redundant_attrs, split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.pickle import pickle_instance_method, \
                                           unpickle_instance_method
+from py_stringsimjoin.utils.token_ordering import generate_tokens
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_comp_op, validate_key_attr, validate_input_table, \
     validate_tokenizer, validate_output_attrs
@@ -38,7 +39,7 @@ def apply_matcher(candset,
                   allow_missing=False,
                   l_out_attrs=None, r_out_attrs=None,
                   l_out_prefix='l_', r_out_prefix='r_',
-                  out_sim_score=True, n_jobs = 1, show_progress=True):
+                  out_sim_score=True, n_jobs=1, show_progress=True):
     """Find matching string pairs from the candidate set by applying a matcher of form (sim_function comp_op threshold).
 
     Specifically, this method computes the input similarity function on string pairs in the candidate set
@@ -126,8 +127,9 @@ def apply_matcher(candset,
     validate_output_attrs(l_out_attrs, ltable.columns,
                           r_out_attrs, rtable.columns)
 
-    # check if the input tokenizer is valid
-    validate_tokenizer(tokenizer)
+    # check if the input tokenizer is valid, if it is not None
+    if tokenizer is not None:
+        validate_tokenizer(tokenizer)
 
     # check if the comparison operator is valid
     validate_comp_op(comp_op)
@@ -171,6 +173,20 @@ def apply_matcher(candset,
     # computes the actual number of jobs to launch.
     n_jobs = get_num_processes_to_launch(n_jobs)
 
+    # If a tokenizer is provided, we can optimize by tokenizing each value 
+    # only once by caching the tokens of l_join_attr and r_join_attr. But, this can
+    # be a bad strategy in case the candset has very few records compared to the
+    # original tables. Hence, we check if the sum of tuples in ltable and rtable is
+    # less than twice the number of tuples in the candset. If yes, we decide to 
+    # cache the token values. Else, we do not cache the tokens as the candset is small.
+    l_tokens = None
+    r_tokens = None
+    if tokenizer is not None and (len(ltable) + len(rtable) < len(candset)*2):
+        l_tokens = generate_tokens(ltable_projected, l_key_attr, l_join_attr,
+                                   tokenizer)
+        r_tokens = generate_tokens(rtable_projected, r_key_attr, r_join_attr,
+                                   tokenizer)
+
     if n_jobs == 1:
         output_table =  _apply_matcher_split(candset,
                                     candset_l_key_attr, candset_r_key_attr,
@@ -181,7 +197,8 @@ def apply_matcher(candset,
                                     threshold, comp_op, allow_missing,
                                     l_out_attrs, r_out_attrs,
                                     l_out_prefix, r_out_prefix,
-                                    out_sim_score, show_progress)
+                                    out_sim_score, show_progress,
+                                    l_tokens, r_tokens)
     else:
         candset_splits = split_table(candset, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(_apply_matcher_split)(
@@ -195,7 +212,8 @@ def apply_matcher(candset,
                                       l_out_attrs, r_out_attrs,
                                       l_out_prefix, r_out_prefix,
                                       out_sim_score,
-                                      (show_progress and (job_index==n_jobs-1)))
+                                      (show_progress and (job_index==n_jobs-1)),
+                                      l_tokens, r_tokens)
                                           for job_index in range(n_jobs))
         output_table =  pd.concat(results)
 
@@ -219,7 +237,7 @@ def _apply_matcher_split(candset,
                          threshold, comp_op, allow_missing,
                          l_out_attrs, r_out_attrs,
                          l_out_prefix, r_out_prefix,
-                         out_sim_score, show_progress):
+                         out_sim_score, show_progress, l_tokens, r_tokens):
     # find column indices of key attr, join attr and output attrs in ltable
     l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)
@@ -254,6 +272,14 @@ def _apply_matcher_split(candset,
     if show_progress:
         prog_bar = pyprind.ProgBar(len(candset))
 
+    tokenize_flag = False
+    if tokenizer is not None:
+        tokenize_flag =  True
+        use_cache = False
+        # check if we have cached the tokens.
+        if l_tokens is not None and r_tokens is not None:
+            use_cache = True
+
     for candset_row in candset.itertuples(index = False):
         l_id = candset_row[candset_l_key_attr_index]
         r_id = candset_row[candset_r_key_attr_index]
@@ -275,9 +301,15 @@ def _apply_matcher_split(candset,
             else:
                 continue   
         else:
-            if tokenizer is not None:
-                l_apply_col_value = tokenizer.tokenize(l_apply_col_value)
-                r_apply_col_value = tokenizer.tokenize(r_apply_col_value)       
+            if tokenize_flag:
+                # If we have cached the tokens, we use it directly. Else, we
+                # tokenize the values.
+                if use_cache:
+                    l_apply_col_value = l_tokens[l_id]
+                    r_apply_col_value = r_tokens[r_id]
+                else:
+                    l_apply_col_value = tokenizer.tokenize(l_apply_col_value)
+                    r_apply_col_value = tokenizer.tokenize(r_apply_col_value)
         
             sim_score = sim_function(l_apply_col_value, r_apply_col_value)
             allow_pair = comp_fn(sim_score, threshold)

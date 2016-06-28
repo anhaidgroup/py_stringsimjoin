@@ -1,6 +1,8 @@
 """Token ordering utilities"""
 from operator import itemgetter 
 
+import pandas as pd
+
 
 def gen_token_ordering_for_lists(token_lists):
     token_freq_dict = {}
@@ -51,3 +53,9 @@ def order_using_token_ordering(tokens, token_ordering):
     ordered_tokens.sort()
 
     return ordered_tokens
+
+
+def generate_tokens(table, key_attr, join_attr, tokenizer):
+    table_nonnull = table[pd.notnull(table[join_attr])]
+    return dict(zip(table_nonnull[key_attr],
+                    table_nonnull[join_attr].apply(tokenizer.tokenize))) 
