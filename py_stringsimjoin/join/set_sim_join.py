@@ -49,19 +49,13 @@ def set_sim_join(ltable, rtable,
                          [l_join_attr_index, r_join_attr_index],
                          tokenizer, sim_measure_type)
 
-    # Tokenize l_join_attr and cache it. By doing so,
-    # we tokenize l_join_attr only once.
-    l_join_attr_list = []
-    for row in ltable_list:
-        l_tokens = order_using_token_ordering(
-            tokenizer.tokenize(row[l_join_attr_index]), token_ordering)
-        l_join_attr_list.append(l_tokens)
-
     # Build position index on l_join_attr
     position_index = PositionIndex(ltable_list, l_join_attr_index,
                                    tokenizer, sim_measure_type,
                                    threshold, token_ordering)
-    position_index.build()
+    # while building the index, we cache the tokens. So that we
+    # need not tokenize each value while computing similarity measure.
+    l_join_attr_list = position_index.build_and_cache_tokens()
 
     pos_filter = PositionFilter(tokenizer, sim_measure_type, threshold)
 
