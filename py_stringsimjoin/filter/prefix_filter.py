@@ -171,6 +171,21 @@ class PrefixFilter(Filter):
         validate_key_attr(l_key_attr, ltable, 'left table')
         validate_key_attr(r_key_attr, rtable, 'right table')
 
+        # convert the filter attributes to string type, in case it is int or float.
+        revert_l_filter_attr_type = False
+        orig_l_filter_attr_type = ltable[l_filter_attr].dtype
+        if (orig_l_filter_attr_type == pd.np.int64 or
+            orig_l_filter_attr_type == pd.np.float64):
+            ltable[l_filter_attr] = ltable[l_filter_attr].astype(str)
+            revert_l_filter_attr_type = True
+
+        revert_r_filter_attr_type = False
+        orig_r_filter_attr_type = rtable[r_filter_attr].dtype
+        if (orig_r_filter_attr_type == pd.np.int64 or
+            orig_r_filter_attr_type == pd.np.float64):
+            rtable[r_filter_attr] = rtable[r_filter_attr].astype(str)
+            revert_r_filter_attr_type = True
+
         # remove redundant attrs from output attrs.
         l_out_attrs = remove_redundant_attrs(l_out_attrs, l_key_attr)
         r_out_attrs = remove_redundant_attrs(r_out_attrs, r_key_attr)
@@ -222,6 +237,17 @@ class PrefixFilter(Filter):
             output_table = pd.concat([output_table, missing_pairs])
 
         output_table.insert(0, '_id', range(0, len(output_table)))
+
+        # revert the type of filter attributes to their original type, in case
+        # it was converted to string type.
+        if revert_l_filter_attr_type:
+            ltable[l_filter_attr] = ltable[l_filter_attr].astype(
+                                                        orig_l_filter_attr_type)
+
+        if revert_r_filter_attr_type:
+            rtable[r_filter_attr] = rtable[r_filter_attr].astype(
+                                                        orig_r_filter_attr_type)
+
         return output_table
 
 
@@ -271,7 +297,7 @@ def _filter_tables_split(ltable, rtable,
         prog_bar = pyprind.ProgBar(len(rtable_list))
 
     for r_row in rtable_list:
-        r_string = str(r_row[r_filter_attr_index])
+        r_string = r_row[r_filter_attr_index]
 
         r_filter_attr_tokens = prefix_filter.tokenizer.tokenize(r_string)
         r_ordered_tokens = order_using_token_ordering(r_filter_attr_tokens,

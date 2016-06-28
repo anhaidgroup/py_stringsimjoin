@@ -54,7 +54,7 @@ def set_sim_join(ltable, rtable,
     l_join_attr_list = []
     for row in ltable_list:
         l_tokens = order_using_token_ordering(
-            tokenizer.tokenize(str(row[l_join_attr_index])), token_ordering)
+            tokenizer.tokenize(row[l_join_attr_index]), token_ordering)
         l_join_attr_list.append(l_tokens)
 
     # Build position index on l_join_attr
@@ -76,7 +76,7 @@ def set_sim_join(ltable, rtable,
         prog_bar = pyprind.ProgBar(len(rtable_list))
 
     for r_row in rtable_list:
-        r_string = str(r_row[r_join_attr_index])
+        r_string = r_row[r_join_attr_index]
 
         r_ordered_tokens = order_using_token_ordering(
                 tokenizer.tokenize(r_string), token_ordering)

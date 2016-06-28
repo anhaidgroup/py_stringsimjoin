@@ -114,6 +114,21 @@ def cosine_join(ltable, rtable,
     validate_key_attr(l_key_attr, ltable, 'left table')
     validate_key_attr(r_key_attr, rtable, 'right table')
 
+    # convert the join attributes to string type, in case it is int or float.
+    revert_l_join_attr_type = False
+    orig_l_join_attr_type = ltable[l_join_attr].dtype
+    if (orig_l_join_attr_type == pd.np.int64 or
+        orig_l_join_attr_type == pd.np.float64):
+        ltable[l_join_attr] = ltable[l_join_attr].astype(str)
+        revert_l_join_attr_type = True
+
+    revert_r_join_attr_type = False
+    orig_r_join_attr_type = rtable[r_join_attr].dtype
+    if (orig_r_join_attr_type == pd.np.int64 or
+        orig_r_join_attr_type == pd.np.float64):
+        rtable[r_join_attr] = rtable[r_join_attr].astype(str)
+        revert_r_join_attr_type = True
+
     # remove redundant attrs from output attrs.
     l_out_attrs = remove_redundant_attrs(l_out_attrs, l_key_attr)
     r_out_attrs = remove_redundant_attrs(r_out_attrs, r_key_attr)
@@ -165,4 +180,13 @@ def cosine_join(ltable, rtable,
         output_table = pd.concat([output_table, missing_pairs])
 
     output_table.insert(0, '_id', range(0, len(output_table)))
+
+    # revert the type of join attributes to their original type, in case it
+    # was converted to string type.
+    if revert_l_join_attr_type:
+        ltable[l_join_attr] = ltable[l_join_attr].astype(orig_l_join_attr_type)
+
+    if revert_r_join_attr_type:
+        rtable[r_join_attr] = rtable[r_join_attr].astype(orig_r_join_attr_type)
+
     return output_table

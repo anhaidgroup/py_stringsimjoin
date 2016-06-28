@@ -259,6 +259,34 @@ def test_set_sim_join():
                                     ' with n_jobs above 1.'
         yield test_function,
 
+    # scenario where join attributes are of type int
+    test_scenario_2 = [(os.sep.join(['data', 'table_A.csv']), 'A.ID', 'A.zipcode'),
+                       (os.sep.join(['data', 'table_B.csv']), 'B.ID', 'B.zipcode')]
+
+   # Test each similarity measure with join attribute of type int.
+    for sim_measure_type in sim_measure_types:
+        test_function = partial(test_valid_join, test_scenario_2,
+                                                 sim_measure_type,
+                                                 (tokenizers['2_GRAM'],
+                                                  0.3))
+        test_function.description = 'Test ' + sim_measure_type + \
+                                    ' with join attribute of type int.'
+        yield test_function,
+
+    # scenario where join attributes are of type float
+    test_scenario_3 = [(os.sep.join(['data', 'table_A.csv']), 'A.ID', 'A.hourly_wage'),
+                       (os.sep.join(['data', 'table_B.csv']), 'B.ID', 'B.hourly_wage')]
+
+   # Test each similarity measure with join attribute of type float.
+    for sim_measure_type in sim_measure_types:
+        test_function = partial(test_valid_join, test_scenario_3,
+                                                 sim_measure_type,
+                                                 (tokenizers['2_GRAM'],
+                                                  0.3))
+        test_function.description = 'Test ' + sim_measure_type + \
+                                    ' with join attribute of type float.'
+        yield test_function,
+
 
 class JaccardJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):

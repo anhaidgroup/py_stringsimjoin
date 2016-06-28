@@ -223,6 +223,28 @@ def test_edit_distance_join():
                                 ' with sim_score disabled.'
     yield test_function,
 
+    # scenario where join attributes are of type int
+    test_scenario_2 = [(os.sep.join(['data', 'table_A.csv']), 'A.ID', 'A.zipcode'),
+                       (os.sep.join(['data', 'table_B.csv']), 'B.ID', 'B.zipcode')]
+
+    # Test with join attribute of type int.
+    test_function = partial(test_valid_join, test_scenario_2,
+                            tokenizers['2_GRAM'], 3, '<=')
+    test_function.description = 'Test ' + sim_measure_type + \
+                                ' with join attribute of type int.'
+    yield test_function,
+
+    # scenario where join attributes are of type float
+    test_scenario_3 = [(os.sep.join(['data', 'table_A.csv']), 'A.ID', 'A.hourly_wage'),
+                       (os.sep.join(['data', 'table_B.csv']), 'B.ID', 'B.hourly_wage')]
+
+    # Test with join attribute of type float.
+    test_function = partial(test_valid_join, test_scenario_3,
+                            tokenizers['2_GRAM'], 3, '<=')
+    test_function.description = 'Test ' + sim_measure_type + \
+                                ' with join attribute of type float.'
+    yield test_function,
+
 
 class EditDistJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):

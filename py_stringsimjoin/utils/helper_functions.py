@@ -72,24 +72,20 @@ def get_output_header_from_tables(l_key_attr, r_key_attr,
 
 
 def convert_dataframe_to_list(table, join_attr_index,
-                              remove_null=True, remove_empty=True):
+                              remove_null=True):
     table_list = []
     for row in table.itertuples(index=False):
         if remove_null and pd.isnull(row[join_attr_index]):
-            continue
-        if remove_empty and len(str(row[join_attr_index])) == 0:
             continue
         table_list.append(tuple(row))
     return table_list
 
 
 def build_dict_from_table(table, key_attr_index, join_attr_index,
-                          remove_null=True, remove_empty=True):
+                          remove_null=True):
     table_dict = {}
     for row in table.itertuples(index=False):
         if remove_null and pd.isnull(row[join_attr_index]):
-            continue
-        if remove_empty and len(str(row[join_attr_index])) == 0:
             continue
         table_dict[row[key_attr_index]] = tuple(row)
     return table_dict

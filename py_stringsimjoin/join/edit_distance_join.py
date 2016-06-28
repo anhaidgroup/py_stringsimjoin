@@ -129,6 +129,21 @@ def edit_distance_join(ltable, rtable,
     # convert threshold to integer (incase if it is float)
     threshold = int(floor(threshold))
 
+    # convert the join attributes to string type, in case it is int or float.
+    revert_l_join_attr_type = False
+    orig_l_join_attr_type = ltable[l_join_attr].dtype
+    if (orig_l_join_attr_type == pd.np.int64 or
+        orig_l_join_attr_type == pd.np.float64):
+        ltable[l_join_attr] = ltable[l_join_attr].astype(str)
+        revert_l_join_attr_type = True
+
+    revert_r_join_attr_type = False
+    orig_r_join_attr_type = rtable[r_join_attr].dtype
+    if (orig_r_join_attr_type == pd.np.int64 or
+        orig_r_join_attr_type == pd.np.float64):
+        rtable[r_join_attr] = rtable[r_join_attr].astype(str)
+        revert_r_join_attr_type = True
+
     # remove redundant attrs from output attrs.
     l_out_attrs = remove_redundant_attrs(l_out_attrs, l_key_attr)
     r_out_attrs = remove_redundant_attrs(r_out_attrs, r_key_attr)
@@ -179,6 +194,15 @@ def edit_distance_join(ltable, rtable,
         output_table = pd.concat([output_table, missing_pairs])
 
     output_table.insert(0, '_id', range(0, len(output_table)))
+
+    # revert the type of join attributes to their original type, in case it
+    # was converted to string type.
+    if revert_l_join_attr_type:
+        ltable[l_join_attr] = ltable[l_join_attr].astype(orig_l_join_attr_type)
+
+    if revert_r_join_attr_type:
+        rtable[r_join_attr] = rtable[r_join_attr].astype(orig_r_join_attr_type)
+
     return output_table
 
 
@@ -219,7 +243,7 @@ def _edit_distance_join_split(ltable, rtable,
     # cache l_join_attr lengths
     l_join_attr_list = []
     for row in ltable_list:
-        l_join_attr_list.append(len(str(row[l_join_attr_index])))
+        l_join_attr_list.append(len(row[l_join_attr_index]))
 
     # Build prefix index on l_join_attr
     prefix_index = PrefixIndex(ltable_list, l_join_attr_index,
@@ -240,7 +264,7 @@ def _edit_distance_join_split(ltable, rtable,
         prog_bar = pyprind.ProgBar(len(rtable_list))
 
     for r_row in rtable_list:
-        r_string = str(r_row[r_join_attr_index])
+        r_string = r_row[r_join_attr_index]
         r_len = len(r_string)
 
         r_ordered_tokens = order_using_token_ordering(
@@ -251,13 +275,7 @@ def _edit_distance_join_split(ltable, rtable,
         for cand in candidates:
             if r_len - threshold <= l_join_attr_list[cand] <= r_len + threshold:
                 l_row = ltable_list[cand]
-
-                # Remove non-ascii characters as currently edit distance function
-                # cannot handle non-ascii characters. This can result in inconsistency
-                # in edit distance values for strings containing non-ascii characters.
-                edit_dist = sim_fn(remove_non_ascii(
-                                       str(l_row[l_join_attr_index])),
-                                   remove_non_ascii(r_string))
+                edit_dist = sim_fn(l_row[l_join_attr_index], r_string)
 
                 if comp_fn(edit_dist, threshold):
                     if has_output_attributes:

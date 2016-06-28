@@ -56,11 +56,26 @@ class Filter(object):
         if candset.empty:
             return candset
 
+        # convert the filter attributes to string type, in case it is int or float.
+        revert_l_filter_attr_type = False
+        orig_l_filter_attr_type = ltable[l_filter_attr].dtype
+        if (orig_l_filter_attr_type == pd.np.int64 or
+            orig_l_filter_attr_type == pd.np.float64):
+            ltable[l_filter_attr] = ltable[l_filter_attr].astype(str)
+            revert_l_filter_attr_type = True
+
+        revert_r_filter_attr_type = False
+        orig_r_filter_attr_type = rtable[r_filter_attr].dtype
+        if (orig_r_filter_attr_type == pd.np.int64 or
+            orig_r_filter_attr_type == pd.np.float64):
+            rtable[r_filter_attr] = rtable[r_filter_attr].astype(str)
+            revert_r_filter_attr_type = True
+
         # computes the actual number of jobs to launch.
         n_jobs = get_num_processes_to_launch(n_jobs)
 
         if n_jobs == 1:
-            return _filter_candset_split(candset,
+            output_table =  _filter_candset_split(candset,
                                          candset_l_key_attr, candset_r_key_attr,
                                          ltable, rtable,
                                          l_key_attr, r_key_attr,
@@ -77,7 +92,19 @@ class Filter(object):
                                       self,
                                       (show_progress and (job_index==n_jobs-1)))
                                           for job_index in range(n_jobs))
-            return pd.concat(results)
+            output_table = pd.concat(results)
+
+        # revert the type of filter attributes to their original type, in case
+        # it was converted to string type.
+        if revert_l_filter_attr_type:
+            ltable[l_filter_attr] = ltable[l_filter_attr].astype(
+                                                        orig_l_filter_attr_type)
+
+        if revert_r_filter_attr_type:
+            rtable[r_filter_attr] = rtable[r_filter_attr].astype(
+                                                        orig_r_filter_attr_type)
+
+        return output_table        
 
 
 def _filter_candset_split(candset,
@@ -99,12 +126,12 @@ def _filter_candset_split(candset,
     # Build a dictionary on ltable
     ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
                                         l_filter_attr_index,
-                                        remove_null=False, remove_empty=False)
+                                        remove_null=False)
 
     # Build a dictionary on rtable
     rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
                                         r_filter_attr_index,
-                                        remove_null=False, remove_empty=False)
+                                        remove_null=False)
 
     # Find indices of l_key_attr and r_key_attr in candset
     candset_columns = list(candset.columns.values)
