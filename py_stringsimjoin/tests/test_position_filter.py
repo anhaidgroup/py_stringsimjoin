@@ -5,6 +5,7 @@ from nose.tools import assert_list_equal
 from nose.tools import nottest
 from nose.tools import raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
+from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.position_filter import PositionFilter
@@ -179,6 +180,36 @@ class FilterTablesTestCases(unittest.TestCase):
         self.test_filter_tables(self.dlm, 'JACCARD', 0.8, True,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
+
+    # test with n_jobs above 1
+    def test_cos_dlm_08_with_njobs_above_1(self):
+        expected_pairs = set(['1,5', '1,4', '4,2', '5,1'])
+        self.test_filter_tables(self.dlm, 'COSINE', 0.8, False,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr',
+                                ['attr'], ['attr'],
+                                'ltable.', 'rtable.', 2),
+                                expected_pairs)
+
+    # test filter attribute of type int
+    def test_jac_qg2_with_filter_attr_of_type_int(self):
+        A = pd.DataFrame([{'l_id': 1, 'l_attr':1990},
+                          {'l_id': 2, 'l_attr':2000},
+                          {'l_id': 3, 'l_attr':0},
+                          {'l_id': 4, 'l_attr':-1},
+                          {'l_id': 5, 'l_attr':1986}])
+        B = pd.DataFrame([{'r_id': 1, 'r_attr':2001},
+                          {'r_id': 2, 'r_attr':1992},
+                          {'r_id': 3, 'r_attr':1886},
+                          {'r_id': 4, 'r_attr':2007},
+                          {'r_id': 5, 'r_attr':2012}])
+
+        qg2_tok = QgramTokenizer(2, return_set=True)
+        expected_pairs = set(['1,2', '2,1', '2,4'])
+        self.test_filter_tables(qg2_tok, 'JACCARD', 0.3, False,
+                                (A, B,
+                                'l_id', 'r_id', 'l_attr', 'r_attr'),
                                 expected_pairs)
 
     # tests for empty table input

@@ -5,6 +5,7 @@ from nose.tools import assert_list_equal
 from nose.tools import nottest
 from nose.tools import raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
+from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
@@ -254,6 +255,39 @@ class FilterCandsetTestCases(unittest.TestCase):
                                  self.A, self.B,
                                 'l_id', 'r_id', 'l_attr', 'r_attr'),
                                 expected_pairs)
+
+    def test_njobs_above_1(self):
+        expected_pairs = set(['1,4', '1,5', '4,2', '5,3', '5,5'])
+        self.test_filter_candset(self.dlm, 1, '>=', False,
+                                (self.C, 'l_id', 'r_id',
+                                 self.A, self.B,
+                                'l_id', 'r_id', 'l_attr', 'r_attr', 2),
+                                expected_pairs)
+
+    def test_candset_with_join_attr_of_type_int(self):
+        A = pd.DataFrame([{'l_id': 1, 'l_attr':1990},
+                          {'l_id': 2, 'l_attr':2000},
+                          {'l_id': 3, 'l_attr':0},
+                          {'l_id': 4, 'l_attr':-1},
+                          {'l_id': 5, 'l_attr':1986}])
+        B = pd.DataFrame([{'r_id': 1, 'r_attr':2001},
+                          {'r_id': 2, 'r_attr':1992},
+                          {'r_id': 3, 'r_attr':1886},
+                          {'r_id': 4, 'r_attr':2007},
+                          {'r_id': 5, 'r_attr':2012}])
+        A['tmp_join_key'] = 1
+        B['tmp_join_key'] = 1
+        C = pd.merge(A[['l_id', 'tmp_join_key']],
+                     B[['r_id', 'tmp_join_key']],
+                 on='tmp_join_key').drop('tmp_join_key', 1)
+
+        qg2_tok = QgramTokenizer(2, return_set=True)
+        expected_pairs = set(['1,2', '2,1', '2,4', '2,5', '5,2', '5,3'])
+        self.test_filter_candset(qg2_tok, 1, '>=', False,
+                                 (C, 'l_id', 'r_id',
+                                  A, B, 'l_id', 'r_id',
+                                  'l_attr', 'r_attr'),
+                                 expected_pairs)
 
     # tests for empty candset input
     def test_empty_candset(self):

@@ -211,7 +211,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.7, '>=', False,
+                                                  0.3, '>=', False,
                                                   ['A.ID', 'A.birth_year', 'A.zipcode'],
                                                   ['B.ID', 'B.name', 'B.zipcode']))
         test_function.description = 'Test ' + sim_measure_type + \

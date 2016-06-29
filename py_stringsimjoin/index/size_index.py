@@ -1,3 +1,5 @@
+from sys import maxsize
+
 from py_stringsimjoin.index.index import Index
 
 
@@ -7,7 +9,7 @@ class SizeIndex(Index):
         self.index_attr = index_attr
         self.tokenizer = tokenizer
         self.index = {}
-        self.min_length = 0
+        self.min_length = maxsize
         self.max_length = 0
         super(self.__class__, self).__init__()
 

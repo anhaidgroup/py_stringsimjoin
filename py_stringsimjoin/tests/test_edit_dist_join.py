@@ -223,6 +223,19 @@ def test_edit_distance_join():
                                 ' with sim_score disabled.'
     yield test_function,
 
+    # Test with n_jobs above 1.
+    test_function = partial(test_valid_join, test_scenario_1,
+                                             tokenizers['2_GRAM'],
+                                             9, '<=',
+                                             (False,
+                                              ['A.birth_year', 'A.zipcode'],
+                                              ['B.name', 'B.zipcode'],
+                                              'ltable.', 'rtable.',
+                                              False, 2))
+    test_function.description = 'Test ' + sim_measure_type + \
+                                ' with n_jobs above 1.'
+    yield test_function,
+
     # scenario where join attributes are of type int
     test_scenario_2 = [(os.sep.join(['data', 'table_A.csv']), 'A.ID', 'A.zipcode'),
                        (os.sep.join(['data', 'table_B.csv']), 'B.ID', 'B.zipcode')]
