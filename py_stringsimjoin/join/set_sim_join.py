@@ -3,9 +3,7 @@ from six import iteritems
 import pandas as pd
 import pyprind
 
-from py_stringsimjoin.filter.position_filter import PositionFilter, \
-    _find_candidates as find_candidates_position_filter
-from py_stringsimjoin.filter.filter_utils import get_prefix_length
+from py_stringsimjoin.filter.position_filter import PositionFilter
 from py_stringsimjoin.index.position_index import PositionIndex
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_output_header_from_tables, \
@@ -74,14 +72,9 @@ def set_sim_join(ltable, rtable,
 
         r_ordered_tokens = order_using_token_ordering(
                 tokenizer.tokenize(r_string), token_ordering)
-        r_num_tokens = len(r_ordered_tokens)
-        r_prefix_length = get_prefix_length(r_num_tokens,
-                                            sim_measure_type,
-                                            threshold, tokenizer)     
 
-        candidate_overlap = find_candidates_position_filter(
-                                r_ordered_tokens, r_num_tokens, r_prefix_length,
-                                pos_filter, position_index)
+        candidate_overlap = pos_filter.find_candidates(r_ordered_tokens,
+                                                       position_index)
 
         for cand, overlap in iteritems(candidate_overlap):
             if overlap > 0:

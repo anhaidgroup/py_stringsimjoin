@@ -275,6 +275,47 @@ class PositionFilter(Filter):
 
         return output_table
 
+    def find_candidates(self, probe_tokens, position_index):
+        probe_num_tokens = len(probe_tokens)
+        size_lower_bound = get_size_lower_bound(probe_num_tokens,
+                                                self.sim_measure_type,
+                                                self.threshold)
+        size_upper_bound = get_size_upper_bound(probe_num_tokens,
+                                                self.sim_measure_type,
+                                                self.threshold)
+
+        overlap_threshold_cache = {}
+        for size in xrange(size_lower_bound, size_upper_bound + 1):
+            overlap_threshold_cache[size] = get_overlap_threshold(
+                                                size, probe_num_tokens,
+                                                self.sim_measure_type,
+                                                self.threshold,
+                                                self.tokenizer)
+
+        probe_prefix_length = get_prefix_length(probe_num_tokens,
+                                                self.sim_measure_type,
+                                                self.threshold,
+                                                self.tokenizer)
+
+        # probe position index and find candidates
+        candidate_overlap = {}
+        probe_pos = 0
+        for token in probe_tokens[0:probe_prefix_length]:
+            for (cand, cand_pos)  in position_index.probe(token):
+                cand_num_tokens = position_index.get_size(cand)
+                if size_lower_bound <= cand_num_tokens <= size_upper_bound:
+                    overlap_upper_bound = 1 + min(probe_num_tokens - probe_pos - 1,
+                                                  cand_num_tokens - cand_pos - 1)
+                    current_overlap = candidate_overlap.get(cand, 0)
+                    if (current_overlap + overlap_upper_bound >=
+                                overlap_threshold_cache[cand_num_tokens]):
+                        candidate_overlap[cand] = current_overlap + 1
+                    else:
+                        candidate_overlap[cand] = 0
+            probe_pos += 1
+
+        return candidate_overlap
+
 
 def _filter_tables_split(ltable, rtable,
                          l_key_attr, r_key_attr,
@@ -328,14 +369,10 @@ def _filter_tables_split(ltable, rtable,
         r_filter_attr_tokens = position_filter.tokenizer.tokenize(r_string)
         r_ordered_tokens = order_using_token_ordering(r_filter_attr_tokens,
                                                       token_ordering)
-        r_num_tokens = len(r_ordered_tokens)
-        r_prefix_length = get_prefix_length(r_num_tokens,
-                                            position_filter.sim_measure_type,
-                                            position_filter.threshold,
-                                            position_filter.tokenizer)
-        candidate_overlap = _find_candidates(r_ordered_tokens, r_num_tokens,
-                                             r_prefix_length, position_filter,
-                                             position_index)
+
+        candidate_overlap = position_filter.find_candidates(
+                                r_ordered_tokens, position_index)
+
         for cand, overlap in iteritems(candidate_overlap):
             if overlap > 0:
                 if has_output_attributes:
@@ -359,40 +396,3 @@ def _filter_tables_split(ltable, rtable,
     # generate a dataframe from the list of output rows
     output_table = pd.DataFrame(output_rows, columns=output_header)
     return output_table
-
-
-def _find_candidates(r_ordered_tokens, r_num_tokens, r_prefix_length,
-                     position_filter, position_index):
-    size_lower_bound = get_size_lower_bound(r_num_tokens,
-                                            position_filter.sim_measure_type,
-                                            position_filter.threshold)
-    size_upper_bound = get_size_upper_bound(r_num_tokens,
-                                            position_filter.sim_measure_type,
-                                            position_filter.threshold)
-
-    overlap_threshold_cache = {}
-    for size in xrange(size_lower_bound, size_upper_bound + 1):
-        overlap_threshold_cache[size] = get_overlap_threshold(
-                                            size, r_num_tokens,
-                                            position_filter.sim_measure_type,
-                                            position_filter.threshold,
-                                            position_filter.tokenizer)
-
-    # probe position index and find candidates
-    candidate_overlap = {}
-    r_pos = 0
-    for token in r_ordered_tokens[0:r_prefix_length]:
-        for (cand, cand_pos)  in position_index.probe(token):
-            cand_num_tokens = position_index.get_size(cand)
-            if size_lower_bound <= cand_num_tokens <= size_upper_bound:
-                overlap_upper_bound = 1 + min(r_num_tokens - r_pos - 1,
-                                              cand_num_tokens - cand_pos - 1)
-                current_overlap = candidate_overlap.get(cand, 0)
-                if (current_overlap + overlap_upper_bound >=
-                            overlap_threshold_cache[cand_num_tokens]):
-                    candidate_overlap[cand] = current_overlap + 1
-                else:
-                    candidate_overlap[cand] = 0
-        r_pos += 1
-
-    return candidate_overlap

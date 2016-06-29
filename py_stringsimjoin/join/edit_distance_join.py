@@ -7,7 +7,7 @@ from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 import pyprind
 
-from py_stringsimjoin.filter.prefix_filter import PrefixFilter, _find_candidates
+from py_stringsimjoin.filter.prefix_filter import PrefixFilter
 from py_stringsimjoin.index.prefix_index import PrefixIndex
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_attrs_to_project, \
@@ -270,8 +270,9 @@ def _edit_distance_join_split(ltable, rtable,
         r_ordered_tokens = order_using_token_ordering(
                 tokenizer.tokenize(r_string), token_ordering)
 
-        candidates = _find_candidates(r_ordered_tokens, len(r_ordered_tokens),
-                                      prefix_filter, prefix_index)
+        candidates = prefix_filter.find_candidates(r_ordered_tokens,
+                                                   prefix_index)
+
         for cand in candidates:
             if r_len - threshold <= l_join_attr_list[cand] <= r_len + threshold:
                 l_row = ltable_list[cand]

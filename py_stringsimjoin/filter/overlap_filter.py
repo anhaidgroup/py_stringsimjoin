@@ -234,6 +234,13 @@ class OverlapFilter(Filter):
 
         return output_table
 
+    def find_candidates(self, probe_tokens, inverted_index):
+        candidate_overlap = {}
+        for token in probe_tokens:
+            for cand in inverted_index.probe(token):
+                candidate_overlap[cand] = candidate_overlap.get(cand, 0) + 1
+        return candidate_overlap
+
 
 def _filter_tables_split(ltable, rtable,
                          l_key_attr, r_key_attr,
@@ -280,8 +287,8 @@ def _filter_tables_split(ltable, rtable,
         r_filter_attr_tokens = overlap_filter.tokenizer.tokenize(r_string)
 
         # probe inverted index and find overlap of candidates          
-        candidate_overlap = _find_candidates(r_filter_attr_tokens,
-                                             inverted_index)
+        candidate_overlap = overlap_filter.find_candidates(
+                                r_filter_attr_tokens, inverted_index)
 
         for cand, overlap in iteritems(candidate_overlap):
             if comp_fn(overlap, overlap_filter.overlap_size):
@@ -309,11 +316,3 @@ def _filter_tables_split(ltable, rtable,
 
     output_table = pd.DataFrame(output_rows, columns=output_header)
     return output_table
-
-
-def _find_candidates(tokens, inverted_index):
-    candidate_overlap = {}
-    for token in tokens:
-        for cand in inverted_index.probe(token):
-            candidate_overlap[cand] = candidate_overlap.get(cand, 0) + 1
-    return candidate_overlap

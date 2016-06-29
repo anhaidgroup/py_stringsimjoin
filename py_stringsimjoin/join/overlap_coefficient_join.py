@@ -5,7 +5,7 @@ from six import iteritems
 import pandas as pd
 import pyprind
 
-from py_stringsimjoin.filter.overlap_filter import _find_candidates
+from py_stringsimjoin.filter.overlap_filter import OverlapFilter
 from py_stringsimjoin.index.inverted_index import InvertedIndex
 from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
     find_output_attribute_indices, get_attrs_to_project, \
@@ -219,6 +219,7 @@ def _overlap_coefficient_join_split(ltable, rtable,
                                    tokenizer, cache_size_flag=True)
     inverted_index.build()
 
+    overlap_filter = OverlapFilter(tokenizer, 1)
     comp_fn = COMP_OP_MAP[comp_op]
 
     output_rows = []
@@ -235,8 +236,8 @@ def _overlap_coefficient_join_split(ltable, rtable,
         r_num_tokens = len(r_join_attr_tokens)
 
         # probe inverted index and find overlap of candidates 
-        candidate_overlap = _find_candidates(r_join_attr_tokens,
-                                             inverted_index)
+        candidate_overlap = overlap_filter.find_candidates(
+                                r_join_attr_tokens, inverted_index)
 
         for cand, overlap in iteritems(candidate_overlap):
             sim_score = (float(overlap) /

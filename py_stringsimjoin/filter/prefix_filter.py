@@ -250,6 +250,18 @@ class PrefixFilter(Filter):
 
         return output_table
 
+    def find_candidates(self, probe_tokens, prefix_index):
+        probe_num_tokens = len(probe_tokens)
+        probe_prefix_length = get_prefix_length(probe_num_tokens,
+                                                self.sim_measure_type,
+                                                self.threshold,
+                                                self.tokenizer)
+        candidates = set()
+        for token in probe_tokens[0:probe_prefix_length]:
+            for cand in prefix_index.probe(token):
+                candidates.add(cand)
+        return candidates
+
 
 def _filter_tables_split(ltable, rtable,
                          l_key_attr, r_key_attr,
@@ -304,8 +316,8 @@ def _filter_tables_split(ltable, rtable,
                                                       token_ordering)
            
         # probe prefix index and find candidates
-        candidates = _find_candidates(r_ordered_tokens, len(r_ordered_tokens),
-                                      prefix_filter, prefix_index)
+        candidates = prefix_filter.find_candidates(r_ordered_tokens,
+                                                   prefix_index)
 
         for cand in candidates:
             if has_output_attributes:
@@ -329,15 +341,3 @@ def _filter_tables_split(ltable, rtable,
     # generate a dataframe from the list of output rows
     output_table = pd.DataFrame(output_rows, columns=output_header)
     return output_table
-
-
-def _find_candidates(tokens, num_tokens, prefix_filter, prefix_index):
-    prefix_length = get_prefix_length(num_tokens,
-                                      prefix_filter.sim_measure_type,
-                                      prefix_filter.threshold,
-                                      prefix_filter.tokenizer)
-    candidates = set()
-    for token in tokens[0:prefix_length]:
-        for cand in prefix_index.probe(token):
-            candidates.add(cand)
-    return candidates

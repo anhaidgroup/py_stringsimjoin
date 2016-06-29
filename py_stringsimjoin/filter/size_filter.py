@@ -241,6 +241,28 @@ class SizeFilter(Filter):
 
         return output_table
 
+    def find_candidates(self, probe_size, size_index):
+        size_lower_bound = get_size_lower_bound(probe_size,
+                                                self.sim_measure_type,
+                                                self.threshold)
+        size_upper_bound = get_size_upper_bound(probe_size,
+                                                self.sim_measure_type,
+                                                self.threshold)
+
+        size_lower_bound = (size_index.min_length if
+                            size_lower_bound < size_index.min_length else
+                            size_lower_bound)
+
+        size_upper_bound = (size_index.max_length if
+                            size_upper_bound > size_index.max_length else
+                            size_upper_bound)
+
+        candidates = set()
+        for cand_size in xrange(size_lower_bound, size_upper_bound + 1):
+            for cand in size_index.probe(cand_size):
+                candidates.add(cand)
+        return candidates
+
 
 def _filter_tables_split(ltable, rtable,
                          l_key_attr, r_key_attr,
@@ -284,24 +306,8 @@ def _filter_tables_split(ltable, rtable,
 
         r_num_tokens = len(size_filter.tokenizer.tokenize(r_string))
            
-        size_lower_bound = get_size_lower_bound(r_num_tokens,
-                                                size_filter.sim_measure_type,
-                                                size_filter.threshold)
-        size_upper_bound = get_size_upper_bound(r_num_tokens,
-                                                size_filter.sim_measure_type,
-                                                size_filter.threshold)
-
-        size_lower_bound = (size_index.min_length if
-                            size_lower_bound < size_index.min_length else 
-                            size_lower_bound) 
-
-        size_upper_bound = (size_index.max_length if
-                            size_upper_bound > size_index.max_length else 
-                            size_upper_bound) 
-
         # probe size index and find candidates
-        candidates = _find_candidates(size_lower_bound, size_upper_bound,
-                                      size_index)
+        candidates = size_filter.find_candidates(r_num_tokens, size_index)
 
         for cand in candidates:
             if has_output_attributes:
@@ -324,10 +330,3 @@ def _filter_tables_split(ltable, rtable,
 
     output_table = pd.DataFrame(output_rows, columns=output_header)
     return output_table
-
-def _find_candidates(size_lower_bound, size_upper_bound, size_index):
-    candidates = set()
-    for cand_size in xrange(size_lower_bound, size_upper_bound + 1):
-        for cand in size_index.probe(cand_size):
-            candidates.add(cand)
-    return candidates
