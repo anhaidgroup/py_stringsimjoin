@@ -6,8 +6,6 @@ import os
 from six.moves import xrange
 import pandas as pd
 
-from py_stringsimjoin.utils import install_path
-
 
 COMP_OP_MAP = {'>=': operator.ge,
                '>': operator.gt,
@@ -112,8 +110,8 @@ def get_num_processes_to_launch(n_jobs):
 
 
 def get_install_path():
-    path_list = install_path.split(os.sep)
-    return os.sep.join(path_list[0:len(path_list)-1])
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    return os.path.dirname(current_dir)
 
 
 def remove_redundant_attrs(out_attrs, key_attr):
