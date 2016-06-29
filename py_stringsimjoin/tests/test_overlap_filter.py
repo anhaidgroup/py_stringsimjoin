@@ -282,7 +282,8 @@ class FilterCandsetTestCases(unittest.TestCase):
                  on='tmp_join_key').drop('tmp_join_key', 1)
 
         qg2_tok = QgramTokenizer(2, return_set=True)
-        expected_pairs = set(['1,2', '2,1', '2,4', '2,5', '5,2', '5,3'])
+        expected_pairs = set(['1,2', '1,3', '2,1', '2,4', '2,5',
+                              '4,1', '5,2', '5,3'])
         self.test_filter_candset(qg2_tok, 1, '>=', False,
                                  (C, 'l_id', 'r_id',
                                   A, B, 'l_id', 'r_id',

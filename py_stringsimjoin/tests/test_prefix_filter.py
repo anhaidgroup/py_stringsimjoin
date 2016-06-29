@@ -206,7 +206,7 @@ class FilterTablesTestCases(unittest.TestCase):
                           {'r_id': 5, 'r_attr':2012}])
 
         qg2_tok = QgramTokenizer(2, return_set=True)
-        expected_pairs = set(['1,2', '2,1', '2,4', '2,5', '5,2', '5,3'])
+        expected_pairs = set(['1,2', '2,1', '2,4', '2,5', '4,1', '5,2', '5,3'])
         self.test_filter_tables(qg2_tok, 'JACCARD', 0.3, False,
                                 (A, B,
                                 'l_id', 'r_id', 'l_attr', 'r_attr'),
