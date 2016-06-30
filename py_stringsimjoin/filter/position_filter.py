@@ -301,14 +301,17 @@ class PositionFilter(Filter):
         candidate_overlap = {}
         probe_pos = 0
         for token in probe_tokens[0:probe_prefix_length]:
-            for (cand, cand_pos)  in position_index.probe(token):
-                cand_num_tokens = position_index.get_size(cand)
+            for (cand, cand_pos) in position_index.probe(token):
+                cand_num_tokens = position_index.size_cache[cand]
                 if size_lower_bound <= cand_num_tokens <= size_upper_bound:
-                    overlap_upper_bound = 1 + min(probe_num_tokens - probe_pos - 1,
-                                                  cand_num_tokens - cand_pos - 1)
+                    if (probe_num_tokens - probe_pos <=
+                            cand_num_tokens - cand_pos):
+                        overlap_upper_bound = probe_num_tokens - probe_pos
+                    else:
+                        overlap_upper_bound = cand_num_tokens - cand_pos 
                     current_overlap = candidate_overlap.get(cand, 0)
                     if (current_overlap + overlap_upper_bound >=
-                                overlap_threshold_cache[cand_num_tokens]):
+                            overlap_threshold_cache[cand_num_tokens]):
                         candidate_overlap[cand] = current_overlap + 1
                     else:
                         candidate_overlap[cand] = 0
