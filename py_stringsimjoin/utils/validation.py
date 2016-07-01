@@ -50,7 +50,11 @@ def validate_output_attrs(l_out_attrs, l_columns, r_out_attrs, r_columns):
 
 def validate_threshold(threshold, sim_measure_type):
     """Check if the threshold is valid for the sim_measure_type."""
-    if sim_measure_type == 'OVERLAP' or sim_measure_type == 'EDIT_DISTANCE':
+    if sim_measure_type == 'EDIT_DISTANCE':
+        if threshold < 0:
+            raise AssertionError('threshold for ' + sim_measure_type + \
+                                 ' should be greater than or equal to 0')
+    elif sim_measure_type == 'OVERLAP':
         if threshold <= 0:
             raise AssertionError('threshold for ' + sim_measure_type + \
                                  ' should be greater than 0')
