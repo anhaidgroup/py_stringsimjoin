@@ -129,6 +129,12 @@ def edit_distance_join(ltable, rtable,
     # convert threshold to integer (incase if it is float)
     threshold = int(floor(threshold))
 
+    # set return_set flag of tokenizer to be False, in case it is set to True
+    revert_tokenizer_return_set_flag = False
+    if tokenizer.get_return_set():
+        tokenizer.set_return_set(False)
+        revert_tokenizer_return_set_flag = True
+
     # convert the join attributes to string type, in case it is int or float.
     revert_l_join_attr_type = False
     orig_l_join_attr_type = ltable[l_join_attr].dtype
@@ -202,6 +208,10 @@ def edit_distance_join(ltable, rtable,
 
     if revert_r_join_attr_type:
         rtable[r_join_attr] = rtable[r_join_attr].astype(orig_r_join_attr_type)
+
+    # revert the return_set flag of tokenizer, in case it was modified.
+    if revert_tokenizer_return_set_flag:
+        tokenizer.set_return_set(True)
 
     return output_table
 

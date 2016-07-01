@@ -1,5 +1,7 @@
 # overlap join
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
+from py_stringsimjoin.utils.validation import validate_tokenizer
+
 
 def overlap_join(ltable, rtable,
                  l_key_attr, r_key_attr,
@@ -60,10 +62,26 @@ def overlap_join(ltable, rtable,
         output table (dataframe)
     """
 
+    # check if the input tokenizer is valid
+    validate_tokenizer(tokenizer)
+
+    # set return_set flag of tokenizer to be True, in case it is set to False
+    revert_tokenizer_return_set_flag = False
+    if not tokenizer.get_return_set():
+        tokenizer.set_return_set(True)
+        revert_tokenizer_return_set_flag = True
+
     overlap_filter = OverlapFilter(tokenizer, threshold, comp_op, allow_missing)
-    return overlap_filter.filter_tables(ltable, rtable,
-                                        l_key_attr, r_key_attr,
-                                        l_join_attr, r_join_attr,
-                                        l_out_attrs, r_out_attrs,
-                                        l_out_prefix, r_out_prefix,
-                                        out_sim_score, n_jobs, show_progress)
+    output_table =  overlap_filter.filter_tables(ltable, rtable,
+                                                 l_key_attr, r_key_attr,
+                                                 l_join_attr, r_join_attr,
+                                                 l_out_attrs, r_out_attrs,
+                                                 l_out_prefix, r_out_prefix,
+                                                 out_sim_score, n_jobs,
+                                                 show_progress)
+
+    # revert the return_set flag of tokenizer, in case it was modified.
+    if revert_tokenizer_return_set_flag:
+        tokenizer.set_return_set(False)
+
+    return output_table

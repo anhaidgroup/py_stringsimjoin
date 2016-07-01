@@ -90,12 +90,16 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=()):
 
     expected_pairs = expected_pairs.union(missing_pairs)
 
+    orig_return_set_flag = tok.get_return_set()
+
     # use join function to obtain actual output pairs.
     actual_candset = edit_distance_join(ltable, rtable,
                                         l_key_attr, r_key_attr,
                                         l_join_attr, r_join_attr,
                                         threshold, comp_op,
                                         *args, tokenizer=tok)
+
+    assert_equal(tok.get_return_set(), orig_return_set_flag)
 
     expected_output_attrs = ['_id']
     l_out_prefix = DEFAULT_L_OUT_PREFIX
@@ -256,6 +260,13 @@ def test_edit_distance_join():
                             tokenizers['2_GRAM'], 3, '<=')
     test_function.description = 'Test ' + sim_measure_type + \
                                 ' with join attribute of type float.'
+    yield test_function,
+
+    # Test with a tokenizer where return_set flag is set to True.
+    tok = QgramTokenizer(2, return_set=True)
+    test_function = partial(test_valid_join, test_scenario_1, tok, 9)
+    test_function.description = 'Test ' + sim_measure_type + \
+                        ' with a tokenizer where return_set flag is set to True'
     yield test_function,
 
 

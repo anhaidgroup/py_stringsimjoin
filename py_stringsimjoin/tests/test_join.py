@@ -94,11 +94,15 @@ def test_valid_join(scenario, sim_measure_type, args):
 
     expected_pairs = expected_pairs.union(missing_pairs)
 
+    orig_return_set_flag = args[0].get_return_set()
+
     # use join function to obtain actual output pairs.
     actual_candset = join_fn(ltable, rtable,
                              l_key_attr, r_key_attr,
                              l_join_attr, r_join_attr,
                              *args)
+
+    assert_equal(args[0].get_return_set(), orig_return_set_flag)
 
     expected_output_attrs = ['_id']
     l_out_prefix = DEFAULT_L_OUT_PREFIX
@@ -285,6 +289,15 @@ def test_set_sim_join():
                                                   0.3))
         test_function.description = 'Test ' + sim_measure_type + \
                                     ' with join attribute of type float.'
+        yield test_function,
+
+   # Test each similarity measure with a tokenizer with return_set flag set to False.
+    for sim_measure_type in sim_measure_types:
+        tok = QgramTokenizer(2)
+        test_function = partial(test_valid_join, test_scenario_1,
+                                             sim_measure_type, (tok, 0.3))
+        test_function.description = 'Test ' + sim_measure_type + \
+                    ' with a tokenizer with return_set flag set to False .'
         yield test_function,
 
 

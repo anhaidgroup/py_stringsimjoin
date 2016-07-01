@@ -106,6 +106,12 @@ def jaccard_join(ltable, rtable,
     validate_key_attr(l_key_attr, ltable, 'left table')
     validate_key_attr(r_key_attr, rtable, 'right table')
 
+    # set return_set flag of tokenizer to be True, in case it is set to False
+    revert_tokenizer_return_set_flag = False
+    if not tokenizer.get_return_set():
+        tokenizer.set_return_set(True)
+        revert_tokenizer_return_set_flag = True
+
     # convert the join attributes to string type, in case it is int or float.
     revert_l_join_attr_type = False
     orig_l_join_attr_type = ltable[l_join_attr].dtype
@@ -180,5 +186,9 @@ def jaccard_join(ltable, rtable,
 
     if revert_r_join_attr_type:
         rtable[r_join_attr] = rtable[r_join_attr].astype(orig_r_join_attr_type)
+
+    # revert the return_set flag of tokenizer, in case it was modified.
+    if revert_tokenizer_return_set_flag:
+        tokenizer.set_return_set(False)
 
     return output_table
