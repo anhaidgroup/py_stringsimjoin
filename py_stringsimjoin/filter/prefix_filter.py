@@ -256,10 +256,10 @@ class PrefixFilter(Filter):
                                                 self.sim_measure_type,
                                                 self.threshold,
                                                 self.tokenizer)
+
         candidates = set()
         for token in probe_tokens[0:probe_prefix_length]:
-            for cand in prefix_index.probe(token):
-                candidates.add(cand)
+            candidates.update(prefix_index.probe(token))
         return candidates
 
 

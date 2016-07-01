@@ -277,12 +277,12 @@ class PositionFilter(Filter):
 
     def find_candidates(self, probe_tokens, position_index):
         probe_num_tokens = len(probe_tokens)
-        size_lower_bound = get_size_lower_bound(probe_num_tokens,
-                                                self.sim_measure_type,
-                                                self.threshold)
-        size_upper_bound = get_size_upper_bound(probe_num_tokens,
-                                                self.sim_measure_type,
-                                                self.threshold)
+        size_lower_bound = max(get_size_lower_bound(probe_num_tokens,
+                                   self.sim_measure_type, self.threshold),
+                               position_index.min_length)
+        size_upper_bound = min(get_size_upper_bound(probe_num_tokens,
+                                   self.sim_measure_type, self.threshold),
+                               position_index.max_length)
 
         overlap_threshold_cache = {}
         for size in xrange(size_lower_bound, size_upper_bound + 1):
@@ -302,19 +302,20 @@ class PositionFilter(Filter):
         probe_pos = 0
         for token in probe_tokens[0:probe_prefix_length]:
             for (cand, cand_pos) in position_index.probe(token):
-                cand_num_tokens = position_index.size_cache[cand]
-                if size_lower_bound <= cand_num_tokens <= size_upper_bound:
-                    if (probe_num_tokens - probe_pos <=
-                            cand_num_tokens - cand_pos):
-                        overlap_upper_bound = probe_num_tokens - probe_pos
-                    else:
-                        overlap_upper_bound = cand_num_tokens - cand_pos 
-                    current_overlap = candidate_overlap.get(cand, 0)
-                    if (current_overlap + overlap_upper_bound >=
-                            overlap_threshold_cache[cand_num_tokens]):
-                        candidate_overlap[cand] = current_overlap + 1
-                    else:
-                        candidate_overlap[cand] = 0
+                current_overlap = candidate_overlap.get(cand, 0)
+                if current_overlap != -1:
+                    cand_num_tokens = position_index.size_cache[cand]
+                    if size_lower_bound <= cand_num_tokens <= size_upper_bound:
+                        if (probe_num_tokens - probe_pos <=
+                                cand_num_tokens - cand_pos):
+                            overlap_upper_bound = probe_num_tokens - probe_pos
+                        else:
+                            overlap_upper_bound = cand_num_tokens - cand_pos 
+                        if (current_overlap + overlap_upper_bound >=
+                                overlap_threshold_cache[cand_num_tokens]):
+                            candidate_overlap[cand] = current_overlap + 1
+                        else:
+                            candidate_overlap[cand] = -1
             probe_pos += 1
 
         return candidate_overlap

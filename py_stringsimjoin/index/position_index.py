@@ -1,3 +1,5 @@
+from sys import maxsize
+
 from py_stringsimjoin.filter.filter_utils import get_prefix_length
 from py_stringsimjoin.index.index import Index
 from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
@@ -14,6 +16,8 @@ class PositionIndex(Index):
         self.token_ordering = token_ordering
         self.index = {}
         self.size_cache = []
+        self.min_length = maxsize
+        self.max_length = 0
         super(self.__class__, self).__init__()
 
     def build(self):
@@ -38,6 +42,12 @@ class PositionIndex(Index):
                 pos += 1
 
             self.size_cache.append(num_tokens)
+            if num_tokens < self.min_length:
+                self.min_length = num_tokens
+
+            if num_tokens > self.max_length:
+                self.max_length = num_tokens
+
             row_id += 1
 
         return True
@@ -65,6 +75,12 @@ class PositionIndex(Index):
                 pos += 1
 
             self.size_cache.append(num_tokens)
+            if num_tokens < self.min_length:
+                self.min_length = num_tokens
+
+            if num_tokens > self.max_length:
+                self.max_length = num_tokens
+
             row_id += 1
             
             cached_tokens.append(index_attr_tokens)
