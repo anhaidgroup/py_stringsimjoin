@@ -23,10 +23,11 @@ def jaccard_join(ltable, rtable,
                  out_sim_score=True, n_jobs=1, show_progress=True):
     """Join two tables using Jaccard similarity measure.
 
-    Finds tuple pairs from left table and right table such that the Jaccard similarity between
-    the join attributes satisfies the condition on input threshold. That is, if the comparison
-    operator is '>=', finds tuples pairs whose Jaccard similarity on the join attributes is
-    greater than or equal to the input threshold.
+    Finds tuple pairs from left table and right table such that the Jaccard 
+    similarity between the join attributes satisfies the condition on input 
+    threshold. That is, if the comparison operator is '>=', finds tuples pairs 
+    whose Jaccard similarity on the join attributes is greater than or equal to 
+    the input threshold.
 
     Args:
         ltable (dataframe): left input table.
@@ -41,38 +42,55 @@ def jaccard_join(ltable, rtable,
 
         r_join_attr (string): join attribute in right table.
 
-        tokenizer (Tokenizer object): tokenizer to be used to tokenize join attributes.
+        tokenizer (Tokenizer object): tokenizer to be used to tokenize join 
+            attributes.
 
         threshold (float): Jaccard similarity threshold to be satisfied.
 
-        comp_op (string): Comparison operator. Supported values are '>=', '>' and '='
-                          (defaults to '>=').  
+        comp_op (string): comparison operator. Supported values are '>=', '>' 
+            and '=' (defaults to '>=').  
 
-        l_out_attrs (list): list of attributes to be included in the output table from
-                            left table (defaults to None).
+        allow_empty (boolean): flag to indicate whether tuple pairs with empty 
+            set of tokens in both the join attributes should be included in the
+            output (defaults to True).
 
-        r_out_attrs (list): list of attributes to be included in the output table from
-                            right table (defaults to None).
+        allow_missing (boolean): flag to indicate whether tuple pairs with 
+            missing value in at least one of the join attributes should be 
+            included in the output (defaults to False). If this flag is set to 
+            True, a tuple in ltable with missing value in the join attribute 
+            will be matched with every tuple in rtable and vice versa.
 
-        l_out_prefix (string): prefix to use for the attribute names coming from left
-                               table (defaults to 'l\_').
+        l_out_attrs (list): list of attribute names from the left table to be 
+            included in the output table (defaults to None).
 
-        r_out_prefix (string): prefix to use for the attribute names coming from right
-                               table (defaults to 'r\_').
+        r_out_attrs (list): list of attribute names from the right table to be 
+            included in the output table (defaults to None).
 
-        out_sim_score (boolean): flag to indicate if similarity score needs to be
-                                 included in the output table (defaults to True).
+        l_out_prefix (string): prefix to be used for the attribute names coming 
+            from the left table, in the output table (defaults to 'l\_').
 
-        n_jobs (int): The number of jobs to use for the computation (defaults to 1).                                                                                            
-            If -1 all CPUs are used. If 1 is given, no parallel computing code is used at all, 
-            which is useful for debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
-            Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
-            then n_jobs is set to 1.
+        r_out_prefix (string): prefix to be used for the attribute names coming 
+            from the right table, in the output table (defaults to 'r\_').
 
-        show_progress (boolean): flag to indicate if task progress need to be shown (defaults to True).
+        out_sim_score (boolean): flag to indicate whether similarity score 
+            should be included in the output table (defaults to True). Setting
+            this flag to True will add a column named '_sim_score' in the 
+            output table. This column will contain the similarity scores for the
+            tuple pairs in the output. 
+
+        n_jobs (int): number of parallel jobs to use for the computation
+            (defaults to 1). If -1 all CPUs are used. If 1 is given, no 
+            parallel computing code is used at all, which is useful for 
+            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
+            for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+            becomes less than 1, then n_jobs is set to 1.
+
+        show_progress (boolean): flag to indicate whether task progress should 
+            be displayed to the user (defaults to True).
 
     Returns:
-        output table (dataframe)
+        An output table containing tuple pairs that satisfy the join 
+        condition (dataframe).
     """
 
     # check if the input tables are dataframes
@@ -135,8 +153,8 @@ def jaccard_join(ltable, rtable,
     l_proj_attrs = get_attrs_to_project(l_out_attrs, l_key_attr, l_join_attr)
     r_proj_attrs = get_attrs_to_project(r_out_attrs, r_key_attr, r_join_attr)
 
-    # do a projection on the input dataframes. Note that this doesn't create a copy
-    # of the dataframes. It only creates a view on original dataframes.
+    # do a projection on the input dataframes. Note that this doesn't create a
+    # copy of the dataframes. It only creates a view on original dataframes.
     ltable_projected = ltable[l_proj_attrs]
     rtable_projected = rtable[r_proj_attrs]
 

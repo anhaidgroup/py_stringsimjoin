@@ -53,8 +53,8 @@ def set_sim_join(ltable, rtable,
                                    tokenizer, sim_measure_type,
                                    threshold, token_ordering)
     # While building the index, we cache the tokens and the empty records.
-    # We cache the tokens so that we need not tokenize each string in l_join_attr
-    # multiple times when we need to compute the similarity measure.
+    # We cache the tokens so that we need not tokenize each string in 
+    # l_join_attr multiple times when we need to compute the similarity measure.
     # Further we cache the empty record ids to handle the allow_empty flag.
     cached_data = position_index.build(allow_empty, cache_tokens=True)
     l_empty_records = cached_data['empty_records']
