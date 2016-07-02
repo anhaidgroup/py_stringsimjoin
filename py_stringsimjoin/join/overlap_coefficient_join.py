@@ -22,7 +22,7 @@ def overlap_coefficient_join(ltable, rtable,
                              l_key_attr, r_key_attr,
                              l_join_attr, r_join_attr,
                              tokenizer, threshold, comp_op='>=',
-                             allow_missing=False,
+                             allow_empty=True, allow_missing=False,
                              l_out_attrs=None, r_out_attrs=None,
                              l_out_prefix='l_', r_out_prefix='r_',
                              out_sim_score=True, n_jobs=1, show_progress=True):
@@ -154,6 +154,7 @@ def overlap_coefficient_join(ltable, rtable,
                                            l_key_attr, r_key_attr,
                                            l_join_attr, r_join_attr,
                                            tokenizer, threshold, comp_op,
+                                           allow_empty,
                                            l_out_attrs, r_out_attrs,
                                            l_out_prefix, r_out_prefix,
                                            out_sim_score, show_progress)
@@ -164,6 +165,7 @@ def overlap_coefficient_join(ltable, rtable,
                                               l_key_attr, r_key_attr,
                                               l_join_attr, r_join_attr,
                                               tokenizer, threshold, comp_op,
+                                              allow_empty,
                                               l_out_attrs, r_out_attrs,
                                               l_out_prefix, r_out_prefix,
                                               out_sim_score,
@@ -202,6 +204,7 @@ def _overlap_coefficient_join_split(ltable, rtable,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
                                     tokenizer, threshold, comp_op,
+                                    allow_empty,
                                     l_out_attrs, r_out_attrs,
                                     l_out_prefix, r_out_prefix,
                                     out_sim_score, show_progress):
@@ -227,7 +230,10 @@ def _overlap_coefficient_join_split(ltable, rtable,
     # Build inverted index over ltable
     inverted_index = InvertedIndex(ltable_list, l_join_attr_index,
                                    tokenizer, cache_size_flag=True)
-    inverted_index.build()
+    # While building the index, we cache the record ids with empty set of tokens.
+    # This is needed to handle the allow_empty flag.
+    cached_data = inverted_index.build(allow_empty)
+    l_empty_records = cached_data['empty_records']
 
     overlap_filter = OverlapFilter(tokenizer, 1)
     comp_fn = COMP_OP_MAP[comp_op]
@@ -244,6 +250,23 @@ def _overlap_coefficient_join_split(ltable, rtable,
 
         r_join_attr_tokens = tokenizer.tokenize(r_string)
         r_num_tokens = len(r_join_attr_tokens)
+
+        if allow_empty and r_num_tokens == 0:
+            for l_id in l_empty_records:
+                if has_output_attributes:
+                    output_row = get_output_row_from_tables(
+                                     ltable_list[l_id], r_row,
+                                     l_key_attr_index, r_key_attr_index,
+                                     l_out_attrs_indices,
+                                     r_out_attrs_indices)
+                else:
+                    output_row = [ltable_list[l_id][l_key_attr_index],
+                                  r_row[r_key_attr_index]]
+
+                if out_sim_score:
+                    output_row.append(1.0)
+                output_rows.append(output_row)
+            continue
 
         # probe inverted index and find overlap of candidates 
         candidate_overlap = overlap_filter.find_candidates(

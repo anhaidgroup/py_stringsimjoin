@@ -46,7 +46,7 @@ class PrefixFilter(Filter):
     """
 
     def __init__(self, tokenizer, sim_measure_type, threshold,
-                 allow_missing=False):
+                 allow_empty=True, allow_missing=False):
         # check if the input tokenizer is valid
         validate_tokenizer(tokenizer)
 
@@ -59,6 +59,7 @@ class PrefixFilter(Filter):
         self.tokenizer = tokenizer
         self.sim_measure_type = sim_measure_type
         self.threshold = threshold
+        self.allow_empty = allow_empty
 
         super(self.__class__, self).__init__(allow_missing)
 
@@ -77,22 +78,27 @@ class PrefixFilter(Filter):
         if pd.isnull(lstring) or pd.isnull(rstring):
             return (not self.allow_missing)
 
-        # check for empty string
-        if (not lstring) or (not rstring):
-            return True
-
         ltokens = self.tokenizer.tokenize(lstring)
         rtokens = self.tokenizer.tokenize(rstring)
 
+        l_num_tokens = len(ltokens)
+        r_num_tokens = len(rtokens)
+
+        if l_num_tokens == 0 and r_num_tokens == 0:
+            return (not self.allow_empty)
+        
+        if l_num_tokens == 0 or r_num_tokens == 0:
+            return True
+        
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens])
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
         ordered_rtokens = order_using_token_ordering(rtokens, token_ordering)
 
-        l_prefix_length = get_prefix_length(len(ordered_ltokens),
+        l_prefix_length = get_prefix_length(l_num_tokens,
                                             self.sim_measure_type,
                                             self.threshold,
                                             self.tokenizer) 
-        r_prefix_length = get_prefix_length(len(ordered_rtokens),
+        r_prefix_length = get_prefix_length(r_num_tokens,
                                             self.sim_measure_type,
                                             self.threshold,
                                             self.tokenizer)
@@ -299,7 +305,10 @@ def _filter_tables_split(ltable, rtable,
     prefix_index = PrefixIndex(ltable_list, l_filter_attr_index, 
                        prefix_filter.tokenizer, prefix_filter.sim_measure_type,
                        prefix_filter.threshold, token_ordering)
-    prefix_index.build()
+    # While building the index, we cache the record ids with empty set of tokens.
+    # This is needed to handle the allow_empty flag.
+    cached_data = prefix_index.build(prefix_filter.allow_empty)
+    l_empty_records = cached_data['empty_records']
 
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
@@ -314,6 +323,21 @@ def _filter_tables_split(ltable, rtable,
         r_filter_attr_tokens = prefix_filter.tokenizer.tokenize(r_string)
         r_ordered_tokens = order_using_token_ordering(r_filter_attr_tokens,
                                                       token_ordering)
+
+        if prefix_filter.allow_empty and len(r_ordered_tokens) == 0:
+            for l_id in l_empty_records:
+                if has_output_attributes:
+                    output_row = get_output_row_from_tables(
+                                     ltable_list[l_id], r_row,
+                                     l_key_attr_index, r_key_attr_index,
+                                     l_out_attrs_indices,
+                                     r_out_attrs_indices)
+                else:
+                    output_row = [ltable_list[l_id][l_key_attr_index],
+                                  r_row[r_key_attr_index]]
+
+                output_rows.append(output_row)
+            continue
            
         # probe prefix index and find candidates
         candidates = prefix_filter.find_candidates(r_ordered_tokens,

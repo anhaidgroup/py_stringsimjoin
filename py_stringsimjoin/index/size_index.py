@@ -13,26 +13,34 @@ class SizeIndex(Index):
         self.max_length = 0
         super(self.__class__, self).__init__()
 
-    def build(self):
+    def build(self, cache_empty_records=True):
+        empty_records = []
         row_id = 0
         for row in self.table:
             index_string = row[self.index_attr]
             num_tokens = len(self.tokenizer.tokenize(index_string))
-            
+
+            if num_tokens < self.min_length:
+                self.min_length = num_tokens
+
+            if num_tokens > self.max_length:
+                self.max_length = num_tokens
+
+            if cache_empty_records and num_tokens == 0:
+                empty_records.append(row_id)
+           
+            if num_tokens == 0:
+                row_id += 1
+                continue
+ 
             if self.index.get(num_tokens) is None:
                 self.index[num_tokens] = []
 
             self.index.get(num_tokens).append(row_id)
 
-            if num_tokens < self.min_length:
-                self.min_length = num_tokens
- 
-            if num_tokens > self.max_length:
-                self.max_length = num_tokens
-
             row_id += 1  
 
-        return True
+        return {'empty_records': empty_records}
 
     def probe(self, num_tokens):
         return self.index.get(num_tokens, [])

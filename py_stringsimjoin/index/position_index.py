@@ -20,42 +20,11 @@ class PositionIndex(Index):
         self.max_length = 0
         super(self.__class__, self).__init__()
 
-    def build(self):
+    def build(self, cache_empty_records=True, cache_tokens=False):
         self.index = {}
         self.size_cache = []
-        row_id = 0
-        for row in self.table:
-            index_string = row[self.index_attr]
-            index_attr_tokens = order_using_token_ordering(
-                self.tokenizer.tokenize(index_string), self.token_ordering)
-            num_tokens = len(index_attr_tokens)
-            prefix_length = get_prefix_length(
-                                num_tokens,
-                                self.sim_measure_type, self.threshold,
-                                self.tokenizer)
- 
-            pos = 0
-            for token in index_attr_tokens[0:prefix_length]:
-                if self.index.get(token) is None:
-                    self.index[token] = []
-                self.index.get(token).append((row_id, pos))
-                pos += 1
-
-            self.size_cache.append(num_tokens)
-            if num_tokens < self.min_length:
-                self.min_length = num_tokens
-
-            if num_tokens > self.max_length:
-                self.max_length = num_tokens
-
-            row_id += 1
-
-        return True
-
-    def build_and_cache_tokens(self):
-        self.index = {}
-        self.size_cache = []
-        cached_tokens = [] 
+        cached_tokens = []
+        empty_records = []
         row_id = 0
         for row in self.table:
             index_string = row[self.index_attr]
@@ -80,12 +49,18 @@ class PositionIndex(Index):
 
             if num_tokens > self.max_length:
                 self.max_length = num_tokens
+
+            if cache_tokens:
+                cached_tokens.append(index_attr_tokens)
+
+            if cache_empty_records and num_tokens == 0:
+                empty_records.append(row_id)
 
             row_id += 1
             
-            cached_tokens.append(index_attr_tokens)
 
-        return cached_tokens
+        return {'cached_tokens' : cached_tokens,
+                'empty_records' : empty_records}
 
     def probe(self, token):
         return self.index.get(token, [])

@@ -271,7 +271,7 @@ def _filter_tables_split(ltable, rtable,
     # Build inverted index over ltable
     inverted_index = InvertedIndex(ltable_list, l_filter_attr_index,
                                    overlap_filter.tokenizer)
-    inverted_index.build()
+    inverted_index.build(False)
 
     comp_fn = COMP_OP_MAP[overlap_filter.comp_op]
 

@@ -45,7 +45,7 @@ class SizeFilter(Filter):
     """
 
     def __init__(self, tokenizer, sim_measure_type, threshold,
-                 allow_missing=False):
+                 allow_empty=True, allow_missing=False):
         # check if the input tokenizer is valid
         validate_tokenizer(tokenizer)
 
@@ -58,6 +58,8 @@ class SizeFilter(Filter):
         self.tokenizer = tokenizer
         self.sim_measure_type = sim_measure_type
         self.threshold = threshold
+        self.allow_empty = allow_empty
+
         super(self.__class__, self).__init__(allow_missing)
 
     def filter_pair(self, lstring, rstring):
@@ -75,12 +77,14 @@ class SizeFilter(Filter):
         if pd.isnull(lstring) or pd.isnull(rstring):
             return (not self.allow_missing)
 
-        # check for empty string
-        if (not lstring) or (not rstring):
-            return True
-
         l_num_tokens = len(self.tokenizer.tokenize(lstring))
         r_num_tokens = len(self.tokenizer.tokenize(rstring))
+
+        if l_num_tokens == 0 and r_num_tokens == 0:
+            return (not self.allow_empty)
+
+        if l_num_tokens == 0 or r_num_tokens == 0:
+            return True
 
         size_lower_bound = get_size_lower_bound(l_num_tokens,
                                                 self.sim_measure_type,
@@ -292,7 +296,10 @@ def _filter_tables_split(ltable, rtable,
     # Build size index over ltable
     size_index = SizeIndex(ltable_list, l_filter_attr_index,
                            size_filter.tokenizer)
-    size_index.build()
+    # While building the index, we cache the record ids with empty set of tokens.
+    # This is needed to handle the allow_empty flag.
+    cached_data = size_index.build(size_filter.allow_empty)
+    l_empty_records = cached_data['empty_records']
 
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
@@ -305,6 +312,21 @@ def _filter_tables_split(ltable, rtable,
         r_string = r_row[r_filter_attr_index]
 
         r_num_tokens = len(size_filter.tokenizer.tokenize(r_string))
+
+        if size_filter.allow_empty and r_num_tokens == 0:
+            for l_id in l_empty_records:
+                if has_output_attributes:
+                    output_row = get_output_row_from_tables(
+                                     ltable_list[l_id], r_row,
+                                     l_key_attr_index, r_key_attr_index,
+                                     l_out_attrs_indices,
+                                     r_out_attrs_indices)
+                else:
+                    output_row = [ltable_list[l_id][l_key_attr_index],
+                                  r_row[r_key_attr_index]]
+
+                output_rows.append(output_row)
+            continue
            
         # probe size index and find candidates
         candidates = size_filter.find_candidates(r_num_tokens, size_index)
