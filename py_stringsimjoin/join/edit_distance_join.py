@@ -259,7 +259,7 @@ def _edit_distance_join_split(ltable, rtable,
     prefix_index = PrefixIndex(ltable_list, l_join_attr_index,
                                tokenizer, sim_measure_type, threshold,
                                token_ordering)
-    prefix_index.build()
+    prefix_index.build(False)
 
     prefix_filter = PrefixFilter(tokenizer, sim_measure_type, threshold)
 

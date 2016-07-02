@@ -17,6 +17,7 @@ def set_sim_join(ltable, rtable,
                  l_key_attr, r_key_attr,
                  l_join_attr, r_join_attr,
                  tokenizer, sim_measure_type, threshold, comp_op,
+                 allow_empty,
                  l_out_attrs, r_out_attrs,
                  l_out_prefix, r_out_prefix,
                  out_sim_score, show_progress):
@@ -51,9 +52,13 @@ def set_sim_join(ltable, rtable,
     position_index = PositionIndex(ltable_list, l_join_attr_index,
                                    tokenizer, sim_measure_type,
                                    threshold, token_ordering)
-    # while building the index, we cache the tokens. So that we
-    # need not tokenize each value while computing similarity measure.
-    l_join_attr_list = position_index.build_and_cache_tokens()
+    # While building the index, we cache the tokens and the empty records.
+    # We cache the tokens so that we need not tokenize each string in l_join_attr
+    # multiple times when we need to compute the similarity measure.
+    # Further we cache the empty record ids to handle the allow_empty flag.
+    cached_data = position_index.build(allow_empty, cache_tokens=True)
+    l_empty_records = cached_data['empty_records']
+    cached_l_tokens = cached_data['cached_tokens']
 
     pos_filter = PositionFilter(tokenizer, sim_measure_type, threshold)
 
@@ -73,12 +78,29 @@ def set_sim_join(ltable, rtable,
         r_ordered_tokens = order_using_token_ordering(
                 tokenizer.tokenize(r_string), token_ordering)
 
+        if allow_empty and len(r_ordered_tokens) == 0:
+            for l_id in l_empty_records:
+                if has_output_attributes:
+                    output_row = get_output_row_from_tables(
+                                     ltable_list[l_id], r_row,
+                                     l_key_attr_index, r_key_attr_index,
+                                     l_out_attrs_indices,
+                                     r_out_attrs_indices)
+                else:
+                    output_row = [ltable_list[l_id][l_key_attr_index],
+                                  r_row[r_key_attr_index]]
+
+                if out_sim_score:
+                    output_row.append(1.0)
+                output_rows.append(output_row)
+            continue
+            
         candidate_overlap = pos_filter.find_candidates(r_ordered_tokens,
                                                        position_index)
 
         for cand, overlap in iteritems(candidate_overlap):
             if overlap > 0:
-                l_ordered_tokens = l_join_attr_list[cand]
+                l_ordered_tokens = cached_l_tokens[cand]
                 sim_score = sim_fn(l_ordered_tokens, r_ordered_tokens)
                 if comp_fn(sim_score, threshold):
                     if has_output_attributes:
