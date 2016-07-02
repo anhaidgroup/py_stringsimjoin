@@ -2,10 +2,7 @@ from functools import partial
 import os
 import unittest
 
-from nose.tools import assert_equal
-from nose.tools import assert_list_equal
-from nose.tools import nottest
-from nose.tools import raises
+from nose.tools import assert_equal, assert_list_equal, nottest, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from six import iteritems
@@ -16,8 +13,8 @@ from py_stringsimjoin.join.dice_join import dice_join
 from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
-from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP, \
-                                                    remove_redundant_attrs
+from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP, \
+                                                  remove_redundant_attrs
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 
 

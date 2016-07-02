@@ -8,7 +8,7 @@ import pandas as pd
 
 from py_stringsimjoin.matcher.apply_matcher import apply_matcher
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
-from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP
+from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 
 

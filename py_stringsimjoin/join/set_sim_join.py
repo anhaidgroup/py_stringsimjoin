@@ -5,7 +5,7 @@ import pyprind
 
 from py_stringsimjoin.filter.position_filter import PositionFilter
 from py_stringsimjoin.index.position_index import PositionIndex
-from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
+from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_list, \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables, COMP_OP_MAP 
 from py_stringsimjoin.utils.simfunctions import get_sim_function

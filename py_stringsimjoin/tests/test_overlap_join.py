@@ -2,8 +2,7 @@
 import os
 import unittest
 
-from nose.tools import assert_equal
-from nose.tools import raises
+from nose.tools import assert_equal, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from six import iteritems

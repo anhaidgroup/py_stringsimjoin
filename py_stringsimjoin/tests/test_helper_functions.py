@@ -4,7 +4,7 @@ import unittest
 from nose.tools import assert_equal, assert_list_equal, raises
 import pandas as pd
 
-from py_stringsimjoin.utils.helper_functions import get_num_processes_to_launch
+from py_stringsimjoin.utils.generic_helper import get_num_processes_to_launch
 
 
 class GetNumProcessesToLaunchTestCases(unittest.TestCase):

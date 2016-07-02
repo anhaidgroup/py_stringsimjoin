@@ -1,14 +1,13 @@
 # Overlap Filter
 
-from joblib import delayed
-from joblib import Parallel
+from joblib import delayed, Parallel
 from six import iteritems
 import pandas as pd
 import pyprind
 
 from py_stringsimjoin.filter.filter import Filter
 from py_stringsimjoin.index.inverted_index import InvertedIndex
-from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
+from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_list, \
     find_output_attribute_indices, get_attrs_to_project, \
     get_num_processes_to_launch, get_output_header_from_tables, \
     get_output_row_from_tables, remove_redundant_attrs, split_table, COMP_OP_MAP

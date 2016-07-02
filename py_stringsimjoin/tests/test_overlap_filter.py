@@ -1,15 +1,12 @@
 import unittest
 
-from nose.tools import assert_equal
-from nose.tools import assert_list_equal
-from nose.tools import nottest
-from nose.tools import raises
+from nose.tools import assert_equal, assert_list_equal, nottest, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
-from py_stringsimjoin.utils.helper_functions import remove_redundant_attrs
+from py_stringsimjoin.utils.generic_helper import remove_redundant_attrs
 
 
 # test OverlapFilter.filter_pair method

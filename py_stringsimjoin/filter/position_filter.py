@@ -1,27 +1,23 @@
 # Position Filter
 
-from joblib import delayed
-from joblib import Parallel
+from joblib import delayed, Parallel
 from six import iteritems
 from six.moves import xrange
 import pandas as pd
 import pyprind
 
 from py_stringsimjoin.filter.filter import Filter
-from py_stringsimjoin.filter.filter_utils import get_overlap_threshold
-from py_stringsimjoin.filter.filter_utils import get_prefix_length
-from py_stringsimjoin.filter.filter_utils import get_size_lower_bound
-from py_stringsimjoin.filter.filter_utils import get_size_upper_bound
+from py_stringsimjoin.filter.filter_utils import get_overlap_threshold, \
+    get_prefix_length, get_size_lower_bound, get_size_upper_bound
 from py_stringsimjoin.index.position_index import PositionIndex
-from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
+from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_list, \
     find_output_attribute_indices, get_attrs_to_project, \
     get_num_processes_to_launch, get_output_header_from_tables, \
     get_output_row_from_tables, remove_redundant_attrs, split_table
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
-from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists
-from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables
-from py_stringsimjoin.utils.token_ordering import order_using_token_ordering
+from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists, \
+    gen_token_ordering_for_tables, order_using_token_ordering
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_key_attr, validate_input_table, validate_threshold, \
     validate_tokenizer, validate_output_attrs, validate_sim_measure_type

@@ -1,10 +1,9 @@
 # cosine join
-from joblib import delayed
-from joblib import Parallel
+from joblib import delayed, Parallel
 import pandas as pd
 
 from py_stringsimjoin.join.set_sim_join import set_sim_join
-from py_stringsimjoin.utils.helper_functions import get_attrs_to_project, \
+from py_stringsimjoin.utils.generic_helper import get_attrs_to_project, \
     get_num_processes_to_launch, remove_redundant_attrs, split_table
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value

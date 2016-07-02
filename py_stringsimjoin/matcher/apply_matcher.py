@@ -7,13 +7,12 @@ from six.moves import copyreg
 import pandas as pd
 import pyprind
 
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
+from py_stringsimjoin.utils.generic_helper import build_dict_from_table, \
     find_output_attribute_indices, get_attrs_to_project, \
     get_num_processes_to_launch, get_output_header_from_tables, \
     get_output_row_from_tables, remove_redundant_attrs, split_table, COMP_OP_MAP
 from py_stringsimjoin.utils.pickle import pickle_instance_method, \
                                           unpickle_instance_method
-from py_stringsimjoin.utils.token_ordering import generate_tokens
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_comp_op, validate_key_attr, validate_input_table, \
     validate_tokenizer, validate_output_attrs
@@ -342,3 +341,9 @@ def _apply_matcher_split(candset,
     # generate a dataframe from the list of output rows
     output_table = pd.DataFrame(output_rows, columns=output_header)
     return output_table
+
+
+def generate_tokens(table, key_attr, join_attr, tokenizer):
+    table_nonnull = table[pd.notnull(table[join_attr])]
+    return dict(zip(table_nonnull[key_attr],
+                    table_nonnull[join_attr].apply(tokenizer.tokenize)))

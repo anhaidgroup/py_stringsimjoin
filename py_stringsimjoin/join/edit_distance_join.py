@@ -1,15 +1,14 @@
 # edit distance join
 from math import floor
 
-from joblib import delayed
-from joblib import Parallel
+from joblib import delayed, Parallel
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 import pyprind
 
 from py_stringsimjoin.filter.prefix_filter import PrefixFilter
 from py_stringsimjoin.index.prefix_index import PrefixIndex
-from py_stringsimjoin.utils.helper_functions import convert_dataframe_to_list, \
+from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_list, \
     find_output_attribute_indices, get_attrs_to_project, \
     get_num_processes_to_launch, get_output_header_from_tables, \
     get_output_row_from_tables, remove_non_ascii, remove_redundant_attrs, \

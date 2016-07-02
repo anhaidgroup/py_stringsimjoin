@@ -1,9 +1,8 @@
-from joblib import delayed
-from joblib import Parallel
+from joblib import delayed, Parallel
 import pandas as pd
 import pyprind
 
-from py_stringsimjoin.utils.helper_functions import build_dict_from_table, \
+from py_stringsimjoin.utils.generic_helper import build_dict_from_table, \
     get_num_processes_to_launch, split_table
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_key_attr, validate_input_table
