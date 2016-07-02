@@ -4,7 +4,7 @@ import pandas as pd
 
 from py_stringmatching.tokenizer.tokenizer import Tokenizer
 
-from py_stringsimjoin.utils.helper_functions import COMP_OP_MAP
+from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP
 
 
 def validate_input_table(table, table_label):

@@ -1,7 +1,7 @@
 import pandas as pd
 import pyprind
 
-from py_stringsimjoin.utils.helper_functions import \
+from py_stringsimjoin.utils.generic_helper import \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables
 

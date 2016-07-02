@@ -23,4 +23,4 @@ from py_stringsimjoin.matcher.apply_matcher import apply_matcher
 from py_stringsimjoin.profiler.profiler import profile_table_for_join
 
 # import helper functions
-from py_stringsimjoin.utils.helper_functions import get_install_path
+from py_stringsimjoin.utils.generic_helper import get_install_path
