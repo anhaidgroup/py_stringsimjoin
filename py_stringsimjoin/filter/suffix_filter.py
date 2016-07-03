@@ -98,7 +98,11 @@ class SuffixFilter(Filter):
         r_num_tokens = len(rtokens)
 
         if l_num_tokens == 0 and r_num_tokens == 0:
-            if self.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE']:
+            if self.sim_measure_type == 'OVERLAP':
+                return True
+            elif self.sim_measure_type == 'EDIT_DISTANCE':
+                return False
+            else:
                 return (not self.allow_empty)
 
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens]) 
@@ -113,6 +117,10 @@ class SuffixFilter(Filter):
                                             self.sim_measure_type,
                                             self.threshold,
                                             self.tokenizer)
+
+        if l_prefix_length <= 0 or r_prefix_length <= 0:
+            return True
+
         return self._filter_suffix(ordered_ltokens[l_prefix_length:],
                              ordered_rtokens[r_prefix_length:],
                              l_prefix_length,
@@ -126,6 +134,10 @@ class SuffixFilter(Filter):
                                                   self.sim_measure_type,
                                                   self.threshold,
                                                   self.tokenizer)
+       
+        if (l_prefix_num_tokens >= overlap_threshold and 
+            r_prefix_num_tokens >= overlap_threshold):
+            return False
 
         hamming_dist_max = (l_num_tokens + r_num_tokens - 2 * overlap_threshold)
 
@@ -446,6 +458,7 @@ def _filter_tables_split(ltable, rtable,
                                             suffix_filter.sim_measure_type,
                                             suffix_filter.threshold,
                                             suffix_filter.tokenizer)
+
         l_suffix = ordered_ltokens[l_prefix_length:]
         for r_row in rtable_list:
             r_string = r_row[r_filter_attr_index]
@@ -455,29 +468,28 @@ def _filter_tables_split(ltable, rtable,
                                                          token_ordering)
             r_num_tokens = len(ordered_rtokens)
 
-            if l_num_tokens == 0 and r_num_tokens == 0:
-                if handle_empty:
-                    if has_output_attributes:
-                        output_row = get_output_row_from_tables(
-                                             l_row, r_row,
-                                             l_key_attr_index, r_key_attr_index,
-                                             l_out_attrs_indices,
-                                             r_out_attrs_indices)
-                    else:
-                        output_row = [l_row[l_key_attr_index],
-                                      r_row[r_key_attr_index]]
-
-                    output_rows.append(output_row)
+            if handle_empty and l_num_tokens == 0 and r_num_tokens == 0:
+                if has_output_attributes:
+                    output_row = get_output_row_from_tables(
+                                         l_row, r_row,
+                                         l_key_attr_index, r_key_attr_index,
+                                         l_out_attrs_indices,
+                                         r_out_attrs_indices)
                 else:
-                    continue
+                    output_row = [l_row[l_key_attr_index],
+                                  r_row[r_key_attr_index]]
 
-            if l_num_tokens == 0 or r_num_tokens == 0:
+                output_rows.append(output_row)
                 continue
 
             r_prefix_length = get_prefix_length(r_num_tokens,
                                                 suffix_filter.sim_measure_type,
                                                 suffix_filter.threshold,
                                                 suffix_filter.tokenizer)
+
+            if l_prefix_length <= 0 or r_prefix_length <= 0:
+                continue
+
             if not suffix_filter._filter_suffix(l_suffix,
                                            ordered_rtokens[r_prefix_length:],
                                            l_prefix_length, r_prefix_length,

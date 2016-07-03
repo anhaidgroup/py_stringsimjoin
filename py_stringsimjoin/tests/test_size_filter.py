@@ -80,6 +80,10 @@ class FilterPairTestCases(unittest.TestCase):
         self.test_filter_pair('', '',
                               self.qg2, 'EDIT_DISTANCE', 1, True, False, False)
 
+    def test_edit_dist_qg2_no_padding_empty(self):                              
+        self.test_filter_pair('', '', QgramTokenizer(2, padding=False),         
+                              'EDIT_DISTANCE', 1, False, False, False)
+
     # test allow_missing flag
     def test_size_filter_pass_missing_left(self):
         self.test_filter_pair(None, 'fg ty',
@@ -192,6 +196,29 @@ class FilterTablesTestCases(unittest.TestCase):
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
+
+    # tests for EDIT_DISTANCE measure
+    def test_edit_distance_qg2_2(self):
+        A = pd.DataFrame([{'l_id': 1, 'l_attr':'1990'},
+                          {'l_id': 2, 'l_attr':'200'},
+                          {'l_id': 3, 'l_attr':'0'},
+                          {'l_id': 4, 'l_attr':''},
+                          {'l_id': 5, 'l_attr':pd.np.NaN}])
+        B = pd.DataFrame([{'r_id': 1, 'r_attr':'200155'},
+                          {'r_id': 2, 'r_attr':'19'},
+                          {'r_id': 3, 'r_attr':'188'},
+                          {'r_id': 4, 'r_attr':''},
+                          {'r_id': 5, 'r_attr':pd.np.NaN}])
+
+        qg2_tok = QgramTokenizer(2)
+        expected_pairs = set(['1,1', '1,2', '1,3',
+                              '2,2', '2,3', '2,3', '3,2', '3,3', '3,4',
+                              '4,2', '4,4'])
+        self.test_filter_tables(qg2_tok, 'EDIT_DISTANCE', 2, False, False,
+                                (A, B,
+                                'l_id', 'r_id', 'l_attr', 'r_attr'),
+                                expected_pairs)
+
 
     # test allow_missing flag
     def test_jac_dlm_08_allow_missing(self):

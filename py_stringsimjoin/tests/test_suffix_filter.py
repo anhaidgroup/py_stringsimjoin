@@ -6,7 +6,8 @@ from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.suffix_filter import SuffixFilter
-from py_stringsimjoin.utils.generic_helper import remove_redundant_attrs
+from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP, \
+                                                  remove_redundant_attrs
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 
 
@@ -14,6 +15,7 @@ from py_stringsimjoin.utils.simfunctions import get_sim_function
 class FilterPairTestCases(unittest.TestCase):
     def setUp(self):
         self.dlm = DelimiterTokenizer(delim_set=[' '], return_set=True)
+        self.qg2 = QgramTokenizer(2)
 
     # tests for JACCARD measure
     def test_jac_dlm_08_prune(self):
@@ -41,6 +43,44 @@ class FilterPairTestCases(unittest.TestCase):
     def test_dice_dlm_08_pass(self):
         self.test_filter_pair('aa bb cc dd ee', 'xx aa cc dd ee',
                               self.dlm, 'DICE', 0.8, False, False, False)
+
+    # tests for OVERLAP measure 
+    def test_overlap_dlm_2_prune(self):
+        self.test_filter_pair('dd ee', 'yy zz',
+                              self.dlm, 'OVERLAP', 2, False, False, True)
+
+    def test_overlap_dlm_2_pass(self):
+        self.test_filter_pair('dd zz', 'yy zz',
+                              self.dlm, 'OVERLAP', 2, False, False, False)
+
+    def test_overlap_dlm_empty(self):
+        self.test_filter_pair('', '',
+                              self.dlm, 'OVERLAP', 1, False, False, True)
+
+    def test_overlap_dlm_empty_with_allow_empty(self):
+        self.test_filter_pair('', '',
+                              self.dlm, 'OVERLAP', 1, True, False, True)
+
+    # tests for EDIT_DISTANCE measure
+    def test_edit_dist_qg2_prune(self):
+        self.test_filter_pair('67126790', '26123485',
+                              self.qg2, 'EDIT_DISTANCE', 1, False, False, True)
+
+    def test_edit_dist_qg2_pass(self):
+        self.test_filter_pair('128690', '129695',
+                              self.qg2, 'EDIT_DISTANCE', 2, False, False, False)
+
+    def test_edit_dist_qg2_empty(self):
+        self.test_filter_pair('', '',
+                              self.qg2, 'EDIT_DISTANCE', 1, False, False, False)
+
+    def test_edit_dist_qg2_empty_with_allow_empty(self):
+        self.test_filter_pair('', '',
+                              self.qg2, 'EDIT_DISTANCE', 1, True, False, False)
+
+    def test_edit_dist_qg2_no_padding_empty(self):
+        self.test_filter_pair('', '', QgramTokenizer(2, padding=False), 
+                              'EDIT_DISTANCE', 1, False, False, False)
 
     # tests for empty string input
     def test_empty_lstring(self):
@@ -122,6 +162,33 @@ class FilterTablesTestCases(unittest.TestCase):
         self.test_filter_tables(self.dlm, 'DICE', 0.8, False, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr'))
+
+    # tests for OVERLAP measure 
+    def test_overlap_dlm_3(self):
+        self.test_filter_tables(self.dlm, 'OVERLAP', 3, False, False,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr'))
+
+    # tests for EDIT_DISTANCE measure
+    def test_edit_distance_qg2_2(self):
+        A = pd.DataFrame([{'l_id': 1, 'l_attr':'19990'},
+                          {'l_id': 2, 'l_attr':'200'},
+                          {'l_id': 3, 'l_attr':'0'},
+                          {'l_id': 4, 'l_attr':''},
+                          {'l_id': 5, 'l_attr':pd.np.NaN}])
+        B = pd.DataFrame([{'r_id': 1, 'r_attr':'200155'},
+                          {'r_id': 2, 'r_attr':'190'},
+                          {'r_id': 3, 'r_attr':'2010'},
+                          {'r_id': 4, 'r_attr':''},
+                          {'r_id': 5, 'r_attr':pd.np.NaN},
+                          {'r_id': 6, 'r_attr':'18950'}])
+
+        qg2_tok = QgramTokenizer(2)
+        expected_pairs = set(['1,2', '1,6', '2,2', '2,3',
+                              '3,2', '4,4'])
+        self.test_filter_tables(qg2_tok, 'EDIT_DISTANCE', 2, False, False,
+                                (A, B,
+                                'l_id', 'r_id', 'l_attr', 'r_attr'))
 
     # test with n_jobs above 1
     def test_jac_dlm_075_with_njobs_above_1(self):
@@ -211,17 +278,26 @@ class FilterTablesTestCases(unittest.TestCase):
                                                         str(r_row[args[3]]))))
                     continue
  
-                l_tokens = tokenizer.tokenize(str(l_row[args[4]]))
-                r_tokens = tokenizer.tokenize(str(r_row[args[5]]))
-                if len(l_tokens) == 0 and len(r_tokens) == 0:
+                if sim_measure_type == 'EDIT_DISTANCE':
+                    l_join_val = str(l_row[args[4]])
+                    r_join_val = str(r_row[args[5]])
+                    comp_fn = COMP_OP_MAP['<='] 
+                else:
+                    l_join_val = tokenizer.tokenize(str(l_row[args[4]]))
+                    r_join_val = tokenizer.tokenize(str(r_row[args[5]]))
+                    comp_fn = COMP_OP_MAP['>=']
+
+                if (len(l_join_val) == 0 and len(r_join_val) == 0 and 
+                    sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE']):
                     if allow_empty:
                         join_output_pairs.add(','.join((str(l_row[args[2]]),
                                                         str(r_row[args[3]]))))
                     continue
 
-                # if both attributes are not missing and not empty, then check if the pair
-                # satisfies the join condition. If yes, then add it to the join output.
-                if sim_fn(l_tokens, r_tokens) >= threshold:
+                # if both attributes are not missing and not empty, then check 
+                # if the pair satisfies the join condition. If yes, then add it 
+                # to the join output.
+                if comp_fn(sim_fn(l_join_val, r_join_val), threshold):
                     join_output_pairs.add(','.join((str(l_row[args[2]]),
                                                     str(r_row[args[3]]))))
 
@@ -312,7 +388,7 @@ class FilterCandsetTestCases(unittest.TestCase):
 
     # tests for COSINE measure
     def test_cos_dlm_08(self):
-        expected_pairs = set(['1,5', '2,4', '3,4', '4,2', '5,1', '5,3'])
+        expected_pairs = set(['1,5', '3,4', '4,2', '5,1', '5,3'])
         self.test_filter_candset(self.dlm, 'COSINE', 0.8, False, False,
                                 (self.C, 'l_id', 'r_id',
                                  self.A, self.B,

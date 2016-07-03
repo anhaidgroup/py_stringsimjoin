@@ -97,7 +97,11 @@ class PrefixFilter(Filter):
         r_num_tokens = len(rtokens)
 
         if l_num_tokens == 0 and r_num_tokens == 0:
-            if self.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE']:
+            if self.sim_measure_type == 'OVERLAP':
+                return True
+            elif self.sim_measure_type == 'EDIT_DISTANCE':
+                return False
+            else:
                 return (not self.allow_empty)
         
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens])
@@ -112,6 +116,10 @@ class PrefixFilter(Filter):
                                             self.sim_measure_type,
                                             self.threshold,
                                             self.tokenizer)
+
+        if l_prefix_length <= 0 or r_prefix_length <= 0:
+            return True
+
         prefix_overlap = set(ordered_ltokens[0:l_prefix_length]).intersection(
                          set(ordered_rtokens[0:r_prefix_length]))
 

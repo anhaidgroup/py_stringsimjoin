@@ -117,6 +117,15 @@ class FilterTablesTestCases(unittest.TestCase):
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
+    # test with n_jobs above 1
+    def test_overlap_dlm_1_njobs_above_1(self):
+        expected_pairs = set(['1,4', '1,5', '4,2', '5,3', '5,5'])
+        self.test_filter_tables(self.dlm, 1, '>=', False,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr',
+                                ['attr'], ['attr'],                             
+                                'ltable.', 'rtable.', False, 2),
+                                expected_pairs)
 
     def test_overlap_dlm_1_with_out_attrs(self):
         expected_pairs = set(['1,4', '1,5', '4,2', '5,3', '5,5'])

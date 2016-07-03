@@ -13,6 +13,7 @@ from py_stringsimjoin.utils.generic_helper import remove_redundant_attrs
 class FilterPairTestCases(unittest.TestCase):
     def setUp(self):
         self.dlm = DelimiterTokenizer(delim_set=[' '], return_set=True)
+        self.qg2 = QgramTokenizer(2)
 
     # tests for JACCARD measure
     def test_jac_dlm_08_prune(self):
@@ -40,6 +41,44 @@ class FilterPairTestCases(unittest.TestCase):
     def test_dice_dlm_08_pass(self):
         self.test_filter_pair('aa bb cc dd ee', 'xx aa cc dd ee',
                               self.dlm, 'DICE', 0.8, False, False, False)
+
+    # tests for OVERLAP measure 
+    def test_overlap_dlm_2_prune(self):
+        self.test_filter_pair('aa bb cc dd ee', 'xx yy zz ee',
+                              self.dlm, 'OVERLAP', 2, False, False, True)
+
+    def test_overlap_dlm_2_pass(self):
+        self.test_filter_pair('aa bb zz cc ee', 'xx yy zz ee',
+                              self.dlm, 'OVERLAP', 2, False, False, False)
+
+    def test_overlap_dlm_empty(self):
+        self.test_filter_pair('', '',
+                              self.dlm, 'OVERLAP', 1, False, False, True)
+
+    def test_overlap_dlm_empty_with_allow_empty(self):
+        self.test_filter_pair('', '',
+                              self.dlm, 'OVERLAP', 1, True, False, True)
+
+    # tests for EDIT_DISTANCE measure
+    def test_edit_dist_qg2_prune(self):
+        self.test_filter_pair('1990', '1985',
+                              self.qg2, 'EDIT_DISTANCE', 1, False, False, True)
+
+    def test_edit_dist_qg2_pass(self):
+        self.test_filter_pair('1990', '1985',
+                              self.qg2, 'EDIT_DISTANCE', 2, False, False, False)
+
+    def test_edit_dist_qg2_empty(self):
+        self.test_filter_pair('', '',
+                              self.qg2, 'EDIT_DISTANCE', 1, False, False, False)
+
+    def test_edit_dist_qg2_empty_with_allow_empty(self):
+        self.test_filter_pair('', '',
+                              self.qg2, 'EDIT_DISTANCE', 1, True, False, False)
+
+    def test_edit_dist_qg2_no_padding_empty(self):                              
+        self.test_filter_pair('', '', QgramTokenizer(2, padding=False),         
+                              'EDIT_DISTANCE', 1, False, False, False)
 
     # test allow_missing flag
     def test_prefix_filter_pass_missing_left(self):
@@ -141,6 +180,36 @@ class FilterTablesTestCases(unittest.TestCase):
         self.test_filter_tables(self.dlm, 'DICE', 0.8, False, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
+
+    # tests for OVERLAP measure 
+    def test_overlap_dlm_3(self):
+        expected_pairs = set(['1,5', '5,1'])
+        self.test_filter_tables(self.dlm, 'OVERLAP', 3, False, False,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
+
+    # tests for EDIT_DISTANCE measure
+    def test_edit_distance_qg2_2(self):
+        A = pd.DataFrame([{'l_id': 1, 'l_attr':'19990'},
+                          {'l_id': 2, 'l_attr':'200'},
+                          {'l_id': 3, 'l_attr':'0'},
+                          {'l_id': 4, 'l_attr':''},
+                          {'l_id': 5, 'l_attr':pd.np.NaN}])
+        B = pd.DataFrame([{'r_id': 1, 'r_attr':'200155'},
+                          {'r_id': 2, 'r_attr':'190'},
+                          {'r_id': 3, 'r_attr':'2010'},
+                          {'r_id': 4, 'r_attr':''},
+                          {'r_id': 5, 'r_attr':pd.np.NaN},
+                          {'r_id': 6, 'r_attr':'18950'}])
+
+        qg2_tok = QgramTokenizer(2)
+        expected_pairs = set(['1,2', '1,6', '2,1', '2,2', '2,3',
+                              '3,2', '3,3', '4,4'])
+        self.test_filter_tables(qg2_tok, 'EDIT_DISTANCE', 2, False, False,
+                                (A, B,
+                                'l_id', 'r_id', 'l_attr', 'r_attr'),
                                 expected_pairs)
 
     # test allow_missing flag

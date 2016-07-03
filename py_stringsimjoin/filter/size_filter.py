@@ -93,7 +93,11 @@ class SizeFilter(Filter):
         r_num_tokens = len(self.tokenizer.tokenize(rstring))
 
         if l_num_tokens == 0 and r_num_tokens == 0:
-            if self.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE']:
+            if self.sim_measure_type == 'OVERLAP':
+                return True
+            elif self.sim_measure_type == 'EDIT_DISTANCE':
+                return False
+            else:
                 return (not self.allow_empty)
 
         size_lower_bound = get_size_lower_bound(l_num_tokens,
