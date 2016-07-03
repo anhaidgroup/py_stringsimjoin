@@ -20,14 +20,17 @@ class Filter(object):
                        l_key_attr, r_key_attr,
                        l_filter_attr, r_filter_attr,
                        n_jobs=1, show_progress=True):
-        """Finds candidate matching pairs of strings from the input candset.
+        """Finds candidate matching pairs of strings from the input candidate 
+        set.
 
         Args:
             candset (dataframe): input candidate set.
 
-            candset_l_key_attr (string): attribute in candidate set that is a key in left table.
+            candset_l_key_attr (string): attribute in candidate set which is a 
+                key in left table.
 
-            candset_r_key_attr (string): attribute in candidate set that is a key in right table.
+            candset_r_key_attr (string): attribute in candidate set which is a 
+                key in right table.
 
             ltable (dataframe): left input table.
 
@@ -37,20 +40,26 @@ class Filter(object):
 
             r_key_attr (string): key attribute in right table.
 
-            l_filter_attr (string): attribute to be used by the filter, in left table.
+            l_filter_attr (string): attribute in left table on which the filter 
+                should be applied.                                              
+                                                                                
+            r_filter_attr (string): attribute in right table on which the filter
+                should be applied.
 
-            r_filter_attr (string): attribute to be used by the filter,  in right table.
-
-            n_jobs (int): The number of jobs to use for the computation (defaults to 1).                                                                                            
-                If -1 all CPUs are used. If 1 is given, no parallel computing code is used at all, 
-                which is useful for debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
-                Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
-                then n_jobs is set to 1.
-
-            show_progress (boolean): flag to indicate if task progress need to be shown (defaults to True).
+            n_jobs (int): number of parallel jobs to use for the computation    
+                (defaults to 1). If -1 all CPUs are used. If 1 is given, no     
+                parallel computing code is used at all, which is useful for     
+                debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
+                Thus for n_jobs = -2, all CPUs but one are used. If             
+                (n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set   
+                to 1.                                                           
+                                                                                
+            show_progress (boolean): flag to indicate whether task progress     
+                should be displayed to the user (defaults to True). 
 
         Returns:
-            output table (dataframe)
+            An output table containing tuple pairs from the candidate set that 
+            survive the filter (dataframe).
         """
 
         # check if the input candset is a dataframe
@@ -76,7 +85,8 @@ class Filter(object):
         validate_attr(r_filter_attr, rtable.columns,
                       'filter attribute', 'right table')
 
-        # check if the key attributes are unique and do not contain missing values
+        # check if the key attributes are unique and do not contain 
+        # missing values
         validate_key_attr(l_key_attr, ltable, 'left table')
         validate_key_attr(r_key_attr, rtable, 'right table')
 
@@ -84,7 +94,8 @@ class Filter(object):
         if candset.empty:
             return candset
 
-        # convert the filter attributes to string type, in case it is int or float.
+        # convert the filter attributes to string type, in case it is 
+        # int or float.
         revert_l_filter_attr_type = False
         orig_l_filter_attr_type = ltable[l_filter_attr].dtype
         if (orig_l_filter_attr_type == pd.np.int64 or
@@ -99,9 +110,9 @@ class Filter(object):
             rtable[r_filter_attr] = rtable[r_filter_attr].astype(str)
             revert_r_filter_attr_type = True
 
-        # Do a projection on the input dataframes to keep only required attributes.
-        # Note that this doesn't create a copy of the dataframes. It only creates
-        # a view on original dataframes.
+        # Do a projection on the input dataframes to keep only required 
+        # attributes. Note that this does not create a copy of the dataframes. 
+        # It only creates a view on original dataframes.
         ltable_projected = ltable[[l_key_attr, l_filter_attr]]
         rtable_projected = rtable[[r_key_attr, r_filter_attr]]
 

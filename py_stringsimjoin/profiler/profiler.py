@@ -11,14 +11,18 @@ def profile_table_for_join(input_table, profile_attrs=None):
  
     Args:
         input_table (dataframe): input table to profile.
-        profile_attrs (list of strings): list of attributes to be profiled (defaults to None). If
-                                         not provided, all attributes in the input table will be profiled.
+        profile_attrs (list): list of attribute names from the input table to be
+            profiled (defaults to None). If not provided, all attributes in the 
+            input table will be profiled.
 
     Returns:
-        A dataframe consisting of profile output. Specifically, the dataframe contains three columns- 
+        A dataframe consisting of profile output. Specifically, the dataframe 
+        contains three columns, 
 
-        1) 'Unique values' column, which shows the number of unique values in each attribute,
-        2) 'Missing values' column, which shows the number of missing values in each attribute, and 
+        1) 'Unique values' column, which shows the number of unique values in 
+           each attribute,
+        2) 'Missing values' column, which shows the number of missing values in 
+           each attribute, and 
         3) 'Comments' column, which contains comments about each attribute. 
 
         The dataframe is indexed by attribute name.

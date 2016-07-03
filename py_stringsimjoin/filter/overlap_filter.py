@@ -20,24 +20,29 @@ from py_stringsimjoin.utils.validation import validate_attr, \
 
 
 class OverlapFilter(Filter):
-    """Finds candidate matching pairs of strings using overlap filtering technique.
+    """Finds candidate matching pairs of strings using overlap filtering 
+    technique.
 
-    A string pair is allowed by overlap filter only if the number of common tokens
-    in the strings satisfy the condition on overlap size threshold. That is, if the 
-    comparison operator is '>=', a string pair is allowed if the number of common tokens is
-    greater than or equal to the overlap size threshold.
-
+    A string pair is allowed by overlap filter only if the number of common 
+    tokens in the strings satisfy the condition on overlap size threshold. That 
+    is, if the comparison operator is '>=', a string pair is allowed if the 
+    number of common tokens is greater than or equal to the overlap size 
+    threshold.
 
     Args:
         tokenizer (Tokenizer object): tokenizer to be used.
         overlap_size (int): overlap threshold to be used by the filter.
-        comp_op (string): Comparison operator. Supported values are '>=', '>' and '='
-                          (defaults to '>=').  
+        comp_op (string): Comparison operator. Supported values are '>=', '>' 
+            and '=' (defaults to '>=').  
+        allow_missing (boolean): A flag to indicate whether pairs containing 
+            missing value should survive the filter (defaults to False). 
 
     Attributes:
         tokenizer (Tokenizer object): An attribute to store the tokenizer.
         overlap_size (int): An attribute to store the overlap threshold value.
         comp_op (string): An attribute to store the comparison operator.
+        allow_missing (boolean): An attribute to store the value of the flag 
+            allow_missing.
     """
 
     def __init__(self, tokenizer, overlap_size=1, comp_op='>=',
@@ -61,7 +66,7 @@ class OverlapFilter(Filter):
         """Checks if the input strings get dropped by the overlap filter.
 
         Args:
-            lstring,rstring (str): input strings
+            lstring,rstring (string): input strings
 
         Returns:
             A flag indicating whether the string pair is dropped (boolean).
@@ -92,7 +97,8 @@ class OverlapFilter(Filter):
                       l_out_attrs=None, r_out_attrs=None,
                       l_out_prefix='l_', r_out_prefix='r_',
                       out_sim_score=False, n_jobs=1, show_progress=True):
-        """Finds candidate matching pairs of strings from the input tables.
+        """Finds candidate matching pairs of strings from the input tables using
+        overlap filtering technique.
 
         Args:
             ltable (dataframe): left input table.
@@ -103,32 +109,46 @@ class OverlapFilter(Filter):
 
             r_key_attr (string): key attribute in right table.
 
-            l_filter_attr (string): attribute to be used by the filter, in left table.
+            l_filter_attr (string): attribute in left table on which the filter
+                should be applied.
 
-            r_filter_attr (string): attribute to be used by the filter,  in right table.
+            r_filter_attr (string): attribute in right table on which the filter
+                should be applied.
 
-            l_out_attrs (list): list of attributes to be included in the output table from
-                                left table (defaults to None).
+            l_out_attrs (list): list of attribute names from the left table to 
+                be included in the output table (defaults to None).
 
-            r_out_attrs (list): list of attributes to be included in the output table from
-                                right table (defaults to None).
+            r_out_attrs (list): list of attribute names from the right table to 
+                be included in the output table (defaults to None).
 
-            l_out_prefix (string): prefix to use for the attribute names coming from left
-                                   table (defaults to 'l\_').
+            l_out_prefix (string): prefix to be used for the attribute names 
+                coming from the left table, in the output table 
+                (defaults to 'l\_').
 
-            r_out_prefix (string): prefix to use for the attribute names coming from right
-                                   table (defaults to 'r\_').
+            r_out_prefix (string): prefix to be used for the attribute names 
+                coming from the right table, in the output table 
+                (defaults to 'r\_').
 
-            n_jobs (int): The number of jobs to use for the computation (defaults to 1).                                                                                            
-                If -1 all CPUs are used. If 1 is given, no parallel computing code is used at all, 
-                which is useful for debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
-                Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
-                then n_jobs is set to 1.
+            out_sim_score (boolean): flag to indicate whether the overlap score 
+                should be included in the output table (defaults to True). 
+                Setting this flag to True will add a column named '_sim_score' 
+                in the output table. This column will contain the overlap scores
+                for the tuple pairs in the output. 
 
-            show_progress (boolean): flag to indicate if task progress need to be shown (defaults to True).
+            n_jobs (int): number of parallel jobs to use for the computation
+                (defaults to 1). If -1 all CPUs are used. If 1 is given, no 
+                parallel computing code is used at all, which is useful for 
+                debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
+                Thus for n_jobs = -2, all CPUs but one are used. If 
+                (n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set 
+                to 1.
+
+            show_progress (boolean): flag to indicate whether task progress 
+                should be displayed to the user (defaults to True).
 
         Returns:
-            output table (dataframe)
+            An output table containing tuple pairs that survive the filter 
+            (dataframe).
         """
 
         # check if the input tables are dataframes
@@ -149,11 +169,13 @@ class OverlapFilter(Filter):
         validate_output_attrs(l_out_attrs, ltable.columns,
                               r_out_attrs, rtable.columns)
 
-        # check if the key attributes are unique and do not contain missing values
+        # check if the key attributes are unique and do not contain 
+        # missing values
         validate_key_attr(l_key_attr, ltable, 'left table')
         validate_key_attr(r_key_attr, rtable, 'right table')
 
-        # convert the filter attributes to string type, in case it is int or float.
+        # convert the filter attributes to string type, in case it is 
+        # int or float.
         revert_l_filter_attr_type = False
         orig_l_filter_attr_type = ltable[l_filter_attr].dtype
         if (orig_l_filter_attr_type == pd.np.int64 or
@@ -179,7 +201,8 @@ class OverlapFilter(Filter):
                                             r_key_attr, r_filter_attr)
 
         # do a projection on the input dataframes. Note that this doesn't create
-        # a copy of the dataframes. It only creates a view on original dataframes.
+        # a copy of the dataframes. It only creates a view on original 
+        # dataframes.
         ltable_projected = ltable[l_proj_attrs]
         rtable_projected = rtable[r_proj_attrs]
 
@@ -198,15 +221,15 @@ class OverlapFilter(Filter):
         else:
             r_splits = split_table(rtable_projected, n_jobs)
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_tables_split)(
-                                              ltable_projected, r_splits[job_index],
-                                              l_key_attr, r_key_attr,
-                                              l_filter_attr, r_filter_attr,
-                                              self,
-                                              l_out_attrs, r_out_attrs,
-                                              l_out_prefix, r_out_prefix,
-                                              out_sim_score, 
-                                      (show_progress and (job_index==n_jobs-1)))
-                                          for job_index in range(n_jobs))
+                                    ltable_projected, r_splits[job_index],
+                                    l_key_attr, r_key_attr,
+                                    l_filter_attr, r_filter_attr,
+                                    self,
+                                    l_out_attrs, r_out_attrs,
+                                    l_out_prefix, r_out_prefix,
+                                    out_sim_score, 
+                                    (show_progress and (job_index==n_jobs-1)))
+                                for job_index in range(n_jobs))
             output_table = pd.concat(results)
 
         if self.allow_missing:

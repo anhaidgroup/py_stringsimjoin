@@ -32,24 +32,28 @@ def apply_matcher(candset,
                   candset_l_key_attr, candset_r_key_attr,
                   ltable, rtable,
                   l_key_attr, r_key_attr,
-                  l_join_attr, r_join_attr,
+                  l_match_attr, r_match_attr,
                   tokenizer, sim_function,
                   threshold, comp_op='>=',
                   allow_missing=False,
                   l_out_attrs=None, r_out_attrs=None,
                   l_out_prefix='l_', r_out_prefix='r_',
                   out_sim_score=True, n_jobs=1, show_progress=True):
-    """Find matching string pairs from the candidate set by applying a matcher of form (sim_function comp_op threshold).
+    """Find matching string pairs from the candidate set by applying a matcher 
+    of form (sim_function comp_op threshold).
 
-    Specifically, this method computes the input similarity function on string pairs in the candidate set
-    and checks if the score satisfies the input threshold (depending on the comparison operator).
+    Specifically, this method computes the input similarity function on string 
+    pairs in the candidate set and checks if the score satisfies the input 
+    threshold (depending on the comparison operator).
 
     Args:
         candset (dataframe): input candidate set.
 
-        candset_l_key_attr (string): attribute in candidate set that is a key in left table.
+        candset_l_key_attr (string): attribute in candidate set which is a key 
+            in left table.
 
-        candset_r_key_attr (string): attribute in candidate set that is a key in right table.
+        candset_r_key_attr (string): attribute in candidate set which is a key 
+            in right table.
 
         ltable (dataframe): left input table.
 
@@ -59,44 +63,58 @@ def apply_matcher(candset,
 
         r_key_attr (string): key attribute in right table.
 
-        l_join_attr (string): join attribute in left table, on which similarity function is computed.
+        l_match_attr (string): attribute in left table on which the matcher 
+            should be applied.
 
-        r_join_attr (string): join attribute in right table, on which similarity function is computed.
+        r_match_attr (string): attribute in right table on which the matcher
+            should be applied.
 
-        tokenizer (Tokenizer object): tokenizer to be used to tokenize join attributes.
+        tokenizer (Tokenizer object): tokenizer to be used to tokenize the
+            match attributes. If set to None, the matcher is applied directly
+            on the match attributes.
 
-        sim_function (function): similarity function to be computed.
+        sim_function (function): matcher function to be applied.
 
-        threshold (float): similarity threshold to be satisfied.
+        threshold (float): threshold to be satisfied.
 
-        comp_op (string): Comparison operator. Supported values are '>=', '>', '<=', '<', '=' and '!='
-                          (defaults to '>=').
+        comp_op (string): comparison operator. Supported values are '>=', '>', '
+            <=', '<', '=' and '!=' (defaults to '>=').
 
-        l_out_attrs (list): list of attributes to be included in the output table from
-                            left table (defaults to None).
+        allow_missing (boolean): flag to indicate whether tuple pairs with 
+            missing value in at least one of the match attributes should be 
+            included in the output (defaults to False). 
 
-        r_out_attrs (list): list of attributes to be included in the output table from
-                            right table (defaults to None).
+        l_out_attrs (list): list of attribute names from the left table to be 
+            included in the output table (defaults to None).
 
-        l_out_prefix (string): prefix to use for the attribute names coming from left
-                               table (defaults to 'l\_').
+        r_out_attrs (list): list of attribute names from the right table to be 
+            included in the output table (defaults to None).
 
-        r_out_prefix (string): prefix to use for the attribute names coming from right
-                               table (defaults to 'r\_').
+        l_out_prefix (string): prefix to be used for the attribute names coming 
+            from the left table, in the output table (defaults to 'l\_').
 
-        out_sim_score (boolean): flag to indicate if similarity score needs to be
-                                 included in the output table (defaults to True).
+        r_out_prefix (string): prefix to be used for the attribute names coming 
+            from the right table, in the output table (defaults to 'r\_').
 
-        n_jobs (int): The number of jobs to use for the computation (defaults to 1).                                                                                            
-            If -1 all CPUs are used. If 1 is given, no parallel computing code is used at all, 
-            which is useful for debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
-            Thus for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
-            then n_jobs is set to 1.
+        out_sim_score (boolean): flag to indicate whether similarity score 
+            should be included in the output table (defaults to True). Setting
+            this flag to True will add a column named '_sim_score' in the 
+            output table. This column will contain the similarity scores for the
+            tuple pairs in the output. 
 
-        show_progress (boolean): flag to indicate if task progress need to be shown (defaults to True).
+        n_jobs (int): number of parallel jobs to use for the computation
+            (defaults to 1). If -1 all CPUs are used. If 1 is given, no 
+            parallel computing code is used at all, which is useful for 
+            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
+            for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+            becomes less than 1, then n_jobs is set to 1.
+
+        show_progress (boolean): flag to indicate whether task progress should 
+            be displayed to the user (defaults to True).
 
     Returns:
-        output table (dataframe)
+        An output table containing tuple pairs from the candidate set that 
+        survive the matcher (dataframe).
     """
 
     # check if the input candset is a dataframe
@@ -117,9 +135,9 @@ def apply_matcher(candset,
                   'key attribute', 'left table')
     validate_attr(r_key_attr, rtable.columns,
                   'key attribute', 'right table')
-    validate_attr(l_join_attr, ltable.columns,
+    validate_attr(l_match_attr, ltable.columns,
                   'join attribute', 'left table')
-    validate_attr(r_join_attr, rtable.columns,
+    validate_attr(r_match_attr, rtable.columns,
                   'join attribute', 'right table')
 
     # check if the output attributes exist
@@ -142,30 +160,30 @@ def apply_matcher(candset,
         return candset
 
     # convert the join attributes to string type, in case it is int or float.
-    revert_l_join_attr_type = False
-    orig_l_join_attr_type = ltable[l_join_attr].dtype
-    if (orig_l_join_attr_type == pd.np.int64 or
-        orig_l_join_attr_type == pd.np.float64):
-        ltable[l_join_attr] = ltable[l_join_attr].astype(str)
-        revert_l_join_attr_type = True
+    revert_l_match_attr_type = False
+    orig_l_match_attr_type = ltable[l_match_attr].dtype
+    if (orig_l_match_attr_type == pd.np.int64 or
+        orig_l_match_attr_type == pd.np.float64):
+        ltable[l_match_attr] = ltable[l_match_attr].astype(str)
+        revert_l_match_attr_type = True
 
-    revert_r_join_attr_type = False
-    orig_r_join_attr_type = rtable[r_join_attr].dtype
-    if (orig_r_join_attr_type == pd.np.int64 or
-        orig_r_join_attr_type == pd.np.float64):
-        rtable[r_join_attr] = rtable[r_join_attr].astype(str)
-        revert_r_join_attr_type = True
+    revert_r_match_attr_type = False
+    orig_r_match_attr_type = rtable[r_match_attr].dtype
+    if (orig_r_match_attr_type == pd.np.int64 or
+        orig_r_match_attr_type == pd.np.float64):
+        rtable[r_match_attr] = rtable[r_match_attr].astype(str)
+        revert_r_match_attr_type = True
 
     # remove redundant attrs from output attrs.
     l_out_attrs = remove_redundant_attrs(l_out_attrs, l_key_attr)
     r_out_attrs = remove_redundant_attrs(r_out_attrs, r_key_attr)
 
     # get attributes to project.  
-    l_proj_attrs = get_attrs_to_project(l_out_attrs, l_key_attr, l_join_attr)
-    r_proj_attrs = get_attrs_to_project(r_out_attrs, r_key_attr, r_join_attr)
+    l_proj_attrs = get_attrs_to_project(l_out_attrs, l_key_attr, l_match_attr)
+    r_proj_attrs = get_attrs_to_project(r_out_attrs, r_key_attr, r_match_attr)
 
-    # do a projection on the input dataframes. Note that this doesn't create a copy
-    # of the dataframes. It only creates a view on original dataframes.
+    # do a projection on the input dataframes. Note that this doesn't create a 
+    # copy of the dataframes. It only creates a view on original dataframes.
     ltable_projected = ltable[l_proj_attrs]
     rtable_projected = rtable[r_proj_attrs]
 
@@ -173,17 +191,18 @@ def apply_matcher(candset,
     n_jobs = get_num_processes_to_launch(n_jobs)
 
     # If a tokenizer is provided, we can optimize by tokenizing each value 
-    # only once by caching the tokens of l_join_attr and r_join_attr. But, this can
-    # be a bad strategy in case the candset has very few records compared to the
-    # original tables. Hence, we check if the sum of tuples in ltable and rtable is
-    # less than twice the number of tuples in the candset. If yes, we decide to 
-    # cache the token values. Else, we do not cache the tokens as the candset is small.
+    # only once by caching the tokens of l_match_attr and r_match_attr. But, 
+    # this can be a bad strategy in case the candset has very few records 
+    # compared to the original tables. Hence, we check if the sum of tuples in 
+    # ltable and rtable is less than twice the number of tuples in the candset. 
+    # If yes, we decide to cache the token values. Else, we do not cache the 
+    # tokens as the candset is small.
     l_tokens = None
     r_tokens = None
     if tokenizer is not None and (len(ltable) + len(rtable) < len(candset)*2):
-        l_tokens = generate_tokens(ltable_projected, l_key_attr, l_join_attr,
+        l_tokens = generate_tokens(ltable_projected, l_key_attr, l_match_attr,
                                    tokenizer)
-        r_tokens = generate_tokens(rtable_projected, r_key_attr, r_join_attr,
+        r_tokens = generate_tokens(rtable_projected, r_key_attr, r_match_attr,
                                    tokenizer)
 
     if n_jobs == 1:
@@ -191,7 +210,7 @@ def apply_matcher(candset,
                                     candset_l_key_attr, candset_r_key_attr,
                                     ltable_projected, rtable_projected,
                                     l_key_attr, r_key_attr,
-                                    l_join_attr, r_join_attr,
+                                    l_match_attr, r_match_attr,
                                     tokenizer, sim_function,
                                     threshold, comp_op, allow_missing,
                                     l_out_attrs, r_out_attrs,
@@ -205,7 +224,7 @@ def apply_matcher(candset,
                                       candset_l_key_attr, candset_r_key_attr,
                                       ltable_projected, rtable_projected,
                                       l_key_attr, r_key_attr,
-                                      l_join_attr, r_join_attr,
+                                      l_match_attr, r_match_attr,
                                       tokenizer, sim_function,
                                       threshold, comp_op, allow_missing,
                                       l_out_attrs, r_out_attrs,
@@ -218,11 +237,13 @@ def apply_matcher(candset,
 
     # revert the type of join attributes to their original type, in case it
     # was converted to string type.
-    if revert_l_join_attr_type:
-        ltable[l_join_attr] = ltable[l_join_attr].astype(orig_l_join_attr_type)
+    if revert_l_match_attr_type:
+        ltable[l_match_attr] = ltable[l_match_attr].astype(
+                                                    orig_l_match_attr_type)
 
-    if revert_r_join_attr_type:
-        rtable[r_join_attr] = rtable[r_join_attr].astype(orig_r_join_attr_type)
+    if revert_r_match_attr_type:
+        rtable[r_match_attr] = rtable[r_match_attr].astype(
+                                                    orig_r_match_attr_type)
 
     return output_table
 
@@ -231,7 +252,7 @@ def _apply_matcher_split(candset,
                          candset_l_key_attr, candset_r_key_attr,
                          ltable, rtable,
                          l_key_attr, r_key_attr,
-                         l_join_attr, r_join_attr,
+                         l_match_attr, r_match_attr,
                          tokenizer, sim_function,
                          threshold, comp_op, allow_missing,
                          l_out_attrs, r_out_attrs,
@@ -240,22 +261,22 @@ def _apply_matcher_split(candset,
     # find column indices of key attr, join attr and output attrs in ltable
     l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)
-    l_join_attr_index = l_columns.index(l_join_attr)
+    l_match_attr_index = l_columns.index(l_match_attr)
     l_out_attrs_indices = find_output_attribute_indices(l_columns, l_out_attrs)
 
     # find column indices of key attr, join attr and output attrs in rtable
     r_columns = list(rtable.columns.values)
     r_key_attr_index = r_columns.index(r_key_attr)
-    r_join_attr_index = r_columns.index(r_join_attr)
+    r_match_attr_index = r_columns.index(r_match_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
     # Build a dictionary on ltable
     ltable_dict = build_dict_from_table(ltable, l_key_attr_index,
-                                        l_join_attr_index, remove_null=False)
+                                        l_match_attr_index, remove_null=False)
 
     # Build a dictionary on rtable
     rtable_dict = build_dict_from_table(rtable, r_key_attr_index,
-                                        r_join_attr_index, remove_null=False)
+                                        r_match_attr_index, remove_null=False)
 
     # Find indices of l_key_attr and r_key_attr in candset
     candset_columns = list(candset.columns.values)
@@ -286,13 +307,14 @@ def _apply_matcher_split(candset,
         l_row = ltable_dict[l_id]
         r_row = rtable_dict[r_id]
         
-        l_apply_col_value = l_row[l_join_attr_index]
-        r_apply_col_value = r_row[r_join_attr_index]
+        l_apply_col_value = l_row[l_match_attr_index]
+        r_apply_col_value = r_row[r_match_attr_index]
 
         allow_pair = False
         # Check if one of the inputs is missing. If yes, check the allow_missing
         # flag. If it is True, then add the pair to output. Else, continue.
-        # If none of the input is missing, then proceed to apply the sim_function. 
+        # If none of the input is missing, then proceed to apply the 
+        # sim_function. 
         if pd.isnull(l_apply_col_value) or pd.isnull(r_apply_col_value):
             if allow_missing:
                 allow_pair = True
