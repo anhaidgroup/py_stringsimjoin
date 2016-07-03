@@ -3,6 +3,7 @@
 import pandas as pd
 
 from py_stringmatching.tokenizer.tokenizer import Tokenizer
+from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 
 from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP
 
@@ -72,11 +73,25 @@ def validate_tokenizer(tokenizer):
     return True
 
 
+def validate_tokenizer_for_sim_measure(tokenizer, sim_measure_type):
+    """Check if the tokenizer is valid for the similarity measure.
+    """
+    if not isinstance(tokenizer, Tokenizer):
+        raise TypeError('Invalid tokenizer provided as input')
+
+    if sim_measure_type == 'EDIT_DISTANCE':
+        if not isinstance(tokenizer, QgramTokenizer):
+            raise AssertionError('Invalid tokenizer for EDIT_DISTANCE ' + \
+            'measure. Only qgram tokenizer should be used for EDIT_DISTANCE.')
+
+    return True
+
+
 def validate_sim_measure_type(sim_measure_type):
     """Check if the input sim_measure_type is one of the supported types."""
     sim_measure_types = ['COSINE', 'DICE', 'EDIT_DISTANCE', 'JACCARD',
                          'OVERLAP']
-    if sim_measure_type not in sim_measure_types:
+    if sim_measure_type.upper() not in sim_measure_types:
         raise TypeError('\'' + sim_measure_type + '\' is not a valid ' + \
                         'sim_measure_type. Supported types are COSINE, DICE' + \
                         ', EDIT_DISTANCE, JACCARD and OVERLAP.')

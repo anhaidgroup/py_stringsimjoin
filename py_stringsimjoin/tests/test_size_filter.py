@@ -521,6 +521,10 @@ class SizeFilterInvalidTestCases(unittest.TestCase):
     def test_invalid_tokenizer(self):
         size_filter = SizeFilter([], self.sim_measure_type, self.threshold)
 
+    @raises(AssertionError)
+    def test_invalid_tokenizer_for_edit_distance(self):
+        size_filter = SizeFilter(self.tokenizer, 'EDIT_DISTANCE', 2)
+
     @raises(TypeError)
     def test_invalid_sim_measure_type(self):
         size_filter = SizeFilter(self.tokenizer, 'INVALID_TYPE', self.threshold)

@@ -20,7 +20,8 @@ from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_comp_op_for_sim_measure, validate_key_attr, validate_input_table, \
-    validate_threshold, validate_tokenizer, validate_output_attrs
+    validate_threshold, validate_tokenizer_for_sim_measure, \
+    validate_output_attrs
 
 
 def edit_distance_join(ltable, rtable,
@@ -124,8 +125,9 @@ def edit_distance_join(ltable, rtable,
     validate_attr(r_join_attr, rtable.columns,
                   'join attribute', 'right table')
 
-    # check if the input tokenizer is valid
-    validate_tokenizer(tokenizer)
+    # check if the input tokenizer is valid for edit distance measure. Only
+    # qgram tokenizer can be used for edit distance.
+    validate_tokenizer_for_sim_measure(tokenizer, 'EDIT_DISTANCE')
 
     # check if the input threshold is valid
     validate_threshold(threshold, 'EDIT_DISTANCE')

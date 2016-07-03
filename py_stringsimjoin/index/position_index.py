@@ -56,8 +56,7 @@ class PositionIndex(Index):
             if cache_empty_records and num_tokens == 0:
                 empty_records.append(row_id)
 
-            row_id += 1
-            
+            row_id += 1            
 
         return {'cached_tokens' : cached_tokens,
                 'empty_records' : empty_records}

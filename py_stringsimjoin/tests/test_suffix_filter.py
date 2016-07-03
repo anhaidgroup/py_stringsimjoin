@@ -515,6 +515,10 @@ class SuffixFilterInvalidTestCases(unittest.TestCase):
     def test_invalid_tokenizer(self):
         suffix_filter = SuffixFilter([], self.sim_measure_type, self.threshold)
 
+    @raises(AssertionError)
+    def test_invalid_tokenizer_for_edit_distance(self):
+        suffix_filter = SuffixFilter(self.tokenizer, 'EDIT_DISTANCE', 2)
+
     @raises(TypeError)
     def test_invalid_sim_measure_type(self):
         suffix_filter = SuffixFilter(self.tokenizer, 'INVALID_TYPE',

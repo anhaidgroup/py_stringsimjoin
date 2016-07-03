@@ -510,6 +510,10 @@ class PositionFilterInvalidTestCases(unittest.TestCase):
         position_filter = PositionFilter([], self.sim_measure_type,
                                          self.threshold)
 
+    @raises(AssertionError)
+    def test_invalid_tokenizer_for_edit_distance(self):
+        position_filter = PositionFilter(self.tokenizer, 'EDIT_DISTANCE', 2)
+
     @raises(TypeError)
     def test_invalid_sim_measure_type(self):
         position_filter = PositionFilter(self.tokenizer, 'INVALID_TYPE',

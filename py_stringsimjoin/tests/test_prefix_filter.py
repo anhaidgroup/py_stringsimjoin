@@ -511,6 +511,10 @@ class PrefixFilterInvalidTestCases(unittest.TestCase):
     def test_invalid_tokenizer(self):
         prefix_filter = PrefixFilter([], self.sim_measure_type, self.threshold)
 
+    @raises(AssertionError)
+    def test_invalid_tokenizer_for_edit_distance(self):
+        prefix_filter = PrefixFilter(self.tokenizer, 'EDIT_DISTANCE', 2)
+
     @raises(TypeError)
     def test_invalid_sim_measure_type(self):
         prefix_filter = PrefixFilter(self.tokenizer, 'INVALID_TYPE',

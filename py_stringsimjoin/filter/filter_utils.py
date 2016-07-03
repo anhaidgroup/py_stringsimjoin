@@ -60,6 +60,7 @@ def get_overlap_threshold(l_num_tokens, r_num_tokens,
                    r_num_tokens + tokenizer.qval - 1) - tokenizer.qval + 1 - \
                tokenizer.qval * threshold
     elif sim_measure_type == 'JACCARD':
-        return ceil(round((threshold / (1 + threshold)) * (l_num_tokens + r_num_tokens), 4))
+        return ceil(round((threshold / (1 + threshold)) * 
+                          (l_num_tokens + r_num_tokens), 4))
     elif sim_measure_type == 'OVERLAP':
         return threshold

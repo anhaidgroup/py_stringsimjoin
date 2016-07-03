@@ -13,11 +13,12 @@ from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_list, \
     get_output_row_from_tables, remove_redundant_attrs, split_table
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
-from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_tables, \
-    gen_token_ordering_for_lists, order_using_token_ordering
+from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists,\
+    gen_token_ordering_for_tables, order_using_token_ordering
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_key_attr, validate_input_table, validate_threshold, \
-    validate_tokenizer, validate_output_attrs, validate_sim_measure_type
+    validate_tokenizer_for_sim_measure, validate_output_attrs, \
+    validate_sim_measure_type
 
 
 class SuffixFilter(Filter):
@@ -59,11 +60,12 @@ class SuffixFilter(Filter):
 
     def __init__(self, tokenizer, sim_measure_type, threshold,
                  allow_empty=True, allow_missing=False):
-        # check if the input tokenizer is valid
-        validate_tokenizer(tokenizer)
-
-        # check if the sim_measure_type is valid
-        validate_sim_measure_type(sim_measure_type)
+        # check if the sim_measure_type is valid                                
+        validate_sim_measure_type(sim_measure_type)                             
+        sim_measure_type = sim_measure_type.upper()
+                                                                                
+        # check if the input tokenizer is valid                                 
+        validate_tokenizer_for_sim_measure(tokenizer, sim_measure_type) 
 
         # check if the threshold is valid
         validate_threshold(threshold, sim_measure_type)
