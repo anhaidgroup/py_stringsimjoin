@@ -188,7 +188,7 @@ def apply_matcher(candset,
     rtable_projected = rtable[r_proj_attrs]
 
     # computes the actual number of jobs to launch.
-    n_jobs = get_num_processes_to_launch(n_jobs)
+    n_jobs = min(get_num_processes_to_launch(n_jobs), len(candset))
 
     # If a tokenizer is provided, we can optimize by tokenizing each value 
     # only once by caching the tokens of l_match_attr and r_match_attr. But, 
@@ -205,7 +205,7 @@ def apply_matcher(candset,
         r_tokens = generate_tokens(rtable_projected, r_key_attr, r_match_attr,
                                    tokenizer)
 
-    if n_jobs == 1:
+    if n_jobs <= 1:
         output_table =  _apply_matcher_split(candset,
                                     candset_l_key_attr, candset_r_key_attr,
                                     ltable_projected, rtable_projected,

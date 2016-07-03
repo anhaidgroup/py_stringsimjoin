@@ -248,9 +248,9 @@ class SuffixFilter(Filter):
         rtable_projected = rtable[r_proj_attrs]
 
         # computes the actual number of jobs to launch.
-        n_jobs = get_num_processes_to_launch(n_jobs)
+        n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_projected))
 
-        if n_jobs == 1:
+        if n_jobs <= 1:
             output_table = _filter_tables_split(
                                            ltable_projected, rtable_projected,
                                            l_key_attr, r_key_attr,

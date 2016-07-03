@@ -117,9 +117,9 @@ class Filter(object):
         rtable_projected = rtable[[r_key_attr, r_filter_attr]]
 
         # computes the actual number of jobs to launch.
-        n_jobs = get_num_processes_to_launch(n_jobs)
+        n_jobs = min(get_num_processes_to_launch(n_jobs), len(candset))
         
-        if n_jobs == 1:
+        if n_jobs <= 1:
             output_table =  _filter_candset_split(candset,
                                          candset_l_key_attr, candset_r_key_attr,
                                          ltable_projected, rtable_projected,
