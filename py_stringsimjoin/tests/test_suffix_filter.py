@@ -312,7 +312,7 @@ class FilterCandsetTestCases(unittest.TestCase):
 
     # tests for COSINE measure
     def test_cos_dlm_08(self):
-        expected_pairs = set(['1,5', '3,4', '4,2', '5,1', '5,3'])
+        expected_pairs = set(['1,5', '2,4', '3,4', '4,2', '5,1', '5,3'])
         self.test_filter_candset(self.dlm, 'COSINE', 0.8, False, False,
                                 (self.C, 'l_id', 'r_id',
                                  self.A, self.B,

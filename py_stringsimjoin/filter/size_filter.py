@@ -36,7 +36,7 @@ class SizeFilter(Filter):
     Args:
         tokenizer (Tokenizer object): tokenizer to be used.
         sim_measure_type (string): similarity measure type. Supported types are 
-            'COSINE', 'DICE', 'EDIT_DISTANCE', 'JACCARD' and 'OVERLAP'.
+            'JACCARD', 'COSINE', 'DICE', 'OVERLAP' and 'EDIT_DISTANCE'.
         threshold (float): threshold to be used by the filter.
         allow_empty (boolean): A flag to indicate whether pairs in which both 
             strings are tokenized into an empty set of tokens should 
@@ -93,10 +93,8 @@ class SizeFilter(Filter):
         r_num_tokens = len(self.tokenizer.tokenize(rstring))
 
         if l_num_tokens == 0 and r_num_tokens == 0:
-            return (not self.allow_empty)
-
-        if l_num_tokens == 0 or r_num_tokens == 0:
-            return True
+            if self.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE']:
+                return (not self.allow_empty)
 
         size_lower_bound = get_size_lower_bound(l_num_tokens,
                                                 self.sim_measure_type,
@@ -277,6 +275,9 @@ class SizeFilter(Filter):
                                                 self.sim_measure_type,
                                                 self.threshold)
 
+        if size_lower_bound > probe_size:
+            return set()
+
         size_lower_bound = (size_index.min_length if
                             size_lower_bound < size_index.min_length else
                             size_lower_bound)
@@ -317,12 +318,15 @@ def _filter_tables_split(ltable, rtable,
     # convert rtable into a list of tuples
     rtable_list = convert_dataframe_to_list(rtable, r_filter_attr_index)
 
+    handle_empty = (size_filter.allow_empty and 
+        size_filter.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE'])
+
     # Build size index over ltable
     size_index = SizeIndex(ltable_list, l_filter_attr_index,
                            size_filter.tokenizer)
     # While building the index, we cache the record ids with empty set of 
     # tokens. This is needed to handle the allow_empty flag.
-    cached_data = size_index.build(size_filter.allow_empty)
+    cached_data = size_index.build(handle_empty)
     l_empty_records = cached_data['empty_records']
 
     output_rows = []
@@ -337,7 +341,7 @@ def _filter_tables_split(ltable, rtable,
 
         r_num_tokens = len(size_filter.tokenizer.tokenize(r_string))
 
-        if size_filter.allow_empty and r_num_tokens == 0:
+        if handle_empty and r_num_tokens == 0:
             for l_id in l_empty_records:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(

@@ -37,7 +37,7 @@ class PrefixFilter(Filter):
     Args:
         tokenizer (Tokenizer object): tokenizer to be used.
         sim_measure_type (string): similarity measure type. Supported types are 
-            'COSINE', 'DICE', 'EDIT_DISTANCE', 'JACCARD' and 'OVERLAP'.
+            'JACCARD', 'COSINE', 'DICE', 'OVERLAP' and 'EDIT_DISTANCE'.
         threshold (float): threshold to be used by the filter.
         allow_empty (boolean): A flag to indicate whether pairs in which both   
             strings are tokenized into an empty set of tokens should            
@@ -97,10 +97,8 @@ class PrefixFilter(Filter):
         r_num_tokens = len(rtokens)
 
         if l_num_tokens == 0 and r_num_tokens == 0:
-            return (not self.allow_empty)
-        
-        if l_num_tokens == 0 or r_num_tokens == 0:
-            return True
+            if self.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE']:
+                return (not self.allow_empty)
         
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens])
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
@@ -331,13 +329,16 @@ def _filter_tables_split(ltable, rtable,
                                  prefix_filter.tokenizer,
                                  prefix_filter.sim_measure_type)
 
+    handle_empty = (prefix_filter.allow_empty and
+        prefix_filter.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE'])
+
     # Build prefix index on l_filter_attr
     prefix_index = PrefixIndex(ltable_list, l_filter_attr_index, 
                        prefix_filter.tokenizer, prefix_filter.sim_measure_type,
                        prefix_filter.threshold, token_ordering)
     # While building the index, we cache the record ids with empty set of 
     # tokens. This is needed to handle the allow_empty flag.
-    cached_data = prefix_index.build(prefix_filter.allow_empty)
+    cached_data = prefix_index.build(handle_empty)
     l_empty_records = cached_data['empty_records']
 
     output_rows = []
@@ -354,7 +355,7 @@ def _filter_tables_split(ltable, rtable,
         r_ordered_tokens = order_using_token_ordering(r_filter_attr_tokens,
                                                       token_ordering)
 
-        if prefix_filter.allow_empty and len(r_ordered_tokens) == 0:
+        if handle_empty and len(r_ordered_tokens) == 0:
             for l_id in l_empty_records:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(

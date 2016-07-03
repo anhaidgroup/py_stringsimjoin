@@ -13,6 +13,7 @@ from py_stringsimjoin.utils.generic_helper import remove_redundant_attrs
 class FilterPairTestCases(unittest.TestCase):
     def setUp(self):
         self.dlm = DelimiterTokenizer(delim_set=[' '], return_set=True)
+        self.qg2 = QgramTokenizer(2)
 
     # tests for JACCARD measure
     def test_jac_dlm_08_prune(self):
@@ -44,6 +45,40 @@ class FilterPairTestCases(unittest.TestCase):
     def test_dice_dlm_08_pass(self):
         self.test_filter_pair('aa bb cc dd ee', 'xx yy aa tt',
                               self.dlm, 'DICE', 0.8, False, False, False)
+
+    # tests for OVERLAP measure
+    def test_overlap_dlm_prune(self):
+        self.test_filter_pair('aa bb cc dd ee', 'xx yy',
+                              self.dlm, 'OVERLAP', 3, False, False, True)
+
+    def test_overlap_dlm_pass(self):
+        self.test_filter_pair('aa bb cc dd ee', 'xx yy aa',
+                              self.dlm, 'OVERLAP', 3, False, False, False)
+
+    def test_overlap_dlm_empty(self):
+        self.test_filter_pair('', '',
+                              self.dlm, 'OVERLAP', 1, False, False, True)
+
+    def test_overlap_dlm_empty_with_allow_empty(self):
+        self.test_filter_pair('', '',
+                              self.dlm, 'OVERLAP', 1, True, False, True)
+
+    # tests for EDIT_DISTANCE measure
+    def test_edit_dist_qg2_prune(self):
+        self.test_filter_pair('abcd', 'cd',
+                              self.qg2, 'EDIT_DISTANCE', 1, False, False, True)
+
+    def test_edit_dist_qg2_pass(self):
+        self.test_filter_pair('abcd', 'cd',
+                              self.qg2, 'EDIT_DISTANCE', 2, False, False, False)
+
+    def test_edit_dist_qg2_empty(self):
+        self.test_filter_pair('', '',
+                              self.qg2, 'EDIT_DISTANCE', 1, False, False, False)
+
+    def test_edit_dist_qg2_empty_with_allow_empty(self):
+        self.test_filter_pair('', '',
+                              self.qg2, 'EDIT_DISTANCE', 1, True, False, False)
 
     # test allow_missing flag
     def test_size_filter_pass_missing_left(self):
@@ -146,6 +181,14 @@ class FilterTablesTestCases(unittest.TestCase):
         expected_pairs = set(['1,5', '3,1', '3,4', '4,2', '4,3',
                               '4,5', '5,3', '5,5'])
         self.test_filter_tables(self.dlm, 'DICE', 0.8, False, False,
+                                (self.A, self.B,
+                                'id', 'id', 'attr', 'attr'),
+                                expected_pairs)
+
+    # tests for OVERLAP measure 
+    def test_overlap_dlm_3(self):
+        expected_pairs = set(['1,3', '1,5', '4,3', '4,5', '5,3', '5,5'])
+        self.test_filter_tables(self.dlm, 'OVERLAP', 3, False, False,
                                 (self.A, self.B,
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)

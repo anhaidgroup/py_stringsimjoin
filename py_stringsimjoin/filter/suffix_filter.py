@@ -37,7 +37,7 @@ class SuffixFilter(Filter):
     Args:
         tokenizer (Tokenizer object): tokenizer to be used.
         sim_measure_type (string): similarity measure type. Supported types are 
-            'COSINE', 'DICE', 'EDIT_DISTANCE', 'JACCARD' and 'OVERLAP'.
+            'JACCARD', 'COSINE', 'DICE', 'OVERLAP' and 'EDIT_DISTANCE'.
         threshold (float): threshold to be used by the filter.
         allow_empty (boolean): A flag to indicate whether pairs in which both   
             strings are tokenized into an empty set of tokens should            
@@ -98,10 +98,8 @@ class SuffixFilter(Filter):
         r_num_tokens = len(rtokens)
 
         if l_num_tokens == 0 and r_num_tokens == 0:
-            return (not self.allow_empty)
-
-        if l_num_tokens == 0 or r_num_tokens == 0:
-            return True
+            if self.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE']:
+                return (not self.allow_empty)
 
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens]) 
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
@@ -428,6 +426,9 @@ def _filter_tables_split(ltable, rtable,
                                 suffix_filter.tokenizer,
                                 suffix_filter.sim_measure_type)
 
+    handle_empty = (suffix_filter.allow_empty and
+        suffix_filter.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE'])
+
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
@@ -455,7 +456,7 @@ def _filter_tables_split(ltable, rtable,
             r_num_tokens = len(ordered_rtokens)
 
             if l_num_tokens == 0 and r_num_tokens == 0:
-                if suffix_filter.allow_empty:
+                if handle_empty:
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(
                                              l_row, r_row,
