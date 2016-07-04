@@ -69,7 +69,7 @@ def profile_table_for_join(input_table, profile_attrs=None):
             comments = ''.join(['Joining on this attribute will ignore ',
                                 formatted_missing_stat, ' rows.'])
         # if the column consists of unique values, add a comment. 
-        if unique_percent == 100.0:
+        if unique_percent == 100.0 and missing_values == 0:
             comments = 'This attribute can be used as a key attribute.'
 
         profile_output.append((attr, formatted_unique_stat,
