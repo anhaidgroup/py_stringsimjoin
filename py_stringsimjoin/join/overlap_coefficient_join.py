@@ -166,6 +166,7 @@ def overlap_coefficient_join(ltable, rtable,
     n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_projected))
 
     if n_jobs <= 1:
+        # if n_jobs is 1, do not use any parallel code.
         output_table = _overlap_coefficient_join_split(
                                            ltable_projected, rtable_projected,
                                            l_key_attr, r_key_attr,
@@ -176,6 +177,9 @@ def overlap_coefficient_join(ltable, rtable,
                                            l_out_prefix, r_out_prefix,
                                            out_sim_score, show_progress)
     else:
+        # if n_jobs is above 1, split the right table into n_jobs splits and    
+        # join each right table split with the whole of left table in a separate
+        # process.
         r_splits = split_table(rtable_projected, n_jobs)
         results = Parallel(n_jobs=n_jobs)(
                                 delayed(_overlap_coefficient_join_split)(
@@ -191,6 +195,9 @@ def overlap_coefficient_join(ltable, rtable,
                                 for job_index in range(n_jobs))
         output_table = pd.concat(results)
 
+    # If allow_missing flag is set, then compute all pairs with missing value in
+    # at least one of the join attributes and then add it to the output         
+    # obtained from the join. 
     if allow_missing:
         missing_pairs = get_pairs_with_missing_value(
                                             ltable_projected, rtable_projected,
@@ -201,6 +208,7 @@ def overlap_coefficient_join(ltable, rtable,
                                             out_sim_score, show_progress)
         output_table = pd.concat([output_table, missing_pairs])
 
+    # add an id column named '_id' to the output table.
     output_table.insert(0, '_id', range(0, len(output_table)))
 
     # revert the type of join attributes to their original type, in case it
@@ -269,6 +277,12 @@ def _overlap_coefficient_join_split(ltable, rtable,
         r_join_attr_tokens = tokenizer.tokenize(r_string)
         r_num_tokens = len(r_join_attr_tokens)
 
+        # If allow_empty flag is set and the current rtable record has empty set
+        # of tokens in the join attribute, then generate output pairs joining   
+        # the current rtable record with those records in ltable with empty set 
+        # of tokens in the join attribute. These ltable record ids are cached in
+        # l_empty_records list which was constructed when building the inverted 
+        # index.
         if allow_empty and r_num_tokens == 0:
             for l_id in l_empty_records:
                 if has_output_attributes:
@@ -303,8 +317,12 @@ def _overlap_coefficient_join_split(ltable, rtable,
                 else:
                     output_row = [ltable_list[cand][l_key_attr_index],
                                   r_row[r_key_attr_index]]
+
+                # if out_sim_score flag is set, append the overlap coefficient 
+                # score to the output record.  
                 if out_sim_score:
                     output_row.append(sim_score)
+
                 output_rows.append(output_row)
 
         if show_progress:

@@ -206,6 +206,7 @@ def apply_matcher(candset,
                                    tokenizer)
 
     if n_jobs <= 1:
+        # if n_jobs is 1, do not use any parallel code.                     
         output_table =  _apply_matcher_split(candset,
                                     candset_l_key_attr, candset_r_key_attr,
                                     ltable_projected, rtable_projected,
@@ -218,6 +219,8 @@ def apply_matcher(candset,
                                     out_sim_score, show_progress,
                                     l_tokens, r_tokens)
     else:
+        # if n_jobs is above 1, split the candset into n_jobs splits and apply   
+        # the matcher on each candset split in a separate process.  
         candset_splits = split_table(candset, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(_apply_matcher_split)(
                                       candset_splits[job_index],

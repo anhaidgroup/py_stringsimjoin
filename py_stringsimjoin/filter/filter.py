@@ -120,6 +120,7 @@ class Filter(object):
         n_jobs = min(get_num_processes_to_launch(n_jobs), len(candset))
         
         if n_jobs <= 1:
+            # if n_jobs is 1, do not use any parallel code.                     
             output_table =  _filter_candset_split(candset,
                                          candset_l_key_attr, candset_r_key_attr,
                                          ltable_projected, rtable_projected,
@@ -127,6 +128,8 @@ class Filter(object):
                                          l_filter_attr, r_filter_attr,
                                          self, show_progress)
         else:
+            # if n_jobs is above 1, split the candset into n_jobs splits and    
+            # filter each candset split in a separate process.
             candset_splits = split_table(candset, n_jobs)
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_candset_split)(
                                       candset_splits[job_index],

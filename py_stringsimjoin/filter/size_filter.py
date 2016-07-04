@@ -227,6 +227,7 @@ class SizeFilter(Filter):
         n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_projected))
 
         if n_jobs <= 1:
+            # if n_jobs is 1, do not use any parallel code.                     
             output_table = _filter_tables_split(
                                            ltable_projected, rtable_projected,
                                            l_key_attr, r_key_attr,
@@ -236,6 +237,9 @@ class SizeFilter(Filter):
                                            l_out_prefix, r_out_prefix,
                                            show_progress)
         else:
+            # if n_jobs is above 1, split the right table into n_jobs splits and    
+            # filter each right table split with the whole of left table in a   
+            # separate process.
             r_splits = split_table(rtable_projected, n_jobs)
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_tables_split)(
                                     ltable_projected, r_splits[job_index],
@@ -248,6 +252,9 @@ class SizeFilter(Filter):
                                 for job_index in range(n_jobs))
             output_table = pd.concat(results)
 
+        # If allow_missing flag is set, then compute all pairs with missing 
+        # value in at least one of the filter attributes and then add it to the 
+        # output obtained from applying the filter. 
         if self.allow_missing:
             missing_pairs = get_pairs_with_missing_value(
                                             ltable_projected, rtable_projected,
@@ -258,7 +265,7 @@ class SizeFilter(Filter):
                                             False, show_progress)
             output_table = pd.concat([output_table, missing_pairs])
 
-
+        # add an id column named '_id' to the output table.
         output_table.insert(0, '_id', range(0, len(output_table)))
 
         # revert the type of filter attributes to their original type, in case
@@ -274,6 +281,8 @@ class SizeFilter(Filter):
         return output_table
 
     def find_candidates(self, probe_size, size_index):
+        # probe size index to find candidates for the input probe_size.
+
         size_lower_bound = get_size_lower_bound(probe_size,
                                                 self.sim_measure_type,
                                                 self.threshold)
@@ -292,6 +301,8 @@ class SizeFilter(Filter):
                             size_upper_bound > size_index.max_length else
                             size_upper_bound)
 
+        # find candidates from size index with size in the range 
+        # [size_lower_bound, size_upper_bound]
         candidates = set()
         for cand_size in xrange(size_lower_bound, size_upper_bound + 1):
             for cand in size_index.probe(cand_size):
@@ -324,6 +335,7 @@ def _filter_tables_split(ltable, rtable,
     # convert rtable into a list of tuples
     rtable_list = convert_dataframe_to_list(rtable, r_filter_attr_index)
 
+    # ignore allow_empty flag for OVERLAP and EDIT_DISTANCE measures.
     handle_empty = (size_filter.allow_empty and 
         size_filter.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE'])
 
@@ -347,6 +359,12 @@ def _filter_tables_split(ltable, rtable,
 
         r_num_tokens = len(size_filter.tokenizer.tokenize(r_string))
 
+        # If allow_empty flag is set and the current rtable record has empty set
+        # of tokens in the filter attribute, then generate output pairs joining   
+        # the current rtable record with those records in ltable with empty set 
+        # of tokens in the filter attribute. These ltable record ids are cached 
+        # in l_empty_records list which was constructed when building the size 
+        # index.
         if handle_empty and r_num_tokens == 0:
             for l_id in l_empty_records:
                 if has_output_attributes:

@@ -78,6 +78,12 @@ def set_sim_join(ltable, rtable,
         r_ordered_tokens = order_using_token_ordering(
                 tokenizer.tokenize(r_string), token_ordering)
 
+        # If allow_empty flag is set and the current rtable record has empty set
+        # of tokens in the join attribute, then generate output pairs joining 
+        # the current rtable record with those records in ltable with empty set 
+        # of tokens in the join attribute. These ltable record ids are cached in
+        # l_empty_records list which was constructed when building the position
+        # index.
         if allow_empty and len(r_ordered_tokens) == 0:
             for l_id in l_empty_records:
                 if has_output_attributes:
@@ -113,8 +119,11 @@ def set_sim_join(ltable, rtable,
                         output_row = [ltable_list[cand][l_key_attr_index],
                                       r_row[r_key_attr_index]]
 
+                    # if out_sim_score flag is set, append the similarity score    
+                    # to the output record.  
                     if out_sim_score:
                         output_row.append(sim_score)
+
                     output_rows.append(output_row)
 
         if show_progress:

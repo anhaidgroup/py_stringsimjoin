@@ -92,6 +92,7 @@ class PrefixFilter(Filter):
         if pd.isnull(lstring) or pd.isnull(rstring):
             return (not self.allow_missing)
 
+        # tokenize input strings 
         ltokens = self.tokenizer.tokenize(lstring)
         rtokens = self.tokenizer.tokenize(rstring)
 
@@ -249,6 +250,7 @@ class PrefixFilter(Filter):
         n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_projected))
 
         if n_jobs <= 1:
+            # if n_jobs is 1, do not use any parallel code.                     
             output_table = _filter_tables_split(
                                            ltable_projected, rtable_projected,
                                            l_key_attr, r_key_attr,
@@ -258,6 +260,9 @@ class PrefixFilter(Filter):
                                            l_out_prefix, r_out_prefix,
                                            show_progress)
         else:
+            # if n_jobs is above 1, split the right table into n_jobs splits and    
+            # filter each right table split with the whole of left table in a   
+            # separate process.
             r_splits = split_table(rtable_projected, n_jobs)
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_tables_split)(
                                     ltable_projected, r_splits[job_index],
@@ -270,6 +275,9 @@ class PrefixFilter(Filter):
                                 for job_index in range(n_jobs))
             output_table = pd.concat(results)
 
+        # If allow_missing flag is set, then compute all pairs with missing     
+        # value in at least one of the filter attributes and then add it to the 
+        # output obtained from applying the filter.
         if self.allow_missing:
             missing_pairs = get_pairs_with_missing_value(
                                             ltable_projected, rtable_projected,
@@ -280,6 +288,7 @@ class PrefixFilter(Filter):
                                             False, show_progress)
             output_table = pd.concat([output_table, missing_pairs])
 
+        # add an id column named '_id' to the output table.
         output_table.insert(0, '_id', range(0, len(output_table)))
 
         # revert the type of filter attributes to their original type, in case
@@ -295,6 +304,7 @@ class PrefixFilter(Filter):
         return output_table
 
     def find_candidates(self, probe_tokens, prefix_index):
+        # probe prefix index to find candidates for the input probe tokens.
         probe_num_tokens = len(probe_tokens)
         probe_prefix_length = get_prefix_length(probe_num_tokens,
                                                 self.sim_measure_type,
@@ -339,6 +349,7 @@ def _filter_tables_split(ltable, rtable,
                                  prefix_filter.tokenizer,
                                  prefix_filter.sim_measure_type)
 
+    # ignore allow_empty flag for OVERLAP and EDIT_DISTANCE measures.           
     handle_empty = (prefix_filter.allow_empty and
         prefix_filter.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE'])
 
@@ -365,6 +376,12 @@ def _filter_tables_split(ltable, rtable,
         r_ordered_tokens = order_using_token_ordering(r_filter_attr_tokens,
                                                       token_ordering)
 
+        # If allow_empty flag is set and the current rtable record has empty set
+        # of tokens in the filter attribute, then generate output pairs joining   
+        # the current rtable record with those records in ltable with empty set 
+        # of tokens in the filter attribute. These ltable record ids are cached 
+        # in l_empty_records list which was constructed when building the prefix  
+        # index. 
         if handle_empty and len(r_ordered_tokens) == 0:
             for l_id in l_empty_records:
                 if has_output_attributes:

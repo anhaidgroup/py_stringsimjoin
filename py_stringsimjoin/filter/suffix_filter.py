@@ -93,6 +93,7 @@ class SuffixFilter(Filter):
         if pd.isnull(lstring) or pd.isnull(rstring):
             return (not self.allow_missing)
 
+        # tokenize input strings
         ltokens = self.tokenizer.tokenize(lstring)
         rtokens = self.tokenizer.tokenize(rstring)    
 
@@ -265,6 +266,7 @@ class SuffixFilter(Filter):
         n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_projected))
 
         if n_jobs <= 1:
+            # if n_jobs is 1, do not use any parallel code.                     
             output_table = _filter_tables_split(
                                            ltable_projected, rtable_projected,
                                            l_key_attr, r_key_attr,
@@ -274,6 +276,9 @@ class SuffixFilter(Filter):
                                            l_out_prefix, r_out_prefix,
                                            show_progress)
         else:
+            # if n_jobs is above 1, split the right table into n_jobs splits and    
+            # filter each right table split with the whole of left table in a   
+            # separate process.
             r_splits = split_table(rtable_projected, n_jobs)
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_tables_split)(
                                     ltable_projected, r_splits[job_index],
@@ -286,6 +291,9 @@ class SuffixFilter(Filter):
                                 for job_index in range(n_jobs))
             output_table = pd.concat(results)
 
+        # If allow_missing flag is set, then compute all pairs with missing     
+        # value in at least one of the filter attributes and then add it to the 
+        # output obtained from applying the filter.
         if self.allow_missing:
             missing_pairs = get_pairs_with_missing_value(
                                             ltable_projected, rtable_projected,
@@ -296,6 +304,7 @@ class SuffixFilter(Filter):
                                             False, show_progress)
             output_table = pd.concat([output_table, missing_pairs])
 
+        # add an id column named '_id' to the output table.
         output_table.insert(0, '_id', range(0, len(output_table)))
 
         # revert the type of filter attributes to their original type, in case
@@ -440,6 +449,7 @@ def _filter_tables_split(ltable, rtable,
                                 suffix_filter.tokenizer,
                                 suffix_filter.sim_measure_type)
 
+    # ignore allow_empty flag for OVERLAP and EDIT_DISTANCE measures.           
     handle_empty = (suffix_filter.allow_empty and
         suffix_filter.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE'])
 
@@ -470,6 +480,7 @@ def _filter_tables_split(ltable, rtable,
                                                          token_ordering)
             r_num_tokens = len(ordered_rtokens)
 
+            # If allow_empty flag is set, then add the pair to the output.
             if handle_empty and l_num_tokens == 0 and r_num_tokens == 0:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(

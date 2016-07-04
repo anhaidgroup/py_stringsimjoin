@@ -1,4 +1,3 @@
-# overlap join
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
 from py_stringsimjoin.utils.validation import validate_tokenizer
 
@@ -87,6 +86,7 @@ def overlap_join(ltable, rtable,
         tokenizer.set_return_set(True)
         revert_tokenizer_return_set_flag = True
 
+    # use overlap filter to perform the join.
     overlap_filter = OverlapFilter(tokenizer, threshold, comp_op, allow_missing)
     output_table =  overlap_filter.filter_tables(ltable, rtable,
                                                  l_key_attr, r_key_attr,
