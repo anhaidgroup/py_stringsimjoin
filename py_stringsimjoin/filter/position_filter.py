@@ -320,6 +320,9 @@ class PositionFilter(Filter):
     def find_candidates(self, probe_tokens, position_index):
         # probe position index to find candidates for the input probe tokens.
 
+        if not position_index.index:
+            return {}
+
         probe_num_tokens = len(probe_tokens)
         size_lower_bound = max(get_size_lower_bound(probe_num_tokens,
                                    self.sim_measure_type, self.threshold),

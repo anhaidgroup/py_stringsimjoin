@@ -12,10 +12,11 @@ class PrefixIndex(Index):
         self.sim_measure_type = sim_measure_type
         self.threshold = threshold
         self.token_ordering = token_ordering
-        self.index = {}
+        self.index = None
         super(self.__class__, self).__init__()
 
     def build(self, cache_empty_records=True):
+        self.index = {}
         empty_records = []
         row_id = 0
         for row in self.table:

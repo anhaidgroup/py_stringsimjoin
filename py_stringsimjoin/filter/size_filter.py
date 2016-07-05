@@ -283,6 +283,9 @@ class SizeFilter(Filter):
     def find_candidates(self, probe_size, size_index):
         # probe size index to find candidates for the input probe_size.
 
+        if not size_index.index:
+            return set()
+
         size_lower_bound = get_size_lower_bound(probe_size,
                                                 self.sim_measure_type,
                                                 self.threshold)

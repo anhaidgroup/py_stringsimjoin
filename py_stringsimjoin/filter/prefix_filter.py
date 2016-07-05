@@ -305,6 +305,10 @@ class PrefixFilter(Filter):
 
     def find_candidates(self, probe_tokens, prefix_index):
         # probe prefix index to find candidates for the input probe tokens.
+
+        if not prefix_index.index:
+            return set()
+
         probe_num_tokens = len(probe_tokens)
         probe_prefix_length = get_prefix_length(probe_num_tokens,
                                                 self.sim_measure_type,

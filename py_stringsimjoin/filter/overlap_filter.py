@@ -267,6 +267,10 @@ class OverlapFilter(Filter):
 
     def find_candidates(self, probe_tokens, inverted_index):
         candidate_overlap = {}
+
+        if not inverted_index.index:
+            return candidate_overlap
+
         for token in probe_tokens:
             for cand in inverted_index.probe(token):
                 candidate_overlap[cand] = candidate_overlap.get(cand, 0) + 1

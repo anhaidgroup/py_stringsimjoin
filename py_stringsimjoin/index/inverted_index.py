@@ -7,12 +7,14 @@ class InvertedIndex(Index):
         self.table = table
         self.index_attr = index_attr
         self.tokenizer = tokenizer
-        self.index = {}
-        self.size_cache = []
+        self.index = None
+        self.size_cache = None
         self.cache_size_flag = cache_size_flag
         super(self.__class__, self).__init__()
 
     def build(self, cache_empty_records=True):
+        self.index = {}
+        self.size_cache = []
         empty_records = []
         row_id = 0
         for row in self.table:

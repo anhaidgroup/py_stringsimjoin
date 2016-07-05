@@ -8,12 +8,13 @@ class SizeIndex(Index):
         self.table = table
         self.index_attr = index_attr
         self.tokenizer = tokenizer
-        self.index = {}
+        self.index = None
         self.min_length = maxsize
         self.max_length = 0
         super(self.__class__, self).__init__()
 
     def build(self, cache_empty_records=True):
+        self.index = {}
         empty_records = []
         row_id = 0
         for row in self.table:

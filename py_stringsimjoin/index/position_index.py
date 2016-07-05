@@ -14,8 +14,8 @@ class PositionIndex(Index):
         self.sim_measure_type = sim_measure_type
         self.threshold = threshold
         self.token_ordering = token_ordering
-        self.index = {}
-        self.size_cache = []
+        self.index = None
+        self.size_cache = None
         self.min_length = maxsize
         self.max_length = 0
         super(self.__class__, self).__init__()
