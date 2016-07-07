@@ -10,7 +10,7 @@ from py_stringsimjoin.filter.filter import Filter
 from py_stringsimjoin.filter.filter_utils import get_overlap_threshold, \
     get_prefix_length, get_size_lower_bound, get_size_upper_bound
 from py_stringsimjoin.index.position_index import PositionIndex
-from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_list, \
+from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
     get_num_processes_to_launch, get_output_header_from_tables, \
     get_output_row_from_tables, remove_redundant_attrs, split_table
@@ -254,19 +254,23 @@ class PositionFilter(Filter):
         r_proj_attrs = get_attrs_to_project(r_out_attrs,
                                             r_key_attr, r_filter_attr)
 
-        # do a projection on the input dataframes. Note that this doesn't create
-        # a copy of the dataframes. It only creates a view on original 
-        # dataframes.
-        ltable_projected = ltable[l_proj_attrs]
-        rtable_projected = rtable[r_proj_attrs]
+        # Do a projection on the input dataframes to keep only the required         
+        # attributes. Then, remove rows with missing value in filter attribute  
+        # from the input dataframes. Then, convert the resulting dataframes     
+        # into ndarray.                                                         
+        ltable_array = convert_dataframe_to_array(ltable, l_proj_attrs,         
+                                                  l_filter_attr)                
+        rtable_array = convert_dataframe_to_array(rtable, r_proj_attrs,         
+                                                  r_filter_attr) 
 
         # computes the actual number of jobs to launch.
-        n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_projected))
+        n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
 
         if n_jobs <= 1:
             # if n_jobs is 1, do not use any parallel code.                     
             output_table = _filter_tables_split(
-                                           ltable_projected, rtable_projected,
+                                           ltable_array, rtable_array,
+                                           l_proj_attrs, r_proj_attrs,                 
                                            l_key_attr, r_key_attr,
                                            l_filter_attr, r_filter_attr,
                                            self,
@@ -277,9 +281,10 @@ class PositionFilter(Filter):
             # if n_jobs is above 1, split the right table into n_jobs splits and    
             # filter each right table split with the whole of left table in a   
             # separate process.
-            r_splits = split_table(rtable_projected, n_jobs)
+            r_splits = split_table(rtable_array, n_jobs)
             results = Parallel(n_jobs=n_jobs)(delayed(_filter_tables_split)(
-                                    ltable_projected, r_splits[job_index],
+                                    ltable_array, r_splits[job_index],
+                                    l_proj_attrs, r_proj_attrs,                 
                                     l_key_attr, r_key_attr,
                                     l_filter_attr, r_filter_attr,
                                     self,
@@ -294,7 +299,7 @@ class PositionFilter(Filter):
         # output obtained from applying the filter.
         if self.allow_missing:
             missing_pairs = get_pairs_with_missing_value(
-                                            ltable_projected, rtable_projected,
+                                            ltable, rtable,
                                             l_key_attr, r_key_attr,
                                             l_filter_attr, r_filter_attr,
                                             l_out_attrs, r_out_attrs,
@@ -380,33 +385,26 @@ class PositionFilter(Filter):
 
 
 def _filter_tables_split(ltable, rtable,
+                         l_columns, r_columns,
                          l_key_attr, r_key_attr,
                          l_filter_attr, r_filter_attr,
                          position_filter,
                          l_out_attrs, r_out_attrs,
                          l_out_prefix, r_out_prefix, show_progress):
     # find column indices of key attr, filter attr and output attrs in ltable
-    l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)
     l_filter_attr_index = l_columns.index(l_filter_attr)
     l_out_attrs_indices = []
     l_out_attrs_indices = find_output_attribute_indices(l_columns, l_out_attrs)
 
     # find column indices of key attr, filter attr and output attrs in rtable
-    r_columns = list(rtable.columns.values)
     r_key_attr_index = r_columns.index(r_key_attr)
     r_filter_attr_index = r_columns.index(r_filter_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
-    # convert ltable into a list of tuples
-    ltable_list = convert_dataframe_to_list(ltable, l_filter_attr_index)
-
-    # convert rtable into a list of tuples
-    rtable_list = convert_dataframe_to_list(rtable, r_filter_attr_index)
-
     # generate token ordering using tokens in l_filter_attr and r_filter_attr
     token_ordering = gen_token_ordering_for_tables(
-                                 [ltable_list, rtable_list],
+                                 [ltable, rtable],
                                  [l_filter_attr_index, r_filter_attr_index],
                                  position_filter.tokenizer,
                                  position_filter.sim_measure_type)
@@ -416,7 +414,7 @@ def _filter_tables_split(ltable, rtable,
         position_filter.sim_measure_type not in ['OVERLAP', 'EDIT_DISTANCE'])
 
     # Build position index on l_filter_attr
-    position_index = PositionIndex(ltable_list, l_filter_attr_index,
+    position_index = PositionIndex(ltable, l_filter_attr_index,
                                    position_filter.tokenizer,
                                    position_filter.sim_measure_type,
                                    position_filter.threshold, token_ordering)
@@ -430,9 +428,9 @@ def _filter_tables_split(ltable, rtable,
                              r_out_attrs is not None)
 
     if show_progress:
-        prog_bar = pyprind.ProgBar(len(rtable_list))
+        prog_bar = pyprind.ProgBar(len(rtable))
 
-    for r_row in rtable_list:
+    for r_row in rtable:
         r_string = r_row[r_filter_attr_index]
 
         r_filter_attr_tokens = position_filter.tokenizer.tokenize(r_string)
@@ -449,12 +447,12 @@ def _filter_tables_split(ltable, rtable,
             for l_id in l_empty_records:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(
-                                     ltable_list[l_id], r_row,
+                                     ltable[l_id], r_row,
                                      l_key_attr_index, r_key_attr_index,
                                      l_out_attrs_indices,
                                      r_out_attrs_indices)
                 else:
-                    output_row = [ltable_list[l_id][l_key_attr_index],
+                    output_row = [ltable[l_id][l_key_attr_index],
                                   r_row[r_key_attr_index]]
 
                 output_rows.append(output_row)
@@ -467,11 +465,11 @@ def _filter_tables_split(ltable, rtable,
             if overlap > 0:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(
-                                     ltable_list[cand], r_row,
+                                     ltable[cand], r_row,
                                      l_key_attr_index, r_key_attr_index, 
                                      l_out_attrs_indices, r_out_attrs_indices)
                 else:
-                    output_row = [ltable_list[cand][l_key_attr_index],
+                    output_row = [ltable[cand][l_key_attr_index],
                                   r_row[r_key_attr_index]]
 
                 output_rows.append(output_row)
