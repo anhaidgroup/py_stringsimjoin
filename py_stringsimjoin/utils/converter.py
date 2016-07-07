@@ -53,10 +53,11 @@ def convert2str(dataframe, col_name, inplace=False, return_col=False):
 
         # get the column values that are not NaN
         col_non_nan_values = dataframe[col_name].dropna()
+
         # find how many of these values are actually integer values cast into 
         # float.
-        int_values = sum(col_non_nan_values.apply(
-                                            lambda val: val - int(val) == 0))
+        int_values = sum(col_non_nan_values.apply(lambda val: val.is_integer()))
+
         # if all these values are interger values, then we handle according
         # to case 1, else we proceed by case 2.
         if int_values == len(col_non_nan_values):
