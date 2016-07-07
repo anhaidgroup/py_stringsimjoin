@@ -6,7 +6,7 @@ import pyprind
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
 from py_stringsimjoin.index.inverted_index import InvertedIndex
-from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_list, \
+from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
     get_num_processes_to_launch, get_output_header_from_tables, \
     get_output_row_from_tables, remove_redundant_attrs, split_table, COMP_OP_MAP
@@ -157,18 +157,20 @@ def overlap_coefficient_join(ltable, rtable,
     l_proj_attrs = get_attrs_to_project(l_out_attrs, l_key_attr, l_join_attr)
     r_proj_attrs = get_attrs_to_project(r_out_attrs, r_key_attr, r_join_attr)
 
-    # do a projection on the input dataframes. Note that this doesn't create a 
-    # copy of the dataframes. It only creates a view on original dataframes.
-    ltable_projected = ltable[l_proj_attrs]
-    rtable_projected = rtable[r_proj_attrs]
+    # Do a projection on the input dataframes to keep only the required         
+    # attributes. Then, remove rows with missing value in join attribute from   
+    # the input dataframes. Then, convert the resulting dataframes into ndarray.
+    ltable_array = convert_dataframe_to_array(ltable, l_proj_attrs, l_join_attr)
+    rtable_array = convert_dataframe_to_array(rtable, r_proj_attrs, r_join_attr)
 
     # computes the actual number of jobs to launch.
-    n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_projected))
+    n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
 
     if n_jobs <= 1:
         # if n_jobs is 1, do not use any parallel code.
         output_table = _overlap_coefficient_join_split(
-                                           ltable_projected, rtable_projected,
+                                           ltable_array, rtable_array,
+                                           l_proj_attrs, r_proj_attrs,
                                            l_key_attr, r_key_attr,
                                            l_join_attr, r_join_attr,
                                            tokenizer, threshold, comp_op,
@@ -180,10 +182,11 @@ def overlap_coefficient_join(ltable, rtable,
         # if n_jobs is above 1, split the right table into n_jobs splits and    
         # join each right table split with the whole of left table in a separate
         # process.
-        r_splits = split_table(rtable_projected, n_jobs)
+        r_splits = split_table(rtable_array, n_jobs)
         results = Parallel(n_jobs=n_jobs)(
                                 delayed(_overlap_coefficient_join_split)(
-                                    ltable_projected, r_splits[job_index],
+                                    ltable_array, r_splits[job_index],
+                                    l_proj_attrs, r_proj_attrs,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
                                     tokenizer, threshold, comp_op,
@@ -200,7 +203,7 @@ def overlap_coefficient_join(ltable, rtable,
     # obtained from the join. 
     if allow_missing:
         missing_pairs = get_pairs_with_missing_value(
-                                            ltable_projected, rtable_projected,
+                                            ltable, rtable,
                                             l_key_attr, r_key_attr,
                                             l_join_attr, r_join_attr,
                                             l_out_attrs, r_out_attrs,
@@ -226,7 +229,8 @@ def overlap_coefficient_join(ltable, rtable,
     return output_table
 
 
-def _overlap_coefficient_join_split(ltable, rtable,
+def _overlap_coefficient_join_split(ltable_list, rtable_list,
+                                    l_columns, r_columns,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
                                     tokenizer, threshold, comp_op,
@@ -236,22 +240,14 @@ def _overlap_coefficient_join_split(ltable, rtable,
                                     out_sim_score, show_progress):
     """Perform overlap coefficient join for a split of ltable and rtable"""
     # find column indices of key attr, join attr and output attrs in ltable
-    l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)
     l_join_attr_index = l_columns.index(l_join_attr)
     l_out_attrs_indices = find_output_attribute_indices(l_columns, l_out_attrs)
 
     # find column indices of key attr, join attr and output attrs in rtable
-    r_columns = list(rtable.columns.values)
     r_key_attr_index = r_columns.index(r_key_attr)
     r_join_attr_index = r_columns.index(r_join_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
-
-    # convert ltable into a list of tuples
-    ltable_list = convert_dataframe_to_list(ltable, l_join_attr_index)
-
-    # convert rtable into a list of tuples
-    rtable_list = convert_dataframe_to_list(rtable, r_join_attr_index)
 
     # Build inverted index over ltable
     inverted_index = InvertedIndex(ltable_list, l_join_attr_index,

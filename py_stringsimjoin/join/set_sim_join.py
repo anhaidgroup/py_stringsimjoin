@@ -5,7 +5,7 @@ import pyprind
 
 from py_stringsimjoin.filter.position_filter import PositionFilter
 from py_stringsimjoin.index.position_index import PositionIndex
-from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_list, \
+from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables, COMP_OP_MAP 
 from py_stringsimjoin.utils.simfunctions import get_sim_function
@@ -14,6 +14,7 @@ from py_stringsimjoin.utils.token_ordering import \
 
 
 def set_sim_join(ltable, rtable,
+                 l_columns, r_columns,
                  l_key_attr, r_key_attr,
                  l_join_attr, r_join_attr,
                  tokenizer, sim_measure_type, threshold, comp_op,
@@ -24,32 +25,24 @@ def set_sim_join(ltable, rtable,
     """Perform set similarity join for a split of ltable and rtable"""
 
     # find column indices of key attr, join attr and output attrs in ltable
-    l_columns = list(ltable.columns.values)
     l_key_attr_index = l_columns.index(l_key_attr)
     l_join_attr_index = l_columns.index(l_join_attr)
     l_out_attrs_indices = find_output_attribute_indices(l_columns, l_out_attrs)
 
     # find column indices of key attr, join attr and output attrs in rtable
-    r_columns = list(rtable.columns.values)
     r_key_attr_index = r_columns.index(r_key_attr)
     r_join_attr_index = r_columns.index(r_join_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
-    # convert ltable into a list of tuples
-    ltable_list = convert_dataframe_to_list(ltable, l_join_attr_index)
-
-    # convert rtable into a list of tuples
-    rtable_list = convert_dataframe_to_list(rtable, r_join_attr_index)
-
     # generate token ordering using tokens in l_join_attr
     # and r_join_attr
     token_ordering = gen_token_ordering_for_tables(
-                         [ltable_list, rtable_list],
+                         [ltable, rtable],
                          [l_join_attr_index, r_join_attr_index],
                          tokenizer, sim_measure_type)
 
     # Build position index on l_join_attr
-    position_index = PositionIndex(ltable_list, l_join_attr_index,
+    position_index = PositionIndex(ltable, l_join_attr_index,
                                    tokenizer, sim_measure_type,
                                    threshold, token_ordering)
     # While building the index, we cache the tokens and the empty records.
@@ -70,9 +63,9 @@ def set_sim_join(ltable, rtable,
                              r_out_attrs is not None)
 
     if show_progress:
-        prog_bar = pyprind.ProgBar(len(rtable_list))
+        prog_bar = pyprind.ProgBar(len(rtable))
 
-    for r_row in rtable_list:
+    for r_row in rtable:
         r_string = r_row[r_join_attr_index]
 
         r_ordered_tokens = order_using_token_ordering(
@@ -88,12 +81,12 @@ def set_sim_join(ltable, rtable,
             for l_id in l_empty_records:
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(
-                                     ltable_list[l_id], r_row,
+                                     ltable[l_id], r_row,
                                      l_key_attr_index, r_key_attr_index,
                                      l_out_attrs_indices,
                                      r_out_attrs_indices)
                 else:
-                    output_row = [ltable_list[l_id][l_key_attr_index],
+                    output_row = [ltable[l_id][l_key_attr_index],
                                   r_row[r_key_attr_index]]
 
                 if out_sim_score:
@@ -111,12 +104,12 @@ def set_sim_join(ltable, rtable,
                 if comp_fn(sim_score, threshold):
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(
-                                         ltable_list[cand], r_row,
+                                         ltable[cand], r_row,
                                          l_key_attr_index, r_key_attr_index,
                                          l_out_attrs_indices,
                                          r_out_attrs_indices)
                     else:
-                        output_row = [ltable_list[cand][l_key_attr_index],
+                        output_row = [ltable[cand][l_key_attr_index],
                                       r_row[r_key_attr_index]]
 
                     # if out_sim_score flag is set, append the similarity score    

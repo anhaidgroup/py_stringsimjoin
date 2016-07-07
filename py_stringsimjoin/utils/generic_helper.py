@@ -70,6 +70,17 @@ def convert_dataframe_to_list(table, join_attr_index,
     return table_list
 
 
+def convert_dataframe_to_array(dataframe, proj_attrs, join_attr, 
+                               remove_nan=True):
+    if remove_nan:
+        projected_dataframe = dataframe[proj_attrs].dropna(0, 
+                                                           subset=[join_attr])
+    else:
+        projected_dataframe = dataframe[proj_attrs]
+
+    return projected_dataframe.values
+    
+
 def build_dict_from_table(table, key_attr_index, join_attr_index,
                           remove_null=True):
     table_dict = {}

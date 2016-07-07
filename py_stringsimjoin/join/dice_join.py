@@ -3,8 +3,9 @@ from joblib import delayed, Parallel
 import pandas as pd
 
 from py_stringsimjoin.join.set_sim_join import set_sim_join
-from py_stringsimjoin.utils.generic_helper import get_attrs_to_project, \
-    get_num_processes_to_launch, remove_redundant_attrs, split_table
+from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
+    get_attrs_to_project, get_num_processes_to_launch, remove_redundant_attrs, \
+    split_table
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.validation import validate_attr, \
@@ -152,17 +153,19 @@ def dice_join(ltable, rtable,
     l_proj_attrs = get_attrs_to_project(l_out_attrs, l_key_attr, l_join_attr)
     r_proj_attrs = get_attrs_to_project(r_out_attrs, r_key_attr, r_join_attr)
 
-    # do a projection on the input dataframes. Note that this doesn't create a 
-    # copy of the dataframes. It only creates a view on original dataframes.
-    ltable_projected = ltable[l_proj_attrs]
-    rtable_projected = rtable[r_proj_attrs]
+    # Do a projection on the input dataframes to keep only the required         
+    # attributes. Then, remove rows with missing value in join attribute from   
+    # the input dataframes. Then, convert the resulting dataframes into ndarray.
+    ltable_array = convert_dataframe_to_array(ltable, l_proj_attrs, l_join_attr)
+    rtable_array = convert_dataframe_to_array(rtable, r_proj_attrs, r_join_attr)
 
     # computes the actual number of jobs to launch.
-    n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_projected))
+    n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
 
     if n_jobs <= 1:
         # if n_jobs is 1, do not use any parallel code.
-        output_table = set_sim_join(ltable_projected, rtable_projected,
+        output_table = set_sim_join(ltable_array, rtable_array,
+                                    l_proj_attrs, r_proj_attrs,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
                                     tokenizer, 'DICE',
@@ -174,9 +177,10 @@ def dice_join(ltable, rtable,
         # if n_jobs is above 1, split the right table into n_jobs splits and    
         # join each right table split with the whole of left table in a separate
         # process.
-        r_splits = split_table(rtable_projected, n_jobs)
+        r_splits = split_table(rtable_array, n_jobs)
         results = Parallel(n_jobs=n_jobs)(delayed(set_sim_join)(
-                                          ltable_projected, r_splits[job_index],
+                                          ltable_array, r_splits[job_index],
+                                          l_proj_attrs, r_proj_attrs,
                                           l_key_attr, r_key_attr,
                                           l_join_attr, r_join_attr,
                                           tokenizer, 'DICE',
@@ -193,7 +197,7 @@ def dice_join(ltable, rtable,
     # obtained from the join. 
     if allow_missing:
         missing_pairs = get_pairs_with_missing_value(
-                                            ltable_projected, rtable_projected,
+                                            ltable, rtable,
                                             l_key_attr, r_key_attr,
                                             l_join_attr, r_join_attr,
                                             l_out_attrs, r_out_attrs,
