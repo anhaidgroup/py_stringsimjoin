@@ -13,8 +13,9 @@ from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_comp_op_for_sim_measure, validate_key_attr, validate_input_table, \
-    validate_threshold, validate_tokenizer, validate_output_attrs
+    validate_attr_type, validate_comp_op_for_sim_measure, validate_key_attr, \
+    validate_input_table, validate_threshold, validate_tokenizer, \
+    validate_output_attrs
 
 
 def overlap_coefficient_join(ltable, rtable,
@@ -110,6 +111,12 @@ def overlap_coefficient_join(ltable, rtable,
                   'join attribute', 'left table')
     validate_attr(r_join_attr, rtable.columns,
                   'join attribute', 'right table')
+
+    # check if the join attributes are not of numeric type                      
+    validate_attr_type(l_join_attr, ltable[l_join_attr].dtype,                  
+                       'join attribute', 'left table')                          
+    validate_attr_type(r_join_attr, rtable[r_join_attr].dtype,                  
+                       'join attribute', 'right table')
 
     # check if the input tokenizer is valid
     validate_tokenizer(tokenizer)

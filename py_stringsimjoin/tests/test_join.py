@@ -328,8 +328,8 @@ def test_set_sim_join():
 
 class JaccardJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
-        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
-        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello', 'A.int_attr':5}])
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world', 'B.int_attr':6}])
         self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
@@ -363,6 +363,16 @@ class JaccardJoinInvalidTestCases(unittest.TestCase):
         jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.invalid_attr',
                      self.tokenizer, self.threshold)
 
+    @raises(AssertionError)                                                     
+    def test_jaccard_join_numeric_l_join_attr(self):                            
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.int_attr', 'B.attr',
+                     self.tokenizer, self.threshold)                            
+                                                                                
+    @raises(AssertionError)                                                     
+    def test_jaccard_join_numeric_r_join_attr(self):                            
+        jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.int_attr',
+                     self.tokenizer, self.threshold)
+  
     @raises(TypeError)
     def test_jaccard_join_invalid_tokenizer(self):
         jaccard_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
@@ -408,8 +418,8 @@ class JaccardJoinInvalidTestCases(unittest.TestCase):
 
 class CosineJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
-        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
-        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello', 'A.int_attr':5}])   
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world', 'B.int_attr':6}])  
         self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
@@ -443,6 +453,16 @@ class CosineJoinInvalidTestCases(unittest.TestCase):
         cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.invalid_attr',
                     self.tokenizer, self.threshold)
 
+    @raises(AssertionError)                                                     
+    def test_cosine_join_numeric_l_join_attr(self):                            
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.int_attr', 'B.attr',    
+                    self.tokenizer, self.threshold)                            
+                                                                                
+    @raises(AssertionError)                                                     
+    def test_cosine_join_numeric_r_join_attr(self):                            
+        cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.int_attr',    
+                    self.tokenizer, self.threshold)
+  
     @raises(TypeError)
     def test_cosine_join_invalid_tokenizer(self):
         cosine_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
@@ -488,8 +508,8 @@ class CosineJoinInvalidTestCases(unittest.TestCase):
 
 class DiceJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
-        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
-        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello', 'A.int_attr':5}])   
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world', 'B.int_attr':6}])  
         self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
@@ -521,6 +541,16 @@ class DiceJoinInvalidTestCases(unittest.TestCase):
     @raises(AssertionError)
     def test_dice_join_invalid_r_join_attr(self):
         dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.invalid_attr',
+                  self.tokenizer, self.threshold)
+
+    @raises(AssertionError)                                                     
+    def test_dice_join_numeric_l_join_attr(self):                            
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.int_attr', 'B.attr',    
+                  self.tokenizer, self.threshold)                            
+                                                                                
+    @raises(AssertionError)                                                     
+    def test_dice_join_numeric_r_join_attr(self):                            
+        dice_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.int_attr',    
                   self.tokenizer, self.threshold)
 
     @raises(TypeError)
@@ -568,8 +598,8 @@ class DiceJoinInvalidTestCases(unittest.TestCase):
 
 class OverlapCoefficientJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
-        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
-        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello', 'A.int_attr':5}])   
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world', 'B.int_attr':6}])  
         self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
@@ -605,6 +635,18 @@ class OverlapCoefficientJoinInvalidTestCases(unittest.TestCase):
     def test_overlap_coefficient_join_invalid_r_join_attr(self):
         overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id',
                                  'A.attr', 'B.invalid_attr',
+                                 self.tokenizer, self.threshold)
+
+    @raises(AssertionError)                                                     
+    def test_overlap_coefficient_join_numeric_l_join_attr(self):                            
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id', 
+                                 'A.int_attr', 'B.attr',    
+                                 self.tokenizer, self.threshold)                            
+                                                                                
+    @raises(AssertionError)                                                     
+    def test_overlap_coefficient_join_numeric_r_join_attr(self):                            
+        overlap_coefficient_join(self.A, self.B, 'A.id', 'B.id', 
+                                 'A.attr', 'B.int_attr',    
                                  self.tokenizer, self.threshold)
 
     @raises(TypeError)

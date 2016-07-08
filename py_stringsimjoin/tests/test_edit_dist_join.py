@@ -275,8 +275,8 @@ def test_edit_distance_join():
 
 class EditDistJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
-        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
-        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello', 'A.int_attr':5}])   
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world', 'B.int_attr':6}]) 
         self.threshold = 2
         self.comp_op = '<='
 
@@ -309,6 +309,16 @@ class EditDistJoinInvalidTestCases(unittest.TestCase):
     def test_edit_distance_join_invalid_r_join_attr(self):
         edit_distance_join(self.A, self.B, 'A.id', 'B.id',
                            'A.attr', 'B.invalid_attr', self.threshold)
+
+    @raises(AssertionError)                                                     
+    def test_edit_distance_join_numeric_l_join_attr(self):                      
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id',                      
+                           'A.int_attr', 'B.attr', self.threshold)          
+                                                                                
+    @raises(AssertionError)                                                     
+    def test_edit_distance_join_numeric_r_join_attr(self):                      
+        edit_distance_join(self.A, self.B, 'A.id', 'B.id',                      
+                           'A.attr', 'B.int_attr', self.threshold)
 
     @raises(TypeError)
     def test_edit_distance_join_invalid_tokenizer(self):

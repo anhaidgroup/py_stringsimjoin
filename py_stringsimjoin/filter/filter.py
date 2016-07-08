@@ -5,7 +5,7 @@ import pyprind
 from py_stringsimjoin.utils.generic_helper import build_dict_from_table, \
     get_num_processes_to_launch, split_table
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_key_attr, validate_input_table
+    validate_attr_type, validate_key_attr, validate_input_table
 
 
 class Filter(object):
@@ -84,6 +84,12 @@ class Filter(object):
                       'filter attribute', 'left table')
         validate_attr(r_filter_attr, rtable.columns,
                       'filter attribute', 'right table')
+
+        # check if the filter attributes are not of numeric type                      
+        validate_attr_type(l_filter_attr, ltable[l_filter_attr].dtype,          
+                           'filter attribute', 'left table')                    
+        validate_attr_type(r_filter_attr, rtable[r_filter_attr].dtype,          
+                           'filter attribute', 'right table')
 
         # check if the key attributes are unique and do not contain 
         # missing values

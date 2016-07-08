@@ -136,9 +136,9 @@ def apply_matcher(candset,
     validate_attr(r_key_attr, rtable.columns,
                   'key attribute', 'right table')
     validate_attr(l_match_attr, ltable.columns,
-                  'join attribute', 'left table')
+                  'match attribute', 'left table')
     validate_attr(r_match_attr, rtable.columns,
-                  'join attribute', 'right table')
+                  'match attribute', 'right table')
 
     # check if the output attributes exist
     validate_output_attrs(l_out_attrs, ltable.columns,

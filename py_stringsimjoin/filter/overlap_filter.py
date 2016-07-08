@@ -15,8 +15,9 @@ from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.simfunctions import overlap
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_comp_op_for_sim_measure, validate_key_attr, validate_input_table, \
-    validate_threshold, validate_tokenizer, validate_output_attrs
+    validate_attr_type, validate_comp_op_for_sim_measure, validate_key_attr, \
+    validate_input_table, validate_threshold, validate_tokenizer, \
+    validate_output_attrs
 
 
 class OverlapFilter(Filter):
@@ -162,9 +163,15 @@ class OverlapFilter(Filter):
         validate_attr(r_key_attr, rtable.columns,
                       'key attribute', 'right table')
         validate_attr(l_filter_attr, ltable.columns,
-                      'filter attribute', 'left table')
+                      'attribute', 'left table')
         validate_attr(r_filter_attr, rtable.columns,
-                      'filter attribute', 'right table')
+                      'attribute', 'right table')
+
+        # check if the filter attributes are not of numeric type                      
+        validate_attr_type(l_filter_attr, ltable[l_filter_attr].dtype,                  
+                           'attribute', 'left table')                          
+        validate_attr_type(r_filter_attr, rtable[r_filter_attr].dtype,                  
+                           'attribute', 'right table')
 
         # check if the output attributes exist
         validate_output_attrs(l_out_attrs, ltable.columns,

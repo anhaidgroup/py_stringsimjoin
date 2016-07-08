@@ -16,9 +16,9 @@ from py_stringsimjoin.utils.missing_value_handler import \
 from py_stringsimjoin.utils.token_ordering import gen_token_ordering_for_lists, \
     gen_token_ordering_for_tables, order_using_token_ordering
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_key_attr, validate_input_table, validate_threshold, \
-    validate_tokenizer_for_sim_measure, validate_output_attrs, \
-    validate_sim_measure_type
+    validate_attr_type, validate_key_attr, validate_input_table, \
+    validate_threshold, validate_tokenizer_for_sim_measure, \
+    validate_output_attrs, validate_sim_measure_type
 
 
 class PrefixFilter(Filter):
@@ -204,6 +204,12 @@ class PrefixFilter(Filter):
                       'filter attribute', 'left table')
         validate_attr(r_filter_attr, rtable.columns,
                       'filter attribute', 'right table')
+
+        # check if the filter attributes are not of numeric type                      
+        validate_attr_type(l_filter_attr, ltable[l_filter_attr].dtype,          
+                           'filter attribute', 'left table')                    
+        validate_attr_type(r_filter_attr, rtable[r_filter_attr].dtype,          
+                           'filter attribute', 'right table')
 
         # check if the output attributes exist
         validate_output_attrs(l_out_attrs, ltable.columns,

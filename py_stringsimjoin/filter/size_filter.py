@@ -16,9 +16,9 @@ from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.validation import validate_attr, \
-    validate_key_attr, validate_input_table, validate_threshold, \
-    validate_tokenizer_for_sim_measure, validate_output_attrs, \
-    validate_sim_measure_type
+    validate_attr_type, validate_key_attr, validate_input_table, \
+    validate_threshold, validate_tokenizer_for_sim_measure, \
+    validate_output_attrs, validate_sim_measure_type
 
 
 class SizeFilter(Filter):
@@ -181,6 +181,12 @@ class SizeFilter(Filter):
                       'filter attribute', 'left table')
         validate_attr(r_filter_attr, rtable.columns,
                       'filter attribute', 'right table')
+
+        # check if the filter attributes are not of numeric type                      
+        validate_attr_type(l_filter_attr, ltable[l_filter_attr].dtype,          
+                           'filter attribute', 'left table')                    
+        validate_attr_type(r_filter_attr, rtable[r_filter_attr].dtype,          
+                           'filter attribute', 'right table')
 
         # check if the output attributes exist
         validate_output_attrs(l_out_attrs, ltable.columns,

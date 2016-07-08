@@ -25,8 +25,8 @@ class OverlapJoinValidTestCases(unittest.TestCase):
 
 class OverlapJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
-        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
-        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello', 'A.int_attr':5}])   
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world', 'B.int_attr':6}]) 
         self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 0.8
 
@@ -58,6 +58,16 @@ class OverlapJoinInvalidTestCases(unittest.TestCase):
     @raises(AssertionError)
     def test_overlap_join_invalid_r_join_attr(self):
         overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.invalid_attr',
+                     self.tokenizer, self.threshold)
+
+    @raises(AssertionError)                                                     
+    def test_overlap_join_numeric_l_join_attr(self):                            
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.int_attr', 'B.attr',
+                     self.tokenizer, self.threshold)                            
+                                                                                
+    @raises(AssertionError)                                                     
+    def test_overlap_join_numeric_r_join_attr(self):                            
+        overlap_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.int_attr',
                      self.tokenizer, self.threshold)
 
     @raises(TypeError)

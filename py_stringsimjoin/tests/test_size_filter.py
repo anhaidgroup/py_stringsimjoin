@@ -457,8 +457,8 @@ class FilterCandsetTestCases(unittest.TestCase):
 
 class SizeFilterInvalidTestCases(unittest.TestCase):
     def setUp(self):
-        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
-        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello', 'A.int_attr':5}])   
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world', 'B.int_attr':6}])
         self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.sim_measure_type = 'JACCARD'
         self.threshold = 0.8
@@ -504,6 +504,20 @@ class SizeFilterInvalidTestCases(unittest.TestCase):
                                  self.threshold)
         size_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
                                   'A.attr', 'B.invalid_attr')
+
+    @raises(AssertionError)                                                     
+    def test_numeric_l_filter_attr(self):                                       
+        size_filter = SizeFilter(self.tokenizer, self.sim_measure_type,         
+                                 self.threshold)                                
+        size_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',               
+                                  'A.int_attr', 'B.attr')                   
+                                                                                
+    @raises(AssertionError)                                                     
+    def test_numeric_r_filter_attr(self):                                       
+        size_filter = SizeFilter(self.tokenizer, self.sim_measure_type,         
+                                 self.threshold)                                
+        size_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',               
+                                  'A.attr', 'B.int_attr')
 
     @raises(AssertionError)
     def test_invalid_l_out_attr(self):

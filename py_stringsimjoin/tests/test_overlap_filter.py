@@ -398,6 +398,40 @@ class FilterCandsetTestCases(unittest.TestCase):
                                      'l_id', 'r_attr',
                                      'l_attr', 'r_attr')
 
+    @raises(AssertionError)
+    def test_candset_with_numeric_l_filter_attr(self):                          
+        A = pd.DataFrame([{'l_id': 1, 'l_attr':1990}])                           
+        B = pd.DataFrame([{'r_id': 1, 'r_attr':'2001'}])                           
+                                                                                
+        A['tmp_join_key'] = 1                                                   
+        B['tmp_join_key'] = 1                                                   
+        C = pd.merge(A[['l_id', 'tmp_join_key']],                               
+                     B[['r_id', 'tmp_join_key']],                               
+                 on='tmp_join_key').drop('tmp_join_key', 1)                     
+                                                                                
+        qg2_tok = QgramTokenizer(2, return_set=True)                            
+        overlap_filter = OverlapFilter(qg2_tok)                                 
+        overlap_filter.filter_candset(C, 'l_id', 'r_id',                            
+                                      A, B, 'l_id', 'r_id',                         
+                                      'l_attr', 'r_attr')
+
+    @raises(AssertionError)                                                     
+    def test_candset_with_numeric_r_filter_attr(self):                          
+        A = pd.DataFrame([{'l_id': 1, 'l_attr':'1990'}])                          
+        B = pd.DataFrame([{'r_id': 1, 'r_attr':2001}])                          
+                                                                                
+        A['tmp_join_key'] = 1                                                   
+        B['tmp_join_key'] = 1                                                   
+        C = pd.merge(A[['l_id', 'tmp_join_key']],                               
+                     B[['r_id', 'tmp_join_key']],                               
+                 on='tmp_join_key').drop('tmp_join_key', 1)                     
+                                                                                
+        qg2_tok = QgramTokenizer(2, return_set=True)                            
+        overlap_filter = OverlapFilter(qg2_tok)                                 
+        overlap_filter.filter_candset(C, 'l_id', 'r_id',                                        
+                                      A, B, 'l_id', 'r_id',                     
+                                      'l_attr', 'r_attr')  
+     
     @nottest
     def test_filter_candset(self, tokenizer, overlap_size, comp_op,
                             allow_missing, args, expected_pairs):
@@ -421,8 +455,8 @@ class FilterCandsetTestCases(unittest.TestCase):
 
 class OverlapFilterInvalidTestCases(unittest.TestCase):
     def setUp(self):
-        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello'}])
-        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world'}])
+        self.A = pd.DataFrame([{'A.id':1, 'A.attr':'hello', 'A.int_attr':5}])   
+        self.B = pd.DataFrame([{'B.id':1, 'B.attr':'world', 'B.int_attr':6}])
         self.tokenizer = DelimiterTokenizer(delim_set=[' '], return_set=True)
         self.threshold = 1
 
@@ -461,6 +495,18 @@ class OverlapFilterInvalidTestCases(unittest.TestCase):
         overlap_filter = OverlapFilter(self.tokenizer, self.threshold)
         overlap_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',
                                      'A.attr', 'B.invalid_attr')
+
+    @raises(AssertionError)                                                     
+    def test_numeric_l_filter_attr(self):                                       
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)          
+        overlap_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',            
+                                     'A.int_attr', 'B.attr')                
+                                                                                
+    @raises(AssertionError)                                                     
+    def test_numeric_r_filter_attr(self):                                       
+        overlap_filter = OverlapFilter(self.tokenizer, self.threshold)          
+        overlap_filter.filter_tables(self.A, self.B, 'A.id', 'B.id',            
+                                     'A.attr', 'B.int_attr')
 
     @raises(AssertionError)
     def test_invalid_l_out_attr(self):
