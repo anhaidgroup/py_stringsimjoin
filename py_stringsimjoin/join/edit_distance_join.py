@@ -278,12 +278,15 @@ def _edit_distance_join_split(ltable_list, rtable_list,
         r_ordered_tokens = order_using_token_ordering(
                 tokenizer.tokenize(r_string), token_ordering)
 
+        # obtain candidates by applying prefix filter. 
         candidates = prefix_filter.find_candidates(r_ordered_tokens,
                                                    prefix_index)
 
         for cand in candidates:
             if r_len - threshold <= l_join_attr_list[cand] <= r_len + threshold:
                 l_row = ltable_list[cand]
+
+                # compute the actual edit distance                           
                 edit_dist = sim_fn(l_row[l_join_attr_index], r_string)
 
                 if comp_fn(edit_dist, threshold):

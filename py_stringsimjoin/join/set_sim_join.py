@@ -68,6 +68,7 @@ def set_sim_join(ltable, rtable,
     for r_row in rtable:
         r_string = r_row[r_join_attr_index]
 
+        # order the tokens using the token ordering.
         r_ordered_tokens = order_using_token_ordering(
                 tokenizer.tokenize(r_string), token_ordering)
 
@@ -93,14 +94,18 @@ def set_sim_join(ltable, rtable,
                     output_row.append(1.0)
                 output_rows.append(output_row)
             continue
-            
+
+        # obtain candidates by applying position filter.            
         candidate_overlap = pos_filter.find_candidates(r_ordered_tokens,
                                                        position_index)
 
         for cand, overlap in iteritems(candidate_overlap):
             if overlap > 0:
                 l_ordered_tokens = cached_l_tokens[cand]
+
+                # compute the actual similarity score
                 sim_score = sim_fn(l_ordered_tokens, r_ordered_tokens)
+
                 if comp_fn(sim_score, threshold):
                     if has_output_attributes:
                         output_row = get_output_row_from_tables(

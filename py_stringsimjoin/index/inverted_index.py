@@ -2,17 +2,43 @@ from py_stringsimjoin.index.index import Index
 
 
 class InvertedIndex(Index):
+    """Builds an inverted index on the input column in the input table.                                                                  
+                                                             
+    Inverted index is used by overlap filter and overlap coefficient join.
+                                                                                
+    Args:                                                                       
+        table (list): Input table as list of tuples.
+        index_attr (int): Position of the column in the tuple, on which inverted
+            index has to be built.
+        tokenizer (Tokenizer object): Tokenizer used to tokenize the index_attr.
+        cache_size_flag (boolean): A flag indicating whether size of column
+            needs to be cached in the index.  
+                                                                                
+    Attributes:                                                                 
+        table (list): An attribute to store the input table.                            
+        index_attr (int): An attribute to store the position of the column in
+            the tuple.                                              
+        tokenizer (Tokenizer object): An attribute to store the tokenizer.
+        cache_size_flag (boolean): An attribute to store the value of the flag
+            cache_size_flag.
+        index (dict): A Python dictionary storing the inverted index where the
+            key is the token and value is a list of tuple ids. Currently, we use
+            the index of the tuple in the table as its id.
+    """ 
+
     def __init__(self, table, index_attr, tokenizer, 
                  cache_size_flag=False):
+        
         self.table = table
         self.index_attr = index_attr
         self.tokenizer = tokenizer
+        self.cache_size_flag = cache_size_flag 
         self.index = None
         self.size_cache = None
-        self.cache_size_flag = cache_size_flag
         super(self.__class__, self).__init__()
 
     def build(self, cache_empty_records=True):
+        """Build inverted index."""
         self.index = {}
         self.size_cache = []
         empty_records = []
@@ -38,4 +64,5 @@ class InvertedIndex(Index):
         return {'empty_records': empty_records}
 
     def probe(self, token):
+        """Probe the index using the input token."""
         return self.index.get(token, [])

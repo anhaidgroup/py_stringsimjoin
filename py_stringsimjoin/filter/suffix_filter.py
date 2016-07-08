@@ -108,10 +108,12 @@ class SuffixFilter(Filter):
             else:
                 return (not self.allow_empty)
 
+        # order the tokens using the token ordering
         token_ordering = gen_token_ordering_for_lists([ltokens, rtokens]) 
         ordered_ltokens = order_using_token_ordering(ltokens, token_ordering)
         ordered_rtokens = order_using_token_ordering(rtokens, token_ordering)
 
+        # compute prefix length
         l_prefix_length = get_prefix_length(l_num_tokens,
                                             self.sim_measure_type,
                                             self.threshold,
@@ -133,6 +135,8 @@ class SuffixFilter(Filter):
     def _filter_suffix(self, l_suffix, r_suffix,
                        l_prefix_num_tokens, r_prefix_num_tokens,
                        l_num_tokens, r_num_tokens):
+        # compute the overlap needed between the tokens to satisfy the 
+        # threshold.
         overlap_threshold = get_overlap_threshold(l_num_tokens, r_num_tokens,
                                                   self.sim_measure_type,
                                                   self.threshold,
@@ -142,13 +146,20 @@ class SuffixFilter(Filter):
             r_prefix_num_tokens >= overlap_threshold):
             return False
 
+        # compute the maximum allowed hamming distance between the
+        # suffix tokens in order to satisfy the threshold.
         hamming_dist_max = (l_num_tokens + r_num_tokens - 2 * overlap_threshold)
 
+        # compute lowerbound on the actual hamming distance between the suffix
+        # tokens.
         hamming_dist = self._est_hamming_dist_lower_bound(
                                 l_suffix, r_suffix,
                                 l_num_tokens - l_prefix_num_tokens,
                                 r_num_tokens - r_prefix_num_tokens,
                                 hamming_dist_max, 1)
+        
+        # if the lowerbound on the actual hamming distance is already above the
+        # maximum allowed hamming distance, then we can filter the pair.
         if hamming_dist <= hamming_dist_max:
             return False
         return True
@@ -322,6 +333,7 @@ class SuffixFilter(Filter):
             o_l = 0
             o_r = 1
 
+        # partition the tokens using the probe token.
         (r_l, r_r, flag, diff) = self._partition(
                                   r_suffix, r_mid_token, r_mid, r_mid)
         (l_l, l_r, flag, diff) = self._partition(l_suffix, r_mid_token,
@@ -342,6 +354,7 @@ class SuffixFilter(Filter):
         if hamming_dist > hamming_dist_max:
             return hamming_dist
         else:
+            # compute lower bound on hamming distance in the left partition.
             hamming_dist_l = self._est_hamming_dist_lower_bound(
                              l_l, r_l, l_l_num_tokens, r_l_num_tokens,
                              hamming_dist_max -
@@ -349,7 +362,10 @@ class SuffixFilter(Filter):
                              depth + 1)
             hamming_dist = (hamming_dist_l +
                             abs(l_r_num_tokens - r_r_num_tokens) + diff)
+
             if hamming_dist <= hamming_dist_max:
+                # compute lower bound on hamming distance in the right 
+                # partition.
                 hamming_dist_r = self._est_hamming_dist_lower_bound(
                                  l_r, r_r, l_r_num_tokens, r_r_num_tokens,
                                  hamming_dist_max - hamming_dist_l - diff,
@@ -359,6 +375,7 @@ class SuffixFilter(Filter):
                 return hamming_dist
 
     def _partition(self, tokens, probe_token, left, right):
+        """Partition the tokens using the probe token."""
         right = min(right, len(tokens) - 1)
 
         if right < left:
@@ -383,6 +400,7 @@ class SuffixFilter(Filter):
         return tokens_left, tokens_right, 1, diff
 
     def _binary_search(self, tokens, probe_token, left, right):
+        """Peform binary search to find the position of the probe token."""
         if left == right:
             return left
 

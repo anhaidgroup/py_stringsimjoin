@@ -278,9 +278,11 @@ def _overlap_coefficient_join_split(ltable_list, rtable_list,
                                 r_join_attr_tokens, inverted_index)
 
         for cand, overlap in iteritems(candidate_overlap):
+            # compute the actual similarity score                           
             sim_score = (float(overlap) /
                          float(min(r_num_tokens,
                                    inverted_index.size_cache[cand])))
+
             if comp_fn(sim_score, threshold):
                 if has_output_attributes:
                     output_row = get_output_row_from_tables(
