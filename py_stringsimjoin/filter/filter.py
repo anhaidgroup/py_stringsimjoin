@@ -94,22 +94,6 @@ class Filter(object):
         if candset.empty:
             return candset
 
-        # convert the filter attributes to string type, in case it is 
-        # int or float.
-        revert_l_filter_attr_type = False
-        orig_l_filter_attr_type = ltable[l_filter_attr].dtype
-        if (orig_l_filter_attr_type == pd.np.int64 or
-            orig_l_filter_attr_type == pd.np.float64):
-            ltable[l_filter_attr] = ltable[l_filter_attr].astype(str)
-            revert_l_filter_attr_type = True
-
-        revert_r_filter_attr_type = False
-        orig_r_filter_attr_type = rtable[r_filter_attr].dtype
-        if (orig_r_filter_attr_type == pd.np.int64 or
-            orig_r_filter_attr_type == pd.np.float64):
-            rtable[r_filter_attr] = rtable[r_filter_attr].astype(str)
-            revert_r_filter_attr_type = True
-
         # Do a projection on the input dataframes to keep only required 
         # attributes. Note that this does not create a copy of the dataframes. 
         # It only creates a view on original dataframes.
@@ -141,16 +125,6 @@ class Filter(object):
                                       (show_progress and (job_index==n_jobs-1)))
                                           for job_index in range(n_jobs))
             output_table = pd.concat(results)
-
-        # revert the type of filter attributes to their original type, in case
-        # it was converted to string type.
-        if revert_l_filter_attr_type:
-            ltable[l_filter_attr] = ltable[l_filter_attr].astype(
-                                                        orig_l_filter_attr_type)
-
-        if revert_r_filter_attr_type:
-            rtable[r_filter_attr] = rtable[r_filter_attr].astype(
-                                                        orig_r_filter_attr_type)
 
         return output_table        
 

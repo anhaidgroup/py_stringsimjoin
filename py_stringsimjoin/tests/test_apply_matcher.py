@@ -8,6 +8,7 @@ import pandas as pd
 
 from py_stringsimjoin.matcher.apply_matcher import apply_matcher
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
+from py_stringsimjoin.utils.converter import dataframe_column_to_str
 from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 
@@ -30,6 +31,10 @@ class ApplyMatcherTestCases(unittest.TestCase):
         self.r_key_attr = 'B.ID'
         self.l_join_attr = 'A.name'
         self.r_join_attr = 'B.name'
+
+        # convert zipcode column to string
+        dataframe_column_to_str(self.ltable, 'A.zipcode', inplace=True)              
+        dataframe_column_to_str(self.rtable, 'B.zipcode', inplace=True) 
 
         # copy of tables without removing any rows with missing value.
         # needed to test allow_missing option.

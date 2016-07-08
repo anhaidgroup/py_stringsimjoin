@@ -13,6 +13,7 @@ from py_stringsimjoin.join.dice_join import dice_join
 from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
+from py_stringsimjoin.utils.converter import dataframe_column_to_str
 from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP, \
                                                   remove_redundant_attrs
 from py_stringsimjoin.utils.simfunctions import get_sim_function
@@ -28,7 +29,7 @@ DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
 
 @nottest
-def test_valid_join(scenario, sim_measure_type, args):
+def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
     (rtable_path, r_key_attr, r_join_attr) = scenario[1]
     join_fn = JOIN_FN_MAP[sim_measure_type]
@@ -39,6 +40,9 @@ def test_valid_join(scenario, sim_measure_type, args):
     rtable = pd.read_csv(os.path.join(os.path.dirname(__file__),
                                       rtable_path))
 
+    if convert_to_str:
+        dataframe_column_to_str(ltable, l_join_attr, inplace=True)
+        dataframe_column_to_str(rtable, r_join_attr, inplace=True)
 
     missing_pairs = set()
     # if allow_missing flag is set, compute missing pairs.
@@ -272,7 +276,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_2,
                                                  sim_measure_type,
                                                  (tokenizers['2_GRAM'],
-                                                  0.3))
+                                                  0.3), True)
         test_function.description = 'Test ' + sim_measure_type + \
                                     ' with join attribute of type int.'
         yield test_function,
@@ -286,7 +290,7 @@ def test_set_sim_join():
         test_function = partial(test_valid_join, test_scenario_3,
                                                  sim_measure_type,
                                                  (tokenizers['2_GRAM'],
-                                                  0.3))
+                                                  0.3), True)
         test_function.description = 'Test ' + sim_measure_type + \
                                     ' with join attribute of type float.'
         yield test_function,

@@ -6,6 +6,7 @@ from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.suffix_filter import SuffixFilter
+from py_stringsimjoin.utils.converter import dataframe_column_to_str 
 from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP, \
                                                   remove_redundant_attrs
 from py_stringsimjoin.utils.simfunctions import get_sim_function
@@ -210,6 +211,9 @@ class FilterTablesTestCases(unittest.TestCase):
                           {'r_id': 3, 'r_attr':1886},
                           {'r_id': 4, 'r_attr':2007},
                           {'r_id': 5, 'r_attr':2012}])
+
+        dataframe_column_to_str(A, 'l_attr', inplace=True)                      
+        dataframe_column_to_str(B, 'r_attr', inplace=True)
 
         qg2_tok = QgramTokenizer(2, return_set=True)
         self.test_filter_tables(qg2_tok, 'JACCARD', 0.3, False, False,

@@ -9,6 +9,7 @@ from six import iteritems
 import pandas as pd
 
 from py_stringsimjoin.join.edit_distance_join import edit_distance_join
+from py_stringsimjoin.utils.converter import dataframe_column_to_str            
 from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP, \
                                                   remove_redundant_attrs
 from py_stringsimjoin.utils.simfunctions import get_sim_function
@@ -19,7 +20,8 @@ DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
 
 @nottest
-def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=()):
+def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
+                    convert_to_str=False):
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
     (rtable_path, r_key_attr, r_join_attr) = scenario[1]
 
@@ -28,6 +30,10 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=()):
                                       ltable_path))
     rtable = pd.read_csv(os.path.join(os.path.dirname(__file__),
                                       rtable_path))
+
+    if convert_to_str:                                                          
+        dataframe_column_to_str(ltable, l_join_attr, inplace=True)              
+        dataframe_column_to_str(rtable, r_join_attr, inplace=True) 
 
     missing_pairs = set()
     # if allow_missing flag is set, compute missing pairs.
@@ -243,7 +249,7 @@ def test_edit_distance_join():
 
     # Test with join attribute of type int.
     test_function = partial(test_valid_join, test_scenario_2,
-                            tokenizers['2_GRAM'], 3, '<=')
+                            tokenizers['2_GRAM'], 3, '<=', (), True)
     test_function.description = 'Test ' + sim_measure_type + \
                                 ' with join attribute of type int.'
     yield test_function,
@@ -254,7 +260,7 @@ def test_edit_distance_join():
 
     # Test with join attribute of type float.
     test_function = partial(test_valid_join, test_scenario_3,
-                            tokenizers['2_GRAM'], 3, '<=')
+                            tokenizers['2_GRAM'], 3, '<=', (), True)
     test_function.description = 'Test ' + sim_measure_type + \
                                 ' with join attribute of type float.'
     yield test_function,

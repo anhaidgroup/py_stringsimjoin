@@ -6,6 +6,7 @@ from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
+from py_stringsimjoin.utils.converter import dataframe_column_to_str            
 from py_stringsimjoin.utils.generic_helper import remove_redundant_attrs
 
 
@@ -281,6 +282,10 @@ class FilterCandsetTestCases(unittest.TestCase):
                           {'r_id': 3, 'r_attr':1886},
                           {'r_id': 4, 'r_attr':2007},
                           {'r_id': 5, 'r_attr':2012}])
+
+        dataframe_column_to_str(A, 'l_attr', inplace=True)              
+        dataframe_column_to_str(B, 'r_attr', inplace=True)  
+
         A['tmp_join_key'] = 1
         B['tmp_join_key'] = 1
         C = pd.merge(A[['l_id', 'tmp_join_key']],

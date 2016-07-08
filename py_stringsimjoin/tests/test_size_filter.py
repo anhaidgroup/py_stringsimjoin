@@ -6,6 +6,7 @@ from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
 
 from py_stringsimjoin.filter.size_filter import SizeFilter
+from py_stringsimjoin.utils.converter import dataframe_column_to_str            
 from py_stringsimjoin.utils.generic_helper import remove_redundant_attrs
 
 
@@ -270,6 +271,9 @@ class FilterTablesTestCases(unittest.TestCase):
                           {'r_id': 3, 'r_attr':1886},
                           {'r_id': 4, 'r_attr':2007},
                           {'r_id': 5, 'r_attr':2012}])
+
+        dataframe_column_to_str(A, 'l_attr', inplace=True)                      
+        dataframe_column_to_str(B, 'r_attr', inplace=True) 
 
         qg2_tok = QgramTokenizer(2, return_set=True)
         expected_pairs = set(['1,1', '1,2', '1,3', '1,4', '1,5',
