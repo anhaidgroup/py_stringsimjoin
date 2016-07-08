@@ -19,11 +19,11 @@ Contents:
    :maxdepth: 2
    :caption: API Reference
 
-   join
-   filter
-   matcher
-   profiler
-   utility
+   api/join
+   api/filter
+   api/matcher
+   api/profiler
+   api/utility
 
 Indices and tables
 ==================
