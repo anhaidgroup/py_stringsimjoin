@@ -16,7 +16,9 @@ def dataframe_column_to_str(dataframe, col_name, inplace=False,
     
     Returns:
         A Boolean value when inplace is set to True.
+
         A dataframe when inplace is set to False and return_col is set to False.
+
         A series when inplace is set to False and return_col is set to True. 
     """
 
@@ -67,6 +69,7 @@ def series_to_str(series, inplace=False):
                                                                                 
     Returns:                                                                    
         A Boolean value when inplace is set to True.                            
+
         A series when inplace is set to False.    
     """
    

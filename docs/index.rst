@@ -23,6 +23,7 @@ Contents:
    filter
    matcher
    profiler
+   utility
 
 Indices and tables
 ==================
