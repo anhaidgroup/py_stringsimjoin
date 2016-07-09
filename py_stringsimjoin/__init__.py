@@ -22,5 +22,8 @@ from py_stringsimjoin.matcher.apply_matcher import apply_matcher
 # import profiling methods
 from py_stringsimjoin.profiler.profiler import profile_table_for_join
 
+# import utility methods
+from py_stringsimjoin.utils.converter import dataframe_column_to_str, series_to_str
+
 # import helper functions
 from py_stringsimjoin.utils.generic_helper import get_install_path
