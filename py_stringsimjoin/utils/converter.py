@@ -84,18 +84,18 @@ def series_to_str(series, inplace=False):
     # Currently, we ignore the inplace flag when the series is empty and is of
     # type int or float. In this case, we will always return a copy.                       
     if len(series) == 0:                                                        
-        if col_type == object and inplace:
+        if col_type == pd.np.object and inplace:
             return True
         else:                                                                      
             return series.astype(pd.np.object)    
 
-    if col_type == object:
+    if col_type == pd.np.object:
         # If column is already of type object, do not perform any conversion.
         if inplace:
             return True
         else:
             return series.copy()
-    elif col_type == int:
+    elif pd.np.issubdtype(col_type, pd.np.integer):
         # If the column is of type int, then there are no missing values in the 
         # column and hence we can directly convert it to string using           
         # the astype method.     
@@ -105,7 +105,7 @@ def series_to_str(series, inplace=False):
             return True
         else:
             return col_str
-    elif col_type == float:
+    elif pd.np.issubdtype(col_type, pd.np.float):
         # If the column is of type float, then there are two cases:             
         # (1) column only contains interger values along with NaN.              
         # (2) column actually contains floating point values.                   
