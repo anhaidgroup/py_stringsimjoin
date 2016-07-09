@@ -1,0 +1,1764 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py_stringsimjoin 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="None" href="singlepage.html#document-index"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="singlepage.html#document-index" class="icon icon-home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-installation">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/join">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/filter">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/matcher">Matcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/profiler">Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/utility">Utility Methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="singlepage.html#document-index">py_stringsimjoin</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="singlepage.html#document-index">Docs</a> &raquo;</li>
+      
+    <li>py_stringsimjoin 0.1.0 documentation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="user-manual-for-py-stringsimjoin">
+<h1>User Manual for py_stringsimjoin<a class="headerlink" href="#user-manual-for-py-stringsimjoin" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
+<div class="toctree-wrapper compound" id="getting-started">
+<span id="document-installation"></span><div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>Python 2.7 or Python 3.3+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="platforms">
+<h3>Platforms<a class="headerlink" href="#platforms" title="Permalink to this headline">¶</a></h3>
+<p>py_stringsimjoin has been tested on Linux (Ubuntu with  Kernel Version 3.13.0-40-generic), OS X (Darwin with Kernel Version: 13.4.0), and Windows 8.1.</p>
+</div>
+<div class="section" id="dependencies">
+<h3>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>pandas</li>
+<li>joblib</li>
+<li>py_stringmatching</li>
+<li>pyprind</li>
+<li>six</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The py_stringsimjoin installer will automatically install the above required packages.</p>
+</div>
+<p>There are two ways to install py_stringsimjoin package: using pip or source distribution.</p>
+</div>
+<div class="section" id="installing-using-pip">
+<h3>Installing Using pip<a class="headerlink" href="#installing-using-pip" title="Permalink to this headline">¶</a></h3>
+<p>The easiest way to install the package is to use pip, which will retrieve py_stringsimjoin from PyPI then install it:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install py_stringsimjoin
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-from-source-distribution">
+<h3>Installing from Source Distribution<a class="headerlink" href="#installing-from-source-distribution" title="Permalink to this headline">¶</a></h3>
+<p>Step 1: Download the py_stringsimjoin package from <a class="reference external" href="https://github.com/anhaidgroup/py_stringsimjoin/releases">here</a>.</p>
+<p>Step 2: Unzip the package and execute the following command from the package root:</p>
+<div class="highlight-python"><div class="highlight"><pre>python setup.py install
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The above command will try to install py_stringsimjoin into the defaul Python directory on your machine. If you do not have installation permission for that directory then you can install the package in your home directory as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>python setup.py install --user
+</pre></div>
+</div>
+<p class="last">For more information see the StackOverflow <a class="reference external" href="http://stackoverflow.com/questions/14179941/how-to-install-python-packages-without-root-privileges">link</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="toctree-wrapper compound" id="api-reference">
+<span id="document-api/join"></span><div class="section" id="join">
+<h2>Join<a class="headerlink" href="#join" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<span id="document-api/cosine_join"></span><div class="section" id="cosine-join">
+<h3>Cosine Join<a class="headerlink" href="#cosine-join" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="py_stringsimjoin.join.cosine_join.cosine_join">
+<code class="descclassname">py_stringsimjoin.join.cosine_join.</code><code class="descname">cosine_join</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_join_attr</em>, <em>r_join_attr</em>, <em>tokenizer</em>, <em>threshold</em>, <em>comp_op='&gt;='</em>, <em>allow_empty=True</em>, <em>allow_missing=False</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=True</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/cosine_join.html#cosine_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.cosine_join.cosine_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using a variant of cosine similarity known as Ochiai
+coefficient.</p>
+<p>Finds tuple pairs from left table and right table such that the cosine
+similarity between the join attributes satisfies the condition on input
+threshold. That is, if the comparison operator is &#8216;&gt;=&#8217;, finds tuples pairs
+whose cosine similarity on the join attributes is greater than or equal to
+the input threshold.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This is not the cosine measure that computes the cosine of the angle
+between two given vectors. Rather, it computes a variant of cosine
+measure known as Ochiai coefficient (see the Wikipedia page
+<a class="reference external" href="https://en.wikipedia.org/wiki/Cosine_similarity">Cosine Similarity</a>).
+Specifically, for two sets X and Y, this measure computes:</p>
+<blockquote class="last">
+<div><span class="math">\(cosine(X, Y) = \frac{|X \cap Y|}{\sqrt{|X| \cdot |Y|}}\)</span></div></blockquote>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_join_attr</strong> (<em>string</em>) &#8211; join attribute in left table.</li>
+<li><strong>r_join_attr</strong> (<em>string</em>) &#8211; join attribute in right table.</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used to tokenize join
+attributes.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; cosine similarity threshold to be satisfied.</li>
+<li><strong>comp_op</strong> (<em>string</em>) &#8211; comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;
+and &#8216;=&#8217; (defaults to &#8216;&gt;=&#8217;).</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with empty
+set of tokens in both the join attributes should be included in the
+output (defaults to True).</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to be
+included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to be
+included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to &#8216;r_&#8217;).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named &#8216;_sim_score&#8217; in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
+for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then n_jobs is set to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress should
+be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that satisfy the join
+condition (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span id="document-api/dice_join"></span><div class="section" id="dice-join">
+<h3>Dice Join<a class="headerlink" href="#dice-join" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="py_stringsimjoin.join.dice_join.dice_join">
+<code class="descclassname">py_stringsimjoin.join.dice_join.</code><code class="descname">dice_join</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_join_attr</em>, <em>r_join_attr</em>, <em>tokenizer</em>, <em>threshold</em>, <em>comp_op='&gt;='</em>, <em>allow_empty=True</em>, <em>allow_missing=False</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=True</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/dice_join.html#dice_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.dice_join.dice_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using Dice similarity measure.</p>
+<p>Finds tuple pairs from left table and right table such that the Dice
+similarity between the join attributes satisfies the condition on input
+threshold. That is, if the comparison operator is &#8216;&gt;=&#8217;, finds tuples pairs
+whose Dice similarity on the join attributes is greater than or equal to the
+input threshold.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_join_attr</strong> (<em>string</em>) &#8211; join attribute in left table.</li>
+<li><strong>r_join_attr</strong> (<em>string</em>) &#8211; join attribute in right table.</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used to tokenize join
+attributes.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; Dice similarity threshold to be satisfied.</li>
+<li><strong>comp_op</strong> (<em>string</em>) &#8211; comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;
+and &#8216;=&#8217; (defaults to &#8216;&gt;=&#8217;).</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with empty
+set of tokens in both the join attributes should be included in the
+output (defaults to True).</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to be
+included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to be
+included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to &#8216;r_&#8217;).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named &#8216;_sim_score&#8217; in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
+for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then n_jobs is set to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress should
+be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that satisfy the join
+condition (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span id="document-api/edit_distance_join"></span><div class="section" id="edit-distance-join">
+<h3>Edit Distance Join<a class="headerlink" href="#edit-distance-join" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="py_stringsimjoin.join.edit_distance_join.edit_distance_join">
+<code class="descclassname">py_stringsimjoin.join.edit_distance_join.</code><code class="descname">edit_distance_join</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_join_attr</em>, <em>r_join_attr</em>, <em>threshold</em>, <em>comp_op='&lt;='</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=True</em>, <em>n_jobs=1</em>, <em>show_progress=True</em>, <em>tokenizer=2_gram_tokenizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/edit_distance_join.html#edit_distance_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.edit_distance_join.edit_distance_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using edit distance measure.</p>
+<p>Finds tuple pairs from left table and right table such that the edit
+distance between the join attributes satisfies the condition on input
+threshold. That is, if the comparison operator is &#8216;&lt;=&#8217;, finds tuples pairs
+whose edit distance on the join attributes is less than or equal to the
+input threshold.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently, this method only computes an approximate join result. This is
+because, to perform the join we transform a edit distance measure
+between strings into an overlap measure between qgrams of the strings.
+Hence, we need atleast one qgram to be in common between two input
+strings, to appear in the join output. For smaller strings, where all
+qgrams of the strings differ, we cannot process them.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_join_attr</strong> (<em>string</em>) &#8211; join attribute in left table.</li>
+<li><strong>r_join_attr</strong> (<em>string</em>) &#8211; join attribute in right table.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; edit distance threshold to be satisfied.</li>
+<li><strong>comp_op</strong> (<em>string</em>) &#8211; comparison operator. Supported values are &#8216;&lt;=&#8217;, &#8216;&lt;&#8217;
+and &#8216;=&#8217; (defaults to &#8216;&lt;=&#8217;).</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to be
+included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to be
+included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to &#8216;r_&#8217;).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether the edit distance
+score should be included in the output table (defaults to True).
+Setting this flag to True will add a column named &#8216;_sim_score&#8217; in
+the output table. This column will contain the edit distance scores
+for the tuple pairs in the output.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
+for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then n_jobs is set to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress should
+be displayed to the user (defaults to True).</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used to tokenize the join
+attributes during filtering, when edit distance measure is
+transformed into an overlap measure. This must be a q-gram tokenizer
+(defaults to 2-gram tokenizer).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that satisfy the join
+condition (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span id="document-api/jaccard_join"></span><div class="section" id="jaccard-join">
+<h3>Jaccard Join<a class="headerlink" href="#jaccard-join" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="py_stringsimjoin.join.jaccard_join.jaccard_join">
+<code class="descclassname">py_stringsimjoin.join.jaccard_join.</code><code class="descname">jaccard_join</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_join_attr</em>, <em>r_join_attr</em>, <em>tokenizer</em>, <em>threshold</em>, <em>comp_op='&gt;='</em>, <em>allow_empty=True</em>, <em>allow_missing=False</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=True</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/jaccard_join.html#jaccard_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.jaccard_join.jaccard_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using Jaccard similarity measure.</p>
+<p>Finds tuple pairs from left table and right table such that the Jaccard
+similarity between the join attributes satisfies the condition on input
+threshold. That is, if the comparison operator is &#8216;&gt;=&#8217;, finds tuples pairs
+whose Jaccard similarity on the join attributes is greater than or equal to
+the input threshold.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_join_attr</strong> (<em>string</em>) &#8211; join attribute in left table.</li>
+<li><strong>r_join_attr</strong> (<em>string</em>) &#8211; join attribute in right table.</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used to tokenize join
+attributes.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; Jaccard similarity threshold to be satisfied.</li>
+<li><strong>comp_op</strong> (<em>string</em>) &#8211; comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;
+and &#8216;=&#8217; (defaults to &#8216;&gt;=&#8217;).</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with empty
+set of tokens in both the join attributes should be included in the
+output (defaults to True).</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to be
+included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to be
+included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to &#8216;r_&#8217;).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named &#8216;_sim_score&#8217; in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
+for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then n_jobs is set to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress should
+be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that satisfy the join
+condition (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span id="document-api/overlap_join"></span><div class="section" id="overlap-join">
+<h3>Overlap Join<a class="headerlink" href="#overlap-join" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="py_stringsimjoin.join.overlap_join.overlap_join">
+<code class="descclassname">py_stringsimjoin.join.overlap_join.</code><code class="descname">overlap_join</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_join_attr</em>, <em>r_join_attr</em>, <em>tokenizer</em>, <em>threshold</em>, <em>comp_op='&gt;='</em>, <em>allow_missing=False</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=True</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/overlap_join.html#overlap_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.overlap_join.overlap_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using overlap measure.</p>
+<p>Finds tuple pairs from left table and right table such that the overlap
+between the join attributes satisfies the condition on input threshold. That
+is, if the comparison operator is &#8216;&gt;=&#8217;, finds tuples pairs whose overlap on
+the join attributes is greater than or equal to the input threshold.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_join_attr</strong> (<em>string</em>) &#8211; join attribute in left table.</li>
+<li><strong>r_join_attr</strong> (<em>string</em>) &#8211; join attribute in right table.</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used to tokenize join
+attributes.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; overlap threshold to be satisfied.</li>
+<li><strong>comp_op</strong> (<em>string</em>) &#8211; comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;
+and &#8216;=&#8217; (defaults to &#8216;&gt;=&#8217;).</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to be
+included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to be
+included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to &#8216;r_&#8217;).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named &#8216;_sim_score&#8217; in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
+for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then n_jobs is set to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress should
+be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that satisfy the join
+condition (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span id="document-api/overlap_coefficient_join"></span><div class="section" id="overlap-coefficient-join">
+<h3>Overlap Coefficient Join<a class="headerlink" href="#overlap-coefficient-join" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="py_stringsimjoin.join.overlap_coefficient_join.overlap_coefficient_join">
+<code class="descclassname">py_stringsimjoin.join.overlap_coefficient_join.</code><code class="descname">overlap_coefficient_join</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_join_attr</em>, <em>r_join_attr</em>, <em>tokenizer</em>, <em>threshold</em>, <em>comp_op='&gt;='</em>, <em>allow_empty=True</em>, <em>allow_missing=False</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=True</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/overlap_coefficient_join.html#overlap_coefficient_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.overlap_coefficient_join.overlap_coefficient_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using overlap coefficient.</p>
+<p>Finds tuple pairs from left table and right table such that the overlap
+coefficient between the join attributes satisfies the condition on input
+threshold. That is, if the comparison operator is &#8216;&gt;=&#8217;, finds tuples pairs
+whose overlap coefficient on the join attributes is greater than or equal
+to the input threshold.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_join_attr</strong> (<em>string</em>) &#8211; join attribute in left table.</li>
+<li><strong>r_join_attr</strong> (<em>string</em>) &#8211; join attribute in right table.</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used to tokenize join
+attributes.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; overlap coefficient threshold to be satisfied.</li>
+<li><strong>comp_op</strong> (<em>string</em>) &#8211; comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;
+and &#8216;=&#8217; (defaults to &#8216;&gt;=&#8217;).</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with empty
+set of tokens in both the join attributes should be included in the
+output (defaults to True).</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to be
+included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to be
+included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to &#8216;r_&#8217;).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named &#8216;_sim_score&#8217; in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
+for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then n_jobs is set to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress should
+be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that satisfy the join
+condition (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+</div>
+<span id="document-api/filter"></span><div class="section" id="filters">
+<h2>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<span id="document-api/overlap_filter"></span><div class="section" id="module-py_stringsimjoin.filter.overlap_filter">
+<span id="overlap-filter"></span><h3>Overlap Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.overlap_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter">
+<em class="property">class </em><code class="descclassname">py_stringsimjoin.filter.overlap_filter.</code><code class="descname">OverlapFilter</code><span class="sig-paren">(</span><em>tokenizer</em>, <em>overlap_size=1</em>, <em>comp_op='&gt;='</em>, <em>allow_missing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using overlap filtering
+technique.</p>
+<p>A string pair is allowed by overlap filter only if the number of common
+tokens in the strings satisfy the condition on overlap size threshold. That
+is, if the comparison operator is &#8216;&gt;=&#8217;, a string pair is allowed if the
+number of common tokens is greater than or equal to the overlap size
+threshold.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used.</li>
+<li><strong>overlap_size</strong> (<em>int</em>) &#8211; overlap threshold to be used by the filter.</li>
+<li><strong>comp_op</strong> (<em>string</em>) &#8211; Comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;
+and &#8216;=&#8217; (defaults to &#8216;&gt;=&#8217;).</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer">
+<code class="descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Tokenizer object</em></p>
+<p>An attribute to store the tokenizer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.overlap_size">
+<code class="descname">overlap_size</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.overlap_size" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em></p>
+<p>An attribute to store the overlap threshold value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.comp_op">
+<code class="descname">comp_op</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.comp_op" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>string</em></p>
+<p>An attribute to store the comparison operator.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.allow_missing">
+<code class="descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>boolean</em></p>
+<p>An attribute to store the value of the flag
+allow_missing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_candset">
+<code class="descname">filter_candset</code><span class="sig-paren">(</span><em>candset</em>, <em>candset_l_key_attr</em>, <em>candset_r_key_attr</em>, <em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>candset</strong> (<em>dataframe</em>) &#8211; input candidate set.</li>
+<li><strong>candset_l_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in left table.</li>
+<li><strong>candset_r_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in right table.</li>
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs from the candidate set that
+survive the filter (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_pair">
+<code class="descname">filter_pair</code><span class="sig-paren">(</span><em>lstring</em>, <em>rstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the overlap filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lstring,rstring</strong> (<em>string</em>) &#8211; input strings</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A flag indicating whether the string pair is dropped (boolean).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_tables">
+<code class="descname">filter_tables</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=False</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+overlap filtering technique.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to
+be included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to
+be included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to &#8216;r_&#8217;).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether the overlap score
+should be included in the output table (defaults to True).
+Setting this flag to True will add a column named &#8216;_sim_score&#8217;
+in the output table. This column will contain the overlap scores
+for the tuple pairs in the output.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that survive the filter
+(dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span id="document-api/size_filter"></span><div class="section" id="module-py_stringsimjoin.filter.size_filter">
+<span id="size-filter"></span><h3>Size Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.size_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter">
+<em class="property">class </em><code class="descclassname">py_stringsimjoin.filter.size_filter.</code><code class="descname">SizeFilter</code><span class="sig-paren">(</span><em>tokenizer</em>, <em>sim_measure_type</em>, <em>threshold</em>, <em>allow_empty=True</em>, <em>allow_missing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/size_filter.html#SizeFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using size filtering technique.</p>
+<p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
+filter finds candidate string pairs that may have similarity score greater
+than or equal to the input threshold. Where as for distance measure such as
+edit distance, the filter finds candidate string pairs that may have
+distance score less than or equal to the threshold.</p>
+<p>To know about size filtering, refer the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">string matching chapter</a>
+of the &#8220;Principles of Data Integration&#8221; book.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used.</li>
+<li><strong>sim_measure_type</strong> (<em>string</em>) &#8211; similarity measure type. Supported types are
+&#8216;JACCARD&#8217;, &#8216;COSINE&#8217;, &#8216;DICE&#8217;, &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; threshold to be used by the filter.</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs in which both
+strings are tokenized into an empty set of tokens should
+survive the filter (defaults to True). This flag is not valid for
+measures such as &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer">
+<code class="descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Tokenizer object</em></p>
+<p>An attribute to store the tokenizer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type">
+<code class="descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>string</em></p>
+<p>An attribute to store the similarity measure
+type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.threshold">
+<code class="descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>An attribute to store the threshold value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty">
+<code class="descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>boolean</em></p>
+<p>An attribute to store the value of the flag
+allow_empty.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing">
+<code class="descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>boolean</em></p>
+<p>An attribute to store the value of the flag
+allow_missing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_candset">
+<code class="descname">filter_candset</code><span class="sig-paren">(</span><em>candset</em>, <em>candset_l_key_attr</em>, <em>candset_r_key_attr</em>, <em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>candset</strong> (<em>dataframe</em>) &#8211; input candidate set.</li>
+<li><strong>candset_l_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in left table.</li>
+<li><strong>candset_r_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in right table.</li>
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs from the candidate set that
+survive the filter (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_pair">
+<code class="descname">filter_pair</code><span class="sig-paren">(</span><em>lstring</em>, <em>rstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/size_filter.html#SizeFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the size filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lstring,rstring</strong> (<em>string</em>) &#8211; input strings</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A flag indicating whether the string pair is dropped (boolean).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_tables">
+<code class="descname">filter_tables</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/size_filter.html#SizeFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+size filtering technique.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to
+be included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to
+be included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to &#8216;r_&#8217;).</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that survive the filter
+(dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span id="document-api/prefix_filter"></span><div class="section" id="module-py_stringsimjoin.filter.prefix_filter">
+<span id="prefix-filter"></span><h3>Prefix Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.prefix_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter">
+<em class="property">class </em><code class="descclassname">py_stringsimjoin.filter.prefix_filter.</code><code class="descname">PrefixFilter</code><span class="sig-paren">(</span><em>tokenizer</em>, <em>sim_measure_type</em>, <em>threshold</em>, <em>allow_empty=True</em>, <em>allow_missing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/prefix_filter.html#PrefixFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using prefix filtering
+technique.</p>
+<p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
+filter finds candidate string pairs that may have similarity score greater
+than or equal to the input threshold. Where as for distance measure such as
+edit distance, the filter finds candidate string pairs that may have
+distance score less than or equal to the threshold.</p>
+<p>To know about prefix filtering, refer the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">string matching chapter</a>
+of the &#8220;Principles of Data Integration&#8221; book.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used.</li>
+<li><strong>sim_measure_type</strong> (<em>string</em>) &#8211; similarity measure type. Supported types are
+&#8216;JACCARD&#8217;, &#8216;COSINE&#8217;, &#8216;DICE&#8217;, &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; threshold to be used by the filter.</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs in which both
+strings are tokenized into an empty set of tokens should
+survive the filter (defaults to True). This flag is not valid for
+measures such as &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.tokenizer">
+<code class="descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Tokenizer object</em></p>
+<p>An attribute to store the tokenizer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.sim_measure_type">
+<code class="descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>string</em></p>
+<p>An attribute to store the similarity measure
+type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.threshold">
+<code class="descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>An attribute to store the threshold value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_empty">
+<code class="descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>boolean</em></p>
+<p>An attribute to store the value of the flag
+allow_empty.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_missing">
+<code class="descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>boolean</em></p>
+<p>An attribute to store the value of the flag
+allow_missing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_candset">
+<code class="descname">filter_candset</code><span class="sig-paren">(</span><em>candset</em>, <em>candset_l_key_attr</em>, <em>candset_r_key_attr</em>, <em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>candset</strong> (<em>dataframe</em>) &#8211; input candidate set.</li>
+<li><strong>candset_l_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in left table.</li>
+<li><strong>candset_r_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in right table.</li>
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs from the candidate set that
+survive the filter (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_pair">
+<code class="descname">filter_pair</code><span class="sig-paren">(</span><em>lstring</em>, <em>rstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/prefix_filter.html#PrefixFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the prefix filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lstring,rstring</strong> (<em>string</em>) &#8211; input strings</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A flag indicating whether the string pair is dropped (boolean).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_tables">
+<code class="descname">filter_tables</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/prefix_filter.html#PrefixFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+prefix filtering technique.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to
+be included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to
+be included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to &#8216;r_&#8217;).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether the overlap score
+should be included in the output table (defaults to True).
+Setting this flag to True will add a column named &#8216;_sim_score&#8217;
+in the output table. This column will contain the overlap scores
+for the tuple pairs in the output.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that survive the filter
+(dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span id="document-api/position_filter"></span><div class="section" id="module-py_stringsimjoin.filter.position_filter">
+<span id="position-filter"></span><h3>Position Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.position_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter">
+<em class="property">class </em><code class="descclassname">py_stringsimjoin.filter.position_filter.</code><code class="descname">PositionFilter</code><span class="sig-paren">(</span><em>tokenizer</em>, <em>sim_measure_type</em>, <em>threshold</em>, <em>allow_empty=True</em>, <em>allow_missing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/position_filter.html#PositionFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using position filtering
+technique.</p>
+<p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
+filter finds candidate string pairs that may have similarity score greater
+than or equal to the input threshold. Where as for distance measure such as
+edit distance, the filter finds candidate string pairs that may have
+distance score less than or equal to the threshold.</p>
+<p>To know about position filtering, refer the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">string matching chapter</a>
+of the &#8220;Principles of Data Integration&#8221; book.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used.</li>
+<li><strong>sim_measure_type</strong> (<em>string</em>) &#8211; similarity measure type. Supported types are
+&#8216;JACCARD&#8217;, &#8216;COSINE&#8217;, &#8216;DICE&#8217;, &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; threshold to be used by the filter.</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs in which both
+strings are tokenized into an empty set of tokens should
+survive the filter (defaults to True). This flag is not valid for
+measures such as &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.tokenizer">
+<code class="descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Tokenizer object</em></p>
+<p>An attribute to store the tokenizer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.sim_measure_type">
+<code class="descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>string</em></p>
+<p>An attribute to store the similarity measure
+type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.threshold">
+<code class="descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>An attribute to store the threshold value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.allow_empty">
+<code class="descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>boolean</em></p>
+<p>An attribute to store the value of the flag
+allow_empty.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.allow_missing">
+<code class="descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>boolean</em></p>
+<p>An attribute to store the value of the flag
+allow_missing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_candset">
+<code class="descname">filter_candset</code><span class="sig-paren">(</span><em>candset</em>, <em>candset_l_key_attr</em>, <em>candset_r_key_attr</em>, <em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>candset</strong> (<em>dataframe</em>) &#8211; input candidate set.</li>
+<li><strong>candset_l_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in left table.</li>
+<li><strong>candset_r_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in right table.</li>
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs from the candidate set that
+survive the filter (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_pair">
+<code class="descname">filter_pair</code><span class="sig-paren">(</span><em>lstring</em>, <em>rstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/position_filter.html#PositionFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the position filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lstring,rstring</strong> (<em>string</em>) &#8211; input strings</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A flag indicating whether the string pair is dropped (boolean).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_tables">
+<code class="descname">filter_tables</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/position_filter.html#PositionFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+position filtering technique.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to
+be included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to
+be included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to &#8216;r_&#8217;).</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that survive the filter
+(dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span id="document-api/suffix_filter"></span><div class="section" id="module-py_stringsimjoin.filter.suffix_filter">
+<span id="suffix-filter"></span><h3>Suffix Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.suffix_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter">
+<em class="property">class </em><code class="descclassname">py_stringsimjoin.filter.suffix_filter.</code><code class="descname">SuffixFilter</code><span class="sig-paren">(</span><em>tokenizer</em>, <em>sim_measure_type</em>, <em>threshold</em>, <em>allow_empty=True</em>, <em>allow_missing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using suffix filtering
+technique.</p>
+<p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
+filter finds candidate string pairs that may have similarity score greater
+than or equal to the input threshold. Where as for distance measure such as
+edit distance, the filter finds candidate string pairs that may have
+distance score less than or equal to the threshold.</p>
+<p>To know about suffix filtering, refer the paper <a class="reference external" href="http://www.cse.unsw.edu.au/~weiw/files/WWW08-PPJoin-Final.pdf">Efficient Similarity Joins
+for Near Duplicate Detection</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used.</li>
+<li><strong>sim_measure_type</strong> (<em>string</em>) &#8211; similarity measure type. Supported types are
+&#8216;JACCARD&#8217;, &#8216;COSINE&#8217;, &#8216;DICE&#8217;, &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; threshold to be used by the filter.</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs in which both
+strings are tokenized into an empty set of tokens should
+survive the filter (defaults to True). This flag is not valid for
+measures such as &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer">
+<code class="descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Tokenizer object</em></p>
+<p>An attribute to store the tokenizer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type">
+<code class="descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>string</em></p>
+<p>An attribute to store the similarity measure
+type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold">
+<code class="descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>An attribute to store the threshold value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty">
+<code class="descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>boolean</em></p>
+<p>An attribute to store the value of the flag
+allow_empty.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing">
+<code class="descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>boolean</em></p>
+<p>An attribute to store the value of the flag
+allow_missing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset">
+<code class="descname">filter_candset</code><span class="sig-paren">(</span><em>candset</em>, <em>candset_l_key_attr</em>, <em>candset_r_key_attr</em>, <em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>candset</strong> (<em>dataframe</em>) &#8211; input candidate set.</li>
+<li><strong>candset_l_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in left table.</li>
+<li><strong>candset_r_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+key in right table.</li>
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs from the candidate set that
+survive the filter (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair">
+<code class="descname">filter_pair</code><span class="sig-paren">(</span><em>lstring</em>, <em>rstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the suffix filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lstring,rstring</strong> (<em>string</em>) &#8211; input strings</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A flag indicating whether the string pair is dropped (boolean).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables">
+<code class="descname">filter_tables</code><span class="sig-paren">(</span><em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_filter_attr</em>, <em>r_filter_attr</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+suffix filtering technique.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+should be applied.</li>
+<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+should be applied.</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to
+be included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to
+be included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to &#8216;r_&#8217;).</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+Thus for n_jobs = -2, all CPUs but one are used. If
+(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
+to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+should be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that survive the filter
+(dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+<span id="document-api/matcher"></span><div class="section" id="matcher">
+<h2>Matcher<a class="headerlink" href="#matcher" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py_stringsimjoin.matcher.apply_matcher.apply_matcher">
+<code class="descclassname">py_stringsimjoin.matcher.apply_matcher.</code><code class="descname">apply_matcher</code><span class="sig-paren">(</span><em>candset</em>, <em>candset_l_key_attr</em>, <em>candset_r_key_attr</em>, <em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_match_attr</em>, <em>r_match_attr</em>, <em>tokenizer</em>, <em>sim_function</em>, <em>threshold</em>, <em>comp_op='&gt;='</em>, <em>allow_missing=False</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=True</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/matcher/apply_matcher.html#apply_matcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.matcher.apply_matcher.apply_matcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find matching string pairs from the candidate set by applying a matcher
+of form (sim_function comp_op threshold).</p>
+<p>Specifically, this method computes the input similarity function on string
+pairs in the candidate set and checks if the score satisfies the input
+threshold (depending on the comparison operator).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>candset</strong> (<em>dataframe</em>) &#8211; input candidate set.</li>
+<li><strong>candset_l_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a key
+in left table.</li>
+<li><strong>candset_r_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a key
+in right table.</li>
+<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
+<li><strong>l_match_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the matcher
+should be applied.</li>
+<li><strong>r_match_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the matcher
+should be applied.</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used to tokenize the
+match attributes. If set to None, the matcher is applied directly
+on the match attributes.</li>
+<li><strong>sim_function</strong> (<em>function</em>) &#8211; matcher function to be applied.</li>
+<li><strong>threshold</strong> (<em>float</em>) &#8211; threshold to be satisfied.</li>
+<li><strong>comp_op</strong> (<em>string</em>) &#8211; comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;, &#8216;
+&lt;=&#8217;, &#8216;&lt;&#8217;, &#8216;=&#8217; and &#8216;!=&#8217; (defaults to &#8216;&gt;=&#8217;).</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with
+missing value in at least one of the match attributes should be
+included in the output (defaults to False).</li>
+<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to be
+included in the output table (defaults to None).</li>
+<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to be
+included in the output table (defaults to None).</li>
+<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to &#8216;l_&#8217;).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to &#8216;r_&#8217;).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named &#8216;_sim_score&#8217; in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to 1). If -1 all CPUs are used. If 1 is given, no
+parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
+for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then n_jobs is set to 1.</li>
+<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress should
+be displayed to the user (defaults to True).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs from the candidate set that
+survive the matcher (dataframe).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span id="document-api/profiler"></span><div class="section" id="profiling">
+<h2>Profiling<a class="headerlink" href="#profiling" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py_stringsimjoin.profiler.profiler.profile_table_for_join">
+<code class="descclassname">py_stringsimjoin.profiler.profiler.</code><code class="descname">profile_table_for_join</code><span class="sig-paren">(</span><em>input_table</em>, <em>profile_attrs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/profiler/profiler.html#profile_table_for_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.profiler.profiler.profile_table_for_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Profiles the attributes in the table for join.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_table</strong> (<em>dataframe</em>) &#8211; input table to profile.</li>
+<li><strong>profile_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the input table to be
+profiled (defaults to None). If not provided, all attributes in the
+input table will be profiled.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A dataframe consisting of profile output. Specifically, the dataframe
+contains three columns,</p>
+<ol class="arabic simple">
+<li>&#8216;Unique values&#8217; column, which shows the number of unique values in
+each attribute,</li>
+<li>&#8216;Missing values&#8217; column, which shows the number of missing values in
+each attribute, and</li>
+<li>&#8216;Comments&#8217; column, which contains comments about each attribute.</li>
+</ol>
+<p>The dataframe is indexed by attribute name.</p>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span id="document-api/utility"></span><div class="section" id="utility-methods">
+<h2>Utility Methods<a class="headerlink" href="#utility-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py_stringsimjoin.utils.converter.dataframe_column_to_str">
+<code class="descclassname">py_stringsimjoin.utils.converter.</code><code class="descname">dataframe_column_to_str</code><span class="sig-paren">(</span><em>dataframe</em>, <em>col_name</em>, <em>inplace=False</em>, <em>return_col=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/utils/converter.html#dataframe_column_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.utils.converter.dataframe_column_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert columun in the dataframe into string type while preserving NaN
+values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataframe</strong> (<em>DataFrame</em>) &#8211; Input pandas dataframe.</li>
+<li><strong>col_name</strong> (<em>str</em>) &#8211; Name of the column in the dataframe to be converted.</li>
+<li><strong>inplace</strong> (<em>boolean</em>) &#8211; A flag indicating whether the input dataframe should
+be modified inplace or in a copy of it.</li>
+<li><strong>return_col</strong> (<em>boolean</em>) &#8211; A flag indicating whether a copy of the converted
+column should be returned. Only one of inplace and return_col can be
+set to True.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A Boolean value when inplace is set to True.</p>
+<p>A dataframe when inplace is set to False and return_col is set to False.</p>
+<p>A series when inplace is set to False and return_col is set to True.</p>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="py_stringsimjoin.utils.converter.series_to_str">
+<code class="descclassname">py_stringsimjoin.utils.converter.</code><code class="descname">series_to_str</code><span class="sig-paren">(</span><em>series</em>, <em>inplace=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/utils/converter.html#series_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.utils.converter.series_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert series into string type while preserving NaN values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>series</strong> (<em>Series</em>) &#8211; Input pandas series.</li>
+<li><strong>inplace</strong> (<em>boolean</em>) &#8211; A flag indicating whether the input series should
+be modified inplace or in a copy of it. This flag is ignored when
+the input series consists of only NaN values or, the series is
+empty (with int or float type). In these two cases, we always return
+a copy irrespective of the inplace flag.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A Boolean value when inplace is set to True.</p>
+<p>A series when inplace is set to False.</p>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Paul Suganthan G. C..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

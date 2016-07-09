@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py_stringsimjoin.join.dice_join &mdash; py_stringsimjoin 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="py_stringsimjoin 0.1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/filter.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utility Methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">py_stringsimjoin</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>py_stringsimjoin.join.dice_join</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for py_stringsimjoin.join.dice_join</h1><div class="highlight"><pre>
+<span class="c"># dice join</span>
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">delayed</span><span class="p">,</span> <span class="n">Parallel</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.join.set_sim_join</span> <span class="kn">import</span> <span class="n">set_sim_join</span>
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.utils.generic_helper</span> <span class="kn">import</span> <span class="n">convert_dataframe_to_array</span><span class="p">,</span> \
+    <span class="n">get_attrs_to_project</span><span class="p">,</span> <span class="n">get_num_processes_to_launch</span><span class="p">,</span> <span class="n">remove_redundant_attrs</span><span class="p">,</span> \
+    <span class="n">split_table</span>
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.utils.missing_value_handler</span> <span class="kn">import</span> \
+    <span class="n">get_pairs_with_missing_value</span>
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.utils.validation</span> <span class="kn">import</span> <span class="n">validate_attr</span><span class="p">,</span> \
+    <span class="n">validate_attr_type</span><span class="p">,</span> <span class="n">validate_comp_op_for_sim_measure</span><span class="p">,</span> <span class="n">validate_key_attr</span><span class="p">,</span> \
+    <span class="n">validate_input_table</span><span class="p">,</span> <span class="n">validate_threshold</span><span class="p">,</span> <span class="n">validate_tokenizer</span><span class="p">,</span> \
+    <span class="n">validate_output_attrs</span>
+
+
+<div class="viewcode-block" id="dice_join"><a class="viewcode-back" href="../../../api/dice_join.html#py_stringsimjoin.join.dice_join.dice_join">[docs]</a><span class="k">def</span> <span class="nf">dice_join</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>
+              <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+              <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>
+              <span class="n">tokenizer</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s">&#39;&gt;=&#39;</span><span class="p">,</span>
+              <span class="n">allow_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_missing</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+              <span class="n">l_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+              <span class="n">l_out_prefix</span><span class="o">=</span><span class="s">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s">&#39;r_&#39;</span><span class="p">,</span>
+              <span class="n">out_sim_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Join two tables using Dice similarity measure.</span>
+
+<span class="sd">    Finds tuple pairs from left table and right table such that the Dice </span>
+<span class="sd">    similarity between the join attributes satisfies the condition on input </span>
+<span class="sd">    threshold. That is, if the comparison operator is &#39;&gt;=&#39;, finds tuples pairs </span>
+<span class="sd">    whose Dice similarity on the join attributes is greater than or equal to the</span>
+<span class="sd">    input threshold.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ltable (dataframe): left input table.</span>
+
+<span class="sd">        rtable (dataframe): right input table.</span>
+
+<span class="sd">        l_key_attr (string): key attribute in left table.</span>
+
+<span class="sd">        r_key_attr (string): key attribute in right table.</span>
+
+<span class="sd">        l_join_attr (string): join attribute in left table.</span>
+
+<span class="sd">        r_join_attr (string): join attribute in right table.</span>
+
+<span class="sd">        tokenizer (Tokenizer object): tokenizer to be used to tokenize join     </span>
+<span class="sd">            attributes.                                                         </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        threshold (float): Dice similarity threshold to be satisfied.        </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        comp_op (string): comparison operator. Supported values are &#39;&gt;=&#39;, &#39;&gt;&#39;   </span>
+<span class="sd">            and &#39;=&#39; (defaults to &#39;&gt;=&#39;).                                         </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        allow_empty (boolean): flag to indicate whether tuple pairs with empty  </span>
+<span class="sd">            set of tokens in both the join attributes should be included in the </span>
+<span class="sd">            output (defaults to True).                                          </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        allow_missing (boolean): flag to indicate whether tuple pairs with      </span>
+<span class="sd">            missing value in at least one of the join attributes should be      </span>
+<span class="sd">            included in the output (defaults to False). If this flag is set to  </span>
+<span class="sd">            True, a tuple in ltable with missing value in the join attribute    </span>
+<span class="sd">            will be matched with every tuple in rtable and vice versa.          </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        l_out_attrs (list): list of attribute names from the left table to be   </span>
+<span class="sd">            included in the output table (defaults to None).                    </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        r_out_attrs (list): list of attribute names from the right table to be  </span>
+<span class="sd">            included in the output table (defaults to None).                    </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        l_out_prefix (string): prefix to be used for the attribute names coming </span>
+<span class="sd">            from the left table, in the output table (defaults to &#39;l\_&#39;).       </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        r_out_prefix (string): prefix to be used for the attribute names coming </span>
+<span class="sd">            from the right table, in the output table (defaults to &#39;r\_&#39;).      </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        out_sim_score (boolean): flag to indicate whether similarity score      </span>
+<span class="sd">            should be included in the output table (defaults to True). Setting  </span>
+<span class="sd">            this flag to True will add a column named &#39;_sim_score&#39; in the       </span>
+<span class="sd">            output table. This column will contain the similarity scores for the</span>
+<span class="sd">            tuple pairs in the output.                                          </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        n_jobs (int): number of parallel jobs to use for the computation        </span>
+<span class="sd">            (defaults to 1). If -1 all CPUs are used. If 1 is given, no         </span>
+<span class="sd">            parallel computing code is used at all, which is useful for         </span>
+<span class="sd">            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus</span>
+<span class="sd">            for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)</span>
+<span class="sd">            becomes less than 1, then n_jobs is set to 1.                       </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        show_progress (boolean): flag to indicate whether task progress should  </span>
+<span class="sd">            be displayed to the user (defaults to True).                        </span>
+<span class="sd">                                                                                </span>
+<span class="sd">    Returns:                                                                    </span>
+<span class="sd">        An output table containing tuple pairs that satisfy the join            </span>
+<span class="sd">        condition (dataframe).  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># check if the input tables are dataframes</span>
+    <span class="n">validate_input_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+    <span class="n">validate_input_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
+
+    <span class="c"># check if the key attributes and join attributes exist</span>
+    <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                  <span class="s">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+    <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                  <span class="s">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
+    <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_join_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                  <span class="s">&#39;join attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+    <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_join_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                  <span class="s">&#39;join attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
+
+    <span class="c"># check if the join attributes are not of numeric type                      </span>
+    <span class="n">validate_attr_type</span><span class="p">(</span><span class="n">l_join_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">[</span><span class="n">l_join_attr</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>                  
+                       <span class="s">&#39;join attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>                          
+    <span class="n">validate_attr_type</span><span class="p">(</span><span class="n">r_join_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">[</span><span class="n">r_join_attr</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>                  
+                       <span class="s">&#39;join attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span> 
+
+    <span class="c"># check if the input tokenizer is valid</span>
+    <span class="n">validate_tokenizer</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">)</span>
+
+    <span class="c"># check if the input threshold is valid</span>
+    <span class="n">validate_threshold</span><span class="p">(</span><span class="n">threshold</span><span class="p">,</span> <span class="s">&#39;DICE&#39;</span><span class="p">)</span>
+
+    <span class="c"># check if the comparison operator is valid</span>
+    <span class="n">validate_comp_op_for_sim_measure</span><span class="p">(</span><span class="n">comp_op</span><span class="p">,</span> <span class="s">&#39;DICE&#39;</span><span class="p">)</span>
+
+    <span class="c"># check if the output attributes exist</span>
+    <span class="n">validate_output_attrs</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                          <span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="c"># check if the key attributes are unique and do not contain missing values</span>
+    <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+    <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
+
+    <span class="c"># set return_set flag of tokenizer to be True, in case it is set to False</span>
+    <span class="n">revert_tokenizer_return_set_flag</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">get_return_set</span><span class="p">():</span>
+        <span class="n">tokenizer</span><span class="o">.</span><span class="n">set_return_set</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">revert_tokenizer_return_set_flag</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="c"># remove redundant attrs from output attrs.</span>
+    <span class="n">l_out_attrs</span> <span class="o">=</span> <span class="n">remove_redundant_attrs</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">l_key_attr</span><span class="p">)</span>
+    <span class="n">r_out_attrs</span> <span class="o">=</span> <span class="n">remove_redundant_attrs</span><span class="p">(</span><span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">)</span>
+
+    <span class="c"># get attributes to project.  </span>
+    <span class="n">l_proj_attrs</span> <span class="o">=</span> <span class="n">get_attrs_to_project</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">l_join_attr</span><span class="p">)</span>
+    <span class="n">r_proj_attrs</span> <span class="o">=</span> <span class="n">get_attrs_to_project</span><span class="p">(</span><span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">)</span>
+
+    <span class="c"># Do a projection on the input dataframes to keep only the required         </span>
+    <span class="c"># attributes. Then, remove rows with missing value in join attribute from   </span>
+    <span class="c"># the input dataframes. Then, convert the resulting dataframes into ndarray.</span>
+    <span class="n">ltable_array</span> <span class="o">=</span> <span class="n">convert_dataframe_to_array</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">l_proj_attrs</span><span class="p">,</span> <span class="n">l_join_attr</span><span class="p">)</span>
+    <span class="n">rtable_array</span> <span class="o">=</span> <span class="n">convert_dataframe_to_array</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="n">r_proj_attrs</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">)</span>
+
+    <span class="c"># computes the actual number of jobs to launch.</span>
+    <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">get_num_processes_to_launch</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">rtable_array</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c"># if n_jobs is 1, do not use any parallel code.</span>
+        <span class="n">output_table</span> <span class="o">=</span> <span class="n">set_sim_join</span><span class="p">(</span><span class="n">ltable_array</span><span class="p">,</span> <span class="n">rtable_array</span><span class="p">,</span>
+                                    <span class="n">l_proj_attrs</span><span class="p">,</span> <span class="n">r_proj_attrs</span><span class="p">,</span>
+                                    <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                                    <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>
+                                    <span class="n">tokenizer</span><span class="p">,</span> <span class="s">&#39;DICE&#39;</span><span class="p">,</span>
+                                    <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="p">,</span> <span class="n">allow_empty</span><span class="p">,</span>
+                                    <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
+                                    <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>
+                                    <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># if n_jobs is above 1, split the right table into n_jobs splits and    </span>
+        <span class="c"># join each right table split with the whole of left table in a separate</span>
+        <span class="c"># process.</span>
+        <span class="n">r_splits</span> <span class="o">=</span> <span class="n">split_table</span><span class="p">(</span><span class="n">rtable_array</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">set_sim_join</span><span class="p">)(</span>
+                                          <span class="n">ltable_array</span><span class="p">,</span> <span class="n">r_splits</span><span class="p">[</span><span class="n">job_index</span><span class="p">],</span>
+                                          <span class="n">l_proj_attrs</span><span class="p">,</span> <span class="n">r_proj_attrs</span><span class="p">,</span>
+                                          <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                                          <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>
+                                          <span class="n">tokenizer</span><span class="p">,</span> <span class="s">&#39;DICE&#39;</span><span class="p">,</span>
+                                          <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="p">,</span> <span class="n">allow_empty</span><span class="p">,</span>
+                                          <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
+                                          <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>
+                                          <span class="n">out_sim_score</span><span class="p">,</span>
+                                      <span class="p">(</span><span class="n">show_progress</span> <span class="ow">and</span> <span class="p">(</span><span class="n">job_index</span><span class="o">==</span><span class="n">n_jobs</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+                                          <span class="k">for</span> <span class="n">job_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">))</span>
+        <span class="n">output_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="c"># If allow_missing flag is set, then compute all pairs with missing value in</span>
+    <span class="c"># at least one of the join attributes and then add it to the output         </span>
+    <span class="c"># obtained from the join. </span>
+    <span class="k">if</span> <span class="n">allow_missing</span><span class="p">:</span>
+        <span class="n">missing_pairs</span> <span class="o">=</span> <span class="n">get_pairs_with_missing_value</span><span class="p">(</span>
+                                            <span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>
+                                            <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                                            <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>
+                                            <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
+                                            <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>
+                                            <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">)</span>
+        <span class="n">output_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">output_table</span><span class="p">,</span> <span class="n">missing_pairs</span><span class="p">])</span>
+
+    <span class="c"># add an id column named &#39;_id&#39; to the output table.</span>
+    <span class="n">output_table</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;_id&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_table</span><span class="p">)))</span>
+
+    <span class="c"># revert the return_set flag of tokenizer, in case it was modified.</span>
+    <span class="k">if</span> <span class="n">revert_tokenizer_return_set_flag</span><span class="p">:</span>
+        <span class="n">tokenizer</span><span class="o">.</span><span class="n">set_return_set</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output_table</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Paul Suganthan G. C..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

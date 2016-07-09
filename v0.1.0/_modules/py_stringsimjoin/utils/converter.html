@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py_stringsimjoin.utils.converter &mdash; py_stringsimjoin 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="py_stringsimjoin 0.1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/filter.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utility Methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">py_stringsimjoin</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>py_stringsimjoin.utils.converter</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for py_stringsimjoin.utils.converter</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<div class="viewcode-block" id="dataframe_column_to_str"><a class="viewcode-back" href="../../../api/utility.html#py_stringsimjoin.utils.converter.dataframe_column_to_str">[docs]</a><span class="k">def</span> <span class="nf">dataframe_column_to_str</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
+                            <span class="n">return_col</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert columun in the dataframe into string type while preserving NaN </span>
+<span class="sd">    values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataframe (DataFrame): Input pandas dataframe.</span>
+<span class="sd">        col_name (str): Name of the column in the dataframe to be converted.</span>
+<span class="sd">        inplace (boolean): A flag indicating whether the input dataframe should </span>
+<span class="sd">            be modified inplace or in a copy of it.</span>
+<span class="sd">        return_col (boolean): A flag indicating whether a copy of the converted</span>
+<span class="sd">            column should be returned. Only one of inplace and return_col can be</span>
+<span class="sd">            set to True.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        A Boolean value when inplace is set to True.</span>
+
+<span class="sd">        A dataframe when inplace is set to False and return_col is set to False.</span>
+
+<span class="sd">        A series when inplace is set to False and return_col is set to True. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;First argument is not of type pandas dataframe&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Column </span><span class="se">\&#39;</span><span class="s">&#39;</span> <span class="o">+</span> <span class="n">col_name</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\&#39;</span><span class="s"> not found in the&#39;</span> <span class="o">+</span> \
+                             <span class="s">&#39; input dataframe&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Parameter </span><span class="se">\&#39;</span><span class="s">inplace</span><span class="se">\&#39;</span><span class="s"> is not of type bool&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">return_col</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>                                           
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Parameter </span><span class="se">\&#39;</span><span class="s">return_col</span><span class="se">\&#39;</span><span class="s"> is not of type bool&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="n">return_col</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Both </span><span class="se">\&#39;</span><span class="s">inplace</span><span class="se">\&#39;</span><span class="s"> and </span><span class="se">\&#39;</span><span class="s">return_col</span><span class="se">\&#39;</span><span class="s"> parameters&#39;</span> <span class="o">+</span>\
+                             <span class="s">&#39;cannot be set to True&#39;</span><span class="p">)</span>
+
+    <span class="n">col_type</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+
+    <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+        <span class="n">num_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">num_rows</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">sum</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]))</span> <span class="o">==</span> <span class="n">num_rows</span><span class="p">):</span>
+            <span class="n">dataframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">series_to_str</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">],</span> <span class="n">inplace</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">return_col</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">series_to_str</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">],</span> <span class="n">inplace</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dataframe_copy</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">series_to_str</span><span class="p">(</span><span class="n">dataframe_copy</span><span class="p">[</span><span class="n">col_name</span><span class="p">],</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataframe_copy</span></div>
+        
+
+<div class="viewcode-block" id="series_to_str"><a class="viewcode-back" href="../../../api/utility.html#py_stringsimjoin.utils.converter.series_to_str">[docs]</a><span class="k">def</span> <span class="nf">series_to_str</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert series into string type while preserving NaN values.                                                                     </span>
+<span class="sd">                                                                                </span>
+<span class="sd">    Args:                                                                       </span>
+<span class="sd">        series (Series): Input pandas series.                                 </span>
+<span class="sd">        inplace (boolean): A flag indicating whether the input series should </span>
+<span class="sd">            be modified inplace or in a copy of it. This flag is ignored when</span>
+<span class="sd">            the input series consists of only NaN values or, the series is </span>
+<span class="sd">            empty (with int or float type). In these two cases, we always return</span>
+<span class="sd">            a copy irrespective of the inplace flag.                        </span>
+<span class="sd">                                                                                </span>
+<span class="sd">    Returns:                                                                    </span>
+<span class="sd">        A Boolean value when inplace is set to True.                            </span>
+
+<span class="sd">        A series when inplace is set to False.    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+   
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>                                 
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;First argument is not of type pandas dataframe&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>                                           
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Parameter </span><span class="se">\&#39;</span><span class="s">inplace</span><span class="se">\&#39;</span><span class="s"> is not of type bool&#39;</span><span class="p">)</span>
+    
+    <span class="n">col_type</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dtype</span>                                                     
+
+    <span class="c"># Currently, we ignore the inplace flag when the series is empty and is of</span>
+    <span class="c"># type int or float. In this case, we will always return a copy.                       </span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">series</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>                                                        
+        <span class="k">if</span> <span class="n">col_type</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">object</span> <span class="ow">and</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>                                                                      
+            <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>    
+
+    <span class="k">if</span> <span class="n">col_type</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">:</span>
+        <span class="c"># If column is already of type object, do not perform any conversion.</span>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">col_type</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+        <span class="c"># If the column is of type int, then there are no missing values in the </span>
+        <span class="c"># column and hence we can directly convert it to string using           </span>
+        <span class="c"># the astype method.     </span>
+        <span class="n">col_str</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="n">series</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">col_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">col_str</span>
+    <span class="k">elif</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">col_type</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">):</span>
+        <span class="c"># If the column is of type float, then there are two cases:             </span>
+        <span class="c"># (1) column only contains interger values along with NaN.              </span>
+        <span class="c"># (2) column actually contains floating point values.                   </span>
+        <span class="c"># For case 1, we preserve the NaN values as such and convert the float  </span>
+        <span class="c"># values to string by first converting them to int and then to string.  </span>
+        <span class="c"># For case 1, we preserve the NaN values as such and convert the float  </span>
+        <span class="c"># values directly to string.   </span>
+
+        <span class="c"># get the column values that are not NaN                                    </span>
+        <span class="n">col_non_nan_values</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+ 
+        <span class="c"># Currently, we ignore the inplace flag when all values in the column</span>
+        <span class="c"># are NaN and will always return a copy of the column cast into </span>
+        <span class="c"># object type.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_non_nan_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+     
+        <span class="c"># find how many of these values are actually integer values cast into   </span>
+        <span class="c"># float.</span>
+        <span class="n">int_values</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">col_non_nan_values</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()))</span>
+
+        <span class="c"># if all these values are interger values, then we handle according     </span>
+        <span class="c"># to case 1, else we proceed by case 2. </span>
+        <span class="k">if</span> <span class="n">int_values</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_non_nan_values</span><span class="p">):</span>                               
+            <span class="n">col_str</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span> <span class="k">if</span>        
+                                            <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>  
+        <span class="k">else</span><span class="p">:</span>                                                                   
+            <span class="n">col_str</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span> <span class="k">if</span>        
+                                            <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="n">series</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">col_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">col_str</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Invalid column type. &#39;</span> <span class="o">+</span> \
+                        <span class="s">&#39;Cannot convert the column to string.&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Paul Suganthan G. C..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
