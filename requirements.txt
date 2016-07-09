@@ -1,3 +1,5 @@
-joblib
-pandas
-pyprind
+pandas>=0.16.0                                               
+six                                                              
+joblib                                                           
+pyprind>=2.9.3                                                 
+py_stringmatching
