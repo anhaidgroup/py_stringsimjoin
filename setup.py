@@ -26,8 +26,8 @@ install_and_import('setuptools')
 
 if __name__ == "__main__":
 
-    # find packages to be included. exclude benchmarks.
-    packages = setuptools.find_packages(exclude=["benchmarks"])
+    # find packages to be included.
+    packages = setuptools.find_packages()
 
     with open('README.rst') as f:
         LONG_DESCRIPTION = f.read()
