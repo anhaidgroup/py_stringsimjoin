@@ -37,11 +37,12 @@ before_install:
 #  - conda update --yes conda
 
 install:
-  - conda install --yes python=$PYTHON_VERSION pandas joblib six nose Cython
-  - pip install pyprind
-  - pip install git+git://github.com/anhaidgroup/py_stringmatching.git
+  - conda install --yes python=$PYTHON_VERSION pandas joblib six nose
+  - pip install pyprind py_stringmatching coveralls
   - python --version
 
 script:
-  - nosetests
+  - coverage run -m nose
 
+after_success:
+  - coveralls

@@ -1,0 +1,10 @@
+[run]
+branch = True
+source = py_stringsimjoin
+include = */py_stringsimjoin/*
+omit =  
+    */tests/*
+    */benchmarks/*
+    *__init__*
+    */python?.?/*
+    */site-packages/nose/*

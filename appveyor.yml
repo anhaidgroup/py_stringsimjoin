@@ -21,8 +21,7 @@ install:
   - python -m pip install --upgrade pip
 
   # Install the build and runtime dependencies of the project.
-  - pip install setuptools pandas six joblib pyprind nose cython
-  - pip install git+git://github.com/anhaidgroup/py_stringmatching.git
+  - pip install setuptools pandas six joblib pyprind py_stringmatching nose
 
 build: false
 
