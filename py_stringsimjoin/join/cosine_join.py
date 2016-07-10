@@ -27,9 +27,9 @@ def cosine_join(ltable, rtable,
 
     Finds tuple pairs from left table and right table such that the cosine 
     similarity between the join attributes satisfies the condition on input 
-    threshold. That is, if the comparison operator is '>=', finds tuples pairs 
-    whose cosine similarity on the join attributes is greater than or equal to 
-    the input threshold.
+    threshold. For example, if the comparison operator is '>=', finds tuples pairs 
+    whose cosine similarity between the strings that are the values of the join attributes is greater than or equal to 
+    the input threshold, as specified in "threshold". 
 
     Note:
         This is not the cosine measure that computes the cosine of the angle 
