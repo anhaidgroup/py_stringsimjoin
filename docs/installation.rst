@@ -8,7 +8,7 @@ Requirements
 
 Platforms
 ------------
-py_stringsimjoin has been tested on Linux (Ubuntu with  Kernel Version 3.13.0-40-generic), OS X (Darwin with Kernel Version: 13.4.0), and Windows 8.1.
+py_stringsimjoin has been tested on Linux (Ubuntu with  Kernel Version 3.13.0-40-generic), OS X (Darwin with Kernel Version 13.4.0), and Windows 8.1.
 
 Dependencies
 ------------
