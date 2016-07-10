@@ -32,10 +32,10 @@ The easiest way to install the package is to use pip, which will retrieve py_str
     
 Installing from Source Distribution
 -------------------------------------
-Step 1: Download the py_stringsimjoin package from `here
+Step 1: Download the source code of the py_stringsimjoin package from `here
 <https://github.com/anhaidgroup/py_stringsimjoin/releases>`_.
 
-Step 2: Unzip the package and execute the following command from the package root::
+Step 2: Unzip or untar the package and execute the following command from the package root::
 
     python setup.py install
     
