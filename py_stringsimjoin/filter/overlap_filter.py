@@ -33,7 +33,7 @@ class OverlapFilter(Filter):
     Args:
         tokenizer (Tokenizer): tokenizer to be used.
         overlap_size (int): overlap threshold to be used by the filter.
-        comp_op (string): Comparison operator. Supported values are '>=', '>' 
+        comp_op (string): comparison operator. Supported values are '>=', '>' 
             and '=' (defaults to '>=').  
         allow_missing (boolean): A flag to indicate whether pairs containing 
             missing value should survive the filter (defaults to False). 
