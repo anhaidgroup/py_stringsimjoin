@@ -86,11 +86,12 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Joins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/filter.html">Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matcher</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profiling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utility Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utilities</a></li>
 </ul>
 
             
@@ -163,25 +164,29 @@
     <span class="sd">&quot;&quot;&quot;Join two tables using a variant of cosine similarity known as Ochiai </span>
 <span class="sd">    coefficient.</span>
 
+<span class="sd">    This is not the cosine measure that computes the cosine of the angle </span>
+<span class="sd">    between two given vectors. Rather, it is a variant of cosine measure known </span>
+<span class="sd">    as Ochiai coefficient (see the Wikipedia page             </span>
+<span class="sd">    `Cosine Similarity &lt;https://en.wikipedia.org/wiki/Cosine_similarity&gt;`_).</span>
+<span class="sd">    Specifically, for two sets X and Y, this measure computes:              </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        :math:`cosine(X, Y) = \\frac{|X \\cap Y|}{\\sqrt{|X| \\cdot |Y|}}`</span>
+
+<span class="sd">    In the case where one of X and Y is an empty set and the other is a </span>
+<span class="sd">    non-empty set, we define their cosine score to be 0. In the case where both </span>
+<span class="sd">    X and Y are empty sets, we define their cosine score to be 1. </span>
+
 <span class="sd">    Finds tuple pairs from left table and right table such that the cosine </span>
 <span class="sd">    similarity between the join attributes satisfies the condition on input </span>
-<span class="sd">    threshold. That is, if the comparison operator is &#39;&gt;=&#39;, finds tuples pairs </span>
-<span class="sd">    whose cosine similarity on the join attributes is greater than or equal to </span>
-<span class="sd">    the input threshold.</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        This is not the cosine measure that computes the cosine of the angle </span>
-<span class="sd">        between two given vectors. Rather, it computes a variant of cosine </span>
-<span class="sd">        measure known as Ochiai coefficient (see the Wikipedia page </span>
-<span class="sd">        `Cosine Similarity &lt;https://en.wikipedia.org/wiki/Cosine_similarity&gt;`_).</span>
-<span class="sd">        Specifically, for two sets X and Y, this measure computes:</span>
-<span class="sd">        </span>
-<span class="sd">            :math:`cosine(X, Y) = \\frac{|X \\cap Y|}{\\sqrt{|X| \\cdot |Y|}}`</span>
+<span class="sd">    threshold. For example, if the comparison operator is &#39;&gt;=&#39;, finds tuple </span>
+<span class="sd">    pairs whose cosine similarity between the strings that are the values of </span>
+<span class="sd">    the join attributes is greater than or equal to the input threshold, as </span>
+<span class="sd">    specified in &quot;threshold&quot;. </span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ltable (dataframe): left input table.</span>
+<span class="sd">        ltable (DataFrame): left input table.</span>
 
-<span class="sd">        rtable (dataframe): right input table.</span>
+<span class="sd">        rtable (DataFrame): right input table.</span>
 
 <span class="sd">        l_key_attr (string): key attribute in left table.</span>
 
@@ -191,7 +196,7 @@
 
 <span class="sd">        r_join_attr (string): join attribute in right table.</span>
 
-<span class="sd">        tokenizer (Tokenizer object): tokenizer to be used to tokenize join     </span>
+<span class="sd">        tokenizer (Tokenizer): tokenizer to be used to tokenize join     </span>
 <span class="sd">            attributes.                                                         </span>
 <span class="sd">                                                                                </span>
 <span class="sd">        threshold (float): cosine similarity threshold to be satisfied.        </span>
@@ -226,20 +231,22 @@
 <span class="sd">            this flag to True will add a column named &#39;_sim_score&#39; in the       </span>
 <span class="sd">            output table. This column will contain the similarity scores for the</span>
 <span class="sd">            tuple pairs in the output.                                          </span>
-<span class="sd">                                                                                </span>
+
 <span class="sd">        n_jobs (int): number of parallel jobs to use for the computation        </span>
-<span class="sd">            (defaults to 1). If -1 all CPUs are used. If 1 is given, no         </span>
-<span class="sd">            parallel computing code is used at all, which is useful for         </span>
-<span class="sd">            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus</span>
-<span class="sd">            for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)</span>
-<span class="sd">            becomes less than 1, then n_jobs is set to 1.                       </span>
+<span class="sd">            (defaults to 1). If -1 is given, all CPUs are used. If 1 is given,  </span>
+<span class="sd">            no parallel computing code is used at all, which is useful for      </span>
+<span class="sd">            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used      </span>
+<span class="sd">            (where n_cpus is the total number of CPUs in the machine). Thus for </span>
+<span class="sd">            n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)    </span>
+<span class="sd">            becomes less than 1, then no parallel computing code will be used   </span>
+<span class="sd">            (i.e., equivalent to the default).                                                                                 </span>
 <span class="sd">                                                                                </span>
 <span class="sd">        show_progress (boolean): flag to indicate whether task progress should  </span>
 <span class="sd">            be displayed to the user (defaults to True).                        </span>
 <span class="sd">                                                                                </span>
 <span class="sd">    Returns:                                                                    </span>
 <span class="sd">        An output table containing tuple pairs that satisfy the join            </span>
-<span class="sd">        condition (dataframe).  </span>
+<span class="sd">        condition (DataFrame).  </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c"># check if the input tables are dataframes</span>

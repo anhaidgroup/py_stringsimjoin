@@ -86,11 +86,12 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Joins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/filter.html">Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matcher</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profiling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utility Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utilities</a></li>
 </ul>
 
             
@@ -143,19 +144,26 @@
     <span class="sd">&quot;&quot;&quot;Convert columun in the dataframe into string type while preserving NaN </span>
 <span class="sd">    values.</span>
 
+<span class="sd">    This method is useful when performing join over numeric columns. Currently, </span>
+<span class="sd">    the join methods expect the join columns to be of string type. Hence, the </span>
+<span class="sd">    numeric columns need to be converted to string type before performing the </span>
+<span class="sd">    join. </span>
+<span class="sd"> </span>
 <span class="sd">    Args:</span>
 <span class="sd">        dataframe (DataFrame): Input pandas dataframe.</span>
-<span class="sd">        col_name (str): Name of the column in the dataframe to be converted.</span>
+<span class="sd">        col_name (string): Name of the column in the dataframe to be converted.</span>
 <span class="sd">        inplace (boolean): A flag indicating whether the input dataframe should </span>
 <span class="sd">            be modified inplace or in a copy of it.</span>
 <span class="sd">        return_col (boolean): A flag indicating whether a copy of the converted</span>
-<span class="sd">            column should be returned. Only one of inplace and return_col can be</span>
-<span class="sd">            set to True.</span>
+<span class="sd">            column should be returned. When this flag is set to True, the method</span>
+<span class="sd">            will not modify the original dataframe and will return a new column</span>
+<span class="sd">            of string type. Only one of inplace and return_col can be set to </span>
+<span class="sd">            True.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        A Boolean value when inplace is set to True.</span>
 
-<span class="sd">        A dataframe when inplace is set to False and return_col is set to False.</span>
+<span class="sd">        A new dataframe when inplace is set to False and return_col is set to False.</span>
 
 <span class="sd">        A series when inplace is set to False and return_col is set to True. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -201,7 +209,7 @@
 <span class="sd">        series (Series): Input pandas series.                                 </span>
 <span class="sd">        inplace (boolean): A flag indicating whether the input series should </span>
 <span class="sd">            be modified inplace or in a copy of it. This flag is ignored when</span>
-<span class="sd">            the input series consists of only NaN values or, the series is </span>
+<span class="sd">            the input series consists of only NaN values or the series is </span>
 <span class="sd">            empty (with int or float type). In these two cases, we always return</span>
 <span class="sd">            a copy irrespective of the inplace flag.                        </span>
 <span class="sd">                                                                                </span>

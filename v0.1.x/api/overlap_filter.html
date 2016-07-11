@@ -88,7 +88,9 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="join.html">Joins</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="filter.html">Filters</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">Overlap Filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="size_filter.html">Size Filter</a></li>
@@ -97,9 +99,8 @@
 <li class="toctree-l2"><a class="reference internal" href="suffix_filter.html">Suffix Filter</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matcher</a></li>
-<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utilities</a></li>
 </ul>
 
             
@@ -153,19 +154,19 @@
 <em class="property">class </em><code class="descclassname">py_stringsimjoin.filter.overlap_filter.</code><code class="descname">OverlapFilter</code><span class="sig-paren">(</span><em>tokenizer</em>, <em>overlap_size=1</em>, <em>comp_op='&gt;='</em>, <em>allow_missing=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings using overlap filtering
 technique.</p>
-<p>A string pair is allowed by overlap filter only if the number of common
-tokens in the strings satisfy the condition on overlap size threshold. That
-is, if the comparison operator is &#8216;&gt;=&#8217;, a string pair is allowed if the
+<p>A string pair is output by overlap filter only if the number of common
+tokens in the strings satisfy the condition on overlap size threshold. For
+example, if the comparison operator is &#8216;&gt;=&#8217;, a string pair is output if the
 number of common tokens is greater than or equal to the overlap size
-threshold.</p>
+threshold, as specified by &#8220;overlap_size&#8221;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used.</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer</em>) &#8211; tokenizer to be used.</li>
 <li><strong>overlap_size</strong> (<em>int</em>) &#8211; overlap threshold to be used by the filter.</li>
-<li><strong>comp_op</strong> (<em>string</em>) &#8211; Comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;
+<li><strong>comp_op</strong> (<em>string</em>) &#8211; comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;
 and &#8216;=&#8217; (defaults to &#8216;&gt;=&#8217;).</li>
 <li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs containing
 missing value should survive the filter (defaults to False).</li>
@@ -177,7 +178,7 @@ missing value should survive the filter (defaults to False).</li>
 <dl class="attribute">
 <dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer">
 <code class="descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Tokenizer object</em></p>
+<dd><p><em>Tokenizer</em></p>
 <p>An attribute to store the tokenizer.</p>
 </dd></dl>
 
@@ -213,13 +214,13 @@ set.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>candset</strong> (<em>dataframe</em>) &#8211; input candidate set.</li>
+<li><strong>candset</strong> (<em>DataFrame</em>) &#8211; input candidate set.</li>
 <li><strong>candset_l_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
 key in left table.</li>
 <li><strong>candset_r_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
 key in right table.</li>
-<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
-<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>ltable</strong> (<em>DataFrame</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>DataFrame</em>) &#8211; right input table.</li>
 <li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
 <li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
 <li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
@@ -227,19 +228,21 @@ should be applied.</li>
 <li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
 should be applied.</li>
 <li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
-(defaults to 1). If -1 all CPUs are used. If 1 is given, no
-parallel computing code is used at all, which is useful for
-debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
-Thus for n_jobs = -2, all CPUs but one are used. If
-(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
-to 1.</li>
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</li>
 <li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
 should be displayed to the user (defaults to True).</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs from the candidate set that
-survive the filter (dataframe).</p>
+survive the filter (DataFrame).</p>
 </td>
 </tr>
 </tbody>
@@ -272,8 +275,8 @@ overlap filtering technique.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
-<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>ltable</strong> (<em>DataFrame</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>DataFrame</em>) &#8211; right input table.</li>
 <li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
 <li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
 <li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
@@ -296,19 +299,21 @@ Setting this flag to True will add a column named &#8216;_sim_score&#8217;
 in the output table. This column will contain the overlap scores
 for the tuple pairs in the output.</li>
 <li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
-(defaults to 1). If -1 all CPUs are used. If 1 is given, no
-parallel computing code is used at all, which is useful for
-debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
-Thus for n_jobs = -2, all CPUs but one are used. If
-(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
-to 1.</li>
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</li>
 <li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
 should be displayed to the user (defaults to True).</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that survive the filter
-(dataframe).</p>
+(DataFrame).</p>
 </td>
 </tr>
 </tbody>

@@ -86,11 +86,12 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Joins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/filter.html">Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matcher</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profiling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utility Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utilities</a></li>
 </ul>
 
             
@@ -162,22 +163,22 @@
     <span class="sd">&quot;&quot;&quot;Finds candidate matching pairs of strings using overlap filtering </span>
 <span class="sd">    technique.</span>
 
-<span class="sd">    A string pair is allowed by overlap filter only if the number of common </span>
-<span class="sd">    tokens in the strings satisfy the condition on overlap size threshold. That </span>
-<span class="sd">    is, if the comparison operator is &#39;&gt;=&#39;, a string pair is allowed if the </span>
+<span class="sd">    A string pair is output by overlap filter only if the number of common </span>
+<span class="sd">    tokens in the strings satisfy the condition on overlap size threshold. For </span>
+<span class="sd">    example, if the comparison operator is &#39;&gt;=&#39;, a string pair is output if the </span>
 <span class="sd">    number of common tokens is greater than or equal to the overlap size </span>
-<span class="sd">    threshold.</span>
+<span class="sd">    threshold, as specified by &quot;overlap_size&quot;.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        tokenizer (Tokenizer object): tokenizer to be used.</span>
+<span class="sd">        tokenizer (Tokenizer): tokenizer to be used.</span>
 <span class="sd">        overlap_size (int): overlap threshold to be used by the filter.</span>
-<span class="sd">        comp_op (string): Comparison operator. Supported values are &#39;&gt;=&#39;, &#39;&gt;&#39; </span>
+<span class="sd">        comp_op (string): comparison operator. Supported values are &#39;&gt;=&#39;, &#39;&gt;&#39; </span>
 <span class="sd">            and &#39;=&#39; (defaults to &#39;&gt;=&#39;).  </span>
 <span class="sd">        allow_missing (boolean): A flag to indicate whether pairs containing </span>
 <span class="sd">            missing value should survive the filter (defaults to False). </span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        tokenizer (Tokenizer object): An attribute to store the tokenizer.</span>
+<span class="sd">        tokenizer (Tokenizer): An attribute to store the tokenizer.</span>
 <span class="sd">        overlap_size (int): An attribute to store the overlap threshold value.</span>
 <span class="sd">        comp_op (string): An attribute to store the comparison operator.</span>
 <span class="sd">        allow_missing (boolean): An attribute to store the value of the flag </span>
@@ -241,9 +242,9 @@
 <span class="sd">        overlap filtering technique.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ltable (dataframe): left input table.</span>
+<span class="sd">            ltable (DataFrame): left input table.</span>
 
-<span class="sd">            rtable (dataframe): right input table.</span>
+<span class="sd">            rtable (DataFrame): right input table.</span>
 
 <span class="sd">            l_key_attr (string): key attribute in left table.</span>
 
@@ -276,19 +277,21 @@
 <span class="sd">                for the tuple pairs in the output. </span>
 
 <span class="sd">            n_jobs (int): number of parallel jobs to use for the computation</span>
-<span class="sd">                (defaults to 1). If -1 all CPUs are used. If 1 is given, no </span>
-<span class="sd">                parallel computing code is used at all, which is useful for </span>
-<span class="sd">                debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. </span>
-<span class="sd">                Thus for n_jobs = -2, all CPUs but one are used. If </span>
-<span class="sd">                (n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set </span>
-<span class="sd">                to 1.</span>
+<span class="sd">                (defaults to 1). If -1 is given, all CPUs are used. If 1 is </span>
+<span class="sd">                given, no parallel computing code is used at all, which is </span>
+<span class="sd">                useful for debugging. For n_jobs below -1, </span>
+<span class="sd">                (n_cpus + 1 + n_jobs) are used (where n_cpus is the total </span>
+<span class="sd">                number of CPUs in the machine). Thus for n_jobs = -2, all CPUs </span>
+<span class="sd">                but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1, </span>
+<span class="sd">                then no parallel computing code will be used (i.e., equivalent </span>
+<span class="sd">                to the default).  </span>
 
 <span class="sd">            show_progress (boolean): flag to indicate whether task progress </span>
 <span class="sd">                should be displayed to the user (defaults to True).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An output table containing tuple pairs that survive the filter </span>
-<span class="sd">            (dataframe).</span>
+<span class="sd">            (DataFrame).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c"># check if the input tables are dataframes</span>

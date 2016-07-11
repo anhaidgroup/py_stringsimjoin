@@ -1,6 +1,6 @@
-====
-Join
-====
+=====
+Joins
+=====
 
 .. toctree::
     :maxdepth: 2

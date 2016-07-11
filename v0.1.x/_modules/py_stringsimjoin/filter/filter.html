@@ -86,11 +86,12 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Joins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/filter.html">Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matcher</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profiling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utility Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utilities</a></li>
 </ul>
 
             
@@ -162,7 +163,7 @@
 <span class="sd">        set.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            candset (dataframe): input candidate set.</span>
+<span class="sd">            candset (DataFrame): input candidate set.</span>
 
 <span class="sd">            candset_l_key_attr (string): attribute in candidate set which is a </span>
 <span class="sd">                key in left table.</span>
@@ -170,9 +171,9 @@
 <span class="sd">            candset_r_key_attr (string): attribute in candidate set which is a </span>
 <span class="sd">                key in right table.</span>
 
-<span class="sd">            ltable (dataframe): left input table.</span>
+<span class="sd">            ltable (DataFrame): left input table.</span>
 
-<span class="sd">            rtable (dataframe): right input table.</span>
+<span class="sd">            rtable (DataFrame): right input table.</span>
 
 <span class="sd">            l_key_attr (string): key attribute in left table.</span>
 
@@ -185,19 +186,21 @@
 <span class="sd">                should be applied.</span>
 
 <span class="sd">            n_jobs (int): number of parallel jobs to use for the computation    </span>
-<span class="sd">                (defaults to 1). If -1 all CPUs are used. If 1 is given, no     </span>
-<span class="sd">                parallel computing code is used at all, which is useful for     </span>
-<span class="sd">                debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. </span>
-<span class="sd">                Thus for n_jobs = -2, all CPUs but one are used. If             </span>
-<span class="sd">                (n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set   </span>
-<span class="sd">                to 1.                                                           </span>
+<span class="sd">                (defaults to 1). If -1 is given, all CPUs are used. If 1 is     </span>
+<span class="sd">                given, no parallel computing code is used at all, which is      </span>
+<span class="sd">                useful for debugging. For n_jobs below -1,                      </span>
+<span class="sd">                (n_cpus + 1 + n_jobs) are used (where n_cpus is the total       </span>
+<span class="sd">                number of CPUs in the machine). Thus for n_jobs = -2, all CPUs  </span>
+<span class="sd">                but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1, </span>
+<span class="sd">                then no parallel computing code will be used (i.e., equivalent  </span>
+<span class="sd">                to the default).</span>
 <span class="sd">                                                                                </span>
 <span class="sd">            show_progress (boolean): flag to indicate whether task progress     </span>
 <span class="sd">                should be displayed to the user (defaults to True). </span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An output table containing tuple pairs from the candidate set that </span>
-<span class="sd">            survive the filter (dataframe).</span>
+<span class="sd">            survive the filter (DataFrame).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c"># check if the input candset is a dataframe</span>

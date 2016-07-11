@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Utility Methods &mdash; py_stringsimjoin 0.1.0 documentation</title>
+  <title>Utilities &mdash; py_stringsimjoin 0.1.0 documentation</title>
   
 
   
@@ -31,7 +31,7 @@
 
   
     <link rel="top" title="py_stringsimjoin 0.1.0 documentation" href="../index.html"/>
-        <link rel="prev" title="Profiling" href="profiler.html"/> 
+        <link rel="prev" title="Matchers" href="matcher.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -86,11 +86,12 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="join.html">Joins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filter.html">Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matcher</a></li>
-<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiling</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Utility Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matchers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Utilities</a></li>
 </ul>
 
             
@@ -121,7 +122,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>Utility Methods</li>
+    <li>Utilities</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -135,30 +136,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="utility-methods">
-<h1>Utility Methods<a class="headerlink" href="#utility-methods" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="utilities">
+<h1>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="py_stringsimjoin.utils.converter.dataframe_column_to_str">
 <code class="descclassname">py_stringsimjoin.utils.converter.</code><code class="descname">dataframe_column_to_str</code><span class="sig-paren">(</span><em>dataframe</em>, <em>col_name</em>, <em>inplace=False</em>, <em>return_col=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/utils/converter.html#dataframe_column_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.utils.converter.dataframe_column_to_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert columun in the dataframe into string type while preserving NaN
 values.</p>
+<p>This method is useful when performing join over numeric columns. Currently,
+the join methods expect the join columns to be of string type. Hence, the
+numeric columns need to be converted to string type before performing the
+join.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>dataframe</strong> (<em>DataFrame</em>) &#8211; Input pandas dataframe.</li>
-<li><strong>col_name</strong> (<em>str</em>) &#8211; Name of the column in the dataframe to be converted.</li>
+<li><strong>col_name</strong> (<em>string</em>) &#8211; Name of the column in the dataframe to be converted.</li>
 <li><strong>inplace</strong> (<em>boolean</em>) &#8211; A flag indicating whether the input dataframe should
 be modified inplace or in a copy of it.</li>
 <li><strong>return_col</strong> (<em>boolean</em>) &#8211; A flag indicating whether a copy of the converted
-column should be returned. Only one of inplace and return_col can be
-set to True.</li>
+column should be returned. When this flag is set to True, the method
+will not modify the original dataframe and will return a new column
+of string type. Only one of inplace and return_col can be set to
+True.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A Boolean value when inplace is set to True.</p>
-<p>A dataframe when inplace is set to False and return_col is set to False.</p>
+<p>A new dataframe when inplace is set to False and return_col is set to False.</p>
 <p>A series when inplace is set to False and return_col is set to True.</p>
 </p>
 </td>
@@ -179,7 +186,7 @@ set to True.</li>
 <li><strong>series</strong> (<em>Series</em>) &#8211; Input pandas series.</li>
 <li><strong>inplace</strong> (<em>boolean</em>) &#8211; A flag indicating whether the input series should
 be modified inplace or in a copy of it. This flag is ignored when
-the input series consists of only NaN values or, the series is
+the input series consists of only NaN values or the series is
 empty (with int or float type). In these two cases, we always return
 a copy irrespective of the inplace flag.</li>
 </ul>
@@ -204,7 +211,7 @@ a copy irrespective of the inplace flag.</li>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="profiler.html" class="btn btn-neutral" title="Profiling" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="matcher.html" class="btn btn-neutral" title="Matchers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

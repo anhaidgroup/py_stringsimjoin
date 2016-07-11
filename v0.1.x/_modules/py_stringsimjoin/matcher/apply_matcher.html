@@ -86,11 +86,12 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Joins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/filter.html">Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matcher</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profiling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utility Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utilities</a></li>
 </ul>
 
             
@@ -177,15 +178,16 @@
                   <span class="n">l_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                   <span class="n">l_out_prefix</span><span class="o">=</span><span class="s">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s">&#39;r_&#39;</span><span class="p">,</span>
                   <span class="n">out_sim_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Find matching string pairs from the candidate set by applying a matcher </span>
-<span class="sd">    of form (sim_function comp_op threshold).</span>
+    <span class="sd">&quot;&quot;&quot;Find matching string pairs from the candidate set (typically produced by</span>
+<span class="sd">    applying a filter to two tables) by applying a matcher of form </span>
+<span class="sd">    (sim_function comp_op threshold).</span>
 
 <span class="sd">    Specifically, this method computes the input similarity function on string </span>
-<span class="sd">    pairs in the candidate set and checks if the score satisfies the input </span>
-<span class="sd">    threshold (depending on the comparison operator).</span>
+<span class="sd">    pairs in the candidate set and checks if the resulting score satisfies the </span>
+<span class="sd">    input threshold (depending on the comparison operator).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        candset (dataframe): input candidate set.</span>
+<span class="sd">        candset (DataFrame): input candidate set.</span>
 
 <span class="sd">        candset_l_key_attr (string): attribute in candidate set which is a key </span>
 <span class="sd">            in left table.</span>
@@ -193,9 +195,9 @@
 <span class="sd">        candset_r_key_attr (string): attribute in candidate set which is a key </span>
 <span class="sd">            in right table.</span>
 
-<span class="sd">        ltable (dataframe): left input table.</span>
+<span class="sd">        ltable (DataFrame): left input table.</span>
 
-<span class="sd">        rtable (dataframe): right input table.</span>
+<span class="sd">        rtable (DataFrame): right input table.</span>
 
 <span class="sd">        l_key_attr (string): key attribute in left table.</span>
 
@@ -207,7 +209,7 @@
 <span class="sd">        r_match_attr (string): attribute in right table on which the matcher</span>
 <span class="sd">            should be applied.</span>
 
-<span class="sd">        tokenizer (Tokenizer object): tokenizer to be used to tokenize the</span>
+<span class="sd">        tokenizer (Tokenizer): tokenizer to be used to tokenize the</span>
 <span class="sd">            match attributes. If set to None, the matcher is applied directly</span>
 <span class="sd">            on the match attributes.</span>
 
@@ -240,19 +242,21 @@
 <span class="sd">            output table. This column will contain the similarity scores for the</span>
 <span class="sd">            tuple pairs in the output. </span>
 
-<span class="sd">        n_jobs (int): number of parallel jobs to use for the computation</span>
-<span class="sd">            (defaults to 1). If -1 all CPUs are used. If 1 is given, no </span>
-<span class="sd">            parallel computing code is used at all, which is useful for </span>
-<span class="sd">            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus</span>
-<span class="sd">            for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)</span>
-<span class="sd">            becomes less than 1, then n_jobs is set to 1.</span>
+<span class="sd">        n_jobs (int): number of parallel jobs to use for the computation        </span>
+<span class="sd">            (defaults to 1). If -1 is given, all CPUs are used. If 1 is given,  </span>
+<span class="sd">            no parallel computing code is used at all, which is useful for      </span>
+<span class="sd">            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used      </span>
+<span class="sd">            (where n_cpus is the total number of CPUs in the machine). Thus for </span>
+<span class="sd">            n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)    </span>
+<span class="sd">            becomes less than 1, then no parallel computing code will be used   </span>
+<span class="sd">            (i.e., equivalent to the default). </span>
 
 <span class="sd">        show_progress (boolean): flag to indicate whether task progress should </span>
 <span class="sd">            be displayed to the user (defaults to True).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        An output table containing tuple pairs from the candidate set that </span>
-<span class="sd">        survive the matcher (dataframe).</span>
+<span class="sd">        survive the matcher (DataFrame).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c"># check if the input candset is a dataframe</span>

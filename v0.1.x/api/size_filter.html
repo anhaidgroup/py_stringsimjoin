@@ -88,7 +88,9 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="join.html">Joins</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="filter.html">Filters</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="overlap_filter.html">Overlap Filter</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">Size Filter</a></li>
@@ -97,9 +99,8 @@
 <li class="toctree-l2"><a class="reference internal" href="suffix_filter.html">Suffix Filter</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matcher</a></li>
-<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utilities</a></li>
 </ul>
 
             
@@ -154,17 +155,17 @@
 <dd><p>Finds candidate matching pairs of strings using size filtering technique.</p>
 <p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
 filter finds candidate string pairs that may have similarity score greater
-than or equal to the input threshold. Where as for distance measure such as
-edit distance, the filter finds candidate string pairs that may have
-distance score less than or equal to the threshold.</p>
-<p>To know about size filtering, refer the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">string matching chapter</a>
+than or equal to the input threshold, as specified in &#8220;threshold&#8221;. For
+distance measures such as edit distance, the filter finds candidate string
+pairs that may have distance score less than or equal to the threshold.</p>
+<p>To know more about size filtering, refer to the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">string matching chapter</a>
 of the &#8220;Principles of Data Integration&#8221; book.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tokenizer</strong> (<em>Tokenizer object</em>) &#8211; tokenizer to be used.</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer</em>) &#8211; tokenizer to be used.</li>
 <li><strong>sim_measure_type</strong> (<em>string</em>) &#8211; similarity measure type. Supported types are
 &#8216;JACCARD&#8217;, &#8216;COSINE&#8217;, &#8216;DICE&#8217;, &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
 <li><strong>threshold</strong> (<em>float</em>) &#8211; threshold to be used by the filter.</li>
@@ -182,7 +183,7 @@ missing value should survive the filter (defaults to False).</li>
 <dl class="attribute">
 <dt id="py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer">
 <code class="descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Tokenizer object</em></p>
+<dd><p><em>Tokenizer</em></p>
 <p>An attribute to store the tokenizer.</p>
 </dd></dl>
 
@@ -227,13 +228,13 @@ set.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>candset</strong> (<em>dataframe</em>) &#8211; input candidate set.</li>
+<li><strong>candset</strong> (<em>DataFrame</em>) &#8211; input candidate set.</li>
 <li><strong>candset_l_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
 key in left table.</li>
 <li><strong>candset_r_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
 key in right table.</li>
-<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
-<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>ltable</strong> (<em>DataFrame</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>DataFrame</em>) &#8211; right input table.</li>
 <li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
 <li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
 <li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
@@ -241,19 +242,21 @@ should be applied.</li>
 <li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
 should be applied.</li>
 <li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
-(defaults to 1). If -1 all CPUs are used. If 1 is given, no
-parallel computing code is used at all, which is useful for
-debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
-Thus for n_jobs = -2, all CPUs but one are used. If
-(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
-to 1.</li>
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</li>
 <li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
 should be displayed to the user (defaults to True).</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs from the candidate set that
-survive the filter (dataframe).</p>
+survive the filter (DataFrame).</p>
 </td>
 </tr>
 </tbody>
@@ -286,8 +289,8 @@ size filtering technique.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ltable</strong> (<em>dataframe</em>) &#8211; left input table.</li>
-<li><strong>rtable</strong> (<em>dataframe</em>) &#8211; right input table.</li>
+<li><strong>ltable</strong> (<em>DataFrame</em>) &#8211; left input table.</li>
+<li><strong>rtable</strong> (<em>DataFrame</em>) &#8211; right input table.</li>
 <li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
 <li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
 <li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
@@ -305,19 +308,21 @@ coming from the left table, in the output table
 coming from the right table, in the output table
 (defaults to &#8216;r_&#8217;).</li>
 <li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
-(defaults to 1). If -1 all CPUs are used. If 1 is given, no
-parallel computing code is used at all, which is useful for
-debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
-Thus for n_jobs = -2, all CPUs but one are used. If
-(n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set
-to 1.</li>
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</li>
 <li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
 should be displayed to the user (defaults to True).</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An output table containing tuple pairs that survive the filter
-(dataframe).</p>
+(DataFrame).</p>
 </td>
 </tr>
 </tbody>

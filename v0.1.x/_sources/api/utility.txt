@@ -1,5 +1,5 @@
-Utility Methods
----------------
+Utilities
+---------
 
 .. autofunction:: py_stringsimjoin.utils.converter.dataframe_column_to_str
 

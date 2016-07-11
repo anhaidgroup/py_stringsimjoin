@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Profiling &mdash; py_stringsimjoin 0.1.0 documentation</title>
+  <title>Profilers &mdash; py_stringsimjoin 0.1.0 documentation</title>
   
 
   
@@ -31,8 +31,8 @@
 
   
     <link rel="top" title="py_stringsimjoin 0.1.0 documentation" href="../index.html"/>
-        <link rel="next" title="Utility Methods" href="utility.html"/>
-        <link rel="prev" title="Matcher" href="matcher.html"/> 
+        <link rel="next" title="Joins" href="join.html"/>
+        <link rel="prev" title="Overview" href="overview.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -87,11 +87,12 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="join.html">Join</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="join.html">Joins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filter.html">Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matcher</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Profiling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utilities</a></li>
 </ul>
 
             
@@ -122,7 +123,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>Profiling</li>
+    <li>Profilers</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -136,18 +137,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="profiling">
-<h1>Profiling<a class="headerlink" href="#profiling" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="profilers">
+<h1>Profilers<a class="headerlink" href="#profilers" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="py_stringsimjoin.profiler.profiler.profile_table_for_join">
 <code class="descclassname">py_stringsimjoin.profiler.profiler.</code><code class="descname">profile_table_for_join</code><span class="sig-paren">(</span><em>input_table</em>, <em>profile_attrs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/profiler/profiler.html#profile_table_for_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.profiler.profiler.profile_table_for_join" title="Permalink to this definition">¶</a></dt>
-<dd><p>Profiles the attributes in the table for join.</p>
+<dd><p>Profiles the attributes in the table to suggest implications for join.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input_table</strong> (<em>dataframe</em>) &#8211; input table to profile.</li>
+<li><strong>input_table</strong> (<em>DataFrame</em>) &#8211; input table to profile.</li>
 <li><strong>profile_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the input table to be
 profiled (defaults to None). If not provided, all attributes in the
 input table will be profiled.</li>
@@ -163,7 +164,8 @@ each attribute,</li>
 each attribute, and</li>
 <li>&#8216;Comments&#8217; column, which contains comments about each attribute.</li>
 </ol>
-<p>The dataframe is indexed by attribute name.</p>
+<p>The output dataframe is indexed by attribute name. So that, the
+statistics for each attribute can be accessed using the attribute name.</p>
 </p>
 </td>
 </tr>
@@ -180,10 +182,10 @@ each attribute, and</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="utility.html" class="btn btn-neutral float-right" title="Utility Methods" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="join.html" class="btn btn-neutral float-right" title="Joins" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="matcher.html" class="btn btn-neutral" title="Matcher" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="overview.html" class="btn btn-neutral" title="Overview" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
