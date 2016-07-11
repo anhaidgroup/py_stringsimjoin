@@ -7,10 +7,10 @@ from py_stringsimjoin.utils.validation import validate_attr, \
 
 
 def profile_table_for_join(input_table, profile_attrs=None):
-    """Profiles the attributes in the table for join.
+    """Profiles the attributes in the table to suggest implications for join.
  
     Args:
-        input_table (dataframe): input table to profile.
+        input_table (DataFrame): input table to profile.
         profile_attrs (list): list of attribute names from the input table to be
             profiled (defaults to None). If not provided, all attributes in the 
             input table will be profiled.
@@ -25,7 +25,8 @@ def profile_table_for_join(input_table, profile_attrs=None):
            each attribute, and 
         3) 'Comments' column, which contains comments about each attribute. 
 
-        The dataframe is indexed by attribute name.
+        The output dataframe is indexed by attribute name. So that, the 
+        statistics for each attribute can be accessed using the attribute name.
     """
 
     # check if the input table is a dataframe

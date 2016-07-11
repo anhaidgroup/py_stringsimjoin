@@ -27,16 +27,17 @@ class SuffixFilter(Filter):
 
     For similarity measures such as cosine, Dice, Jaccard and overlap, the 
     filter finds candidate string pairs that may have similarity score greater 
-    than or equal to the input threshold. Where as for distance measure such as 
-    edit distance, the filter finds candidate string pairs that may have 
-    distance score less than or equal to the threshold.
+    than or equal to the input threshold, as specified in "threshold". For 
+    distance measures such as edit distance, the filter finds candidate string 
+    pairs that may have distance score less than or equal to the threshold.
 
-    To know about suffix filtering, refer the paper `Efficient Similarity Joins 
-    for Near Duplicate Detection 
+    To know more about suffix filtering, refer to the paper 
+    `Efficient Similarity Joins for Near Duplicate Detection 
+    (Chuan Xiao, Wei Wang, Xuemin Lin and Jeffrey Xu Yu), WWW 08
     <http://www.cse.unsw.edu.au/~weiw/files/WWW08-PPJoin-Final.pdf>`_.
 
     Args:
-        tokenizer (Tokenizer object): tokenizer to be used.
+        tokenizer (Tokenizer): tokenizer to be used.
         sim_measure_type (string): similarity measure type. Supported types are 
             'JACCARD', 'COSINE', 'DICE', 'OVERLAP' and 'EDIT_DISTANCE'.
         threshold (float): threshold to be used by the filter.
@@ -48,7 +49,7 @@ class SuffixFilter(Filter):
             missing value should survive the filter (defaults to False).
 
     Attributes:
-        tokenizer (Tokenizer object): An attribute to store the tokenizer.
+        tokenizer (Tokenizer): An attribute to store the tokenizer.
         sim_measure_type (string): An attribute to store the similarity measure 
             type.
         threshold (float): An attribute to store the threshold value.
@@ -174,9 +175,9 @@ class SuffixFilter(Filter):
         suffix filtering technique.
 
         Args:
-            ltable (dataframe): left input table.
+            ltable (DataFrame): left input table.
 
-            rtable (dataframe): right input table.
+            rtable (DataFrame): right input table.
 
             l_key_attr (string): key attribute in left table.
 
@@ -201,21 +202,23 @@ class SuffixFilter(Filter):
             r_out_prefix (string): prefix to be used for the attribute names    
                 coming from the right table, in the output table                
                 (defaults to 'r\_').                                            
-                                                                                
+
             n_jobs (int): number of parallel jobs to use for the computation    
-                (defaults to 1). If -1 all CPUs are used. If 1 is given, no     
-                parallel computing code is used at all, which is useful for     
-                debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
-                Thus for n_jobs = -2, all CPUs but one are used. If             
-                (n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set   
-                to 1.                                                           
+                (defaults to 1). If -1 is given, all CPUs are used. If 1 is     
+                given, no parallel computing code is used at all, which is      
+                useful for debugging. For n_jobs below -1,                      
+                (n_cpus + 1 + n_jobs) are used (where n_cpus is the total       
+                number of CPUs in the machine). Thus for n_jobs = -2, all CPUs  
+                but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1, 
+                then no parallel computing code will be used (i.e., equivalent  
+                to the default).                                                                                
                                                                                 
             show_progress (boolean): flag to indicate whether task progress     
                 should be displayed to the user (defaults to True).             
                                                                                 
         Returns:                                                                
             An output table containing tuple pairs that survive the filter      
-            (dataframe).
+            (DataFrame).
         """
 
         # check if the input tables are dataframes

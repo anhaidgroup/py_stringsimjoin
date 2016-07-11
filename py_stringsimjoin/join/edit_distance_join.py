@@ -37,22 +37,28 @@ def edit_distance_join(ltable, rtable,
 
     Finds tuple pairs from left table and right table such that the edit 
     distance between the join attributes satisfies the condition on input 
-    threshold. That is, if the comparison operator is '<=', finds tuples pairs 
-    whose edit distance on the join attributes is less than or equal to the 
-    input threshold.
+    threshold. For example, if the comparison operator is '<=', finds tuple     
+    pairs whose edit distance between the strings that are the values of    
+    the join attributes is less than or equal to the input threshold, as     
+    specified in "threshold". 
 
     Note:
         Currently, this method only computes an approximate join result. This is
-        because, to perform the join we transform a edit distance measure 
+        because, to perform the join we transform an edit distance measure 
         between strings into an overlap measure between qgrams of the strings. 
-        Hence, we need atleast one qgram to be in common between two input 
+        Hence, we need at least one qgram to be in common between two input 
         strings, to appear in the join output. For smaller strings, where all 
         qgrams of the strings differ, we cannot process them.
+ 
+        This method implements a simplified version of the algorithm proposed in
+        `Ed-Join: An Efficient Algorithm for Similarity Joins With Edit Distance
+        Constraints (Chuan Xiao, Wei Wang and Xuemin Lin), VLDB 08
+        <http://www.vldb.org/pvldb/1/1453957.pdf>`_. 
         
     Args:
-        ltable (dataframe): left input table.
+        ltable (DataFrame): left input table.
 
-        rtable (dataframe): right input table.
+        rtable (DataFrame): right input table.
 
         l_key_attr (string): key attribute in left table.
 
@@ -90,25 +96,27 @@ def edit_distance_join(ltable, rtable,
             Setting this flag to True will add a column named '_sim_score' in 
             the output table. This column will contain the edit distance scores 
             for the tuple pairs in the output.                                          
-                                                                                
+
         n_jobs (int): number of parallel jobs to use for the computation        
-            (defaults to 1). If -1 all CPUs are used. If 1 is given, no         
-            parallel computing code is used at all, which is useful for         
-            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
-            for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
-            becomes less than 1, then n_jobs is set to 1.                       
+            (defaults to 1). If -1 is given, all CPUs are used. If 1 is given,  
+            no parallel computing code is used at all, which is useful for      
+            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used      
+            (where n_cpus is the total number of CPUs in the machine). Thus for 
+            n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)    
+            becomes less than 1, then no parallel computing code will be used   
+            (i.e., equivalent to the default).                                                                                 
                                                                                 
         show_progress (boolean): flag to indicate whether task progress should  
             be displayed to the user (defaults to True).                        
 
-        tokenizer (Tokenizer object): tokenizer to be used to tokenize the join 
+        tokenizer (Tokenizer): tokenizer to be used to tokenize the join 
             attributes during filtering, when edit distance measure is          
             transformed into an overlap measure. This must be a q-gram tokenizer
             (defaults to 2-gram tokenizer).
                                                                                 
     Returns:                                                                    
         An output table containing tuple pairs that satisfy the join            
-        condition (dataframe).  
+        condition (DataFrame).  
     """
 
     # check if the input tables are dataframes

@@ -27,16 +27,16 @@ class PrefixFilter(Filter):
 
     For similarity measures such as cosine, Dice, Jaccard and overlap, the 
     filter finds candidate string pairs that may have similarity score greater 
-    than or equal to the input threshold. Where as for distance measure such as 
-    edit distance, the filter finds candidate string pairs that may have 
-    distance score less than or equal to the threshold.
+    than or equal to the input threshold, as specified in "threshold". For 
+    distance measures such as edit distance, the filter finds candidate string 
+    pairs that may have distance score less than or equal to the threshold.
 
-    To know about prefix filtering, refer the `string matching chapter 
+    To know more about prefix filtering, refer to the `string matching chapter 
     <http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf>`_ 
     of the "Principles of Data Integration" book.
 
     Args:
-        tokenizer (Tokenizer object): tokenizer to be used.
+        tokenizer (Tokenizer): tokenizer to be used.
         sim_measure_type (string): similarity measure type. Supported types are 
             'JACCARD', 'COSINE', 'DICE', 'OVERLAP' and 'EDIT_DISTANCE'.
         threshold (float): threshold to be used by the filter.
@@ -48,7 +48,7 @@ class PrefixFilter(Filter):
             missing value should survive the filter (defaults to False).
 
     Attributes:
-        tokenizer (Tokenizer object): An attribute to store the tokenizer.
+        tokenizer (Tokenizer): An attribute to store the tokenizer.
         sim_measure_type (string): An attribute to store the similarity measure 
             type.
         threshold (float): An attribute to store the threshold value.
@@ -141,9 +141,9 @@ class PrefixFilter(Filter):
         prefix filtering technique.
 
         Args:
-            ltable (dataframe): left input table.
+            ltable (DataFrame): left input table.
 
-            rtable (dataframe): right input table.
+            rtable (DataFrame): right input table.
 
             l_key_attr (string): key attribute in left table.
 
@@ -174,21 +174,23 @@ class PrefixFilter(Filter):
                 Setting this flag to True will add a column named '_sim_score'  
                 in the output table. This column will contain the overlap scores
                 for the tuple pairs in the output.                              
-                                                                                
+
             n_jobs (int): number of parallel jobs to use for the computation    
-                (defaults to 1). If -1 all CPUs are used. If 1 is given, no     
-                parallel computing code is used at all, which is useful for     
-                debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
-                Thus for n_jobs = -2, all CPUs but one are used. If             
-                (n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set   
-                to 1.                                                           
+                (defaults to 1). If -1 is given, all CPUs are used. If 1 is     
+                given, no parallel computing code is used at all, which is      
+                useful for debugging. For n_jobs below -1,                      
+                (n_cpus + 1 + n_jobs) are used (where n_cpus is the total       
+                number of CPUs in the machine). Thus for n_jobs = -2, all CPUs  
+                but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1, 
+                then no parallel computing code will be used (i.e., equivalent  
+                to the default).                                                                                
                                                                                 
             show_progress (boolean): flag to indicate whether task progress     
                 should be displayed to the user (defaults to True).             
                                                                                 
         Returns:                                                                
             An output table containing tuple pairs that survive the filter      
-            (dataframe).
+            (DataFrame).
         """
 
         # check if the input tables are dataframes

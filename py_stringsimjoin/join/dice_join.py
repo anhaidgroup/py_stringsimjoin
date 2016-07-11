@@ -24,16 +24,24 @@ def dice_join(ltable, rtable,
               out_sim_score=True, n_jobs=1, show_progress=True):
     """Join two tables using Dice similarity measure.
 
+    For two sets X and Y, the Dice similarity score between them is given by:                      
+                                                                                
+        :math:`dice(X, Y) = \\frac{2 * |X \\cap Y|}{|X| + |Y|}`        
+                                                                                
+    In the case where both X and Y are empty sets, we define their Dice 
+    score to be 1.
+
     Finds tuple pairs from left table and right table such that the Dice 
     similarity between the join attributes satisfies the condition on input 
-    threshold. That is, if the comparison operator is '>=', finds tuples pairs 
-    whose Dice similarity on the join attributes is greater than or equal to the
-    input threshold.
+    threshold. For example, if the comparison operator is '>=', finds tuple     
+    pairs whose Dice similarity between the strings that are the values of    
+    the join attributes is greater than or equal to the input threshold, as     
+    specified in "threshold". 
 
     Args:
-        ltable (dataframe): left input table.
+        ltable (DataFrame): left input table.
 
-        rtable (dataframe): right input table.
+        rtable (DataFrame): right input table.
 
         l_key_attr (string): key attribute in left table.
 
@@ -43,7 +51,7 @@ def dice_join(ltable, rtable,
 
         r_join_attr (string): join attribute in right table.
 
-        tokenizer (Tokenizer object): tokenizer to be used to tokenize join     
+        tokenizer (Tokenizer): tokenizer to be used to tokenize join     
             attributes.                                                         
                                                                                 
         threshold (float): Dice similarity threshold to be satisfied.        
@@ -80,18 +88,20 @@ def dice_join(ltable, rtable,
             tuple pairs in the output.                                          
                                                                                 
         n_jobs (int): number of parallel jobs to use for the computation        
-            (defaults to 1). If -1 all CPUs are used. If 1 is given, no         
-            parallel computing code is used at all, which is useful for         
-            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
-            for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
-            becomes less than 1, then n_jobs is set to 1.                       
+            (defaults to 1). If -1 is given, all CPUs are used. If 1 is given,  
+            no parallel computing code is used at all, which is useful for      
+            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used      
+            (where n_cpus is the total number of CPUs in the machine). Thus for 
+            n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)    
+            becomes less than 1, then no parallel computing code will be used   
+            (i.e., equivalent to the default). 
                                                                                 
         show_progress (boolean): flag to indicate whether task progress should  
             be displayed to the user (defaults to True).                        
                                                                                 
     Returns:                                                                    
         An output table containing tuple pairs that satisfy the join            
-        condition (dataframe).  
+        condition (DataFrame).  
     """
 
     # check if the input tables are dataframes

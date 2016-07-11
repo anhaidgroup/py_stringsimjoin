@@ -5,19 +5,26 @@ def dataframe_column_to_str(dataframe, col_name, inplace=False,
     """Convert columun in the dataframe into string type while preserving NaN 
     values.
 
+    This method is useful when performing join over numeric columns. Currently, 
+    the join methods expect the join columns to be of string type. Hence, the 
+    numeric columns need to be converted to string type before performing the 
+    join. 
+ 
     Args:
         dataframe (DataFrame): Input pandas dataframe.
-        col_name (str): Name of the column in the dataframe to be converted.
+        col_name (string): Name of the column in the dataframe to be converted.
         inplace (boolean): A flag indicating whether the input dataframe should 
             be modified inplace or in a copy of it.
         return_col (boolean): A flag indicating whether a copy of the converted
-            column should be returned. Only one of inplace and return_col can be
-            set to True.
+            column should be returned. When this flag is set to True, the method
+            will not modify the original dataframe and will return a new column
+            of string type. Only one of inplace and return_col can be set to 
+            True.
     
     Returns:
         A Boolean value when inplace is set to True.
 
-        A dataframe when inplace is set to False and return_col is set to False.
+        A new dataframe when inplace is set to False and return_col is set to False.
 
         A series when inplace is set to False and return_col is set to True. 
     """
@@ -63,7 +70,7 @@ def series_to_str(series, inplace=False):
         series (Series): Input pandas series.                                 
         inplace (boolean): A flag indicating whether the input series should 
             be modified inplace or in a copy of it. This flag is ignored when
-            the input series consists of only NaN values or, the series is 
+            the input series consists of only NaN values or the series is 
             empty (with int or float type). In these two cases, we always return
             a copy irrespective of the inplace flag.                        
                                                                                 

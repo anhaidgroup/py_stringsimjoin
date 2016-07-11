@@ -24,7 +24,7 @@ class Filter(object):
         set.
 
         Args:
-            candset (dataframe): input candidate set.
+            candset (DataFrame): input candidate set.
 
             candset_l_key_attr (string): attribute in candidate set which is a 
                 key in left table.
@@ -32,9 +32,9 @@ class Filter(object):
             candset_r_key_attr (string): attribute in candidate set which is a 
                 key in right table.
 
-            ltable (dataframe): left input table.
+            ltable (DataFrame): left input table.
 
-            rtable (dataframe): right input table.
+            rtable (DataFrame): right input table.
 
             l_key_attr (string): key attribute in left table.
 
@@ -47,19 +47,21 @@ class Filter(object):
                 should be applied.
 
             n_jobs (int): number of parallel jobs to use for the computation    
-                (defaults to 1). If -1 all CPUs are used. If 1 is given, no     
-                parallel computing code is used at all, which is useful for     
-                debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
-                Thus for n_jobs = -2, all CPUs but one are used. If             
-                (n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set   
-                to 1.                                                           
+                (defaults to 1). If -1 is given, all CPUs are used. If 1 is     
+                given, no parallel computing code is used at all, which is      
+                useful for debugging. For n_jobs below -1,                      
+                (n_cpus + 1 + n_jobs) are used (where n_cpus is the total       
+                number of CPUs in the machine). Thus for n_jobs = -2, all CPUs  
+                but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1, 
+                then no parallel computing code will be used (i.e., equivalent  
+                to the default).
                                                                                 
             show_progress (boolean): flag to indicate whether task progress     
                 should be displayed to the user (defaults to True). 
 
         Returns:
             An output table containing tuple pairs from the candidate set that 
-            survive the filter (dataframe).
+            survive the filter (DataFrame).
         """
 
         # check if the input candset is a dataframe

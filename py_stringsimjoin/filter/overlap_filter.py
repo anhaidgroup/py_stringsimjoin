@@ -24,14 +24,14 @@ class OverlapFilter(Filter):
     """Finds candidate matching pairs of strings using overlap filtering 
     technique.
 
-    A string pair is allowed by overlap filter only if the number of common 
-    tokens in the strings satisfy the condition on overlap size threshold. That 
-    is, if the comparison operator is '>=', a string pair is allowed if the 
+    A string pair is output by overlap filter only if the number of common 
+    tokens in the strings satisfy the condition on overlap size threshold. For 
+    example, if the comparison operator is '>=', a string pair is output if the 
     number of common tokens is greater than or equal to the overlap size 
-    threshold.
+    threshold, as specified by "overlap_size".
 
     Args:
-        tokenizer (Tokenizer object): tokenizer to be used.
+        tokenizer (Tokenizer): tokenizer to be used.
         overlap_size (int): overlap threshold to be used by the filter.
         comp_op (string): Comparison operator. Supported values are '>=', '>' 
             and '=' (defaults to '>=').  
@@ -39,7 +39,7 @@ class OverlapFilter(Filter):
             missing value should survive the filter (defaults to False). 
 
     Attributes:
-        tokenizer (Tokenizer object): An attribute to store the tokenizer.
+        tokenizer (Tokenizer): An attribute to store the tokenizer.
         overlap_size (int): An attribute to store the overlap threshold value.
         comp_op (string): An attribute to store the comparison operator.
         allow_missing (boolean): An attribute to store the value of the flag 
@@ -103,9 +103,9 @@ class OverlapFilter(Filter):
         overlap filtering technique.
 
         Args:
-            ltable (dataframe): left input table.
+            ltable (DataFrame): left input table.
 
-            rtable (dataframe): right input table.
+            rtable (DataFrame): right input table.
 
             l_key_attr (string): key attribute in left table.
 
@@ -138,19 +138,21 @@ class OverlapFilter(Filter):
                 for the tuple pairs in the output. 
 
             n_jobs (int): number of parallel jobs to use for the computation
-                (defaults to 1). If -1 all CPUs are used. If 1 is given, no 
-                parallel computing code is used at all, which is useful for 
-                debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. 
-                Thus for n_jobs = -2, all CPUs but one are used. If 
-                (n_cpus + 1 + n_jobs) becomes less than 1, then n_jobs is set 
-                to 1.
+                (defaults to 1). If -1 is given, all CPUs are used. If 1 is 
+                given, no parallel computing code is used at all, which is 
+                useful for debugging. For n_jobs below -1, 
+                (n_cpus + 1 + n_jobs) are used (where n_cpus is the total 
+                number of CPUs in the machine). Thus for n_jobs = -2, all CPUs 
+                but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1, 
+                then no parallel computing code will be used (i.e., equivalent 
+                to the default).  
 
             show_progress (boolean): flag to indicate whether task progress 
                 should be displayed to the user (defaults to True).
 
         Returns:
             An output table containing tuple pairs that survive the filter 
-            (dataframe).
+            (DataFrame).
         """
 
         # check if the input tables are dataframes

@@ -39,15 +39,16 @@ def apply_matcher(candset,
                   l_out_attrs=None, r_out_attrs=None,
                   l_out_prefix='l_', r_out_prefix='r_',
                   out_sim_score=True, n_jobs=1, show_progress=True):
-    """Find matching string pairs from the candidate set by applying a matcher 
-    of form (sim_function comp_op threshold).
+    """Find matching string pairs from the candidate set (typically produced by
+    applying a filter to two tables) by applying a matcher of form 
+    (sim_function comp_op threshold).
 
     Specifically, this method computes the input similarity function on string 
-    pairs in the candidate set and checks if the score satisfies the input 
-    threshold (depending on the comparison operator).
+    pairs in the candidate set and checks if the resulting score satisfies the 
+    input threshold (depending on the comparison operator).
 
     Args:
-        candset (dataframe): input candidate set.
+        candset (DataFrame): input candidate set.
 
         candset_l_key_attr (string): attribute in candidate set which is a key 
             in left table.
@@ -55,9 +56,9 @@ def apply_matcher(candset,
         candset_r_key_attr (string): attribute in candidate set which is a key 
             in right table.
 
-        ltable (dataframe): left input table.
+        ltable (DataFrame): left input table.
 
-        rtable (dataframe): right input table.
+        rtable (DataFrame): right input table.
 
         l_key_attr (string): key attribute in left table.
 
@@ -69,7 +70,7 @@ def apply_matcher(candset,
         r_match_attr (string): attribute in right table on which the matcher
             should be applied.
 
-        tokenizer (Tokenizer object): tokenizer to be used to tokenize the
+        tokenizer (Tokenizer): tokenizer to be used to tokenize the
             match attributes. If set to None, the matcher is applied directly
             on the match attributes.
 
@@ -102,19 +103,21 @@ def apply_matcher(candset,
             output table. This column will contain the similarity scores for the
             tuple pairs in the output. 
 
-        n_jobs (int): number of parallel jobs to use for the computation
-            (defaults to 1). If -1 all CPUs are used. If 1 is given, no 
-            parallel computing code is used at all, which is useful for 
-            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used. Thus
-            for n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
-            becomes less than 1, then n_jobs is set to 1.
+        n_jobs (int): number of parallel jobs to use for the computation        
+            (defaults to 1). If -1 is given, all CPUs are used. If 1 is given,  
+            no parallel computing code is used at all, which is useful for      
+            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used      
+            (where n_cpus is the total number of CPUs in the machine). Thus for 
+            n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)    
+            becomes less than 1, then no parallel computing code will be used   
+            (i.e., equivalent to the default). 
 
         show_progress (boolean): flag to indicate whether task progress should 
             be displayed to the user (defaults to True).
 
     Returns:
         An output table containing tuple pairs from the candidate set that 
-        survive the matcher (dataframe).
+        survive the matcher (DataFrame).
     """
 
     # check if the input candset is a dataframe
