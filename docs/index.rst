@@ -15,13 +15,13 @@ Contents:
    :caption: Getting Started
 
    installation
-
+   overview
+   guide
 
 .. toctree::
    :maxdepth: 2
    :caption: API Reference
 
-   api/overview
    api/profiler                                                                 
    api/join
    api/filter
