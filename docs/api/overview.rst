@@ -45,6 +45,7 @@ After loading and optionally profiling and fixing the tables, most likely the us
 
 Filters
 -------
+Most users will just use join commands (described above). They do not need to know about filters and matchers. However, users who want to perform more complex string similarity joins (or joins that we currently do not yet support) may find filters and matchers useful and may want to use them. (See the ???
 
 Version 0.1.0 implements the following class hierarchy for filters:
 
