@@ -27,12 +27,14 @@ The implemented commands can be organized into the following groups: profilers, 
 
 Profilers
 ---------
+
 After loading the two tables A and B into Python, the user may want to run a profiler command, which will examine the two tables, detect possible problems for the subsequent string similarity joins, warn the user of these potential problems, and suggest possible solutions. 
 
 Currently only one profiler has been implemented, profile_table_for_join. This command examines the tables for unique and missing attribute values, and discuss possible problems stemming from these for the subsequent joins. Based on the report of this command, the user may want to take certain actions before actually applying join commands. Using the profiler is not required, of course. 
 
 Joins
 -----
+
 After loading and optionally profiling and fixing the tables, most likely the user will just call a join command to do the join. We have implemented the following join commands:  
 
 * cosine_join
@@ -42,12 +44,12 @@ After loading and optionally profiling and fixing the tables, most likely the us
 * overlap_coefficient_join
 * overlap_join
 
+Filters & Matchers
+-------------------
 
-Filters
--------
-Most users will just use join commands (described above). They do not need to know about filters and matchers. However, users who want to perform more complex string similarity joins (or joins that we currently do not yet support) may find filters and matchers useful and may want to use them. (See the ???
+Most users will just use join commands (described above). They do not need to know about filters and matchers. However, users who want to perform more complex string similarity joins (or joins that we currently do not yet support) may find filters and matchers useful and may want to use them. (See the How-to Guide for examples of performing complex string similarity joins such as TF/IDF joins.)
 
-Version 0.1.0 implements the following class hierarchy for filters:
+Filters are class objects. They form the following class hierarchy: 
 
 Filter                                                               
   * OverlapFilter
@@ -56,9 +58,11 @@ Filter
   * PositionFilter
   * SuffixFilter
 
-Matchers
--------
+Currently we have implemented only one matcher, called "apply_matcher".
 
-Version 0.1.0 implements the following method for applying a matcher:
+Utilities
+---------
 
-apply_matcher
+Consider a table A with an attribute "year". This attribute contains numeric, not string, values. So we cannot apply the commands in py_stringsimjoin on this attribute directly (as these commands input only string values). To apply the command, we first must convert the values of this attribute (for example, 1978, 2001, etc.) into strings. This conversion is somewhat tricky, because if we are not careful, missing values such as NaN will be converted into strings "NaN". 
+In this package we have provided several utility commands to do such conversion.
+
