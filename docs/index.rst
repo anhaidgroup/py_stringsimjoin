@@ -6,6 +6,8 @@
 User Manual for py_stringsimjoin
 ================================
 
+This document shows the users how to install and use the package. To contribute to or further develop the package, see the project website, section “For Contributors and Developers”. [[Add the project website link here]]
+
 Contents:
 
 .. toctree::
@@ -32,4 +34,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
