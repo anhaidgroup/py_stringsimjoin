@@ -25,8 +25,8 @@ def profile_table_for_join(input_table, profile_attrs=None):
            each attribute, and 
         3) 'Comments' column, which contains comments about each attribute. 
 
-        The output dataframe is indexed by attribute name. So that, the 
-        statistics for each attribute can be accessed using the attribute name.
+        The output dataframe is indexed by attribute name, so that the 
+        statistics for each attribute can be easily accessed using the attribute name.
     """
 
     # check if the input table is a dataframe
