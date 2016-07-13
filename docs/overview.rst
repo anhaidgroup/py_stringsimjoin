@@ -10,7 +10,7 @@ Such joins are challenging because a naive implementation would consider all tup
 
 To understand tokenizing and string similarity scores (such as Jaccard, edit distance, etc.), see the `Web site <https://sites.google.com/site/anhaidgroup/projects/py_stringmatching>`_ of the package py_stringmatching (in particular, read the following `book chapter on string matching <http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf>`_). That package provides efficient implementations of a set of tokenizers and string similarity measures. It focuses on the case of tokenizing two strings and then applying a similarity measure to the outputs of the tokenizers to compute a similarity score between those two strings. This package builds on top of py_stringmatching, so it is important to understand the tokenizers and string similarity measures of the py_stringmatching package. 
 
-To read more about string similarity joins, see `String Similarity Joins: An Experimental Evaluation <http://www.vldb.org/pvldb/vol7/p625-jiang.pdf>`_ and `String Similarity Search and Join : A Survey <http://dbgroup.cs.tsinghua.edu.cn/ligl/papers/fcs15-string-survey.pdf>`_.
+To read more about string similarity joins, see "`String Similarity Joins: An Experimental Evaluation <http://www.vldb.org/pvldb/vol7/p625-jiang.pdf>`_" and "`String Similarity Search and Join : A Survey <http://dbgroup.cs.tsinghua.edu.cn/ligl/papers/fcs15-string-survey.pdf>`_".
 
 We now explain the most important notions an user is likely to encounter while using this package. To use the package, the user typically loads into Python two tables A and B (as described above). These two tables will often be referred to in the commands of this package as ltable (for "left table") and rtable (for "right table"), respectively. The notion "tuple pair" refers to a pair (x,y) where x is a tuple in ltable and y is a tuple in rtable. 
 
@@ -51,7 +51,7 @@ Most users will just use join commands (described above). They do not need to kn
 
 Filters are class objects. They form the following class hierarchy: 
 
-Filter                                                               
+Filter                                                            
   * OverlapFilter
   * SizeFilter
   * PrefixFilter

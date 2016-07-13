@@ -5,6 +5,17 @@ from sys import maxsize
 
 
 def get_size_lower_bound(num_tokens, sim_measure_type, threshold):
+    """Computes lower bound for size filter.
+
+    Specifically, computes lower bound on the number of tokens a string must 
+    have in order to obtain a similarity score that satisfies the input 
+    threshold with a string containing number of tokens, specified by 
+    'num_tokens'.
+    
+    References:
+        * String Similarity Joins: An Experimental Evaluation, VLDB 2014.
+    """
+
     if sim_measure_type == 'COSINE':
         return int(ceil(round(threshold * threshold * num_tokens, 4)))
     elif sim_measure_type == 'DICE':
@@ -18,6 +29,17 @@ def get_size_lower_bound(num_tokens, sim_measure_type, threshold):
 
 
 def get_size_upper_bound(num_tokens, sim_measure_type, threshold):
+    """Computes upper bound for size filter.                                     
+                                                                                
+    Specifically, computes upper bound on the number of tokens a string must     
+    have in order to obtain a similarity score that satisfies the input 
+    threshold with a string containing number of tokens, specified by 
+    'num_tokens'.            
+                                                                                
+    References:                                                                 
+        * String Similarity Joins: An Experimental Evaluation, VLDB 2014.       
+    """
+
     if sim_measure_type == 'COSINE':
         return int(floor(round(num_tokens / (threshold * threshold), 4)))
     elif sim_measure_type == 'DICE':
@@ -32,6 +54,12 @@ def get_size_upper_bound(num_tokens, sim_measure_type, threshold):
 
 
 def get_prefix_length(num_tokens, sim_measure_type, threshold, tokenizer):
+    """Computes prefix length.                                     
+
+    References:                                                                 
+        * String Similarity Joins: An Experimental Evaluation, VLDB 2014.       
+    """
+
     if num_tokens == 0:
         return 0
 
@@ -51,6 +79,10 @@ def get_prefix_length(num_tokens, sim_measure_type, threshold, tokenizer):
 
 def get_overlap_threshold(l_num_tokens, r_num_tokens,
                           sim_measure_type, threshold, tokenizer):
+    """Computes the minimum overlap needed between the tokens to satisfy the          
+    threshold. 
+    """
+
     if sim_measure_type == 'COSINE':
         return ceil(round(threshold * sqrt(l_num_tokens * r_num_tokens), 4))
     elif sim_measure_type == 'DICE':
