@@ -11,11 +11,11 @@ from py_stringsimjoin.join.edit_distance_join import edit_distance_join
 from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
-from py_stringsimjoin.utils.helper_functions import get_install_path
 
 
 # path where datasets are present
-BASE_PATH = os.sep.join([get_install_path(), 'benchmarks', 'example_datasets'])
+BENCHMARKS_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))  
+BASE_PATH = os.sep.join([BENCHMARKS_PATH, 'example_datasets'])  
 
 class RestaurantsJoinBenchmark:
     """Benchmark join methods on restaurants dataset"""
@@ -91,8 +91,8 @@ class MusicJoinBenchmark:
         if not os.path.exists(rtable_path):
             raise NotImplementedError('Right table not found. Skipping benchmark.')
 
-        self.ltable = pd.read_csv(ltable_path)
-        self.rtable = pd.read_csv(rtable_path)
+        self.ltable = pd.read_csv(ltable_path, encoding="iso-8859-1")
+        self.rtable = pd.read_csv(rtable_path, encoding="iso-8859-1")
         self.l_id_attr = 'Sno'
         self.r_id_attr = 'Sno'
         self.l_join_attr = 'Song_Name'

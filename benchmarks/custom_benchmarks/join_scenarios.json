@@ -3,6 +3,8 @@
         "restaurants": {
             "ltable": ["restaurants", "A.csv"],
             "rtable": ["restaurants", "B.csv"],
+            "ltable_encoding": "utf-8",
+            "rtable_encoding": "utf-8",
             "l_id_attr": "ID",
             "r_id_attr": "ID",
             "l_join_attr": "NAME",
@@ -15,6 +17,8 @@
         "restaurants_overlap": {
             "ltable": ["restaurants", "A.csv"],
             "rtable": ["restaurants", "B.csv"],
+            "ltable_encoding": "utf-8",
+            "rtable_encoding": "utf-8",
             "l_id_attr": "ID",
             "r_id_attr": "ID",
             "l_join_attr": "NAME",
@@ -27,6 +31,8 @@
         "restaurants_edit_dist": {
             "ltable": ["restaurants", "A.csv"],
             "rtable": ["restaurants", "B.csv"],
+            "ltable_encoding": "utf-8",
+            "rtable_encoding": "utf-8",
             "l_id_attr": "ID",
             "r_id_attr": "ID",
             "l_join_attr": "NAME",
@@ -39,6 +45,8 @@
         "music": {
             "ltable": ["music", "A.csv"],
             "rtable": ["music", "B.csv"],
+            "ltable_encoding": "iso-8859-1",
+            "rtable_encoding": "iso-8859-1",
             "l_id_attr": "Sno",
             "r_id_attr": "Sno",
             "l_join_attr": "Song_Name",
@@ -51,6 +59,8 @@
         "music_overlap": {
             "ltable": ["music", "A.csv"],
             "rtable": ["music", "B.csv"],
+            "ltable_encoding": "iso-8859-1",
+            "rtable_encoding": "iso-8859-1",
             "l_id_attr": "Sno",
             "r_id_attr": "Sno",
             "l_join_attr": "Song_Name",
@@ -63,6 +73,8 @@
         "music_edit_dist": {
             "ltable": ["music", "A.csv"],
             "rtable": ["music", "B.csv"],
+            "ltable_encoding": "iso-8859-1",
+            "rtable_encoding": "iso-8859-1",
             "l_id_attr": "Sno",
             "r_id_attr": "Sno",
             "l_join_attr": "Song_Name",

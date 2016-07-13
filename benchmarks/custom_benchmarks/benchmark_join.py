@@ -13,7 +13,6 @@ from py_stringsimjoin.join.edit_distance_join import edit_distance_join
 from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 from py_stringsimjoin.join.overlap_join import overlap_join
-from py_stringsimjoin.utils.helper_functions import get_install_path
 
 
 JOIN_FUNCTIONS = {'COSINE': cosine_join,
@@ -25,20 +24,21 @@ JOIN_FUNCTIONS = {'COSINE': cosine_join,
 
 TOKENIZERS = {'SPACE_DELIMITER': DelimiterTokenizer(delim_set=[' '],
                                                     return_set=True),
-              '2_GRAM': QgramTokenizer(qval=2, return_set=True),
-              '3_GRAM': QgramTokenizer(qval=3, return_set=True),
+              '2_GRAM': QgramTokenizer(qval=2, padding=False, return_set=True),
+              '3_GRAM': QgramTokenizer(qval=3, padding=False, return_set=True),
               '2_GRAM_BAG': QgramTokenizer(qval=2),
               '3_GRAM_BAG': QgramTokenizer(qval=3)}
 
 # path where datasets are present
-BASE_PATH = os.sep.join([get_install_path(), 'benchmarks', 'example_datasets'])
+BENCHMARKS_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))                   
+BASE_PATH = os.sep.join([BENCHMARKS_PATH, 'example_datasets'])
 
 # join scenarios json file. If you need to perform benchmark on a new dataset,
 # add a entry for that dataset in the json file.
 JOIN_SCENARIOS_FILE = 'join_scenarios.json'
 
 # scenarios that need to be skipped from benchmarking
-EXCLUDE_SCENARIOS = ["restaurants_edit_dist", "music_edit_dist"]
+EXCLUDE_SCENARIOS = []
 
 # number of times to run each benchmark
 NUMBER_OF_EXECUTIONS = 1
@@ -47,12 +47,15 @@ NUMBER_OF_EXECUTIONS = 1
 OUTPUT_DIR = '_benchmark_results'
 
 class JoinScenario:
-    def __init__(self, scenario_name, ltable, rtable, l_id_attr, r_id_attr,
+    def __init__(self, scenario_name, ltable, rtable,
+                 ltable_encoding, rtable_encoding, l_id_attr, r_id_attr,
                  l_join_attr, r_join_attr, tokenizers,
                  sim_measure_types, thresholds, n_jobs):
         self.scenario_name = scenario_name 
         self.ltable = os.sep.join(ltable)
         self.rtable = os.sep.join(rtable)
+        self.ltable_encoding = ltable_encoding
+        self.rtable_encoding = rtable_encoding
         self.l_id_attr = l_id_attr
         self.r_id_attr = r_id_attr
         self.l_join_attr = l_join_attr
@@ -71,6 +74,8 @@ def load_join_scenarios():
     for sc in scenarios_json.keys():
         join_scenario = JoinScenario(sc, scenarios_json[sc]['ltable'],
                                      scenarios_json[sc]['rtable'],
+                                     scenarios_json[sc]['ltable_encoding'],
+                                     scenarios_json[sc]['rtable_encoding'], 
                                      scenarios_json[sc]['l_id_attr'],
                                      scenarios_json[sc]['r_id_attr'],
                                      scenarios_json[sc]['l_join_attr'],
@@ -110,8 +115,8 @@ if __name__ == '__main__':
         output_file.write('%s\n' % output_header)
 
         # load input tables for the scenario
-        ltable = pd.read_csv(ltable_path)
-        rtable = pd.read_csv(rtable_path)
+        ltable = pd.read_csv(ltable_path, encoding=scenario.ltable_encoding)
+        rtable = pd.read_csv(rtable_path, encoding=scenario.rtable_encoding)
 
         for sim_measure_type in scenario.sim_measure_types:
             join_fn = JOIN_FUNCTIONS[sim_measure_type]
@@ -125,10 +130,10 @@ if __name__ == '__main__':
                 for threshold in scenario.thresholds:
                     for n_jobs in scenario.n_jobs:
                         if sim_measure_type ==  'EDIT_DISTANCE':
-                            args = (threshold, None, None, 'l_', 'r_', True,
+                            args = (threshold, '<=', False, None, None, 'l_', 'r_', True,
                                     n_jobs, tok) 
                         else:
-                            args = (tok, threshold, None, None, 'l_', 'r_',
+                            args = (tok, threshold, '>=', False, None, None, 'l_', 'r_',
                                     True, n_jobs)
 
                         cumulative_time = 0
