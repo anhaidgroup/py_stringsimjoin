@@ -31,7 +31,7 @@
 
   
     <link rel="top" title="py_stringsimjoin 0.1.0 documentation" href="index.html"/>
-        <link rel="next" title="Overview" href="api/overview.html"/>
+        <link rel="next" title="Overview" href="overview.html"/>
         <link rel="prev" title="User Manual for py_stringsimjoin" href="index.html"/> 
 
   
@@ -91,10 +91,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#installing-from-source-distribution">Installing from Source Distribution</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide.html">Guides</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/profiler.html">Profilers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/join.html">Joins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/filter.html">Filters</a></li>
@@ -162,11 +163,11 @@
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
-<li>pandas</li>
-<li>joblib</li>
-<li>py_stringmatching</li>
-<li>pyprind</li>
-<li>six</li>
+<li>pandas (to manage tables of tuples to be joined)</li>
+<li>joblib (to write code that runs over multiple cores)</li>
+<li>py_stringmatching (to tokenize and compute similarity scores between strings)</li>
+<li>pyprind (to display progress bars)</li>
+<li>six (to ensure our code run on both Python 2.x and Python 3.x)</li>
 </ul>
 </div></blockquote>
 <div class="admonition note">
@@ -184,8 +185,8 @@
 </div>
 <div class="section" id="installing-from-source-distribution">
 <h2>Installing from Source Distribution<a class="headerlink" href="#installing-from-source-distribution" title="Permalink to this headline">¶</a></h2>
-<p>Step 1: Download the source code of the py_stringsimjoin package from <a class="reference external" href="https://github.com/anhaidgroup/py_stringsimjoin/releases">here</a>.</p>
-<p>Step 2: Unzip or untar the package and execute the following command from the package root:</p>
+<p>Step 1: Download the source code of the py_stringsimjoin package from <a class="reference external" href="https://github.com/anhaidgroup/py_stringsimjoin/releases">here</a>. (Download code in tar.gz format for Linux and OS X, and code in zip format for Windows.)</p>
+<p>Step 2: Untar or unzip the package and execute the following command from the package root:</p>
 <div class="highlight-python"><div class="highlight"><pre>python setup.py install
 </pre></div>
 </div>
@@ -195,7 +196,7 @@
 <div class="highlight-python"><div class="highlight"><pre>python setup.py install --user
 </pre></div>
 </div>
-<p class="last">For more information see the StackOverflow <a class="reference external" href="http://stackoverflow.com/questions/14179941/how-to-install-python-packages-without-root-privileges">link</a>.</p>
+<p class="last">For more information see the following StackOverflow <a class="reference external" href="http://stackoverflow.com/questions/14179941/how-to-install-python-packages-without-root-privileges">link</a>.</p>
 </div>
 </div>
 </div>
@@ -207,7 +208,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api/overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="User Manual for py_stringsimjoin" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

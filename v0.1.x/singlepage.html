@@ -75,10 +75,11 @@
                 <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-overview">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-guide">Guides</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/overview">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/profiler">Profilers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/join">Joins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/filter">Filters</a></li>
@@ -128,7 +129,13 @@
             
   <div class="section" id="user-manual-for-py-stringsimjoin">
 <h1>User Manual for py_stringsimjoin<a class="headerlink" href="#user-manual-for-py-stringsimjoin" title="Permalink to this headline">¶</a></h1>
-<p>Contents:</p>
+<p>This document shows the users how to install and use the package. To contribute
+to or further develop the package, see the
+<a class="reference external" href="https://sites.google.com/site/anhaidgroup/projects/py_stringsimjoin">project website</a>,
+section “For Contributors and Developers”.</p>
+</div>
+<div class="section" id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound" id="getting-started">
 <span id="document-installation"></span><div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -148,11 +155,11 @@
 <h3>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li>pandas</li>
-<li>joblib</li>
-<li>py_stringmatching</li>
-<li>pyprind</li>
-<li>six</li>
+<li>pandas (to manage tables of tuples to be joined)</li>
+<li>joblib (to write code that runs over multiple cores)</li>
+<li>py_stringmatching (to tokenize and compute similarity scores between strings)</li>
+<li>pyprind (to display progress bars)</li>
+<li>six (to ensure our code run on both Python 2.x and Python 3.x)</li>
 </ul>
 </div></blockquote>
 <div class="admonition note">
@@ -170,8 +177,8 @@
 </div>
 <div class="section" id="installing-from-source-distribution">
 <h3>Installing from Source Distribution<a class="headerlink" href="#installing-from-source-distribution" title="Permalink to this headline">¶</a></h3>
-<p>Step 1: Download the source code of the py_stringsimjoin package from <a class="reference external" href="https://github.com/anhaidgroup/py_stringsimjoin/releases">here</a>.</p>
-<p>Step 2: Unzip or untar the package and execute the following command from the package root:</p>
+<p>Step 1: Download the source code of the py_stringsimjoin package from <a class="reference external" href="https://github.com/anhaidgroup/py_stringsimjoin/releases">here</a>. (Download code in tar.gz format for Linux and OS X, and code in zip format for Windows.)</p>
+<p>Step 2: Untar or unzip the package and execute the following command from the package root:</p>
 <div class="highlight-python"><div class="highlight"><pre>python setup.py install
 </pre></div>
 </div>
@@ -181,22 +188,38 @@
 <div class="highlight-python"><div class="highlight"><pre>python setup.py install --user
 </pre></div>
 </div>
-<p class="last">For more information see the StackOverflow <a class="reference external" href="http://stackoverflow.com/questions/14179941/how-to-install-python-packages-without-root-privileges">link</a>.</p>
+<p class="last">For more information see the following StackOverflow <a class="reference external" href="http://stackoverflow.com/questions/14179941/how-to-install-python-packages-without-root-privileges">link</a>.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="toctree-wrapper compound" id="api-reference">
-<span id="document-api/overview"></span><div class="section" id="overview">
+<span id="document-overview"></span><div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="profiling">
-<h3>Profiling<a class="headerlink" href="#profiling" title="Permalink to this headline">¶</a></h3>
-<p>Version 0.1.0 implements the following method for profiling:</p>
-<p>profile_table_for_join</p>
+<p>Given two tables A and B, this package provides commands to perform string similarity joins between two columns of these tables, such as A.name and B.name, or A.city and B.city. An example of such joins is to return all pairs (x,y) of tuples from the Cartesian product of Tables A and B such that</p>
+<ul class="simple">
+<li>x is a tuple in Table A and y is a tuple in Table B.</li>
+<li>Jaccard(3gram(x.name), 3gram(y.name)) &gt; 0.7. That is, first tokenize the value of the attribute &#8220;name&#8221; of x into a set P of 3grams, and tokenize the value of the attribute &#8220;name&#8221; of y into a set Q of 3grams. Then compute the Jaccard score between P and Q. This score must exceed 0.7. This is often called the &#8220;join condition&#8221;.</li>
+</ul>
+<p>Such joins are challenging because a naive implementation would consider all tuple pairs in the Cartesian product of Tables A and B, an often enormous number (for example, 10 billion pairs if each table has 100K tuples). The package provides efficient implementations of such joins, by using methods called &#8220;filtering&#8221; to quickly eliminate the pairs that obviously cannot satisfy the join condition.</p>
+<p>To understand tokenizing and string similarity scores (such as Jaccard, edit distance, etc.), see the <a class="reference external" href="https://sites.google.com/site/anhaidgroup/projects/py_stringmatching">Web site</a> of the package py_stringmatching (in particular, read the following <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">book chapter on string matching</a>). That package provides efficient implementations of a set of tokenizers and string similarity measures. It focuses on the case of tokenizing two strings and then applying a similarity measure to the outputs of the tokenizers to compute a similarity score between those two strings. This package builds on top of py_stringmatching, so it is important to understand the tokenizers and string similarity measures of the py_stringmatching package.</p>
+<p>To read more about string similarity joins, see <a class="reference external" href="http://www.vldb.org/pvldb/vol7/p625-jiang.pdf">String Similarity Joins: An Experimental Evaluation</a> and <a class="reference external" href="http://dbgroup.cs.tsinghua.edu.cn/ligl/papers/fcs15-string-survey.pdf">String Similarity Search and Join : A Survey</a>.</p>
+<p>We now explain the most important notions an user is likely to encounter while using this package. To use the package, the user typically loads into Python two tables A and B (as described above). These two tables will often be referred to in the commands of this package as ltable (for &#8220;left table&#8221;) and rtable (for &#8220;right table&#8221;), respectively. The notion &#8220;tuple pair&#8221; refers to a pair (x,y) where x is a tuple in ltable and y is a tuple in rtable.</p>
+<p>To execute a string similarity join, the user calls a command such as jaccard_join, cosine_join, etc. The command&#8217;s arguments include</p>
+<ul class="simple">
+<li>The two tables: ltable and rtable, the key attributes of these tables, and the target attributes (on which the join will be performed, such as A.name and B.name).</li>
+<li>The join condition.</li>
+<li>The output will be a table of tuple pairs surviving the join. The user may want to specify the desired attributes of the output table, using arguments such as l_out_attrs, r_out_attrs, l_out_prefix, etc.</li>
+<li>A flag to indicate on how many cores should this command be run.</li>
+</ul>
+<p>Internally, a command such as jaccard_join will first create a filter object, using an appropriate filtering techniques (many such techniques exist, see the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">book chapter on string matching</a>). Next, it uses this filter object to quickly drop many pairs that obviously do not satisfy the join condition. The set of remaining tuple pairs is referred to as a &#8220;candidate set&#8221;. Finally, it applies a matcher to the pairs in this set. The matcher simply checks and retains only those pairs that satisfy the join condition.</p>
+<p>The implemented commands can be organized into the following groups: profilers, joins, filters, matchers, and utilities. We now briefly describe these.</p>
+<div class="section" id="profilers">
+<h3>Profilers<a class="headerlink" href="#profilers" title="Permalink to this headline">¶</a></h3>
+<p>After loading the two tables A and B into Python, the user may want to run a profiler command, which will examine the two tables, detect possible problems for the subsequent string similarity joins, warn the user of these potential problems, and suggest possible solutions.</p>
+<p>Currently only one profiler has been implemented, profile_table_for_join. This command examines the tables for unique and missing attribute values, and discuss possible problems stemming from these for the subsequent joins. Based on the report of this command, the user may want to take certain actions before actually applying join commands. Using the profiler is not required, of course.</p>
 </div>
 <div class="section" id="joins">
 <h3>Joins<a class="headerlink" href="#joins" title="Permalink to this headline">¶</a></h3>
-<p>Version 0.1.0 implements the following join methods:</p>
+<p>After loading and optionally profiling and fixing the tables, most likely the user will just call a join command to do the join. We have implemented the following join commands:</p>
 <ul class="simple">
 <li>cosine_join</li>
 <li>dice_join</li>
@@ -206,9 +229,10 @@
 <li>overlap_join</li>
 </ul>
 </div>
-<div class="section" id="filters">
-<h3>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h3>
-<p>Version 0.1.0 implements the following class hierarchy for filters:</p>
+<div class="section" id="filters-matchers">
+<h3>Filters &amp; Matchers<a class="headerlink" href="#filters-matchers" title="Permalink to this headline">¶</a></h3>
+<p>Most users will just use join commands (described above). They do not need to know about filters and matchers. However, users who want to perform more complex string similarity joins (or joins that we currently do not yet support) may find filters and matchers useful and may want to use them. (See the How-to Guide for examples of performing complex string similarity joins such as TF/IDF joins.)</p>
+<p>Filters are class objects. They form the following class hierarchy:</p>
 <dl class="docutils">
 <dt>Filter</dt>
 <dd><ul class="first last simple">
@@ -220,13 +244,28 @@
 </ul>
 </dd>
 </dl>
+<p>Currently we have implemented only one matcher, called &#8220;apply_matcher&#8221;.</p>
 </div>
-<div class="section" id="matcher">
-<h3>Matcher<a class="headerlink" href="#matcher" title="Permalink to this headline">¶</a></h3>
-<p>Version 0.1.0 implements the following method for applying a matcher:</p>
-<p>apply_matcher</p>
+<div class="section" id="utilities">
+<h3>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h3>
+<p>Consider a table A with an attribute &#8220;year&#8221;. This attribute contains numeric, not string, values. So we cannot apply the commands in py_stringsimjoin on this attribute directly (as these commands input only string values). To apply the command, we first must convert the values of this attribute (for example, 1978, 2001, etc.) into strings. This conversion is somewhat tricky, because if we are not careful, missing values such as NaN will be converted into strings &#8220;NaN&#8221;.
+In this package we have provided several utility commands to do such conversion.</p>
 </div>
 </div>
+<span id="document-guide"></span><div class="section" id="guides">
+<h2>Guides<a class="headerlink" href="#guides" title="Permalink to this headline">¶</a></h2>
+<p>To learn to quickly use the package, you can check out</p>
+<ul class="simple">
+<li>a <a class="reference external" href="http://nbviewer.jupyter.org/github/anhaidgroup/py_stringsimjoin/blob/master/notebooks/Joining%20two%20tables%20using%20Jaccard%20measure.ipynb">quickstart guide for Jaccard join</a>.</li>
+<li>a <a class="reference external" href="http://nbviewer.jupyter.org/github/anhaidgroup/py_stringsimjoin/blob/master/notebooks/Joining%20two%20tables%20using%20edit%20distance%20measure.ipynb">quickstart guide for edit distance join</a>
+(which is very similar to the case of Jaccard join, but the input strings are not tokenized).</li>
+</ul>
+<p>The <a class="reference external" href="https://sites.google.com/site/anhaidgroup/projects/py_stringsimjoin">package homepage</a> provides
+a link to the How-To Guide, which provides a complete set of instructions for using
+this package (including performing more complex joins such as TF/IDF).</p>
+</div>
+</div>
+<div class="toctree-wrapper compound" id="api-reference">
 <span id="document-api/profiler"></span><div class="section" id="profilers">
 <h2>Profilers<a class="headerlink" href="#profilers" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -254,8 +293,8 @@ each attribute,</li>
 each attribute, and</li>
 <li>&#8216;Comments&#8217; column, which contains comments about each attribute.</li>
 </ol>
-<p>The output dataframe is indexed by attribute name. So that, the
-statistics for each attribute can be accessed using the attribute name.</p>
+<p>The output dataframe is indexed by attribute name, so that the
+statistics for each attribute can be easily accessed using the attribute name.</p>
 </p>
 </td>
 </tr>
