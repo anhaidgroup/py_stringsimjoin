@@ -65,11 +65,11 @@ if __name__ == "__main__":
         ],
         packages=packages,
         install_requires=[
-            'pandas >= 0.16.0',                                                 
-            'six',                                                              
-            'joblib',                                                           
-            'PyPrind >= 2.9.3',                                                 
-            'py_stringmatching'     
+            'joblib', 
+            'pandas >= 0.16.0',
+            'PyPrind >= 2.9.3',
+            'py_stringmatching >= 0.2.1',
+            'six'                                                              
         ],
         include_package_data=True,
         zip_safe=False

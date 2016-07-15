@@ -27,3 +27,6 @@ from py_stringsimjoin.utils.converter import dataframe_column_to_str, series_to_
 
 # import helper functions
 from py_stringsimjoin.utils.generic_helper import get_install_path
+
+# import methods to load sample datasets
+from py_stringsimjoin.datasets.base import load_books_dataset, load_person_dataset

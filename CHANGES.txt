@@ -1,0 +1,4 @@
+v0.1.0 - 07/15/2016                                                             
+  * Initial release.                                                            
+  * Supports joins using 6 similarity measures - cosine, Dice, edit distance, Jaccard, overlap and overlap coefficient. 
+  * Contains 5 filters - Overlap filter, Size filter, Prefix filter, Position filter and Suffix filter.
