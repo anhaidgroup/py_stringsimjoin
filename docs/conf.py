@@ -66,15 +66,15 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'py_stringsimjoin'
-copyright = u'2016, Paul Suganthan G. C.'
-author = u'Paul Suganthan G. C.'
+copyright = u'2016, anhaidgroup'
+author = u'UW Magellan Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '0.1.0'
+version = '0.1'
 # The full version, including alpha/beta/rc tags.
 release = '0.1.0'
 
@@ -242,7 +242,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   (master_doc, 'py_stringsimjoin.tex', u'py\\_stringsimjoin Documentation',
-   u'Paul Suganthan G. C.', 'manual'),
+   u'UW Magellan Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
