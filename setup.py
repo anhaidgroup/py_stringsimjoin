@@ -1,5 +1,4 @@
 
-
 # check if pip is installed. If not, raise an ImportError
 PIP_INSTALLED = True
 
