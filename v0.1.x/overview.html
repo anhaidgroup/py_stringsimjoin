@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.1.0
+                0.1
               </div>
             
           
@@ -153,7 +153,7 @@
 </ul>
 <p>Such joins are challenging because a naive implementation would consider all tuple pairs in the Cartesian product of Tables A and B, an often enormous number (for example, 10 billion pairs if each table has 100K tuples). The package provides efficient implementations of such joins, by using methods called &#8220;filtering&#8221; to quickly eliminate the pairs that obviously cannot satisfy the join condition.</p>
 <p>To understand tokenizing and string similarity scores (such as Jaccard, edit distance, etc.), see the <a class="reference external" href="https://sites.google.com/site/anhaidgroup/projects/py_stringmatching">Web site</a> of the package py_stringmatching (in particular, read the following <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">book chapter on string matching</a>). That package provides efficient implementations of a set of tokenizers and string similarity measures. It focuses on the case of tokenizing two strings and then applying a similarity measure to the outputs of the tokenizers to compute a similarity score between those two strings. This package builds on top of py_stringmatching, so it is important to understand the tokenizers and string similarity measures of the py_stringmatching package.</p>
-<p>To read more about string similarity joins, see <a class="reference external" href="http://www.vldb.org/pvldb/vol7/p625-jiang.pdf">String Similarity Joins: An Experimental Evaluation</a> and <a class="reference external" href="http://dbgroup.cs.tsinghua.edu.cn/ligl/papers/fcs15-string-survey.pdf">String Similarity Search and Join : A Survey</a>.</p>
+<p>To read more about string similarity joins, see &#8220;<a class="reference external" href="http://www.vldb.org/pvldb/vol7/p625-jiang.pdf">String Similarity Joins: An Experimental Evaluation</a>&#8221; and &#8220;<a class="reference external" href="http://dbgroup.cs.tsinghua.edu.cn/ligl/papers/fcs15-string-survey.pdf">String Similarity Search and Join : A Survey</a>&#8221;.</p>
 <p>We now explain the most important notions an user is likely to encounter while using this package. To use the package, the user typically loads into Python two tables A and B (as described above). These two tables will often be referred to in the commands of this package as ltable (for &#8220;left table&#8221;) and rtable (for &#8220;right table&#8221;), respectively. The notion &#8220;tuple pair&#8221; refers to a pair (x,y) where x is a tuple in ltable and y is a tuple in rtable.</p>
 <p>To execute a string similarity join, the user calls a command such as jaccard_join, cosine_join, etc. The command&#8217;s arguments include</p>
 <ul class="simple">
@@ -224,7 +224,7 @@ In this package we have provided several utility commands to do such conversion.
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Paul Suganthan G. C..
+        &copy; Copyright 2016, anhaidgroup.
 
     </p>
   </div>
