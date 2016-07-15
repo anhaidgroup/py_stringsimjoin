@@ -4,10 +4,10 @@ Guides
 To learn to quickly use the package, you can check out
 
 * a `quickstart guide for Jaccard join 
-  <http://nbviewer.jupyter.org/github/anhaidgroup/py_stringsimjoin/blob/master/notebooks/Joining%20two%20tables%20using%20Jaccard%20measure.ipynb>`_.
+  <http://nbviewer.jupyter.org/github/anhaidgroup/py_stringsimjoin/blob/rel_0.1.x/notebooks/Joining%20two%20tables%20using%20Jaccard%20measure.ipynb>`_.
 
 * a `quickstart guide for edit distance join 
-  <http://nbviewer.jupyter.org/github/anhaidgroup/py_stringsimjoin/blob/master/notebooks/Joining%20two%20tables%20using%20edit%20distance%20measure.ipynb>`_
+  <http://nbviewer.jupyter.org/github/anhaidgroup/py_stringsimjoin/blob/rel_0.1.x/notebooks/Joining%20two%20tables%20using%20edit%20distance%20measure.ipynb>`_
   (which is very similar to the case of Jaccard join, but the input strings are not tokenized). 
 
 The `package homepage <https://sites.google.com/site/anhaidgroup/projects/py_stringsimjoin>`_ provides 
