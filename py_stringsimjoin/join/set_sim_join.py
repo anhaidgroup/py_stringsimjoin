@@ -12,6 +12,7 @@ from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
 
+from py_stringsimjoin.muruga.tuple_pair_chest import TuplePairChest
 
 def set_sim_join(ltable, rtable,
                  l_columns, r_columns,
@@ -21,7 +22,10 @@ def set_sim_join(ltable, rtable,
                  allow_empty,
                  l_out_attrs, r_out_attrs,
                  l_out_prefix, r_out_prefix,
-                 out_sim_score, show_progress):
+                 out_sim_score, show_progress,
+                 file_name=None, mem_threshold=1e9,
+                 append_to_file=False
+                 ):
     """Perform set similarity join for a split of ltable and rtable"""
 
     # find column indices of key attr, join attr and output attrs in ltable
@@ -65,6 +69,19 @@ def set_sim_join(ltable, rtable,
     if show_progress:
         prog_bar = pyprind.ProgBar(len(rtable))
 
+    output_header = get_output_header_from_tables(
+                        l_key_attr, r_key_attr,
+                        l_out_attrs, r_out_attrs,
+                        l_out_prefix, r_out_prefix)
+    if out_sim_score:
+        output_header.append("_sim_score")
+
+    chest = TuplePairChest(file_name=file_name, mem_size=mem_threshold,
+                           header=output_header,
+                           append_to_file=append_to_file)
+    chest.preprocess()
+
+
     for r_row in rtable:
         r_string = r_row[r_join_attr_index]
 
@@ -92,7 +109,9 @@ def set_sim_join(ltable, rtable,
 
                 if out_sim_score:
                     output_row.append(1.0)
-                output_rows.append(output_row)
+
+                chest.append(output_row)
+                # output_rows.append(output_row)
             continue
 
         # obtain candidates by applying position filter.            
@@ -122,18 +141,23 @@ def set_sim_join(ltable, rtable,
                     if out_sim_score:
                         output_row.append(sim_score)
 
-                    output_rows.append(output_row)
+                    chest.append(output_row)
+
+                    # output_rows.append(output_row)
 
         if show_progress:
             prog_bar.update()
 
-    output_header = get_output_header_from_tables(
-                        l_key_attr, r_key_attr,
-                        l_out_attrs, r_out_attrs,
-                        l_out_prefix, r_out_prefix)
-    if out_sim_score:
-        output_header.append("_sim_score")
+    # output_header = get_output_header_from_tables(
+    #                     l_key_attr, r_key_attr,
+    #                     l_out_attrs, r_out_attrs,
+    #                     l_out_prefix, r_out_prefix)
+    # if out_sim_score:
+    #     output_header.append("_sim_score")
+    #
+    # # generate a dataframe from the list of output rows
+    # output_table = pd.DataFrame(output_rows, columns=output_header)
+    # return output_table
 
-    # generate a dataframe from the list of output rows
-    output_table = pd.DataFrame(output_rows, columns=output_header)
-    return output_table
+    output = chest.postprocess()
+    return output

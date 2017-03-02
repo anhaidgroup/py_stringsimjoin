@@ -3,8 +3,12 @@ import multiprocessing
 import operator
 import os
 
+import csv
 from six.moves import xrange
 import pandas as pd
+import tempfile
+
+from py_stringsimjoin.muruga.tuple_pair_chest import TuplePairChest
 
 
 COMP_OP_MAP = {'>=': operator.ge,
@@ -155,3 +159,53 @@ def get_attrs_to_project(out_attrs, key_attr, join_attr):
                 proj_attrs.append(attr)
 
     return proj_attrs
+
+
+#------------
+
+def get_temp_filenames(n, dir):
+    l = []
+    for i in range(n):
+        name = next(tempfile._get_candidate_names())
+        l.append(os.path.join(dir, name))
+    return l
+
+def merge_outputs_and_add_id(input_filenames,
+                             output_filename,
+                             id_col='_id',
+                             mem_threshold=1e9 ):
+    chest = TuplePairChest(output_filename, mem_size=mem_threshold)
+    chest.preprocess()
+
+    header_written = False
+    line_no = 0
+    for file_name in input_filenames:
+        with open(file_name) as f:
+            reader = csv.reader(f)
+            first_line = True
+            for row in reader:
+                if first_line:
+                    if not header_written:
+                        row.insert(0, id_col)
+                        chest.header = row
+                        chest.write_header()
+                        header_written=True
+                    first_line = False
+                else:
+                    row.insert(0, line_no)
+                    chest.append(row)
+                    line_no += 1
+    return chest.postprocess()
+
+def add_id_to_file(input_file, output_file, id_col='_id', mem_threshold=1e9):
+    return merge_outputs_and_add_id([input_file], output_file, id_col, mem_threshold)
+
+def remove_files(file_names):
+    for f in file_names:
+        if os.path.isfile(f):
+            os.remove(f)
+    return True
+
+
+
+
