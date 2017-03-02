@@ -7,12 +7,12 @@ from py_stringsimjoin.filter.position_filter import PositionFilter
 from py_stringsimjoin.index.position_index import PositionIndex
 from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_output_header_from_tables, \
-    get_output_row_from_tables, COMP_OP_MAP 
+    get_output_row_from_tables, COMP_OP_MAP
 from py_stringsimjoin.utils.simfunctions import get_sim_function
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
 
-from py_stringsimjoin.muruga.tuple_pair_chest import TuplePairChest
+from py_stringsimjoin.utils.tuple_pair_chest import TuplePairChest
 
 def set_sim_join(ltable, rtable,
                  l_columns, r_columns,
@@ -50,7 +50,7 @@ def set_sim_join(ltable, rtable,
                                    tokenizer, sim_measure_type,
                                    threshold, token_ordering)
     # While building the index, we cache the tokens and the empty records.
-    # We cache the tokens so that we need not tokenize each string in 
+    # We cache the tokens so that we need not tokenize each string in
     # l_join_attr multiple times when we need to compute the similarity measure.
     # Further we cache the empty record ids to handle the allow_empty flag.
     cached_data = position_index.build(allow_empty, cache_tokens=True)
@@ -90,8 +90,8 @@ def set_sim_join(ltable, rtable,
                 tokenizer.tokenize(r_string), token_ordering)
 
         # If allow_empty flag is set and the current rtable record has empty set
-        # of tokens in the join attribute, then generate output pairs joining 
-        # the current rtable record with those records in ltable with empty set 
+        # of tokens in the join attribute, then generate output pairs joining
+        # the current rtable record with those records in ltable with empty set
         # of tokens in the join attribute. These ltable record ids are cached in
         # l_empty_records list which was constructed when building the position
         # index.
@@ -114,7 +114,7 @@ def set_sim_join(ltable, rtable,
                 # output_rows.append(output_row)
             continue
 
-        # obtain candidates by applying position filter.            
+        # obtain candidates by applying position filter.
         candidate_overlap = pos_filter.find_candidates(r_ordered_tokens,
                                                        position_index)
 
@@ -136,8 +136,8 @@ def set_sim_join(ltable, rtable,
                         output_row = [ltable[cand][l_key_attr_index],
                                       r_row[r_key_attr_index]]
 
-                    # if out_sim_score flag is set, append the similarity score    
-                    # to the output record.  
+                    # if out_sim_score flag is set, append the similarity score
+                    # to the output record.
                     if out_sim_score:
                         output_row.append(sim_score)
 

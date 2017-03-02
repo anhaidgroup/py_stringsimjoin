@@ -8,7 +8,7 @@ from six.moves import xrange
 import pandas as pd
 import tempfile
 
-from py_stringsimjoin.muruga.tuple_pair_chest import TuplePairChest
+from py_stringsimjoin.utils.tuple_pair_chest import TuplePairChest
 
 
 COMP_OP_MAP = {'>=': operator.ge,
@@ -20,11 +20,11 @@ COMP_OP_MAP = {'>=': operator.ge,
 
 
 def get_output_row_from_tables(l_row, r_row,
-                               l_key_attr_index, r_key_attr_index, 
+                               l_key_attr_index, r_key_attr_index,
                                l_out_attrs_indices=None,
                                r_out_attrs_indices=None):
     output_row = []
-    
+
     # add ltable id attr
     output_row.append(l_row[l_key_attr_index])
 
@@ -74,16 +74,16 @@ def convert_dataframe_to_list(table, join_attr_index,
     return table_list
 
 
-def convert_dataframe_to_array(dataframe, proj_attrs, join_attr, 
+def convert_dataframe_to_array(dataframe, proj_attrs, join_attr,
                                remove_nan=True):
     if remove_nan:
-        projected_dataframe = dataframe[proj_attrs].dropna(0, 
+        projected_dataframe = dataframe[proj_attrs].dropna(0,
                                                            subset=[join_attr])
     else:
         projected_dataframe = dataframe[proj_attrs]
 
     return projected_dataframe.values
-    
+
 
 def build_dict_from_table(table, key_attr_index, join_attr_index,
                           remove_null=True):
@@ -116,7 +116,7 @@ def remove_non_ascii(s):
     return ''.join(i for i in s if ord(i) < 128)
 
 
-def get_num_processes_to_launch(n_jobs):        
+def get_num_processes_to_launch(n_jobs):
     # determine number of processes to launch parallely
     num_procs = n_jobs
     if n_jobs < 0:
@@ -132,7 +132,7 @@ def get_install_path():
 
 def remove_redundant_attrs(out_attrs, key_attr):
     # this method removes key_attr from out_attrs, if present.
-    # further it removes redundant attributes in out_attrs, 
+    # further it removes redundant attributes in out_attrs,
     # but preserves the order of attributes.
     if out_attrs is None:
         return out_attrs
@@ -147,7 +147,7 @@ def remove_redundant_attrs(out_attrs, key_attr):
 
     return uniq_attrs
 
-    
+
 def get_attrs_to_project(out_attrs, key_attr, join_attr):
     # this method assumes key_attr has already been removed from
     # out_attrs, if present.

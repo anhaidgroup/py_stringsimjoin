@@ -5,7 +5,7 @@ from py_stringsimjoin.utils.generic_helper import \
     find_output_attribute_indices, get_output_header_from_tables, \
     get_output_row_from_tables
 
-from py_stringsimjoin.muruga.tuple_pair_chest import TuplePairChest
+from py_stringsimjoin.utils.tuple_pair_chest import TuplePairChest
 
 
 def get_pairs_with_missing_value(ltable, rtable,
@@ -28,7 +28,7 @@ def get_pairs_with_missing_value(ltable, rtable,
     r_key_attr_index = r_columns.index(r_key_attr)
     r_join_attr_index = r_columns.index(r_join_attr)
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
-   
+
     # find ltable records with missing value in l_join_attr
     ltable_missing = ltable[pd.isnull(ltable[l_join_attr])]
 
@@ -78,7 +78,7 @@ def get_pairs_with_missing_value(ltable, rtable,
             prog_bar.update()
 
     # For each rtable record with missing value in r_join_attr,
-    # output a pair corresponding to every record in ltable which 
+    # output a pair corresponding to every record in ltable which
     # doesn't have a missing value in l_join_attr.
     for r_row in rtable_missing.itertuples(index=False):
         for l_row in ltable_not_missing.itertuples(index=False):
