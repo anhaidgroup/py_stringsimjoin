@@ -179,8 +179,8 @@ def test_edit_distance_join():
                     test_function = partial(test_valid_join, scenario, tok,
                                                          threshold, comp_op)
                     test_function.description = 'Test ' + sim_measure_type + \
-                        ' with ' + str(threshold) + ' threshold and ' + \
-                        tok_type + ' tokenizer for ' + label + '.'
+                        ' with ' + str(threshold) + ' threshold, ' + \
+                        tok_type + ' tokenizer and ' + comp_op + ' comp_op for ' + label + '.'
                     yield test_function,
 
     # Test with allow_missing flag set to True.

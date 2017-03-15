@@ -1,4 +1,8 @@
 
+import subprocess                                                               
+import sys                                                                      
+import os 
+
 # check if pip is installed. If not, raise an ImportError
 PIP_INSTALLED = True
 
@@ -23,7 +27,60 @@ def install_and_import(package):
 # automatically using pip.
 install_and_import('setuptools')
 
+from setuptools.command.build_ext import build_ext as _build_ext                
+                                                                                
+class build_ext(_build_ext):                                                    
+    def build_extensions(self):                                                 
+        _build_ext.build_extensions(self)                                       
+                                                                                
+def generate_cython():                                                          
+    cwd = os.path.abspath(os.path.dirname(__file__))                            
+    print("Cythonizing sources")                                                
+    p = subprocess.call([sys.executable, os.path.join(cwd,                      
+                                                      'build_tools',            
+                                                      'cythonize.py'),          
+                         'cythontest'],                                         
+                        cwd=cwd)                                                
+    if p != 0:                                                                  
+        raise RuntimeError("Running cythonize failed!")                         
+                                                                                
+                                                                                
+cmdclass = {"build_ext": build_ext}   
+
 if __name__ == "__main__":
+
+    no_frills = (len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or            
+                                         sys.argv[1] in ('--help-commands',     
+                                                         'egg_info', '--version',
+                                                         'clean')))             
+                                                                                
+    cwd = os.path.abspath(os.path.dirname(__file__))                            
+    if not os.path.exists(os.path.join(cwd, 'PKG-INFO')) and not no_frills:     
+        # Generate Cython sources, unless building from source release          
+        generate_cython()                                                       
+
+    edit_dist_ext = setuptools.Extension("py_stringsimjoin.similarity_measure.edit_distance",
+        sources=["py_stringsimjoin/similarity_measure/edit_distance.pyx"], 
+        language="c++",  
+        extra_compile_args = ["-O3", "-ffast-math", "-march=native"])   
+
+    edit_dist_join_ext = setuptools.Extension("py_stringsimjoin.join.edit_distance_join_cy",
+        sources=["py_stringsimjoin/join/edit_distance_join_cy.pyx",                   
+                 "py_stringsimjoin/index/inverted_index_cy.cpp"],               
+        language="c++",                                                         
+        extra_compile_args = ["-I./py_stringsimjoin/index/", "-O3",             
+                              "-ffast-math", "-march=native", "-fopenmp"],      
+        extra_link_args=["-fopenmp"])     
+
+    cython_utils_ext = setuptools.Extension("py_stringsimjoin.utils.cython_utils",
+        sources=["py_stringsimjoin/utils/cython_utils.pyx"],                    
+        language="c++",                                                         
+        extra_compile_args = ["-O3", "-ffast-math", "-march=native"])      
+
+    # specify extensions that need to be compiled                               
+    extensions = [edit_dist_ext, 
+                  edit_dist_join_ext,
+                  cython_utils_ext]
 
     # find packages to be included.
     packages = setuptools.find_packages()
@@ -66,10 +123,12 @@ if __name__ == "__main__":
         install_requires=[
             'joblib', 
             'pandas >= 0.16.0',
-            'PyPrind >= 2.9.3',
+            'PyPrind == 2.9.8',
             'py_stringmatching >= 0.2.1',
             'six'                                                              
         ],
         include_package_data=True,
-        zip_safe=False
+        zip_safe=False,
+        ext_modules=extensions,                                                 
+        cmdclass=cmdclass,                                                      
     )

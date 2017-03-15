@@ -1,6 +1,9 @@
 
 __version__ = '0.1.0'
 
+# determine whether to use available cython implementations                     
+__use_cython__ = True 
+
 # import join methods
 from py_stringsimjoin.join.cosine_join import cosine_join
 from py_stringsimjoin.join.dice_join import dice_join

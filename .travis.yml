@@ -12,6 +12,9 @@ matrix:
   - os: linux
     python: 3.5
     env: PYTHON_VERSION=3.5
+  - os: linux                                                                   
+    python: 3.6                                                                 
+    env: PYTHON_VERSION=3.6     
   - os: osx
     language: generic
     env:
@@ -28,6 +31,10 @@ matrix:
     language: generic
     env:
     - PYTHON_VERSION=3.5
+  - os: osx                                                                     
+    language: generic                                                           
+    env:                                                                        
+    - PYTHON_VERSION=3.6  
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://repo.continuum.io/miniconda/Miniconda2-4.0.5-Linux-x86_64.sh -O miniconda.sh; fi
@@ -37,9 +44,11 @@ before_install:
 #  - conda update --yes conda
 
 install:
-  - conda install --yes python=$PYTHON_VERSION pandas joblib six nose
-  - pip install pyprind py_stringmatching coveralls
+  - conda install --yes python=$PYTHON_VERSION pandas joblib six nose Cython
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda install --yes gcc; fi                              
+  - pip install pyprind==2.9.8 py_stringmatching coveralls
   - python --version
+  - python setup.py build_ext --inplace
 
 script:
   - coverage run -m nose
