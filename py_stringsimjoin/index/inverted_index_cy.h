@@ -1,5 +1,6 @@
 #include <map>
 #include <vector>
+#include <algorithm>
 
 class InvertedIndexCy {
   public:
