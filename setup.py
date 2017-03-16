@@ -66,7 +66,7 @@ class build_ext_options:
             e.extra_link_args += LINK_OPTIONS.get(
                     self.compiler.compiler_type, LINK_OPTIONS['other'])
 
-class build_ext(_build_ext):
+class build_ext(_build_ext, build_ext_options):
     def build_extensions(self):
         build_ext_options.build_options(self)
         _build_ext.build_extensions(self)
