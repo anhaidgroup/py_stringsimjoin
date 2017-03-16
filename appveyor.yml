@@ -40,7 +40,7 @@ install:
   - cmd: pip install setuptools pandas six joblib py_stringmatching nose cython wheel
   - cmd: pip install pyprind==2.9.8
   # Build the project
-  - '%CMD_IN_ENV%' python setup.py build_ext --inplace
+  - cmd: '%CMD_IN_ENV% python setup.py build_ext --inplace'
 
 build: false
 
