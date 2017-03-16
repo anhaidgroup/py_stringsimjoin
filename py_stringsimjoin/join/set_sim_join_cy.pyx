@@ -182,7 +182,7 @@ cdef int get_size_upper_bound(int& num_tokens, int& sim_type, double& threshold)
                                                                                 
 cdef int get_overlap_threshold(int& l_num_tokens, int& r_num_tokens, int& sim_type, double& threshold) nogil:
     if sim_type == 0: # COSINE                                                  
-        return <int>ceil(threshold * sqrt(l_num_tokens * r_num_tokens))         
+        return <int>ceil(threshold * sqrt(<double>(l_num_tokens * r_num_tokens)))         
     elif sim_type == 1: # DICE                                                  
         return <int>ceil((threshold / 2) * (l_num_tokens + r_num_tokens))       
     elif sim_type == 2: # JACCARD:                                              
