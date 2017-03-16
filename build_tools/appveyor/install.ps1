@@ -1,10 +1,14 @@
-#pandas
+# Sample script to install Miniconda under Windows
+# Authors: Olivier Grisel, Jonathan Helmus and Kyle Kastner, Robert McGibbon
+# License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
+
 $MINICONDA_URL = "http://repo.continuum.io/miniconda/"
 
 
 function DownloadMiniconda ($python_version, $platform_suffix) {
     $webclient = New-Object System.Net.WebClient
     $filename = "Miniconda3-latest-Windows-" + $platform_suffix + ".exe"
+   # $filename = "Miniconda3-3.8.3-Windows-" + $platform_suffix + ".exe"
     $url = $MINICONDA_URL + $filename
 
     $basedir = $pwd.Path + "\"
@@ -81,9 +85,10 @@ function UpdateConda ($python_home) {
 
 
 function main () {
-    InstallMiniconda "3.5" $env:PYTHON_ARCH $env:CONDA_ROOT
-    UpdateConda $env:CONDA_ROOT
-    InstallCondaPackages $env:CONDA_ROOT "conda-build jinja2 anaconda-client"
+    InstallMiniconda $env:PYTHON_VERSION $env:PYTHON_ARCH $env:PYTHON
+    UpdateConda $env:PYTHON
+    InstallCondaPackages $env:PYTHON "conda-build jinja2 anaconda-client"
 }
 
 main
+

@@ -1,79 +1,34 @@
-matrix:
-  fast_finish: true     # immediately finish build once one of the jobs fails.
-
-image: Visual Studio 2014
-
-
 environment:
-  global:
-    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
-    # /E:ON and /V:ON options are not enabled in the batch script intepreter
-    # See: http://stackoverflow.com/a/13751649/163740
-    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\build_tools\\appveyor\\run_with_env.cmd"
-    clone_folder: C:\projects\py_stringsimjoin
-
 
   matrix:
-
-    - CONDA_ROOT: "C:\\Miniconda3_64"
-      PYTHON_VERSION: "3.6"
-      PYTHON_ARCH: "64"
-      CONDA_PY: "36"
-
-
-    - CONDA_ROOT: "C:\\Miniconda3_64"
-      PYTHON_VERSION: "2.7"
-      PYTHON_ARCH: "64"
-      CONDA_PY: "27"
-
-
-    - CONDA_ROOT: "C:\\Miniconda3_64"
-      PYTHON_VERSION: "3.5"
-      PYTHON_ARCH: "64"
-      CONDA_PY: "35"
-
-
-platform:
-    - x64
-
-# all our python builds have to happen in tests_script...
-build: false
-
-
-init:
-  - "ECHO %PYTHON_VERSION% %PYTHON%"
+    - python : 27
+    - python : 27-x64
+    - python : 34
+    - python : 34-x64
+    - python : 35
+    - python : 35-x64
 
 install:
-  # this installs the appropriate Miniconda (Py2/Py3, 32/64 bit)
-  # updates conda & installs: conda-build jinja2 anaconda-client
-  - powershell .\build_tools\appveyor\install.ps1
-  - SET PATH=%CONDA_ROOT%;%CONDA_ROOT%\Scripts;%PATH%
-  - echo "install"
-  - cd
-  - ls -ltr
-  # this can conflict with git
-  - cmd: rmdir C:\cygwin /s /q
-  - cmd: "SET PATH=C:\\Python%PYTHON%;c:\\Python%PYTHON%\\scripts;%PATH%"
-  - cmd: echo "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64 > "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64/vcvars64.bat"
+
+  - "SET PATH=C:\\Python%PYTHON%;c:\\Python%PYTHON%\\scripts;%PATH%"
+  - echo "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64 > "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64/vcvars64.bat"
 
   # Check that we have the expected version and architecture for Python
-  - cmd: python --version
-  - cmd: "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+  - python --version
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
 
   # Install pip
-  - cmd: python -m pip install --upgrade pip
+  - python -m pip install --upgrade pip
 
   # Install the build and runtime dependencies of the project.
-  - cmd: pip install setuptools pandas six joblib py_stringmatching nose cython wheel
-  - cmd: pip install pyprind==2.9.8
-  # Build the project
-  - cmd: '%CMD_IN_ENV% python setup.py build_ext --inplace'
+  - pip install setuptools pandas six joblib pyprind py_stringmatching nose cython
 
 
+build: false
 
 test_script:
   # run unit tests
   - nosetests
 
 on_success:
-  - echo Build succesful!
+  - echo Build succesful
