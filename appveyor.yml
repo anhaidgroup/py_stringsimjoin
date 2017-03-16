@@ -23,6 +23,8 @@ install:
   # Install the build and runtime dependencies of the project.
   - pip install setuptools pandas six joblib pyprind py_stringmatching nose cython
 
+  - python setup.py build_ext --inplace
+
 
 build: false
 
