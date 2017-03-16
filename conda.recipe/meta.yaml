@@ -12,7 +12,7 @@ requirements:
     - setuptools
     - joblib
     - pandas >=0.16.0
-    - PyPrind 
+    - pyprind 
     - py_stringmatching
     - six
 
@@ -20,7 +20,7 @@ requirements:
     - python
     - joblib
     - pandas >=0.16.0
-    - PyPrind 
+    - pyprind 
     - py_stringmatching
     - six
 
