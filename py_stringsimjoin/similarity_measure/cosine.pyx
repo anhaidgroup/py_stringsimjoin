@@ -19,4 +19,4 @@ cdef double cosine(const vector[int]& tokens1, const vector[int]& tokens2) nogil
             i += 1                                                              
         else:                                                                   
             j += 1                                                              
-    return <double>overlap / sqrt(size1*size2)    
+    return <double>overlap / sqrt(<double>(size1*size2))    
