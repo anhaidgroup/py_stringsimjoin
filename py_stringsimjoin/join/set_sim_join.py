@@ -104,7 +104,7 @@ def set_sim_join(ltable, rtable,
                 l_ordered_tokens = cached_l_tokens[cand]
 
                 # compute the actual similarity score
-                sim_score = sim_fn(l_ordered_tokens, r_ordered_tokens)
+                sim_score = round(sim_fn(l_ordered_tokens, r_ordered_tokens), 4)
 
                 if comp_fn(sim_score, threshold):
                     if has_output_attributes:

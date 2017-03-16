@@ -85,15 +85,56 @@ def generate_cython():
 
 MODULES = {
         "py_stringsimjoin.similarity_measure.edit_distance": {'sources':["py_stringsimjoin/similarity_measure/edit_distance.pyx"],
-                                                        #'comargs':["-I./py_stringsimjoin/similarity_measure/"]
                                                         'comargs':[]
                                                         },
+
+        "py_stringsimjoin.similarity_measure.cosine": {'sources':["py_stringsimjoin/similarity_measure/cosine.pyx"],
+                                                        'comargs':[]            
+                                                        }, 
+
+        "py_stringsimjoin.similarity_measure.dice": {'sources':["py_stringsimjoin/similarity_measure/dice.pyx"],
+                                                        'comargs':[]            
+                                                        }, 
+
+        "py_stringsimjoin.similarity_measure.jaccard": {'sources':["py_stringsimjoin/similarity_measure/jaccard.pyx"],
+                                                        'comargs':[]            
+                                                        }, 
+
         "py_stringsimjoin.join.edit_distance_join_cy": {'sources':["py_stringsimjoin/join/edit_distance_join_cy.pyx",
+                                                                   "py_stringsimjoin/index/inverted_index_cy.cpp"],
+                                                        'comargs':["-I./py_stringsimjoin/index/"]
+                                                        },
+
+        "py_stringsimjoin.join.overlap_coefficient_join_cy": {'sources':["py_stringsimjoin/join/overlap_coefficient_join_cy.pyx",
                                                                     "py_stringsimjoin/index/inverted_index_cy.cpp"],
                                                         'comargs':["-I./py_stringsimjoin/index/"]
                                                         },
-        "py_stringsimjoin.utils.cython_utils": {'sources': ["py_stringsimjoin/utils/cython_utils.pyx"],
-                                               'comargs': []
+
+        "py_stringsimjoin.join.overlap_join_cy": {'sources':["py_stringsimjoin/join/overlap_join_cy.pyx",
+                                                             "py_stringsimjoin/index/inverted_index_cy.cpp"],
+                                                        'comargs':["-I./py_stringsimjoin/index/"]
+                                                        },
+
+        "py_stringsimjoin.join.cosine_join_cy": {'sources':["py_stringsimjoin/join/cosine_join_cy.pyx"],
+                                                        'comargs':["-I./py_stringsimjoin/index/"]
+                                                        },  
+
+        "py_stringsimjoin.join.dice_join_cy": {'sources':["py_stringsimjoin/join/dice_join_cy.pyx"],
+                                                        'comargs':["-I./py_stringsimjoin/index/"]
+                                                        },  
+
+        "py_stringsimjoin.join.jaccard_join_cy": {'sources':["py_stringsimjoin/join/jaccard_join_cy.pyx"],
+                                                        'comargs':["-I./py_stringsimjoin/index/"]
+                                                        },       
+
+        "py_stringsimjoin.join.set_sim_join_cy": {'sources':["py_stringsimjoin/join/set_sim_join_cy.pyx",
+                                                             "py_stringsimjoin/index/position_index_cy.cpp"],
+                                                        'comargs':["-I./py_stringsimjoin/index/"]
+                                                        },   
+
+        "py_stringsimjoin.utils.cython_utils": {'sources': ["py_stringsimjoin/utils/cython_utils.pyx", 
+                                                            "py_stringsimjoin/index/inverted_index_cy.cpp"],
+                                               'comargs': ["-I./py_stringsimjoin/index/"]
                                                }
 }
 
