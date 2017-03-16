@@ -39,6 +39,7 @@ before_install:
 install:
   - conda install --yes python=$PYTHON_VERSION pandas joblib six nose Cython
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda install --yes gcc; fi                              
+  - which gcc
   - pip install pyprind==2.9.8 py_stringmatching coveralls
   - python --version
   - python setup.py build_ext --inplace
