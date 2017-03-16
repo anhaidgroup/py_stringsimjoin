@@ -1,7 +1,8 @@
-
-import subprocess                                                               
-import sys                                                                      
-import os 
+import subprocess
+import sys
+import os
+import re
+import contextlib
 
 # check if pip is installed. If not, raise an ImportError
 PIP_INSTALLED = True
@@ -27,108 +28,193 @@ def install_and_import(package):
 # automatically using pip.
 install_and_import('setuptools')
 
-from setuptools.command.build_ext import build_ext as _build_ext                
-                                                                                
-class build_ext(_build_ext):                                                    
-    def build_extensions(self):                                                 
-        _build_ext.build_extensions(self)                                       
-                                                                                
-def generate_cython():                                                          
-    cwd = os.path.abspath(os.path.dirname(__file__))                            
-    print("Cythonizing sources")                                                
-    p = subprocess.call([sys.executable, os.path.join(cwd,                      
-                                                      'build_tools',            
-                                                      'cythonize.py'),          
-                         'cythontest'],                                         
-                        cwd=cwd)                                                
-    if p != 0:                                                                  
-        raise RuntimeError("Running cythonize failed!")                         
-                                                                                
-                                                                                
-cmdclass = {"build_ext": build_ext}   
+from setuptools.command.build_ext import build_ext as _build_ext
+from distutils import ccompiler, msvccompiler
+from distutils.sysconfig import get_python_inc
 
-if __name__ == "__main__":
 
-    no_frills = (len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or            
-                                         sys.argv[1] in ('--help-commands',     
-                                                         'egg_info', '--version',
-                                                         'clean')))             
-                                                                                
-    cwd = os.path.abspath(os.path.dirname(__file__))                            
-    if not os.path.exists(os.path.join(cwd, 'PKG-INFO')) and not no_frills:     
-        # Generate Cython sources, unless building from source release          
-        generate_cython()                                                       
+## fix compiler and build options
+COMPILE_OPTIONS = {
+        'msvc': ['/0x', '/EHsc'],
+        'mingw32': ['-O3', '-ffast-math', '-march=native'],
+        'other': ['-O3', '-ffast-math', '-march=native']
+}
 
-    edit_dist_ext = setuptools.Extension("py_stringsimjoin.similarity_measure.edit_distance",
-        sources=["py_stringsimjoin/similarity_measure/edit_distance.pyx"], 
-        language="c++",  
-        extra_compile_args = ["-O3", "-ffast-math", "-march=native"])   
+LINK_OPTIONS = {
+        'msvc': [],
+        'mingw32': [],
+        'other':[]
+}
 
-    edit_dist_join_ext = setuptools.Extension("py_stringsimjoin.join.edit_distance_join_cy",
-        sources=["py_stringsimjoin/join/edit_distance_join_cy.pyx",                   
-                 "py_stringsimjoin/index/inverted_index_cy.cpp"],               
-        language="c++",                                                         
-        extra_compile_args = ["-I./py_stringsimjoin/index/", "-O3",             
-                              "-ffast-math", "-march=native", "-fopenmp"],      
-        extra_link_args=["-fopenmp"])     
 
-    cython_utils_ext = setuptools.Extension("py_stringsimjoin.utils.cython_utils",
-        sources=["py_stringsimjoin/utils/cython_utils.pyx"],                    
-        language="c++",                                                         
-        extra_compile_args = ["-O3", "-ffast-math", "-march=native"])      
+USE_OPENMP_DEFAULT='1'
 
-    # specify extensions that need to be compiled                               
-    extensions = [edit_dist_ext, 
-                  edit_dist_join_ext,
-                  cython_utils_ext]
+# The user can update to use openmp using USE_OPENMP environ variable
+if os.environ.get('USE_OPENMP', USE_OPENMP_DEFAULT) == '1':
+    if sys.platform == 'win32':
+        COMPILE_OPTIONS['msvc'].append('/openmp')
+    else:
+        COMPILE_OPTIONS['other'].append('-fopenmp')
+        LINK_OPTIONS['other'].append('-fopenmp')
 
-    # find packages to be included.
-    packages = setuptools.find_packages()
+class build_ext_options:
+    def build_options(self):
+        for e in self.extensions:
+            e.extra_compile_args += COMPILE_OPTIONS.get(
+                self.compiler.compiler_type, COMPILE_OPTIONS['other'])
+        for e in self.extensions:
+            e.extra_link_args += LINK_OPTIONS.get(
+                    self.compiler.compiler_type, LINK_OPTIONS['other'])
 
-    with open('README.rst') as f:
-        LONG_DESCRIPTION = f.read()
+class build_ext(_build_ext):
+    def build_extensions(self):
+        build_ext_options.build_options(self)
+        _build_ext.build_extensions(self)
 
-    setuptools.setup(
-        name='py_stringsimjoin',
-        version='0.1.0',
-        description='Python library for performing string similarity joins.',
-        long_description=LONG_DESCRIPTION,
-        url='https://sites.google.com/site/anhaidgroup/projects/py_stringsimjoin',
-        author='UW Magellan Team',
-        author_email='uwmagellan@gmail.com',
-        license='BSD',
-        classifiers=[
-            'Development Status :: 4 - Beta',
-            'Environment :: Console',
-            'Intended Audience :: Developers',
-            'Intended Audience :: Science/Research',
-            'Intended Audience :: Education',
-            'License :: OSI Approved :: BSD License',
-            'Operating System :: POSIX',
-            'Operating System :: Unix',
-            'Operating System :: MacOS',
-            'Operating System :: Microsoft :: Windows',
-            'Programming Language :: Python',
-            'Programming Language :: Python :: 2',
-            'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 2.7',
-            'Programming Language :: Python :: 3.3',
-            'Programming Language :: Python :: 3.4',
-            'Programming Language :: Python :: 3.5',
-            'Topic :: Scientific/Engineering',
-            'Topic :: Utilities',
-            'Topic :: Software Development :: Libraries',
-        ],
-        packages=packages,
-        install_requires=[
-            'joblib', 
-            'pandas >= 0.16.0',
-            'PyPrind == 2.9.8',
-            'py_stringmatching >= 0.2.1',
-            'six'                                                              
-        ],
-        include_package_data=True,
-        zip_safe=False,
-        ext_modules=extensions,                                                 
-        cmdclass=cmdclass,                                                      
-    )
+
+def generate_cython():
+    cwd = os.path.abspath(os.path.dirname(__file__))
+    print("Cythonizing sources")
+    p = subprocess.call([sys.executable, os.path.join(cwd,
+                             'build_tools',
+                             'cythonize.py'),
+            'py_stringsimjoin'],
+        cwd=cwd)
+    if p != 0:
+        raise RuntimeError("Running cythonize failed!")
+
+MODULES = {
+        "py_stringsimjoin.similarity_measure.edit_distance": {'sources':["py_stringsimjoin/similarity_measure/edit_distance.pyx"],
+                                                        #'comargs':["-I./py_stringsimjoin/similarity_measure/"]
+                                                        'comargs':[]
+                                                        },
+        "py_stringsimjoin.join.edit_distance_join_cy": {'sources':["py_stringsimjoin/join/edit_distance_join_cy.pyx",
+                                                                    "py_stringsimjoin/index/inverted_index_cy.cpp"],
+                                                        'comargs':["-I./py_stringsimjoin/index/"]
+                                                        },
+        "py_stringsimjoin.utils.cython_utils": {'sources': ["py_stringsimjoin/utils/cython_utils.pyx"],
+                                               'comargs': []
+                                               }
+}
+
+
+def is_source_release(path):
+    return os.path.exists(os.path.join(path, 'PKG-INFO'))
+
+def purge(dir, pattern):
+    for f in os.listdir(dir):
+        if re.search(pattern, f):
+            file_path=os.path.join(dir,f)
+            os.remove(file_path)
+
+def clean(path):
+    for name in list(MODULES.keys()):
+        dir_list = name.split('.')[0:-1]
+        dir_name = '/'.join(dir_list)
+        purge(dir_name, r".*\.so$")
+
+        name = name.replace('.','/')
+        for ext in ['.cpp', '.c']:
+            file_path = os.path.join(path, name + ext)
+            if os.path.exists(file_path):
+                os.unlink(file_path)
+
+
+
+
+@contextlib.contextmanager
+def chdir(new_dir):
+    old_dir = os.getcwd()
+    try:
+        os.chdir(new_dir)
+        sys.path.insert(0, new_dir)
+        yield
+    finally:
+        del sys.path[0]
+        os.chdir(old_dir)
+
+
+def setup_package():
+    root = os.path.abspath(os.path.dirname(__file__))
+
+    if len(sys.argv) > 1 and sys.argv[1] == 'clean':
+        return clean(root)
+    if len(sys.argv) > 1 and sys.argv[1] == 'touch':
+        return touch(root)
+
+
+    with chdir(root):
+        include_dirs = [get_python_inc(plat_specific=True)]
+
+        if (ccompiler.new_compiler().compiler_type == 'msvc'
+                and msvccompiler.get_build_version == 9):
+            include_dirs.append(os.path.join(root, 'include', 'msvc9'))
+
+        if not is_source_release(root):
+            generate_cython()
+
+        extensions = []
+        for name in list(MODULES.keys()):
+            curr_mod = MODULES[name]
+            e = setuptools.Extension(name, sources=curr_mod['sources'],
+                    extra_compile_args=curr_mod['comargs'], language='c++')
+            extensions.append(e)
+
+
+
+        packages = setuptools.find_packages()
+        with open('README.rst') as f:
+            LONG_DESCRIPTION = f.read()
+
+        cmdclass = {"build_ext": build_ext}
+        setuptools.setup(
+            name='py_stringsimjoin',
+            version='0.1.0',
+            description='Python library for performing string similarity joins.',
+            long_description=LONG_DESCRIPTION,
+            url='https://sites.google.com/site/anhaidgroup/projects/py_stringsimjoin',
+            author='UW Magellan Team',
+            author_email='uwmagellan@gmail.com',
+            license='BSD',
+            classifiers=[
+                'Development Status :: 4 - Beta',
+                'Environment :: Console',
+                'Intended Audience :: Developers',
+                'Intended Audience :: Science/Research',
+                'Intended Audience :: Education',
+                'License :: OSI Approved :: BSD License',
+                'Operating System :: POSIX',
+                'Operating System :: Unix',
+                'Operating System :: MacOS',
+                'Operating System :: Microsoft :: Windows',
+                'Programming Language :: Python',
+                'Programming Language :: Python :: 2',
+                'Programming Language :: Python :: 3',
+                'Programming Language :: Python :: 2.7',
+                'Programming Language :: Python :: 3.3',
+                'Programming Language :: Python :: 3.4',
+                'Programming Language :: Python :: 3.5',
+                'Topic :: Scientific/Engineering',
+                'Topic :: Utilities',
+                'Topic :: Software Development :: Libraries',
+            ],
+            packages=packages,
+            ext_modules=extensions,
+            cmdclass=cmdclass,
+            install_requires=[
+                'joblib',
+                'pandas >= 0.16.0',
+                'PyPrind >= 2.9.3',
+                'py_stringmatching >= 0.2.1',
+                'six'
+            ],
+            include_package_data=True,
+            zip_safe=False,
+        )
+if __name__ == '__main__':
+    setup_package()
+
+
+
+
+

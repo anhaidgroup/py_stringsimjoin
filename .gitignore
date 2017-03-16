@@ -72,3 +72,6 @@ target/
 
 # idea files
 .idea/
+
+# cython
+cythonize.dat
