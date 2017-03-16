@@ -9,6 +9,8 @@ environment:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\build_tools\\appveyor\\run_with_env.cmd"
     clone_folder: C:\projects\py_stringsimjoin
 
+image: Visual Studio 2014
+
   matrix:
 
     - CONDA_ROOT: "C:\\Miniconda3_64"
