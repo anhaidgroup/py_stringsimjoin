@@ -21,7 +21,7 @@ install:
   - python -m pip install --upgrade pip
 
   # Install the build and runtime dependencies of the project.
-  - pip install setuptools pandas six joblib py_stringmatching nose
+  - pip install setuptools pandas six joblib py_stringmatching nose cython wheel
   - pip install pyprind==2.9.8
   # Build the project
   - python setup.py build_ext --inplace
