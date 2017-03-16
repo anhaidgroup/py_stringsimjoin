@@ -168,7 +168,7 @@ def setup_package():
 
         cmdclass = {"build_ext": build_ext}
         setuptools.setup(
-            name='py_stringsimjoin',
+            name='py_stringsimjoin_cython',
             version='0.1.0',
             description='Python library for performing string similarity joins.',
             long_description=LONG_DESCRIPTION,

@@ -1,0 +1,51 @@
+package:
+  name: py_stringsimjoin_cython
+  version: "0.1.0"
+
+source:
+    git_url: ../
+
+requirements:
+  build:
+    - python
+    - cython
+    - setuptools
+    - joblib
+    - pandas >=0.16.0
+    - PyPrind ==2.9.8
+    - py_stringmatching
+    - six
+
+  run:
+    - python
+    - joblib
+    - pandas >=0.16.0
+    - PyPrind ==2.9.8
+    - py_stringmatching
+    - six
+
+test:
+  # Python imports
+  imports:
+    - py_stringsimjoin
+
+  # commands:
+    # You can put test commands to be run here.  Use this to test that the
+    # entry points work.
+
+
+  # You can also put a file called run_test.py in the recipe that will be run
+  # at test time.
+
+  # requires:
+    # Put any additional test requirements here.  For example
+    # - nose
+
+about:
+  home: https://sites.google.com/site/anhaidgroup/projects/py_stringsimjoin
+  license: BSD License
+  summary: 'Python library for string similarity joins.'
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml
