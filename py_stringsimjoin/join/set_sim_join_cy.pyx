@@ -1,5 +1,7 @@
 # set similarity join
 
+import pyprind                                                                  
+
 from cython.parallel import prange                                              
                                                                                 
 from libc.math cimport ceil, floor, round, sqrt, trunc                          
@@ -18,10 +20,14 @@ from py_stringsimjoin.utils.cython_utils cimport compfnptr,\
     get_comparison_function, get_comp_type, int_max, int_min, tokenize_lists                       
 
 
-cpdef void set_sim_join_cy(ltable, rtable, 
+# Initialize a global variable to keep track of the progress bar                
+_progress_bar = None 
+
+
+cdef void set_sim_join_cy(ltable, rtable, 
                            l_join_attr_index, r_join_attr_index, 
                            tokenizer, sim_measure, double threshold, comp_op,       
-                           int n_jobs, bool allow_empty,
+                           int n_jobs, bool allow_empty, bool show_progress,
                            vector[vector[pair[int, int]]]& output_pairs, 
                            vector[vector[double]]& output_sim_scores):      
                      
@@ -48,11 +54,18 @@ cpdef void set_sim_join_cy(ltable, rtable,
         start = end                                                             
         output_pairs.push_back(vector[pair[int, int]]())                        
         output_sim_scores.push_back(vector[double]())                           
+
+    # If the show_progress flag is enabled, then create a new progress bar and  
+    # assign it to the global variable.                                         
+    if show_progress:                                                           
+        global _progress_bar                                                    
+        _progress_bar = pyprind.ProgBar(partition_size)   
                                                                                 
     for i in prange(n_jobs, nogil=True):                                         
         set_sim_join_partition(partitions[i], ltokens, rtokens, sim_type, 
                                comp_op_type, threshold, allow_empty, index, 
-                               output_pairs[i], output_sim_scores[i])                        
+                               output_pairs[i], output_sim_scores[i], 
+                               i, show_progress)                        
 
 
 cdef void set_sim_join_partition(pair[int, int] partition,                  
@@ -62,7 +75,8 @@ cdef void set_sim_join_partition(pair[int, int] partition,
                                  double threshold, bool allow_empty, 
                                  PositionIndexCy& index,             
                                  vector[pair[int, int]]& output_pairs,               
-                                 vector[double]& output_sim_scores) nogil:           
+                                 vector[double]& output_sim_scores,
+                                 int thread_id, bool show_progress) nogil:           
     cdef omap[int, int] candidate_overlap, overlap_threshold_cache              
     cdef vector[pair[int, int]] candidates                                      
     cdef vector[int] tokens                                                     
@@ -131,6 +145,15 @@ cdef void set_sim_join_partition(pair[int, int] partition,
         candidate_overlap.clear()                                               
         overlap_threshold_cache.clear()          
 
+        # If the show_progress flag is enabled, we update the progress bar.     
+        # Note that only one of the threads will update the progress bar. To    
+        # do so, it releases GIL and updates the global variable that keeps     
+        # track of the progress bar.                                            
+        if thread_id == 0 and show_progress:                                    
+            with gil:                                                           
+                global _progress_bar                                            
+                _progress_bar.update()   
+
 
 cdef void build_position_index(vector[vector[int]]& token_vectors, 
                                int& sim_type, double& threshold, 
@@ -182,7 +205,7 @@ cdef int get_size_upper_bound(int& num_tokens, int& sim_type, double& threshold)
                                                                                 
 cdef int get_overlap_threshold(int& l_num_tokens, int& r_num_tokens, int& sim_type, double& threshold) nogil:
     if sim_type == 0: # COSINE                                                  
-        return <int>ceil(threshold * sqrt(<double>(l_num_tokens * r_num_tokens)))         
+        return <int>ceil(threshold * sqrt(<double>(l_num_tokens * r_num_tokens)))
     elif sim_type == 1: # DICE                                                  
         return <int>ceil((threshold / 2) * (l_num_tokens + r_num_tokens))       
     elif sim_type == 2: # JACCARD:                                              

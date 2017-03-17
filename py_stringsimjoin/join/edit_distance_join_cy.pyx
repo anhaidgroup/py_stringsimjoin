@@ -3,6 +3,7 @@ from math import floor
 
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
+import pyprind
 
 from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
@@ -33,6 +34,9 @@ from py_stringsimjoin.utils.cython_utils cimport compfnptr,\
     get_comparison_function, get_comp_type, int_min
 
 
+# Initialize a global variable to keep track of the progress bar
+_progress_bar = None
+
 def edit_distance_join_cy(ltable, rtable,
                           l_key_attr, r_key_attr,
                           l_join_attr, r_join_attr,
@@ -43,7 +47,7 @@ def edit_distance_join_cy(ltable, rtable,
                           l_out_prefix='l_', r_out_prefix='r_',
                           out_sim_score=True, 
                           int n_jobs=1, 
-                          show_progress=True,
+                          bool show_progress=True,
                           tokenizer=QgramTokenizer(qval=2)):
     """Join two tables using edit distance measure.
 
@@ -252,12 +256,18 @@ def edit_distance_join_cy(ltable, rtable,
         output_pairs.push_back(vector[pair[int, int]]())
         output_sim_scores.push_back(vector[double]())                           
 
+    # If the show_progress flag is enabled, then create a new progress bar and 
+    # assign it to the global variable.
+    if show_progress:                                                           
+        global _progress_bar                                                    
+        _progress_bar = pyprind.ProgBar(partition_size)     
+
     cdef int qval = tokenizer.qval
 
     for ii in prange(n_jobs, nogil=True):    
         _ed_join_part(partitions[ii], rtokens, qval, threshold, 
                       comp_op_type, prefix_index, lstrings, rstrings, 
-                      output_pairs[ii], output_sim_scores[ii])
+                      output_pairs[ii], output_sim_scores[ii], ii, show_progress)
 
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
@@ -344,7 +354,8 @@ cdef void _ed_join_part(pair[int, int] partition,
                         InvertedIndexCy& index,
                         vector[string]& lstrings, vector[string]& rstrings, 
                         vector[pair[int, int]]& output_pairs,
-                        vector[double]& output_sim_scores) nogil:    
+                        vector[double]& output_sim_scores, 
+                        int thread_id, bool show_progress) nogil:    
     cdef oset[int] candidates                                      
     cdef vector[int] tokens
     cdef int j=0, m, i, prefix_length, cand                    
@@ -371,3 +382,12 @@ cdef void _ed_join_part(pair[int, int] partition,
                     output_sim_scores.push_back(edit_dist)                          
 
         candidates.clear()
+
+        # If the show_progress flag is enabled, we update the progress bar.
+        # Note that only one of the threads will update the progress bar. To
+        # do so, it releases GIL and updates the global variable that keeps 
+        # track of the progress bar.
+        if thread_id == 0 and show_progress:
+            with gil:
+                global _progress_bar
+                _progress_bar.update()

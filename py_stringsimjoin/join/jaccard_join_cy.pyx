@@ -184,7 +184,8 @@ def jaccard_join_cy(ltable, rtable,
     set_sim_join_cy(ltable_array, rtable_array,
                     l_join_attr_index, r_join_attr_index,
                     tokenizer, 'JACCARD', threshold, comp_op, 
-                    n_jobs, allow_empty, output_pairs, output_sim_scores)   
+                    n_jobs, allow_empty, show_progress, 
+                    output_pairs, output_sim_scores)   
 
     output_header = get_output_header_from_tables(                              
                         l_key_attr, r_key_attr,                                 

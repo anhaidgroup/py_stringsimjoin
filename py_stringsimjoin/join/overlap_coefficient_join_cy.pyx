@@ -1,6 +1,7 @@
 # overlap coefficient join
 from six import iteritems
 import pandas as pd
+import pyprind                                                                  
 
 from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
@@ -25,6 +26,10 @@ from py_stringsimjoin.index.inverted_index_cy cimport InvertedIndexCy
 from py_stringsimjoin.utils.cython_utils cimport build_inverted_index,\
     compfnptr, generate_output_table, get_comparison_function, get_comp_type,\
     int_min, tokenize_lists
+
+
+# Initialize a global variable to keep track of the progress bar                
+_progress_bar = None 
 
 
 def overlap_coefficient_join_cy(ltable, rtable,
@@ -194,7 +199,7 @@ def overlap_coefficient_join_cy(ltable, rtable,
     _perform_overlap_coeff_join(ltable_array, rtable_array, 
                                 l_join_attr_index, r_join_attr_index, 
                                 tokenizer, threshold, comp_op, 
-                                n_jobs, allow_empty, 
+                                n_jobs, allow_empty, show_progress, 
                                 output_pairs, output_sim_scores)
 
     output_header = get_output_header_from_tables(                              
@@ -236,7 +241,8 @@ def overlap_coefficient_join_cy(ltable, rtable,
 
 cdef void _perform_overlap_coeff_join(ltable_array, rtable_array,
               l_join_attr_index, r_join_attr_index,  
-              tokenizer, double threshold, comp_op, int n_jobs, bool allow_empty,
+              tokenizer, double threshold, comp_op, int n_jobs, 
+              bool allow_empty, bool show_progress,                                     
               vector[vector[pair[int, int]]]& output_pairs, 
               vector[vector[double]]& output_sim_scores):
 
@@ -270,11 +276,18 @@ cdef void _perform_overlap_coeff_join(ltable_array, rtable_array,
         output_pairs.push_back(vector[pair[int, int]]())                        
         output_sim_scores.push_back(vector[double]())                          
 
+    # If the show_progress flag is enabled, then create a new progress bar and  
+    # assign it to the global variable.                                         
+    if show_progress:                                                           
+        global _progress_bar                                                    
+        _progress_bar = pyprind.ProgBar(partition_size)   
+
     for i in prange(n_jobs, nogil=True):                                        
         _overlap_coeff_join_part(partitions[i], ltokens, rtokens,       
                                  comp_op_type, threshold, allow_empty, 
                                  index, l_empty_ids, 
-                                 output_pairs[i], output_sim_scores[i])  
+                                 output_pairs[i], output_sim_scores[i],
+                                 i, show_progress)  
 
 
 cdef void _overlap_coeff_join_part(pair[int, int] partition,                 
@@ -284,7 +297,8 @@ cdef void _overlap_coeff_join_part(pair[int, int] partition,
                                    bool allow_empty, InvertedIndexCy& index,
                                    vector[int]& l_empty_ids,            
                                    vector[pair[int, int]]& output_pairs,              
-                                   vector[double]& output_sim_scores) nogil:          
+                                   vector[double]& output_sim_scores,
+                                   int thread_id, bool show_progress) nogil:          
     cdef omap[int, int] candidate_overlap                                       
     cdef vector[int] candidates                                                 
     cdef vector[int] tokens                                                     
@@ -317,4 +331,13 @@ cdef void _overlap_coeff_join_part(pair[int, int] partition,
                 output_pairs.push_back(pair[int, int](entry.first, i))          
                 output_sim_scores.push_back(sim_score)                          
                                                                                 
-        candidate_overlap.clear() 
+        candidate_overlap.clear()
+
+        # If the show_progress flag is enabled, we update the progress bar.     
+        # Note that only one of the threads will update the progress bar. To    
+        # do so, it releases GIL and updates the global variable that keeps     
+        # track of the progress bar.                                            
+        if thread_id == 0 and show_progress:                                    
+            with gil:                                                           
+                global _progress_bar                                            
+                _progress_bar.update()    
