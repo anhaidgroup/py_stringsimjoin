@@ -1,7 +1,7 @@
 # jaccard join
 import math
 import tempfile
-
+import csv
 import pandas as pd
 from joblib import delayed, Parallel
 
@@ -103,10 +103,17 @@ def jaccard_join(ltable, rtable,
 
         show_progress (boolean): flag to indicate whether task progress should 
             be displayed to the user (defaults to True).
+        
+        file_name (string): Location where output will be stored.
+        
+        mem_threshold (int): Memory Threshold which is the limit of
+        intermediate data that can be written to memory.
+        
+        append_to_file (boolean): A flag to indicate whether appending
+        is enabled or disabled.
 
     Returns:
-        An output table containing tuple pairs that satisfy the join 
-        condition (DataFrame).
+        A boolean value to indicate completion of operation.
     """
 
     # check if the input tables are dataframes
@@ -165,9 +172,12 @@ def jaccard_join(ltable, rtable,
     # the input dataframes. Then, convert the resulting dataframes into ndarray.
     ltable_array = convert_dataframe_to_array(ltable, l_proj_attrs, l_join_attr)
     rtable_array = convert_dataframe_to_array(rtable, r_proj_attrs, r_join_attr)
-
+    
+    # Call the respective join function depending on whether join is to
+    # be done in-memory or out of memory
     output = None
     if file_name == None:
+        #join in memory. Tuple pair functionality will not be used in this case.
         output = _jaccard_join_in_mem(ltable, rtable,
                                       ltable_array, rtable_array,
                                       l_proj_attrs, r_proj_attrs,
@@ -182,6 +192,7 @@ def jaccard_join(ltable, rtable,
                                       show_progress,
                                       revert_tokenizer_return_set_flag)
     else:
+        #join out of memory and using Tuple pair functionality.
         output = _jaccard_join_ooc_mem(ltable, rtable,
                                        ltable_array, rtable_array,
                                        l_proj_attrs, r_proj_attrs,
@@ -201,7 +212,7 @@ def jaccard_join(ltable, rtable,
 
     return output
 
-
+#Args are same as used in above functions
 def _jaccard_join_ooc_mem(ltable, rtable,
                           ltable_array, rtable_array,
                           l_columns, r_columns,
@@ -221,6 +232,7 @@ def _jaccard_join_ooc_mem(ltable, rtable,
     if n_jobs <= 1:
         # if n_jobs is 1, do not use any parallel code.
         scratch_dir = tempfile.mkdtemp()
+        # Intermediate file locations to buffer the intermediate parallel outputs.
         _intermediate_file_names = get_temp_filenames(1, scratch_dir)
         _intermediate_file_name = _intermediate_file_names[0]
 
@@ -296,8 +308,8 @@ def _jaccard_join_ooc_mem(ltable, rtable,
     if revert_tokenizer_return_set_flag:
         tokenizer.set_return_set(False)
 
+    # Do not return the dataframes here as size can be massive. We just need to return boolean value back to caller.
     return True
-
 
 def _jaccard_join_in_mem(ltable, rtable,
                          ltable_array, rtable_array,

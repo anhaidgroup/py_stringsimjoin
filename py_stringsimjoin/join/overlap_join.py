@@ -9,7 +9,8 @@ def overlap_join(ltable, rtable,
                  allow_missing=False,
                  l_out_attrs=None, r_out_attrs=None,
                  l_out_prefix='l_', r_out_prefix='r_',
-                 out_sim_score=True, n_jobs=1, show_progress=True):
+                 out_sim_score=True, n_jobs=1, show_progress=True
+                ,file_name=None, mem_threshold=1e9, append_to_file=False):
     """Join two tables using overlap measure.
 
     For two sets X and Y, the overlap between them is given by:                       
@@ -77,11 +78,18 @@ def overlap_join(ltable, rtable,
             (i.e., equivalent to the default).                                                                                 
                                                                                 
         show_progress (boolean): flag to indicate whether task progress should  
-            be displayed to the user (defaults to True).                        
-                                                                                
+            be displayed to the user (defaults to True).
+            
+        file_name (string): Location where output will be stored.
+            
+        mem_threshold (int): Memory Threshold which is the limit of
+            intermediate data that can be written to memory.
+            
+        append_to_file (boolean): A flag to indicate whether appending
+            is enabled or disabled.
+            
     Returns:                                                                    
-        An output table containing tuple pairs that satisfy the join            
-        condition (DataFrame).  
+        A boolean value to indicate completion of operation.  
     """
 
     # check if the input tokenizer is valid
@@ -94,14 +102,14 @@ def overlap_join(ltable, rtable,
         revert_tokenizer_return_set_flag = True
 
     # use overlap filter to perform the join.
-    overlap_filter = OverlapFilter(tokenizer, threshold, comp_op, allow_missing)
+    overlap_filter = OverlapFilter(tokenizer, threshold, comp_op, allow_missing,file_name, mem_threshold, append_to_file)
     output_table =  overlap_filter.filter_tables(ltable, rtable,
                                                  l_key_attr, r_key_attr,
                                                  l_join_attr, r_join_attr,
                                                  l_out_attrs, r_out_attrs,
                                                  l_out_prefix, r_out_prefix,
                                                  out_sim_score, n_jobs,
-                                                 show_progress)
+                                                 show_progress,file_name, mem_threshold, append_to_file)
 
     # revert the return_set flag of tokenizer, in case it was modified.
     if revert_tokenizer_return_set_flag:

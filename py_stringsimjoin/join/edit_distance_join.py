@@ -1,6 +1,6 @@
 # edit distance join
-from math import floor
-
+import tempfile
+import math
 from joblib import delayed, Parallel
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import pandas as pd
@@ -12,7 +12,7 @@ from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
     get_num_processes_to_launch, get_output_header_from_tables, \
     get_output_row_from_tables, remove_non_ascii, remove_redundant_attrs, \
-    split_table, COMP_OP_MAP
+    split_table, COMP_OP_MAP, get_temp_filenames, add_id_to_file, remove_files, merge_outputs_and_add_id
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.simfunctions import get_sim_function
@@ -31,8 +31,8 @@ def edit_distance_join(ltable, rtable,
                        allow_missing=False,
                        l_out_attrs=None, r_out_attrs=None,
                        l_out_prefix='l_', r_out_prefix='r_',
-                       out_sim_score=True, n_jobs=1, show_progress=True,
-                       tokenizer=QgramTokenizer(qval=2)):
+                       out_sim_score=True, n_jobs=1, show_progress=True, tokenizer=QgramTokenizer(qval=2),
+                       file_name=None, mem_threshold=1e9, append_to_file=False):
     """Join two tables using edit distance measure.
 
     Finds tuple pairs from left table and right table such that the edit 
@@ -113,10 +113,17 @@ def edit_distance_join(ltable, rtable,
             attributes during filtering, when edit distance measure is          
             transformed into an overlap measure. This must be a q-gram tokenizer
             (defaults to 2-gram tokenizer).
-                                                                                
+        
+        file_name (string): Location where output will be stored.
+        
+        mem_threshold (int): Memory Threshold which is the limit of
+        intermediate data that can be written to memory.
+        
+        append_to_file (boolean): A flag to indicate whether appending
+        is enabled or disabled.
+        
     Returns:                                                                    
-        An output table containing tuple pairs that satisfy the join            
-        condition (DataFrame).  
+        A boolean value to indicate completion of operation.
     """
 
     # check if the input tables are dataframes
@@ -141,7 +148,7 @@ def edit_distance_join(ltable, rtable,
 
     # check if the input tokenizer is valid for edit distance measure. Only
     # qgram tokenizer can be used for edit distance.
-    validate_tokenizer_for_sim_measure(tokenizer, 'EDIT_DISTANCE')
+    # validate_tokenizer_for_sim_measure(tokenizer, 'EDIT_DISTANCE')
 
     # check if the input threshold is valid
     validate_threshold(threshold, 'EDIT_DISTANCE')
@@ -158,13 +165,13 @@ def edit_distance_join(ltable, rtable,
     validate_key_attr(r_key_attr, rtable, 'right table')
 
     # convert threshold to integer (incase if it is float)
-    threshold = int(floor(threshold))
+    threshold = int(math.floor(threshold))
 
     # set return_set flag of tokenizer to be False, in case it is set to True
     revert_tokenizer_return_set_flag = False
-    if tokenizer.get_return_set():
-        tokenizer.set_return_set(False)
-        revert_tokenizer_return_set_flag = True
+    #if tokenizer.get_return_set():
+    #    tokenizer.set_return_set(False)
+    #    revert_tokenizer_return_set_flag = True
 
     # remove redundant attrs from output attrs.
     l_out_attrs = remove_redundant_attrs(l_out_attrs, l_key_attr)
@@ -180,60 +187,192 @@ def edit_distance_join(ltable, rtable,
     ltable_array = convert_dataframe_to_array(ltable, l_proj_attrs, l_join_attr)
     rtable_array = convert_dataframe_to_array(rtable, r_proj_attrs, r_join_attr)
 
-    # computes the actual number of jobs to launch.
-    n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
+    # Call the respective join function depending on whether join is to
+    # be done in-memory or out of memory
+    output = None
+    if file_name == None:
+        #join in memory. Tuple pair functionality will not be used in this case.
+        output = _edit_join_in_mem(ltable, rtable,
+                                   ltable_array, rtable_array,
+                                   l_proj_attrs, r_proj_attrs,
+                       l_key_attr, r_key_attr,
+                       l_join_attr, r_join_attr,tokenizer,
+                       threshold, comp_op,
+                       allow_missing,
+                       l_out_attrs, r_out_attrs,
+                       l_out_prefix, r_out_prefix,
+                       out_sim_score, n_jobs, show_progress, revert_tokenizer_return_set_flag
+                       )
+    else:
+        #join out of memory and using Tuple pair functionality.
+        output = _edit_join_ooc_mem(ltable, rtable,
+                                    ltable_array, rtable_array,
+                                    l_proj_attrs, r_proj_attrs,
+                       l_key_attr, r_key_attr,
+                       l_join_attr, r_join_attr, tokenizer,
+                       threshold, comp_op,
+                       allow_missing,
+                       l_out_attrs, r_out_attrs,
+                       l_out_prefix, r_out_prefix,
+                       out_sim_score, n_jobs, show_progress,
+                                    revert_tokenizer_return_set_flag,
+                        file_name, mem_threshold, append_to_file)
+    return output
 
-    if n_jobs <= 1:
-        # if n_jobs is 1, do not use any parallel code.
-        output_table = _edit_distance_join_split(
+#Args are same as used in above functions
+def _edit_join_ooc_mem(ltable, rtable,
+                       ltable_array, rtable_array,
+                       l_columns, r_columns,
+                       l_key_attr, r_key_attr,
+                       l_join_attr, r_join_attr,tokenizer,
+                       threshold, comp_op,
+                       allow_missing,
+                       l_out_attrs, r_out_attrs,
+                       l_out_prefix, r_out_prefix,
+                       out_sim_score, n_jobs, show_progress,
+                       revert_tokenizer_return_set_flag,
+                       file_name, mem_threshold, append_to_file):
+        n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
+        if n_jobs <= 1:
+            # if n_jobs is 1, do not use any parallel code.
+            scratch_dir = tempfile.mkdtemp()
+            # Intermediate file locations to buffer the intermediate parallel outputs.
+            _intermediate_file_names = get_temp_filenames(1, scratch_dir)
+            _intermediate_file_name = _intermediate_file_names[0]
+            # if n_jobs is 1, do not use any parallel code.
+            output = _edit_distance_join_split(
                                ltable_array, rtable_array,
-                               l_proj_attrs, r_proj_attrs,
+                               l_columns, r_columns,
                                l_key_attr, r_key_attr,
                                l_join_attr, r_join_attr,
                                tokenizer, threshold, comp_op,
                                l_out_attrs, r_out_attrs,
                                l_out_prefix, r_out_prefix,
-                               out_sim_score, show_progress)
-    else:
-        # if n_jobs is above 1, split the right table into n_jobs splits and    
-        # join each right table split with the whole of left table in a separate
-        # process.
-        r_splits = split_table(rtable_array, n_jobs)
-        results = Parallel(n_jobs=n_jobs)(delayed(_edit_distance_join_split)(
+                               out_sim_score, show_progress,
+                _intermediate_file_name, mem_threshold, append_to_file)
+
+            if allow_missing:
+                missing_pairs = get_pairs_with_missing_value(
+                    ltable, rtable,
+                    l_key_attr, r_key_attr,
+                    l_join_attr, r_join_attr,
+                    l_out_attrs, r_out_attrs,
+                    l_out_prefix, r_out_prefix,
+                    out_sim_score, show_progress,
+                    _intermediate_file_name, mem_threshold, append_to_file=True)
+
+            add_id_to_file(_intermediate_file_name, file_name, mem_threshold=mem_threshold)
+            remove_files([_intermediate_file_name])
+
+        else:
+            # if n_jobs is above 1, split the right table into n_jobs splits and
+            # join each right table split with the whole of left table in a separate
+            # process.
+            r_splits = split_table(rtable_array, n_jobs)
+            scratch_dir = tempfile.mkdtemp()
+            _intermediate_file_names = get_temp_filenames(n_jobs, scratch_dir)
+            results = Parallel(n_jobs=n_jobs)(delayed(_edit_distance_join_split)(
                                     ltable_array, r_splits[job_index],
-                                    l_proj_attrs, r_proj_attrs,
+                                    l_columns, r_columns,
                                     l_key_attr, r_key_attr,
                                     l_join_attr, r_join_attr,
                                     tokenizer, threshold, comp_op,
                                     l_out_attrs, r_out_attrs,
                                     l_out_prefix, r_out_prefix,
                                     out_sim_score,
-                                    (show_progress and (job_index==n_jobs-1)))
-                                for job_index in range(n_jobs))
-        output_table = pd.concat(results)
+                                    (show_progress and (job_index==n_jobs-1)),
+                                    _intermediate_file_names[job_index],
+                                    math.ceil(mem_threshold / 4),
+                                    append_to_file
+                                    )
+                                    for job_index in range(n_jobs))
 
-    # If allow_missing flag is set, then compute all pairs with missing value in
-    # at least one of the join attributes and then add it to the output         
-    # obtained from the join. 
-    if allow_missing:
-        missing_pairs = get_pairs_with_missing_value(
-                                            ltable, rtable,
-                                            l_key_attr, r_key_attr,
-                                            l_join_attr, r_join_attr,
-                                            l_out_attrs, r_out_attrs,
-                                            l_out_prefix, r_out_prefix,
-                                            out_sim_score, show_progress)
-        output_table = pd.concat([output_table, missing_pairs])
+            if allow_missing:
+                miss_file_names = get_temp_filenames(1, scratch_dir)
+                miss_file_name = miss_file_names[0]
+                get_pairs_with_missing_value(
+                    ltable, rtable,
+                    l_key_attr, r_key_attr,
+                    l_join_attr, r_join_attr,
+                    l_out_attrs, r_out_attrs,
+                    l_out_prefix, r_out_prefix,
+                    out_sim_score, show_progress,
+                    miss_file_name, mem_threshold, append_to_file=True)
 
-    # add an id column named '_id' to the output table.
-    output_table.insert(0, '_id', range(0, len(output_table)))
+                _intermediate_file_names.append(miss_file_name)
 
-    # revert the return_set flag of tokenizer, in case it was modified.
-    if revert_tokenizer_return_set_flag:
-        tokenizer.set_return_set(True)
+            status = merge_outputs_and_add_id(_intermediate_file_names, file_name,
+                                              mem_threshold=mem_threshold)
 
-    return output_table
+            remove_files(_intermediate_file_names)
 
+        # revert the return_set flag of tokenizer, in case it was modified.
+        if revert_tokenizer_return_set_flag:
+            tokenizer.set_return_set(True)
+
+        # Do not return the dataframes here as size can be massive. We just need to return boolean value back to caller
+        return True
+
+def _edit_join_in_mem(ltable, rtable,
+                        ltable_array, rtable_array,
+                         l_columns, r_columns,
+                           l_key_attr, r_key_attr,
+                           l_join_attr, r_join_attr, tokenizer,
+                           threshold, comp_op,
+                           allow_missing,
+                           l_out_attrs, r_out_attrs,
+                           l_out_prefix, r_out_prefix,
+                           out_sim_score, n_jobs, show_progress,
+                      revert_tokenizer_return_set_flag):
+        n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
+        if n_jobs <= 1:
+            output_table = _edit_distance_join_split(
+                ltable_array, rtable_array,
+                l_columns, r_columns,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                tokenizer, threshold, comp_op,
+                l_out_attrs, r_out_attrs,
+                l_out_prefix, r_out_prefix,
+                out_sim_score, show_progress)
+
+        else:
+            # if n_jobs is above 1, split the right table into n_jobs splits and
+            # join each right table split with the whole of left table in a separate
+            # process.
+            r_splits = split_table(rtable_array, n_jobs)
+
+            results = Parallel(n_jobs=n_jobs)(delayed(_edit_distance_join_split)(
+                ltable_array, r_splits[job_index],
+                l_columns, r_columns,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                tokenizer, threshold, comp_op,
+                l_out_attrs, r_out_attrs,
+                l_out_prefix, r_out_prefix,
+                out_sim_score,
+                (show_progress and (job_index == n_jobs - 1)))
+                                              for job_index in range(n_jobs))
+            output_table = pd.concat(results)
+
+        if allow_missing:
+            missing_pairs = get_pairs_with_missing_value(
+                ltable, rtable,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                l_out_attrs, r_out_attrs,
+                l_out_prefix, r_out_prefix,
+                out_sim_score, show_progress)
+            output_table = pd.concat([output_table, missing_pairs])
+
+            # add an id column named '_id' to the output table.
+        output_table.insert(0, '_id', range(0, len(output_table)))
+        output_table.reset_index(drop=True, inplace=True)
+        # revert the return_set flag of tokenizer, in case it was modified.
+        if revert_tokenizer_return_set_flag:
+            tokenizer.set_return_set(False)
+
+        return output_table
 
 def _edit_distance_join_split(ltable_list, rtable_list,
                               l_columns, r_columns,
@@ -242,7 +381,10 @@ def _edit_distance_join_split(ltable_list, rtable_list,
                               tokenizer, threshold, comp_op,
                               l_out_attrs, r_out_attrs,
                               l_out_prefix, r_out_prefix,
-                              out_sim_score, show_progress):
+                              out_sim_score, show_progress,
+                              file_name=None, mem_threshold=1e9,
+                              append_to_file=False
+                              ):
     """Perform edit distance join for a split of ltable and rtable"""
     # find column indices of key attr, join attr and output attrs in ltable
     l_key_attr_index = l_columns.index(l_key_attr)
@@ -271,7 +413,8 @@ def _edit_distance_join_split(ltable_list, rtable_list,
     prefix_index = PrefixIndex(ltable_list, l_join_attr_index,
                                tokenizer, sim_measure_type, threshold,
                                token_ordering)
-    prefix_index.build(False)
+    cached_data = prefix_index.build(False)
+    l_empty_records = cached_data['empty_records']
 
     prefix_filter = PrefixFilter(tokenizer, sim_measure_type, threshold)
 
@@ -284,6 +427,23 @@ def _edit_distance_join_split(ltable_list, rtable_list,
 
     if show_progress:
         prog_bar = pyprind.ProgBar(len(rtable_list))
+
+    # Need to insert output header row to each parallel intermediate file
+    # before filling them with any actual tuple rows. So forming output_header here.
+    output_header = get_output_header_from_tables(
+        l_key_attr, r_key_attr,
+        l_out_attrs, r_out_attrs,
+        l_out_prefix, r_out_prefix)
+
+    if out_sim_score:
+        output_header.append("_sim_score")
+
+    from py_stringsimjoin.utils.tuple_pair_chest import TuplePairChest
+    chest = TuplePairChest(file_name=file_name, mem_size=mem_threshold,
+                           header=output_header,
+                           append_to_file=append_to_file)
+    # This is where header row is inserted in each chest at the beginning.
+    chest.preprocess()
 
     for r_row in rtable_list:
         r_string = r_row[r_join_attr_index]
@@ -319,18 +479,14 @@ def _edit_distance_join_split(ltable_list, rtable_list,
                     if out_sim_score:
                         output_row.append(edit_dist)
 
-                    output_rows.append(output_row)
+                    chest.append(output_row)
+
 
         if show_progress:
             prog_bar.update()
 
-    output_header = get_output_header_from_tables(
-                        l_key_attr, r_key_attr,
-                        l_out_attrs, r_out_attrs,
-                        l_out_prefix, r_out_prefix)
-    if out_sim_score:
-        output_header.append("_sim_score")
-
-    # generate a dataframe from the list of output rows
-    output_table = pd.DataFrame(output_rows, columns=output_header)
-    return output_table
+    # output can be boolean or dataframe type depending on whether
+    # file_name was specified or not. If file_name was specified,
+    # it is inferred as memory-constrained operation hence only boolean returned.
+    output = chest.postprocess()
+    return output

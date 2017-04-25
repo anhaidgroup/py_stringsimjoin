@@ -1,11 +1,13 @@
 # cosine join
+#import tempfile
+from tempfile import mkdtemp
 from joblib import delayed, Parallel
 import pandas as pd
 
 from py_stringsimjoin.join.set_sim_join import set_sim_join
 from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     get_attrs_to_project, get_num_processes_to_launch, remove_redundant_attrs, \
-    split_table
+    split_table, remove_files, merge_outputs_and_add_id, get_temp_filenames, add_id_to_file
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.validation import validate_attr, \
@@ -21,7 +23,8 @@ def cosine_join(ltable, rtable,
                 allow_empty=True, allow_missing=False,
                 l_out_attrs=None, r_out_attrs=None,
                 l_out_prefix='l_', r_out_prefix='r_',
-                out_sim_score=True, n_jobs=1, show_progress=True):
+                out_sim_score=True, n_jobs=1, show_progress=True,
+                file_name=None, mem_threshold=1e9, append_to_file=False):
     """Join two tables using a variant of cosine similarity known as Ochiai 
     coefficient.
 
@@ -103,11 +106,18 @@ def cosine_join(ltable, rtable,
             (i.e., equivalent to the default).                                                                                 
                                                                                 
         show_progress (boolean): flag to indicate whether task progress should  
-            be displayed to the user (defaults to True).                        
+            be displayed to the user (defaults to True).
+            
+        file_name (string): Location where output will be stored.
+        
+        mem_threshold (int): Memory Threshold which is the limit of 
+        intermediate data that can be written to memory.
+        
+        append_to_file (boolean): A flag to indicate whether appending is 
+        enabled or disabled.
                                                                                 
     Returns:                                                                    
-        An output table containing tuple pairs that satisfy the join            
-        condition (DataFrame).  
+        A boolean value to indicate completion of operation.
     """
 
     # check if the input tables are dataframes
@@ -167,57 +177,184 @@ def cosine_join(ltable, rtable,
     ltable_array = convert_dataframe_to_array(ltable, l_proj_attrs, l_join_attr)
     rtable_array = convert_dataframe_to_array(rtable, r_proj_attrs, r_join_attr)
 
-    # computes the actual number of jobs to launch.
-    n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array)) 
-
-    if n_jobs <= 1:
-        # if n_jobs is 1, do not use any parallel code.
-        output_table = set_sim_join(ltable_array, rtable_array,
-                                    l_proj_attrs, r_proj_attrs,
-                                    l_key_attr, r_key_attr,
-                                    l_join_attr, r_join_attr,
-                                    tokenizer, 'COSINE',
-                                    threshold, comp_op, allow_empty,
-                                    l_out_attrs, r_out_attrs,
-                                    l_out_prefix, r_out_prefix,
-                                    out_sim_score, show_progress)
+    # Call the respective join function depending on whether join is to
+    # be done in-memory or out of memory
+    output = None
+    if file_name == None:
+        output = _cosine_join_in_mem(ltable, rtable, ltable_array, rtable_array, l_proj_attrs, r_proj_attrs,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                tokenizer, threshold, comp_op,
+                allow_empty, allow_missing,
+                l_out_attrs, r_out_attrs,
+                l_out_prefix, r_out_prefix,
+                out_sim_score, n_jobs, show_progress)
     else:
-        # if n_jobs is above 1, split the right table into n_jobs splits and    
-        # join each right table split with the whole of left table in a separate
-        # process.
-        r_splits = split_table(rtable_array, n_jobs)
-        results = Parallel(n_jobs=n_jobs)(delayed(set_sim_join)(
-                                          ltable_array, r_splits[job_index],
-                                          l_proj_attrs, r_proj_attrs,
-                                          l_key_attr, r_key_attr,
-                                          l_join_attr, r_join_attr,
-                                          tokenizer, 'COSINE',
-                                          threshold, comp_op, allow_empty,
-                                          l_out_attrs, r_out_attrs,
-                                          l_out_prefix, r_out_prefix,
-                                          out_sim_score,
-                                      (show_progress and (job_index==n_jobs-1)))
-                                          for job_index in range(n_jobs))
-        output_table = pd.concat(results)
+        output = _cosine_join_ooc_mem(ltable, rtable, ltable_array, rtable_array, l_proj_attrs, r_proj_attrs,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                tokenizer, threshold, comp_op,
+                allow_empty, allow_missing,
+                l_out_attrs, r_out_attrs,
+                l_out_prefix, r_out_prefix,
+                out_sim_score, n_jobs, show_progress,
+                file_name, mem_threshold, append_to_file)
 
-    # If allow_missing flag is set, then compute all pairs with missing value in
-    # at least one of the join attributes and then add it to the output         
-    # obtained from the join. 
-    if allow_missing:
-        missing_pairs = get_pairs_with_missing_value(
-                                            ltable, rtable,
-                                            l_key_attr, r_key_attr,
-                                            l_join_attr, r_join_attr,
-                                            l_out_attrs, r_out_attrs,
-                                            l_out_prefix, r_out_prefix,
-                                            out_sim_score, show_progress)
-        output_table = pd.concat([output_table, missing_pairs])
+    return output
 
-    # add an id column named '_id' to the output table.
-    output_table.insert(0, '_id', range(0, len(output_table)))
+#Args are same as used in above functions
+def _cosine_join_ooc_mem(ltable, rtable,
+                        ltable_array, rtable_array,
+                        l_columns, r_columns,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                tokenizer, threshold, comp_op,
+                allow_empty, allow_missing,
+                l_out_attrs, r_out_attrs,
+                l_out_prefix, r_out_prefix,
+                out_sim_score, n_jobs, show_progress,
+                file_name, mem_threshold, append_to_file):
 
-    # revert the return_set flag of tokenizer, in case it was modified.
-    if revert_tokenizer_return_set_flag:
-        tokenizer.set_return_set(False)
+        # computes the actual number of jobs to launch.
+        n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
+        if n_jobs <= 1:
+            # if n_jobs is 1, do not use any parallel code.
+            #scratch_dir = tempfile.mkdtemp()
+            # Intermediate file locations to buffer the intermediate parallel outputs.
+            scratch_dir = mkdtemp()
+            _intermediate_file_names = get_temp_filenames(1, scratch_dir)
+            _intermediate_file_name = _intermediate_file_names[0]
 
-    return output_table
+            output = set_sim_join(ltable_array, rtable_array,
+                                        l_columns, r_columns,
+                                        l_key_attr, r_key_attr,
+                                        l_join_attr, r_join_attr,
+                                        tokenizer, 'COSINE',
+                                        threshold, comp_op, allow_empty,
+                                        l_out_attrs, r_out_attrs,
+                                        l_out_prefix, r_out_prefix,
+                                        out_sim_score, show_progress,
+                                        _intermediate_file_name, mem_threshold, append_to_file)
+            if allow_missing:
+                missing_pairs = get_pairs_with_missing_value(
+                    ltable, rtable,
+                    l_key_attr, r_key_attr,
+                    l_join_attr, r_join_attr,
+                    l_out_attrs, r_out_attrs,
+                    l_out_prefix, r_out_prefix,
+                    out_sim_score, show_progress,
+                    _intermediate_file_name, mem_threshold, append_to_file=True)
+
+            add_id_to_file(_intermediate_file_name, file_name, mem_threshold=mem_threshold)
+            remove_files([_intermediate_file_name])
+
+
+
+        else:
+            # if n_jobs is above 1, split the right table into n_jobs splits and
+            # join each right table split with the whole of left table in a separate
+            # process.
+            r_splits = split_table(rtable_array, n_jobs)
+            import tempfile
+            scratch_dir = tempfile.mkdtemp()
+            _intermediate_file_names = get_temp_filenames(n_jobs, scratch_dir)
+
+            import math
+            results = Parallel(n_jobs=n_jobs)(delayed(set_sim_join)(
+                ltable_array, r_splits[job_index],
+                l_columns, r_columns,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                tokenizer, 'COSINE',
+                threshold, comp_op, allow_empty,
+                l_out_attrs, r_out_attrs,
+                l_out_prefix, r_out_prefix,
+                out_sim_score,
+                (show_progress and (job_index == n_jobs - 1)),
+                _intermediate_file_names[job_index],
+                math.ceil(mem_threshold / 4),
+                append_to_file)
+                                              for job_index in range(n_jobs))
+
+            if allow_missing:
+                miss_file_names = get_temp_filenames(1, scratch_dir)
+                miss_file_name = miss_file_names[0]
+                get_pairs_with_missing_value(
+                    ltable, rtable,
+                    l_key_attr, r_key_attr,
+                    l_join_attr, r_join_attr,
+                    l_out_attrs, r_out_attrs,
+                    l_out_prefix, r_out_prefix,
+                    out_sim_score, show_progress,
+                    miss_file_name, mem_threshold, append_to_file=True)
+
+                _intermediate_file_names.append(miss_file_name)
+
+            status = merge_outputs_and_add_id(_intermediate_file_names, file_name,
+                                              mem_threshold=mem_threshold)
+
+            remove_files(_intermediate_file_names)
+        # Do not return the dataframes here as size can be massive. We just need to return boolean value back to caller.
+        return True
+
+def _cosine_join_in_mem(ltable, rtable,
+                             ltable_array, rtable_array,
+                             l_columns, r_columns,
+                             l_key_attr, r_key_attr,
+                             l_join_attr, r_join_attr,
+                             tokenizer, threshold, comp_op,
+                             allow_empty, allow_missing,
+                             l_out_attrs, r_out_attrs,
+                             l_out_prefix, r_out_prefix,
+                             out_sim_score, n_jobs,
+                             show_progress):
+        # computes the actual number of jobs to launch.
+        n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
+        if n_jobs <= 1:
+            # if n_jobs is 1, do not use any parallel code.
+            output_table = set_sim_join(ltable_array, rtable_array,
+                                        l_columns, r_columns,
+                                        l_key_attr, r_key_attr,
+                                        l_join_attr, r_join_attr,
+                                        tokenizer, 'COSINE',
+                                        threshold, comp_op, allow_empty,
+                                        l_out_attrs, r_out_attrs,
+                                        l_out_prefix, r_out_prefix,
+                                        out_sim_score, show_progress)
+        else:
+            # if n_jobs is above 1, split the right table into n_jobs splits and
+            # join each right table split with the whole of left table in a separate
+            # process.
+            r_splits = split_table(rtable_array, n_jobs)
+            results = Parallel(n_jobs=n_jobs)(delayed(set_sim_join)(
+                ltable_array, r_splits[job_index],
+                l_columns, r_columns,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                tokenizer, 'COSINE',
+                threshold, comp_op, allow_empty,
+                l_out_attrs, r_out_attrs,
+                l_out_prefix, r_out_prefix,
+                out_sim_score,
+                (show_progress and (job_index == n_jobs - 1)))
+                                              for job_index in range(n_jobs))
+            output_table = pd.concat(results)
+
+        # If allow_missing flag is set, then compute all pairs with missing value in
+        # at least one of the join attributes and then add it to the output
+        # obtained from the join.
+        if allow_missing:
+            missing_pairs = get_pairs_with_missing_value(
+                ltable, rtable,
+                l_key_attr, r_key_attr,
+                l_join_attr, r_join_attr,
+                l_out_attrs, r_out_attrs,
+                l_out_prefix, r_out_prefix,
+                out_sim_score, show_progress)
+            output_table = pd.concat([output_table, missing_pairs])
+
+        # add an id column named '_id' to the output table.
+        output_table.insert(0, '_id', range(0, len(output_table)))
+        output_table.reset_index(drop=True, inplace=True)
+
+        return output_table

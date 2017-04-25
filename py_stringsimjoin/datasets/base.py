@@ -22,6 +22,6 @@ def load_person_dataset():
     """Load and return the person dataset.                                       
     """                                                                         
     base_dir = join(dirname(__file__), 'data')                                  
-    table_A = pd.read_csv(join(base_dir, 'person_table_A.csv'))                         
-    table_B = pd.read_csv(join(base_dir, 'person_table_B.csv'))                         
+    table_A = pd.read_csv(join(base_dir, 'table_A.csv'))
+    table_B = pd.read_csv(join(base_dir, 'table_B.csv'))
     return table_A, table_B   
