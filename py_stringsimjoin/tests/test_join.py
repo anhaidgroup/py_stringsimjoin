@@ -82,9 +82,9 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
 
     # apply sim function to the entire cartesian product to obtain
     # the expected set of pairs satisfying the threshold.
-    cartprod['sim_score'] = cartprod.apply(lambda row: sim_func(
+    cartprod['sim_score'] = cartprod.apply(lambda row: round(sim_func(
                 args[0].tokenize(str(row[l_join_attr])),
-                args[0].tokenize(str(row[r_join_attr]))),
+                args[0].tokenize(str(row[r_join_attr]))), 4),
             axis=1)
    
     comp_fn = COMP_OP_MAP[DEFAULT_COMP_OP]
@@ -199,7 +199,7 @@ def test_set_sim_join():
             test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
                                                  (tokenizers['SPACE_DELIMITER'],
-                                                  0.3, '>='))
+                                                  0.3, comp_op, False))
             test_function.description = 'Test ' + sim_measure_type + \
                                         ' with comp_op ' + comp_op + '.'
             yield test_function,

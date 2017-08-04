@@ -5,6 +5,9 @@ __pycache__/
 
 # C extensions
 *.so
+py_stringsimjoin/similarity_measure/*.cpp
+py_stringsimjoin/join/*.cpp                                       
+py_stringsimjoin/utils/*.cpp                                       
 
 # Distribution / packaging
 .Python
@@ -69,3 +72,6 @@ target/
 
 # idea files
 .idea/
+
+# cython
+cythonize.dat
