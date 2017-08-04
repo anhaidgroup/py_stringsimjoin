@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Utilities &mdash; py_stringsimjoin 0.2.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="py_stringsimjoin 0.2.0 documentation" href="../index.html"/>
+        <link rel="prev" title="Matchers" href="matcher.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatisnew.html">What is New?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cython.html">Disabling Cython</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="join.html">Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filter.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matchers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">py_stringsimjoin</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Utilities</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/utility.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="utilities">
+<h1>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="py_stringsimjoin.utils.converter.dataframe_column_to_str">
+<code class="descclassname">py_stringsimjoin.utils.converter.</code><code class="descname">dataframe_column_to_str</code><span class="sig-paren">(</span><em>dataframe</em>, <em>col_name</em>, <em>inplace=False</em>, <em>return_col=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/utils/converter.html#dataframe_column_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.utils.converter.dataframe_column_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert columun in the dataframe into string type while preserving NaN
+values.</p>
+<p>This method is useful when performing join over numeric columns. Currently,
+the join methods expect the join columns to be of string type. Hence, the
+numeric columns need to be converted to string type before performing the
+join.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataframe</strong> (<em>DataFrame</em>) &#8211; Input pandas dataframe.</li>
+<li><strong>col_name</strong> (<em>string</em>) &#8211; Name of the column in the dataframe to be converted.</li>
+<li><strong>inplace</strong> (<em>boolean</em>) &#8211; A flag indicating whether the input dataframe should
+be modified inplace or in a copy of it.</li>
+<li><strong>return_col</strong> (<em>boolean</em>) &#8211; A flag indicating whether a copy of the converted
+column should be returned. When this flag is set to True, the method
+will not modify the original dataframe and will return a new column
+of string type. Only one of inplace and return_col can be set to
+True.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A Boolean value when inplace is set to True.</p>
+<p>A new dataframe when inplace is set to False and return_col is set to False.</p>
+<p>A series when inplace is set to False and return_col is set to True.</p>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="py_stringsimjoin.utils.converter.series_to_str">
+<code class="descclassname">py_stringsimjoin.utils.converter.</code><code class="descname">series_to_str</code><span class="sig-paren">(</span><em>series</em>, <em>inplace=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/utils/converter.html#series_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.utils.converter.series_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert series into string type while preserving NaN values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>series</strong> (<em>Series</em>) &#8211; Input pandas series.</li>
+<li><strong>inplace</strong> (<em>boolean</em>) &#8211; A flag indicating whether the input series should
+be modified inplace or in a copy of it. This flag is ignored when
+the input series consists of only NaN values or the series is
+empty (with int or float type). In these two cases, we always return
+a copy irrespective of the inplace flag.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A Boolean value when inplace is set to True.</p>
+<p>A series when inplace is set to False.</p>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="matcher.html" class="btn btn-neutral" title="Matchers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, anhaidgroup.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
