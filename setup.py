@@ -52,7 +52,7 @@ USE_OPENMP_DEFAULT='1'
 # The user can update to use openmp using USE_OPENMP environ variable
 if os.environ.get('USE_OPENMP', USE_OPENMP_DEFAULT) == '1':
     if sys.platform == 'win32':
-        COMPILE_OPTIONS['msvc'].append('/openmp')
+        pass
     else:
         COMPILE_OPTIONS['other'].append('-fopenmp')
         LINK_OPTIONS['other'].append('-fopenmp')
