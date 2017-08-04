@@ -209,11 +209,11 @@ def setup_package():
 
         cmdclass = {"build_ext": build_ext}
         setuptools.setup(
-            name='py_stringsimjoin_cython',
-            version='0.1.0',
+            name='py_stringsimjoin',
+            version='0.2.0',
             description='Python library for performing string similarity joins.',
             long_description=LONG_DESCRIPTION,
-            url='https://sites.google.com/site/anhaidgroup/projects/py_stringsimjoin',
+            url='https://sites.google.com/site/anhaidgroup/projects/magellan/py_stringsimjoin',
             author='UW Magellan Team',
             author_email='uwmagellan@gmail.com',
             license='BSD',
@@ -232,9 +232,9 @@ def setup_package():
                 'Programming Language :: Python :: 2',
                 'Programming Language :: Python :: 3',
                 'Programming Language :: Python :: 2.7',
-                'Programming Language :: Python :: 3.3',
                 'Programming Language :: Python :: 3.4',
                 'Programming Language :: Python :: 3.5',
+                'Programming Language :: Python :: 3.6',                        
                 'Topic :: Scientific/Engineering',
                 'Topic :: Utilities',
                 'Topic :: Software Development :: Libraries',
@@ -254,8 +254,4 @@ def setup_package():
         )
 if __name__ == '__main__':
     setup_package()
-
-
-
-
 

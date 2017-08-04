@@ -18,9 +18,11 @@ Contents
    :maxdepth: 2
    :caption: Getting Started
 
+   whatisnew
    installation
    overview
    guide
+   cython
 
 .. toctree::
    :maxdepth: 2

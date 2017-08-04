@@ -1,4 +1,5 @@
 
+from libcpp.string cimport string                                               
 from libc.stdlib cimport malloc, free
 
 cdef inline int int_min3(int a, int b, int c) nogil:
