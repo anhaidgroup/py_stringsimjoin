@@ -37,14 +37,13 @@ cdef void set_sim_join_cy(ltable, rtable,
   
     cdef vector[pair[int, int]] partitions                                      
     cdef int i, n=rtokens.size(), partition_size, start=0, end    
-    cdef PositionIndexCy index
     cdef int sim_type, comp_op_type                                             
 
     sim_type = get_sim_type(sim_measure)                                        
     comp_op_type = get_comp_type(comp_op)     
 
-    build_position_index(ltokens, sim_type, threshold, index, allow_empty)                            
-                                                                                
+    index = build_position_index(ltokens, sim_type, threshold, allow_empty)                            
+
     partition_size = <int>(<float> n / <float> n_jobs)                           
     for i in xrange(n_jobs):                                                      
         end = start + partition_size                                            
@@ -63,7 +62,9 @@ cdef void set_sim_join_cy(ltable, rtable,
                                                                                 
     for i in prange(n_jobs, nogil=True):                                         
         set_sim_join_partition(partitions[i], ltokens, rtokens, sim_type, 
-                               comp_op_type, threshold, allow_empty, index, 
+                               comp_op_type, threshold, allow_empty,
+                               index.index, index.size_vector, index.l_empty_ids,
+                               index.min_len, index.max_len, 
                                output_pairs[i], output_sim_scores[i], 
                                i, show_progress)                        
 
@@ -73,7 +74,10 @@ cdef void set_sim_join_partition(pair[int, int] partition,
                                  vector[vector[int]]& rtokens,                       
                                  int sim_type, int comp_op_type,                                      
                                  double threshold, bool allow_empty, 
-                                 PositionIndexCy& index,             
+                                 omap[int, vector[pair[int, int]]]& index,
+                                 vector[int]& size_vector,
+                                 vector[int]& l_empty_ids,
+                                 int min_len, int max_len,            
                                  vector[pair[int, int]]& output_pairs,               
                                  vector[double]& output_sim_scores,
                                  int thread_id, bool show_progress) nogil:           
@@ -94,28 +98,28 @@ cdef void set_sim_join_partition(pair[int, int] partition,
         m = tokens.size()                                                       
 
         if allow_empty and m == 0:
-            for j in index.l_empty_ids:
+            for j in l_empty_ids:
                 output_pairs.push_back(pair[int, int](j, i))      
                 output_sim_scores.push_back(1.0)  
             continue
  
         prefix_length = get_prefix_length(m, sim_type, threshold)               
         size_lower_bound = int_max(get_size_lower_bound(m, sim_type, threshold),
-                                   index.min_len)                               
+                                   min_len)                               
         size_upper_bound = int_min(get_size_upper_bound(m, sim_type, threshold),
-                                   index.max_len)                               
+                                   max_len)                               
 
         for size in range(size_lower_bound, size_upper_bound + 1):              
             overlap_threshold_cache[size] = get_overlap_threshold(size, m, sim_type, threshold)
 
         for j in range(prefix_length):                                          
-            if index.index.find(tokens[j]) == index.index.end():                
+            if index.find(tokens[j]) == index.end():                
                 continue                                                        
-            candidates = index.index[tokens[j]]                                 
+            candidates = index[tokens[j]]                                 
             for cand in candidates:                                             
                 current_overlap = candidate_overlap[cand.first]                 
                 if current_overlap != -1:                                       
-                    cand_num_tokens = index.size_vector[cand.first]             
+                    cand_num_tokens = size_vector[cand.first]             
                                                                                 
                     # only consider candidates satisfying the size filter       
                     # condition.                                                
@@ -155,9 +159,10 @@ cdef void set_sim_join_partition(pair[int, int] partition,
                 _progress_bar.update()   
 
 
-cdef void build_position_index(vector[vector[int]]& token_vectors, 
+cdef PositionIndexCy build_position_index(vector[vector[int]]& token_vectors, 
                                int& sim_type, double& threshold, 
-                               PositionIndexCy &pos_index, bool allow_empty):
+                               bool allow_empty):
+    cdef PositionIndexCy pos_index = PositionIndexCy()
     cdef vector[int] tokens, size_vector                                        
     cdef int prefix_length, token, i, j, m, n=token_vectors.size(), min_len=100000, max_len=0
     cdef omap[int, vector[pair[int, int]]] index
@@ -174,9 +179,11 @@ cdef void build_position_index(vector[vector[int]]& token_vectors,
         if m < min_len:                                                         
             min_len = m
         if allow_empty and m == 0:
-            empty_l_ids.push_back(i)                                                         
+            empty_l_ids.push_back(i)
+
     pos_index.set_fields(index, size_vector, empty_l_ids, 
-                         min_len, max_len, threshold)      
+                         min_len, max_len, threshold)
+    return pos_index      
 
 
 cdef int get_prefix_length(int& num_tokens, int& sim_type, double& threshold) nogil:

@@ -241,7 +241,7 @@ cdef void _perform_overlap_join(ltable_array, rtable_array,
 
     cdef vector[pair[int, int]] partitions                                      
     cdef int i, n=rtokens.size(), partition_size, start=0, end                  
-    cdef InvertedIndexCy index                                                  
+    cdef InvertedIndexCy index = InvertedIndexCy()                                              
     cdef int comp_op_type                                             
                                                                                 
     comp_op_type = get_comp_type(comp_op)                                       
@@ -266,7 +266,7 @@ cdef void _perform_overlap_join(ltable_array, rtable_array,
 
     for i in prange(n_jobs, nogil=True):                                        
         _overlap_join_part(partitions[i], ltokens, rtokens,       
-                           comp_op_type, threshold, index, 
+                           comp_op_type, threshold, index.index, 
                            output_pairs[i], output_sim_scores[i],
                            i, show_progress)  
 
@@ -275,7 +275,7 @@ cdef void _overlap_join_part(pair[int, int] partition,
                              vector[vector[int]]& ltokens,                      
                              vector[vector[int]]& rtokens,
                              int comp_op_type, double threshold, 
-                             InvertedIndexCy& index,
+                             omap[int, vector[int]]& index,
                              vector[pair[int, int]]& output_pairs,              
                              vector[double]& output_sim_scores,
                              int thread_id, bool show_progress) nogil:          
@@ -293,9 +293,9 @@ cdef void _overlap_join_part(pair[int, int] partition,
         m = tokens.size()                                                       
 
         for j in range(m):                                                      
-            if index.index.find(tokens[j]) == index.index.end():                
+            if index.find(tokens[j]) == index.end():                
                 continue                                                        
-            candidates = index.index[tokens[j]]                                 
+            candidates = index[tokens[j]]                                 
             for cand in candidates:                                             
                 candidate_overlap[cand] += 1                                    
                                                                                 

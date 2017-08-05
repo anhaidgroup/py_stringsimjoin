@@ -84,6 +84,12 @@ def generate_cython():
         raise RuntimeError("Running cythonize failed!")
 
 MODULES = {
+        "py_stringsimjoin.index.inverted_index_cy": {'sources':["py_stringsimjoin/index/inverted_index_cy.pyx"],
+                                                        'comargs':[]            
+                                                        },  
+        "py_stringsimjoin.index.position_index_cy": {'sources':["py_stringsimjoin/index/position_index_cy.pyx"],
+                                                        'comargs':[]            
+                                                        },  
         "py_stringsimjoin.similarity_measure.edit_distance": {'sources':["py_stringsimjoin/similarity_measure/edit_distance.pyx"],
                                                         'comargs':[]
                                                         },
@@ -101,17 +107,17 @@ MODULES = {
                                                         }, 
 
         "py_stringsimjoin.join.edit_distance_join_cy": {'sources':["py_stringsimjoin/join/edit_distance_join_cy.pyx",
-                                                                   "py_stringsimjoin/index/inverted_index_cy.cpp"],
+                                                                   ],
                                                         'comargs':["-I./py_stringsimjoin/index/"]
                                                         },
 
         "py_stringsimjoin.join.overlap_coefficient_join_cy": {'sources':["py_stringsimjoin/join/overlap_coefficient_join_cy.pyx",
-                                                                    "py_stringsimjoin/index/inverted_index_cy.cpp"],
+                                                                    ],
                                                         'comargs':["-I./py_stringsimjoin/index/"]
                                                         },
 
         "py_stringsimjoin.join.overlap_join_cy": {'sources':["py_stringsimjoin/join/overlap_join_cy.pyx",
-                                                             "py_stringsimjoin/index/inverted_index_cy.cpp"],
+                                                             ],
                                                         'comargs':["-I./py_stringsimjoin/index/"]
                                                         },
 
@@ -128,12 +134,12 @@ MODULES = {
                                                         },       
 
         "py_stringsimjoin.join.set_sim_join_cy": {'sources':["py_stringsimjoin/join/set_sim_join_cy.pyx",
-                                                             "py_stringsimjoin/index/position_index_cy.cpp"],
+                                                             ],
                                                         'comargs':["-I./py_stringsimjoin/index/"]
                                                         },   
 
         "py_stringsimjoin.utils.cython_utils": {'sources': ["py_stringsimjoin/utils/cython_utils.pyx", 
-                                                            "py_stringsimjoin/index/inverted_index_cy.cpp"],
+                                                            ],
                                                'comargs': ["-I./py_stringsimjoin/index/"]
                                                }
 }

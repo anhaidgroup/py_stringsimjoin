@@ -254,7 +254,7 @@ cdef void _perform_overlap_coeff_join(ltable_array, rtable_array,
     cdef vector[int] l_empty_ids
     cdef vector[pair[int, int]] partitions                                      
     cdef int i, n=rtokens.size(), partition_size, start=0, end                  
-    cdef InvertedIndexCy index                                                  
+    cdef InvertedIndexCy index = InvertedIndexCy()                                                 
     cdef int comp_op_type                                             
                                                                                 
     comp_op_type = get_comp_type(comp_op)                                       
@@ -285,7 +285,7 @@ cdef void _perform_overlap_coeff_join(ltable_array, rtable_array,
     for i in prange(n_jobs, nogil=True):                                        
         _overlap_coeff_join_part(partitions[i], ltokens, rtokens,       
                                  comp_op_type, threshold, allow_empty, 
-                                 index, l_empty_ids, 
+                                 index.index, index.size_vector, l_empty_ids, 
                                  output_pairs[i], output_sim_scores[i],
                                  i, show_progress)  
 
@@ -294,7 +294,9 @@ cdef void _overlap_coeff_join_part(pair[int, int] partition,
                                    vector[vector[int]]& ltokens,                      
                                    vector[vector[int]]& rtokens,
                                    int comp_op_type, double threshold, 
-                                   bool allow_empty, InvertedIndexCy& index,
+                                   bool allow_empty,
+                                   omap[int, vector[int]]& index,
+                                   vector[int]& size_vector,
                                    vector[int]& l_empty_ids,            
                                    vector[pair[int, int]]& output_pairs,              
                                    vector[double]& output_sim_scores,
@@ -319,14 +321,14 @@ cdef void _overlap_coeff_join_part(pair[int, int] partition,
             continue  
                                                                                 
         for j in range(m):                                                      
-            if index.index.find(tokens[j]) == index.index.end():                
+            if index.find(tokens[j]) == index.end():                
                 continue                                                        
-            candidates = index.index[tokens[j]]                                 
+            candidates = index[tokens[j]]                                 
             for cand in candidates:                                             
                 candidate_overlap[cand] += 1                                    
                                                                                 
         for entry in candidate_overlap:                                         
-            sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])
+            sim_score = <double>entry.second / <double>int_min(m, size_vector[entry.first])
             if comp_fn(sim_score, threshold):                                           
                 output_pairs.push_back(pair[int, int](entry.first, i))          
                 output_sim_scores.push_back(sim_score)                          

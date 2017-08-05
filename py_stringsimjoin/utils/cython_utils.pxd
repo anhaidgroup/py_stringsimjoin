@@ -22,7 +22,7 @@ cdef generate_output_table(ltable_array, rtable_array,
                            out_sim_score, output_header, n_jobs)
 
 cdef void build_inverted_index(vector[vector[int]]& token_vectors,              
-                               InvertedIndexCy& inv_index)
+                               InvertedIndexCy inv_index)
 
 cdef int get_comp_type(comp_op)
 cdef compfnptr get_comparison_function(const int comp_type) nogil

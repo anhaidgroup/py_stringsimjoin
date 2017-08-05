@@ -76,7 +76,7 @@ cdef generate_output_table(ltable_array, rtable_array,
 
 
 cdef void build_inverted_index(vector[vector[int]]& token_vectors, 
-                               InvertedIndexCy& inv_index):
+                               InvertedIndexCy inv_index):
     cdef vector[int] tokens, size_vector                                        
     cdef int i, j, m, n=token_vectors.size()                                    
     cdef omap[int, vector[int]] index                                           

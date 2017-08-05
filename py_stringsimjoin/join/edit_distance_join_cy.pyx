@@ -218,7 +218,7 @@ def edit_distance_join_cy(ltable, rtable,
                          tokenizer, sim_measure_type)
 
     cdef vector[string] lstrings
-    cdef InvertedIndexCy prefix_index                                           
+    cdef InvertedIndexCy prefix_index = InvertedIndexCy()                                           
 
     str2bytes = lambda x: x if isinstance(x, bytes) else x.encode('utf-8')
 
@@ -266,7 +266,8 @@ def edit_distance_join_cy(ltable, rtable,
 
     for ii in prange(n_jobs, nogil=True):    
         _ed_join_part(partitions[ii], rtokens, qval, threshold, 
-                      comp_op_type, prefix_index, lstrings, rstrings, 
+                      comp_op_type, prefix_index.index, prefix_index.size_vector, 
+                      lstrings, rstrings, 
                       output_pairs[ii], output_sim_scores[ii], ii, show_progress)
 
     output_rows = []
@@ -335,7 +336,7 @@ cdef void tokenize_and_build_index(ltable_array, l_join_attr_index,
                                    tokenizer, threshold, str2bytes, 
                                    token_ordering,
                                    vector[string]& lstrings,
-                                   InvertedIndexCy& index):
+                                   InvertedIndexCy index):
     cdef vector[vector[int]] ltokens
     for l_row in ltable_array:                                                  
         lstring = l_row[l_join_attr_index]                                      
@@ -351,7 +352,8 @@ cdef void tokenize_and_build_index(ltable_array, l_join_attr_index,
 cdef void _ed_join_part(pair[int, int] partition, 
                         vector[vector[int]]& rtokens, 
                         int qval, double threshold, int comp_op_type, 
-                        InvertedIndexCy& index,
+                        omap[int, vector[int]]& index, 
+                        vector[int]& size_vector,
                         vector[string]& lstrings, vector[string]& rstrings, 
                         vector[pair[int, int]]& output_pairs,
                         vector[double]& output_sim_scores, 
@@ -369,13 +371,13 @@ cdef void _ed_join_part(pair[int, int] partition,
         prefix_length = int_min(<int>(qval * threshold + 1), m)                 
                                                                                 
         for j in range(prefix_length):                                          
-            if index.index.find(tokens[j]) == index.index.end():                
+            if index.find(tokens[j]) == index.end():                
                 continue
-            for cand in index.index[tokens[j]]:                                             
+            for cand in index[tokens[j]]:                                             
                 candidates.insert(cand)               
 
         for cand in candidates:
-            if m - threshold <= index.size_vector[cand] <= m + threshold:
+            if m - threshold <= size_vector[cand] <= m + threshold:
                 edit_dist = edit_distance(lstrings[cand], rstrings[i])                                         
                 if comp_fn(edit_dist, threshold):                                       
                     output_pairs.push_back(pair[int, int](cand, i))     
