@@ -2,6 +2,7 @@ include README.rst
 include CHANGES.txt
 include requirements.txt
 include LICENSE
+recursive-include py_stringsimjoin *.cpp
 recursive-include LICENSES *
 recursive-include py_stringsimjoin/datasets *.csv *.csv.gz
 recursive-include py_stringsimjoin/tests *.csv *.csv.gz                      
