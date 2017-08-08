@@ -1,6 +1,6 @@
 package:
-  name: py_stringsimjoin_cython
-  version: "0.1.0"
+  name: py_stringsimjoin
+  version: "0.2.0"
 
 source:
     git_url: ../
