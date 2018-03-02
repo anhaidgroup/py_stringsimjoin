@@ -15,6 +15,8 @@ from py_stringsimjoin.join.edit_distance_join import edit_distance_join
 from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_join import overlap_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
+from py_stringsimjoin.join.edit_distance_join_disk import edit_distance_join_disk
+
 
 # import filters
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
