@@ -396,6 +396,7 @@ def _edit_distance_join_split(ltable_array, rtable_array,
                 os.fsync(myfile.fileno())
             output_rows.clear()                                                                         
         candidates.clear()
+        #candidates = []
 
         if show_progress:                                                       
             prog_bar.update() 
