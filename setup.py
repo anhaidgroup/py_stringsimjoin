@@ -46,17 +46,6 @@ LINK_OPTIONS = {
         'other':[]
 }
 
-
-USE_OPENMP_DEFAULT='1'
-
-# The user can update to use openmp using USE_OPENMP environ variable
-if os.environ.get('USE_OPENMP', USE_OPENMP_DEFAULT) == '1':
-    if sys.platform == 'win32':
-        pass
-    else:
-        COMPILE_OPTIONS['other'].append('-fopenmp')
-        LINK_OPTIONS['other'].append('-fopenmp')
-
 class build_ext_options:
     def build_options(self):
         for e in self.extensions:

@@ -2,13 +2,15 @@
 from math import floor
 
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
+from joblib import delayed, Parallel                                            
 import pandas as pd
 import pyprind
 
 from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
     get_num_processes_to_launch, get_output_header_from_tables, \
-    get_output_row_from_tables, remove_non_ascii, remove_redundant_attrs
+    get_output_row_from_tables, remove_non_ascii, remove_redundant_attrs, \
+    split_table 
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.token_ordering import \
@@ -19,8 +21,6 @@ from py_stringsimjoin.utils.validation import validate_attr, \
     validate_tokenizer_for_sim_measure, validate_output_attrs
 
 # Cython imports
-from cython.parallel import prange                                              
-
 from libcpp.vector cimport vector                                               
 from libcpp.set cimport set as oset                                             
 from libcpp.string cimport string                                               
@@ -199,15 +199,77 @@ def edit_distance_join_cy(ltable, rtable,
     # computes the actual number of jobs to launch.
     n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
 
+    if n_jobs <= 1:                                                             
+        # if n_jobs is 1, do not use any parallel code.                         
+        output_table = _edit_distance_join_split(                               
+                               ltable_array, rtable_array,                      
+                               l_proj_attrs, r_proj_attrs,                      
+                               l_key_attr, r_key_attr,                          
+                               l_join_attr, r_join_attr,                        
+                               tokenizer, threshold, comp_op,                   
+                               l_out_attrs, r_out_attrs,                        
+                               l_out_prefix, r_out_prefix,                      
+                               out_sim_score, show_progress)                    
+    else:                                                                       
+        # if n_jobs is above 1, split the right table into n_jobs splits and    
+        # join each right table split with the whole of left table in a separate
+        # process.                                                              
+        r_splits = split_table(rtable_array, n_jobs)                            
+        results = Parallel(n_jobs=n_jobs)(delayed(_edit_distance_join_split)(   
+                                    ltable_array, r_splits[job_index],          
+                                    l_proj_attrs, r_proj_attrs,                 
+                                    l_key_attr, r_key_attr,                     
+                                    l_join_attr, r_join_attr,                   
+                                    tokenizer, threshold, comp_op,              
+                                    l_out_attrs, r_out_attrs,                   
+                                    l_out_prefix, r_out_prefix,                 
+                                    out_sim_score,                              
+                                    (show_progress and (job_index==n_jobs-1)))  
+                                for job_index in range(n_jobs))                 
+        output_table = pd.concat(results)  
+
+    # If allow_missing flag is set, then compute all pairs with missing value in
+    # at least one of the join attributes and then add it to the output         
+    # obtained from the join.                                                   
+    if allow_missing:                                                           
+        missing_pairs = get_pairs_with_missing_value(                           
+                                            ltable, rtable,                     
+                                            l_key_attr, r_key_attr,             
+                                            l_join_attr, r_join_attr,           
+                                            l_out_attrs, r_out_attrs,           
+                                            l_out_prefix, r_out_prefix,         
+                                            out_sim_score, show_progress)       
+        output_table = pd.concat([output_table, missing_pairs])                 
+                                                                                
+    # add an id column named '_id' to the output table.                         
+    output_table.insert(0, '_id', range(0, len(output_table)))                  
+                                                                                
+    # revert the return_set flag of tokenizer, in case it was modified.         
+    if revert_tokenizer_return_set_flag:                                        
+        tokenizer.set_return_set(True)                                          
+                                                                                
+    return output_table  
+
+
+def _edit_distance_join_split(ltable_array, rtable_array,                         
+                              l_columns, r_columns,                             
+                              l_key_attr, r_key_attr,                           
+                              l_join_attr, r_join_attr,                         
+                              tokenizer, threshold, comp_op,                    
+                              l_out_attrs, r_out_attrs,                         
+                              l_out_prefix, r_out_prefix,                       
+                              out_sim_score, show_progress):                    
+    """Perform edit distance join for a split of ltable and rtable"""
+  
     # find column indices of key attr, join attr and output attrs in ltable
-    l_key_attr_index = l_proj_attrs.index(l_key_attr)
-    l_join_attr_index = l_proj_attrs.index(l_join_attr)
-    l_out_attrs_indices = find_output_attribute_indices(l_proj_attrs, l_out_attrs)
+    l_key_attr_index = l_columns.index(l_key_attr)
+    l_join_attr_index = l_columns.index(l_join_attr)
+    l_out_attrs_indices = find_output_attribute_indices(l_columns, l_out_attrs)
 
     # find column indices of key attr, join attr and output attrs in rtable
-    r_key_attr_index = r_proj_attrs.index(r_key_attr)
-    r_join_attr_index = r_proj_attrs.index(r_join_attr)
-    r_out_attrs_indices = find_output_attribute_indices(r_proj_attrs, r_out_attrs)
+    r_key_attr_index = r_columns.index(r_key_attr)
+    r_join_attr_index = r_columns.index(r_join_attr)
+    r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs)
 
     sim_measure_type = 'EDIT_DISTANCE'
     # generate token ordering using tokens in l_join_attr
@@ -237,67 +299,57 @@ def edit_distance_join_cy(ltable, rtable,
             tokenizer.tokenize(rstring), token_ordering)
         rtokens.push_back(rstring_tokens)
 
-    cdef int comp_op_type                                             
-    comp_op_type = get_comp_type(comp_op) 
-    
-    cdef vector[vector[pair[int, int]]] output_pairs
-    cdef vector[vector[double]] output_sim_scores                               
-    cdef vector[pair[int, int]] partitions
-    cdef int ii, jj, rtable_size=len(rtable_array), partition_size, \
-            partition_start=0, partition_end            
-
-    partition_size = <int>(<float> rtable_size / <float> n_jobs)
-    for ii in range(n_jobs):
-        partition_end = partition_start + partition_size
-        if partition_end > rtable_size or ii == n_jobs - 1:
-            partition_end = rtable_size
-        partitions.push_back(pair[int, int](partition_start, partition_end))
-        partition_start = partition_end            
-        output_pairs.push_back(vector[pair[int, int]]())
-        output_sim_scores.push_back(vector[double]())                           
-
-    # If the show_progress flag is enabled, then create a new progress bar and 
-    # assign it to the global variable.
-    if show_progress:                                                           
-        global _progress_bar                                                    
-        _progress_bar = pyprind.ProgBar(partition_size)     
-
-    cdef int qval = tokenizer.qval
-
-    for ii in prange(n_jobs, nogil=True):    
-        _ed_join_part(partitions[ii], rtokens, qval, threshold, 
-                      comp_op_type, prefix_index.index, prefix_index.size_vector, 
-                      lstrings, rstrings, 
-                      output_pairs[ii], output_sim_scores[ii], ii, show_progress)
-
     output_rows = []
     has_output_attributes = (l_out_attrs is not None or
                              r_out_attrs is not None)
-    
-    for ii in range(n_jobs):    
-        for jj in xrange(len(output_pairs[ii])):
-            cur_outpair = output_pairs[ii][jj]
-            l_row_inx = cur_outpair.first
-            l_row = ltable_array[l_row_inx]
-            r_row_inx = cur_outpair.second
-            r_row = rtable_array[r_row_inx]
 
-            if has_output_attributes:
-                output_row = get_output_row_from_tables(
-                                 l_row, r_row,
-                                 l_key_attr_index, r_key_attr_index,
-                                 l_out_attrs_indices,
-                                 r_out_attrs_indices)
-            else:
-                output_row = [l_row[l_key_attr_index],
-                              r_row[r_key_attr_index]]
+    if show_progress:                                                           
+        prog_bar = pyprind.ProgBar(len(rtable_array))   
 
-            # if out_sim_score flag is set, append the edit distance 
-            # score to the output record.
-            if out_sim_score:
-                output_row.append(output_sim_scores[ii][jj])
+    cdef oset[int] candidates                                                   
+    cdef vector[int] tokens                                                     
+    cdef int j, m, i, prefix_length, cand                                     
+    cdef double edit_dist                                                       
+    cdef int qval = tokenizer.qval                                              
+    cdef compfnptr comp_fn                                                      
+    comp_fn = get_comparison_function(get_comp_type(comp_op))                             
+                                                                                
+    for i in range(rtokens.size()):                          
+        tokens = rtokens[i]                                                     
+        m = tokens.size()                                                       
+        prefix_length = int_min(<int>(qval * threshold + 1), m)                 
+                                                                                
+        for j in range(prefix_length):                                          
+            if prefix_index.index.find(tokens[j]) == prefix_index.index.end():                            
+                continue                                                        
+            for cand in prefix_index.index[tokens[j]]:                                       
+                candidates.insert(cand)                                         
+                                                                                
+        for cand in candidates:                                                 
+            if m - threshold <= prefix_index.size_vector[cand] <= m + threshold:             
+                edit_dist = edit_distance(lstrings[cand], rstrings[i])          
+                if comp_fn(edit_dist, threshold):
+                    if has_output_attributes:                                           
+                        output_row = get_output_row_from_tables(                        
+                                         ltable_array[cand], rtable_array[i],                                  
+                                         l_key_attr_index, r_key_attr_index,            
+                                         l_out_attrs_indices,                           
+                                         r_out_attrs_indices)                           
+                    else:                                                               
+                        output_row = [ltable_array[cand][l_key_attr_index],                          
+                                      rtable_array[i][r_key_attr_index]]                          
+                                                                                
+                    # if out_sim_score flag is set, append the edit distance            
+                    # score to the output record.                                       
+                    if out_sim_score:                                                   
+                        output_row.append(edit_dist)                    
+                                                                                
+                    output_rows.append(output_row)   
+                                                                                
+        candidates.clear()
 
-            output_rows.append(output_row)
+        if show_progress:                                                       
+            prog_bar.update() 
 
     output_header = get_output_header_from_tables(
                         l_key_attr, r_key_attr,
@@ -308,28 +360,7 @@ def edit_distance_join_cy(ltable, rtable,
 
     # generate a dataframe from the list of output rows
     output_table = pd.DataFrame(output_rows, columns=output_header)
-
-    # If allow_missing flag is set, then compute all pairs with missing value in
-    # at least one of the join attributes and then add it to the output         
-    # obtained from the join. 
-    if allow_missing:
-        missing_pairs = get_pairs_with_missing_value(
-                                            ltable, rtable,
-                                            l_key_attr, r_key_attr,
-                                            l_join_attr, r_join_attr,
-                                            l_out_attrs, r_out_attrs,
-                                            l_out_prefix, r_out_prefix,
-                                            out_sim_score, show_progress)
-        output_table = pd.concat([output_table, missing_pairs])
-
-    # add an id column named '_id' to the output table.
-    output_table.insert(0, '_id', range(0, len(output_table)))
-
-    # revert the return_set flag of tokenizer, in case it was modified.
-    if revert_tokenizer_return_set_flag:
-        tokenizer.set_return_set(True)
-
-    return output_table
+    return output_table                                                         
 
 
 cdef void tokenize_and_build_index(ltable_array, l_join_attr_index,
@@ -348,48 +379,3 @@ cdef void tokenize_and_build_index(ltable_array, l_join_attr_index,
 
     index.build_prefix_index(ltokens, tokenizer.qval, threshold)         
        
-
-cdef void _ed_join_part(pair[int, int] partition, 
-                        vector[vector[int]]& rtokens, 
-                        int qval, double threshold, int comp_op_type, 
-                        omap[int, vector[int]]& index, 
-                        vector[int]& size_vector,
-                        vector[string]& lstrings, vector[string]& rstrings, 
-                        vector[pair[int, int]]& output_pairs,
-                        vector[double]& output_sim_scores, 
-                        int thread_id, bool show_progress) nogil:    
-    cdef oset[int] candidates                                      
-    cdef vector[int] tokens
-    cdef int j=0, m, i, prefix_length, cand                    
-    cdef double edit_dist               
-    cdef compfnptr comp_fn                                                      
-    comp_fn = get_comparison_function(comp_op_type)     
-
-    for i in range(partition.first, partition.second):
-        tokens = rtokens[i]                        
-        m = tokens.size()                                                      
-        prefix_length = int_min(<int>(qval * threshold + 1), m)                 
-                                                                                
-        for j in range(prefix_length):                                          
-            if index.find(tokens[j]) == index.end():                
-                continue
-            for cand in index[tokens[j]]:                                             
-                candidates.insert(cand)               
-
-        for cand in candidates:
-            if m - threshold <= size_vector[cand] <= m + threshold:
-                edit_dist = edit_distance(lstrings[cand], rstrings[i])                                         
-                if comp_fn(edit_dist, threshold):                                       
-                    output_pairs.push_back(pair[int, int](cand, i))     
-                    output_sim_scores.push_back(edit_dist)                          
-
-        candidates.clear()
-
-        # If the show_progress flag is enabled, we update the progress bar.
-        # Note that only one of the threads will update the progress bar. To
-        # do so, it releases GIL and updates the global variable that keeps 
-        # track of the progress bar.
-        if thread_id == 0 and show_progress:
-            with gil:
-                global _progress_bar
-                _progress_bar.update()

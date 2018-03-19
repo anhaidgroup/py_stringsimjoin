@@ -4,10 +4,6 @@ __version__ = '0.2.0'
 # determine whether to use available cython implementations                     
 __use_cython__ = True 
 
-import sys
-if sys.platform == 'win32':
-    __use_cython__ = False
-
 # import join methods
 from py_stringsimjoin.join.cosine_join import cosine_join
 from py_stringsimjoin.join.dice_join import dice_join

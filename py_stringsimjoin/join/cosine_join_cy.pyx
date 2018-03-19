@@ -1,9 +1,10 @@
 # cosine join
+from joblib import delayed, Parallel                                            
 import pandas as pd
 
 from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     get_attrs_to_project, get_num_processes_to_launch, remove_redundant_attrs, \
-    find_output_attribute_indices, get_output_header_from_tables 
+    find_output_attribute_indices, get_output_header_from_tables, split_table 
 from py_stringsimjoin.utils.missing_value_handler import \
     get_pairs_with_missing_value
 from py_stringsimjoin.utils.validation import validate_attr, \
@@ -14,8 +15,7 @@ from py_stringsimjoin.utils.validation import validate_attr, \
 from libcpp.vector cimport vector                                               
 from libcpp.pair cimport pair  
 
-from py_stringsimjoin.join.set_sim_join_cy cimport set_sim_join_cy              
-from py_stringsimjoin.utils.cython_utils cimport generate_output_table
+from py_stringsimjoin.join.set_sim_join_cy import set_sim_join_cy              
 
 
 def cosine_join_cy(ltable, rtable,
@@ -171,41 +171,38 @@ def cosine_join_cy(ltable, rtable,
     ltable_array = convert_dataframe_to_array(ltable, l_proj_attrs, l_join_attr)
     rtable_array = convert_dataframe_to_array(rtable, r_proj_attrs, r_join_attr)
                                                                                 
-    # find column indices of key attr and output attrs in ltable                
-    l_key_attr_index = l_proj_attrs.index(l_key_attr)
-    l_join_attr_index = l_proj_attrs.index(l_join_attr)                                                      
-    l_out_attrs_indices = find_output_attribute_indices(l_proj_attrs, l_out_attrs)
-                                                                                
-    # find column indices of key attr and output attrs in rtable                
-    r_key_attr_index = r_proj_attrs.index(r_key_attr)                           
-    r_join_attr_index = r_proj_attrs.index(r_join_attr)                           
-    r_out_attrs_indices = find_output_attribute_indices(r_proj_attrs, r_out_attrs)
-
     # computes the actual number of jobs to launch.
     n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable))
 
-    cdef vector[vector[pair[int, int]]] output_pairs, 
-    cdef vector[vector[double]] output_sim_scores
-
-    set_sim_join_cy(ltable_array, rtable_array,
-                    l_join_attr_index, r_join_attr_index,
-                    tokenizer, 'COSINE', threshold, comp_op, 
-                    n_jobs, allow_empty, show_progress, 
-                    output_pairs, output_sim_scores)   
-
-    output_header = get_output_header_from_tables(                              
-                        l_key_attr, r_key_attr,                                 
-                        l_out_attrs, r_out_attrs,                               
-                        l_out_prefix, r_out_prefix)                             
-    if out_sim_score:                                                           
-        output_header.append("_sim_score")                                      
-                                                                                
-    # generate output dataframe from the output pairs obtained after join                         
-    output_table = generate_output_table(ltable_array, rtable_array,                     
-                                         output_pairs, output_sim_scores,      
-                                         l_key_attr_index, r_key_attr_index,             
-                                         l_out_attrs_indices, r_out_attrs_indices,       
-                                         out_sim_score, output_header, n_jobs)
+    if n_jobs <= 1:                                                             
+        # if n_jobs is 1, do not use any parallel code.                         
+        output_table = set_sim_join_cy(ltable_array, rtable_array,                 
+                                       l_proj_attrs, r_proj_attrs,                 
+                                       l_key_attr, r_key_attr,                     
+                                       l_join_attr, r_join_attr,                   
+                                       tokenizer, 'COSINE',                        
+                                       threshold, comp_op, allow_empty,            
+                                       l_out_attrs, r_out_attrs,                   
+                                       l_out_prefix, r_out_prefix,                 
+                                       out_sim_score, show_progress)               
+    else:                                                                       
+        # if n_jobs is above 1, split the right table into n_jobs splits and    
+        # join each right table split with the whole of left table in a separate
+        # process.                                                              
+        r_splits = split_table(rtable_array, n_jobs)                            
+        results = Parallel(n_jobs=n_jobs)(delayed(set_sim_join_cy)(                
+                                          ltable_array, r_splits[job_index],    
+                                          l_proj_attrs, r_proj_attrs,           
+                                          l_key_attr, r_key_attr,               
+                                          l_join_attr, r_join_attr,             
+                                          tokenizer, 'COSINE',                  
+                                          threshold, comp_op, allow_empty,      
+                                          l_out_attrs, r_out_attrs,             
+                                          l_out_prefix, r_out_prefix,           
+                                          out_sim_score,                        
+                                      (show_progress and (job_index==n_jobs-1)))
+                                          for job_index in range(n_jobs))       
+        output_table = pd.concat(results)  
 
     # If allow_missing flag is set, then compute all pairs with missing value in
     # at least one of the join attributes and then add it to the output 

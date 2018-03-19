@@ -1,9 +1,8 @@
 # set similarity join
 
+import pandas as pd
 import pyprind                                                                  
 
-from cython.parallel import prange                                              
-                                                                                
 from libc.math cimport ceil, floor, round, sqrt, trunc                          
 from libcpp.vector cimport vector                                               
 from libcpp.set cimport set as oset                                             
@@ -12,6 +11,8 @@ from libcpp cimport bool
 from libcpp.map cimport map as omap                                             
 from libcpp.pair cimport pair    
 
+from py_stringsimjoin.utils.generic_helper import find_output_attribute_indices,\
+    get_output_header_from_tables, get_output_row_from_tables
 from py_stringsimjoin.similarity_measure.cosine cimport cosine                
 from py_stringsimjoin.similarity_measure.dice cimport dice                
 from py_stringsimjoin.similarity_measure.jaccard cimport jaccard
@@ -20,106 +21,95 @@ from py_stringsimjoin.utils.cython_utils cimport compfnptr,\
     get_comparison_function, get_comp_type, int_max, int_min, tokenize_lists                       
 
 
-# Initialize a global variable to keep track of the progress bar                
-_progress_bar = None 
+def set_sim_join_cy(ltable, rtable,                   
+                    l_columns, r_columns,                       
+                    l_key_attr, r_key_attr,                     
+                    l_join_attr, r_join_attr,                   
+                    tokenizer, sim_measure, threshold, comp_op,              
+                    allow_empty,                                
+                    l_out_attrs, r_out_attrs,                   
+                    l_out_prefix, r_out_prefix,                 
+                    out_sim_score, show_progress):
 
+    # find column indices of key attr and output attrs in ltable                
+    l_key_attr_index = l_columns.index(l_key_attr)                              
+    l_join_attr_index = l_columns.index(l_join_attr)                            
+    l_out_attrs_indices = find_output_attribute_indices(l_columns, l_out_attrs) 
+                                                                                
+    # find column indices of key attr and output attrs in rtable                
+    r_key_attr_index = r_columns.index(r_key_attr)                              
+    r_join_attr_index = r_columns.index(r_join_attr)                            
+    r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs) 
 
-cdef void set_sim_join_cy(ltable, rtable, 
-                           l_join_attr_index, r_join_attr_index, 
-                           tokenizer, sim_measure, double threshold, comp_op,       
-                           int n_jobs, bool allow_empty, bool show_progress,
-                           vector[vector[pair[int, int]]]& output_pairs, 
-                           vector[vector[double]]& output_sim_scores):      
                      
     cdef vector[vector[int]] ltokens, rtokens
     tokenize_lists(ltable, rtable, l_join_attr_index, r_join_attr_index, 
                    tokenizer, ltokens, rtokens)
-  
-    cdef vector[pair[int, int]] partitions                                      
-    cdef int i, n=rtokens.size(), partition_size, start=0, end    
-    cdef int sim_type, comp_op_type                                             
 
-    sim_type = get_sim_type(sim_measure)                                        
-    comp_op_type = get_comp_type(comp_op)     
+    cdef int sim_type
+    sim_type = get_sim_type(sim_measure)
 
+    cdef PositionIndexCy index = PositionIndexCy()                                
     index = build_position_index(ltokens, sim_type, threshold, allow_empty)                            
 
-    partition_size = <int>(<float> n / <float> n_jobs)                           
-    for i in xrange(n_jobs):                                                      
-        end = start + partition_size                                            
-        if end > n or i == n_jobs - 1:                                           
-            end = n                                                             
-        partitions.push_back(pair[int, int](start, end))                        
-        start = end                                                             
-        output_pairs.push_back(vector[pair[int, int]]())                        
-        output_sim_scores.push_back(vector[double]())                           
 
-    # If the show_progress flag is enabled, then create a new progress bar and  
-    # assign it to the global variable.                                         
-    if show_progress:                                                           
-        global _progress_bar                                                    
-        _progress_bar = pyprind.ProgBar(partition_size)   
-                                                                                
-    for i in prange(n_jobs, nogil=True):                                         
-        set_sim_join_partition(partitions[i], ltokens, rtokens, sim_type, 
-                               comp_op_type, threshold, allow_empty,
-                               index.index, index.size_vector, index.l_empty_ids,
-                               index.min_len, index.max_len, 
-                               output_pairs[i], output_sim_scores[i], 
-                               i, show_progress)                        
-
-
-cdef void set_sim_join_partition(pair[int, int] partition,                  
-                                 vector[vector[int]]& ltokens,                       
-                                 vector[vector[int]]& rtokens,                       
-                                 int sim_type, int comp_op_type,                                      
-                                 double threshold, bool allow_empty, 
-                                 omap[int, vector[pair[int, int]]]& index,
-                                 vector[int]& size_vector,
-                                 vector[int]& l_empty_ids,
-                                 int min_len, int max_len,            
-                                 vector[pair[int, int]]& output_pairs,               
-                                 vector[double]& output_sim_scores,
-                                 int thread_id, bool show_progress) nogil:           
     cdef omap[int, int] candidate_overlap, overlap_threshold_cache              
     cdef vector[pair[int, int]] candidates                                      
     cdef vector[int] tokens                                                     
     cdef pair[int, int] cand, entry                                             
-    cdef int k=0, j=0, m, i, prefix_length, cand_num_tokens, current_overlap, overlap_upper_bound
+    cdef int k, j, m, i, prefix_length, cand_num_tokens, current_overlap, overlap_upper_bound
     cdef int size, size_lower_bound, size_upper_bound                           
     cdef double sim_score, overlap_score                                        
     cdef fnptr sim_fn                                           
     cdef compfnptr comp_fn                
     sim_fn = get_sim_function(sim_type)                                         
-    comp_fn = get_comparison_function(comp_op_type)
+    comp_fn = get_comparison_function(get_comp_type(comp_op))
+
+    output_rows = []                                                            
+    has_output_attributes = (l_out_attrs is not None or                         
+                             r_out_attrs is not None)                           
+                                                                                
+    if show_progress:                                                           
+        prog_bar = pyprind.ProgBar(len(rtable))
                                                                             
-    for i in range(partition.first, partition.second):                          
+    for i in range(rtokens.size()):                          
         tokens = rtokens[i]                                                     
         m = tokens.size()                                                       
 
         if allow_empty and m == 0:
-            for j in l_empty_ids:
-                output_pairs.push_back(pair[int, int](j, i))      
-                output_sim_scores.push_back(1.0)  
+            for j in index.l_empty_ids:
+                if has_output_attributes:                                       
+                    output_row = get_output_row_from_tables(                    
+                                     ltable[j], rtable[i],                     
+                                     l_key_attr_index, r_key_attr_index,        
+                                     l_out_attrs_indices,                       
+                                     r_out_attrs_indices)                       
+                else:                                                           
+                    output_row = [ltable[j][l_key_attr_index],             
+                                  rtable[i][r_key_attr_index]]                      
+                                                                                
+                if out_sim_score:                                               
+                    output_row.append(1.0)                                      
+                output_rows.append(output_row)   
             continue
  
         prefix_length = get_prefix_length(m, sim_type, threshold)               
         size_lower_bound = int_max(get_size_lower_bound(m, sim_type, threshold),
-                                   min_len)                               
+                                   index.min_len)                               
         size_upper_bound = int_min(get_size_upper_bound(m, sim_type, threshold),
-                                   max_len)                               
+                                   index.max_len)                               
 
         for size in range(size_lower_bound, size_upper_bound + 1):              
             overlap_threshold_cache[size] = get_overlap_threshold(size, m, sim_type, threshold)
 
         for j in range(prefix_length):                                          
-            if index.find(tokens[j]) == index.end():                
+            if index.index.find(tokens[j]) == index.index.end():                
                 continue                                                        
-            candidates = index[tokens[j]]                                 
+            candidates = index.index[tokens[j]]                                 
             for cand in candidates:                                             
                 current_overlap = candidate_overlap[cand.first]                 
                 if current_overlap != -1:                                       
-                    cand_num_tokens = size_vector[cand.first]             
+                    cand_num_tokens = index.size_vector[cand.first]             
                                                                                 
                     # only consider candidates satisfying the size filter       
                     # condition.                                                
@@ -143,21 +133,36 @@ cdef void set_sim_join_partition(pair[int, int] partition,
                 sim_score = sim_fn(ltokens[entry.first], tokens)                
 
                 if comp_fn(sim_score, threshold):                                       
-                    output_pairs.push_back(pair[int, int](entry.first, i))      
-                    output_sim_scores.push_back(sim_score)                      
+                    if has_output_attributes:                                       
+                        output_row = get_output_row_from_tables(                    
+                                     ltable[entry.first], rtable[i],           
+                                     l_key_attr_index, r_key_attr_index,        
+                                     l_out_attrs_indices, r_out_attrs_indices)  
+                    else:                                                           
+                        output_row = [ltable[entry.first][l_key_attr_index],   
+                                      rtable[i][r_key_attr_index]]                      
+                                                                                
+                    # if out_sim_score flag is set, append the overlap coefficient  
+                    # score to the output record.                                   
+                    if out_sim_score:                                               
+                        output_row.append(sim_score)                                
+                                                                                
+                    output_rows.append(output_row)  
 
         candidate_overlap.clear()                                               
         overlap_threshold_cache.clear()          
 
-        # If the show_progress flag is enabled, we update the progress bar.     
-        # Note that only one of the threads will update the progress bar. To    
-        # do so, it releases GIL and updates the global variable that keeps     
-        # track of the progress bar.                                            
-        if thread_id == 0 and show_progress:                                    
-            with gil:                                                           
-                global _progress_bar                                            
-                _progress_bar.update()   
+        if show_progress:                                                       
+            prog_bar.update()
 
+    output_header = get_output_header_from_tables(l_key_attr, r_key_attr,       
+                                                  l_out_attrs, r_out_attrs,     
+                                                  l_out_prefix, r_out_prefix)   
+    if out_sim_score:                                                           
+        output_header.append("_sim_score")                                      
+                                                                                
+    output_table = pd.DataFrame(output_rows, columns=output_header)             
+    return output_table   
 
 cdef PositionIndexCy build_position_index(vector[vector[int]]& token_vectors, 
                                int& sim_type, double& threshold, 
