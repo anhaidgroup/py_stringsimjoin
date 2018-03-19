@@ -6,7 +6,7 @@ This project seeks to build a Python software package that provides scalable imp
 Important links
 ===============
 
- * Project Homepage: https://sites.google.com/site/anhaidgroup/projects/magellan/py_stringsimjoin_v0_2_0
+ * Project Homepage: https://sites.google.com/site/anhaidgroup/projects/magellan/py_stringsimjoin_v0_3_0
  * Code repository: https://github.com/anhaidgroup/py_stringsimjoin
  * Issue Tracker: https://github.com/anhaidgroup/py_stringsimjoin/issues
  * Mailing List: https://groups.google.com/forum/#!forum/py_stringsimjoin
