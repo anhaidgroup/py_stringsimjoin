@@ -1,0 +1,735 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py_stringsimjoin.filter.suffix_filter &mdash; py_stringsimjoin 0.3.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="py_stringsimjoin 0.3.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../whatisnew.html">What is New?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guide.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cython.html">Disabling Cython</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/filter.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">py_stringsimjoin</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>py_stringsimjoin.filter.suffix_filter</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for py_stringsimjoin.filter.suffix_filter</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span><span class="p">,</span> <span class="n">floor</span>
+
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">delayed</span><span class="p">,</span> <span class="n">Parallel</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pyprind</span>
+
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.filter.filter</span> <span class="kn">import</span> <span class="n">Filter</span>
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.filter.filter_utils</span> <span class="kn">import</span> <span class="n">get_overlap_threshold</span><span class="p">,</span> \
+                                                 <span class="n">get_prefix_length</span>
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.utils.generic_helper</span> <span class="kn">import</span> <span class="n">convert_dataframe_to_array</span><span class="p">,</span> \
+    <span class="n">find_output_attribute_indices</span><span class="p">,</span> <span class="n">get_attrs_to_project</span><span class="p">,</span> \
+    <span class="n">get_num_processes_to_launch</span><span class="p">,</span> <span class="n">get_output_header_from_tables</span><span class="p">,</span> \
+    <span class="n">get_output_row_from_tables</span><span class="p">,</span> <span class="n">remove_redundant_attrs</span><span class="p">,</span> <span class="n">split_table</span>
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.utils.missing_value_handler</span> <span class="kn">import</span> \
+    <span class="n">get_pairs_with_missing_value</span>
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.utils.token_ordering</span> <span class="kn">import</span> <span class="n">gen_token_ordering_for_lists</span><span class="p">,</span>\
+    <span class="n">gen_token_ordering_for_tables</span><span class="p">,</span> <span class="n">order_using_token_ordering</span>
+<span class="kn">from</span> <span class="nn">py_stringsimjoin.utils.validation</span> <span class="kn">import</span> <span class="n">validate_attr</span><span class="p">,</span> \
+    <span class="n">validate_attr_type</span><span class="p">,</span> <span class="n">validate_key_attr</span><span class="p">,</span> <span class="n">validate_input_table</span><span class="p">,</span> \
+    <span class="n">validate_threshold</span><span class="p">,</span> <span class="n">validate_tokenizer_for_sim_measure</span><span class="p">,</span> \
+    <span class="n">validate_output_attrs</span><span class="p">,</span> <span class="n">validate_sim_measure_type</span>
+
+
+<div class="viewcode-block" id="SuffixFilter"><a class="viewcode-back" href="../../../api/suffix_filter.html#py_stringsimjoin.filter.suffix_filter.SuffixFilter">[docs]</a><span class="k">class</span> <span class="nc">SuffixFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Finds candidate matching pairs of strings using suffix filtering </span>
+<span class="sd">    technique.</span>
+
+<span class="sd">    For similarity measures such as cosine, Dice, Jaccard and overlap, the </span>
+<span class="sd">    filter finds candidate string pairs that may have similarity score greater </span>
+<span class="sd">    than or equal to the input threshold, as specified in &quot;threshold&quot;. For </span>
+<span class="sd">    distance measures such as edit distance, the filter finds candidate string </span>
+<span class="sd">    pairs that may have distance score less than or equal to the threshold.</span>
+
+<span class="sd">    To know more about suffix filtering, refer to the paper </span>
+<span class="sd">    `Efficient Similarity Joins for Near Duplicate Detection </span>
+<span class="sd">    (Chuan Xiao, Wei Wang, Xuemin Lin and Jeffrey Xu Yu), WWW 08</span>
+<span class="sd">    &lt;http://www.cse.unsw.edu.au/~weiw/files/WWW08-PPJoin-Final.pdf&gt;`_.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tokenizer (Tokenizer): tokenizer to be used.</span>
+<span class="sd">        sim_measure_type (string): similarity measure type. Supported types are </span>
+<span class="sd">            &#39;JACCARD&#39;, &#39;COSINE&#39;, &#39;DICE&#39;, &#39;OVERLAP&#39; and &#39;EDIT_DISTANCE&#39;.</span>
+<span class="sd">        threshold (float): threshold to be used by the filter.</span>
+<span class="sd">        allow_empty (boolean): A flag to indicate whether pairs in which both   </span>
+<span class="sd">            strings are tokenized into an empty set of tokens should            </span>
+<span class="sd">            survive the filter (defaults to True). This flag is not valid for   </span>
+<span class="sd">            measures such as &#39;OVERLAP&#39; and &#39;EDIT_DISTANCE&#39;.                     </span>
+<span class="sd">        allow_missing (boolean): A flag to indicate whether pairs containing    </span>
+<span class="sd">            missing value should survive the filter (defaults to False).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        tokenizer (Tokenizer): An attribute to store the tokenizer.</span>
+<span class="sd">        sim_measure_type (string): An attribute to store the similarity measure </span>
+<span class="sd">            type.</span>
+<span class="sd">        threshold (float): An attribute to store the threshold value.</span>
+<span class="sd">        allow_empty (boolean): An attribute to store the value of the flag    </span>
+<span class="sd">            allow_empty.</span>
+<span class="sd">        allow_missing (boolean): An attribute to store the value of the flag </span>
+<span class="sd">            allow_missing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">sim_measure_type</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span>
+                 <span class="n">allow_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_missing</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="c1"># check if the sim_measure_type is valid                                </span>
+        <span class="n">validate_sim_measure_type</span><span class="p">(</span><span class="n">sim_measure_type</span><span class="p">)</span>                             
+        <span class="n">sim_measure_type</span> <span class="o">=</span> <span class="n">sim_measure_type</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                                                                                
+        <span class="c1"># check if the input tokenizer is valid                                 </span>
+        <span class="n">validate_tokenizer_for_sim_measure</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">sim_measure_type</span><span class="p">)</span> 
+
+        <span class="c1"># check if the threshold is valid</span>
+        <span class="n">validate_threshold</span><span class="p">(</span><span class="n">threshold</span><span class="p">,</span> <span class="n">sim_measure_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_measure_type</span> <span class="o">=</span> <span class="n">sim_measure_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_empty</span> <span class="o">=</span> <span class="n">allow_empty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">allow_missing</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SuffixFilter.filter_pair"><a class="viewcode-back" href="../../../api/suffix_filter.html#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair">[docs]</a>    <span class="k">def</span> <span class="nf">filter_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lstring</span><span class="p">,</span> <span class="n">rstring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks if the input strings get dropped by the suffix filter.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lstring,rstring (string): input strings</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A flag indicating whether the string pair is dropped (boolean).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># If one of the inputs is missing, then check the allow_missing flag.</span>
+        <span class="c1"># If it is set to True, then pass the pair. Else drop the pair.</span>
+        <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">lstring</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">rstring</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_missing</span><span class="p">)</span>
+
+        <span class="c1"># tokenize input strings</span>
+        <span class="n">ltokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">lstring</span><span class="p">)</span>
+        <span class="n">rtokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">rstring</span><span class="p">)</span>    
+
+        <span class="n">l_num_tokens</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ltokens</span><span class="p">)</span>
+        <span class="n">r_num_tokens</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rtokens</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">l_num_tokens</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">r_num_tokens</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_measure_type</span> <span class="o">==</span> <span class="s1">&#39;OVERLAP&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_measure_type</span> <span class="o">==</span> <span class="s1">&#39;EDIT_DISTANCE&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_empty</span><span class="p">)</span>
+
+        <span class="c1"># order the tokens using the token ordering</span>
+        <span class="n">token_ordering</span> <span class="o">=</span> <span class="n">gen_token_ordering_for_lists</span><span class="p">([</span><span class="n">ltokens</span><span class="p">,</span> <span class="n">rtokens</span><span class="p">])</span> 
+        <span class="n">ordered_ltokens</span> <span class="o">=</span> <span class="n">order_using_token_ordering</span><span class="p">(</span><span class="n">ltokens</span><span class="p">,</span> <span class="n">token_ordering</span><span class="p">)</span>
+        <span class="n">ordered_rtokens</span> <span class="o">=</span> <span class="n">order_using_token_ordering</span><span class="p">(</span><span class="n">rtokens</span><span class="p">,</span> <span class="n">token_ordering</span><span class="p">)</span>
+
+        <span class="c1"># compute prefix length</span>
+        <span class="n">l_prefix_length</span> <span class="o">=</span> <span class="n">get_prefix_length</span><span class="p">(</span><span class="n">l_num_tokens</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">sim_measure_type</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
+        <span class="n">r_prefix_length</span> <span class="o">=</span> <span class="n">get_prefix_length</span><span class="p">(</span><span class="n">r_num_tokens</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">sim_measure_type</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">l_prefix_length</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">r_prefix_length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_suffix</span><span class="p">(</span><span class="n">ordered_ltokens</span><span class="p">[</span><span class="n">l_prefix_length</span><span class="p">:],</span>
+                             <span class="n">ordered_rtokens</span><span class="p">[</span><span class="n">r_prefix_length</span><span class="p">:],</span>
+                             <span class="n">l_prefix_length</span><span class="p">,</span>
+                             <span class="n">r_prefix_length</span><span class="p">,</span>
+                             <span class="n">l_num_tokens</span><span class="p">,</span> <span class="n">r_num_tokens</span><span class="p">)</span></div>
+    
+    <span class="k">def</span> <span class="nf">_filter_suffix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l_suffix</span><span class="p">,</span> <span class="n">r_suffix</span><span class="p">,</span>
+                       <span class="n">l_prefix_num_tokens</span><span class="p">,</span> <span class="n">r_prefix_num_tokens</span><span class="p">,</span>
+                       <span class="n">l_num_tokens</span><span class="p">,</span> <span class="n">r_num_tokens</span><span class="p">):</span>
+        <span class="c1"># compute the overlap needed between the tokens to satisfy the </span>
+        <span class="c1"># threshold.</span>
+        <span class="n">overlap_threshold</span> <span class="o">=</span> <span class="n">get_overlap_threshold</span><span class="p">(</span><span class="n">l_num_tokens</span><span class="p">,</span> <span class="n">r_num_tokens</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">sim_measure_type</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
+       
+        <span class="k">if</span> <span class="p">(</span><span class="n">l_prefix_num_tokens</span> <span class="o">&gt;=</span> <span class="n">overlap_threshold</span> <span class="ow">and</span> 
+            <span class="n">r_prefix_num_tokens</span> <span class="o">&gt;=</span> <span class="n">overlap_threshold</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="c1"># compute the maximum allowed hamming distance between the</span>
+        <span class="c1"># suffix tokens in order to satisfy the threshold.</span>
+        <span class="n">hamming_dist_max</span> <span class="o">=</span> <span class="p">(</span><span class="n">l_num_tokens</span> <span class="o">+</span> <span class="n">r_num_tokens</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">overlap_threshold</span><span class="p">)</span>
+
+        <span class="c1"># compute lowerbound on the actual hamming distance between the suffix</span>
+        <span class="c1"># tokens.</span>
+        <span class="n">hamming_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_est_hamming_dist_lower_bound</span><span class="p">(</span>
+                                <span class="n">l_suffix</span><span class="p">,</span> <span class="n">r_suffix</span><span class="p">,</span>
+                                <span class="n">l_num_tokens</span> <span class="o">-</span> <span class="n">l_prefix_num_tokens</span><span class="p">,</span>
+                                <span class="n">r_num_tokens</span> <span class="o">-</span> <span class="n">r_prefix_num_tokens</span><span class="p">,</span>
+                                <span class="n">hamming_dist_max</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># if the lowerbound on the actual hamming distance is already above the</span>
+        <span class="c1"># maximum allowed hamming distance, then we can filter the pair.</span>
+        <span class="k">if</span> <span class="n">hamming_dist</span> <span class="o">&lt;=</span> <span class="n">hamming_dist_max</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+<div class="viewcode-block" id="SuffixFilter.filter_tables"><a class="viewcode-back" href="../../../api/suffix_filter.html#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables">[docs]</a>    <span class="k">def</span> <span class="nf">filter_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>
+                      <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                      <span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">,</span>
+                      <span class="n">l_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                      <span class="n">l_out_prefix</span><span class="o">=</span><span class="s1">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s1">&#39;r_&#39;</span><span class="p">,</span>
+                      <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds candidate matching pairs of strings from the input tables using</span>
+<span class="sd">        suffix filtering technique.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ltable (DataFrame): left input table.</span>
+
+<span class="sd">            rtable (DataFrame): right input table.</span>
+
+<span class="sd">            l_key_attr (string): key attribute in left table.</span>
+
+<span class="sd">            r_key_attr (string): key attribute in right table.</span>
+
+<span class="sd">            l_filter_attr (string): attribute in left table on which the filter </span>
+<span class="sd">                should be applied.                                              </span>
+<span class="sd">                                                                                </span>
+<span class="sd">            r_filter_attr (string): attribute in right table on which the filter</span>
+<span class="sd">                should be applied.                                              </span>
+<span class="sd">                                                                                </span>
+<span class="sd">            l_out_attrs (list): list of attribute names from the left table to  </span>
+<span class="sd">                be included in the output table (defaults to None).             </span>
+<span class="sd">                                                                                </span>
+<span class="sd">            r_out_attrs (list): list of attribute names from the right table to </span>
+<span class="sd">                be included in the output table (defaults to None).             </span>
+<span class="sd">                                                                                </span>
+<span class="sd">            l_out_prefix (string): prefix to be used for the attribute names    </span>
+<span class="sd">                coming from the left table, in the output table                 </span>
+<span class="sd">                (defaults to &#39;l\_&#39;).                                            </span>
+<span class="sd">                                                                                </span>
+<span class="sd">            r_out_prefix (string): prefix to be used for the attribute names    </span>
+<span class="sd">                coming from the right table, in the output table                </span>
+<span class="sd">                (defaults to &#39;r\_&#39;).                                            </span>
+
+<span class="sd">            n_jobs (int): number of parallel jobs to use for the computation    </span>
+<span class="sd">                (defaults to 1). If -1 is given, all CPUs are used. If 1 is     </span>
+<span class="sd">                given, no parallel computing code is used at all, which is      </span>
+<span class="sd">                useful for debugging. For n_jobs below -1,                      </span>
+<span class="sd">                (n_cpus + 1 + n_jobs) are used (where n_cpus is the total       </span>
+<span class="sd">                number of CPUs in the machine). Thus for n_jobs = -2, all CPUs  </span>
+<span class="sd">                but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1, </span>
+<span class="sd">                then no parallel computing code will be used (i.e., equivalent  </span>
+<span class="sd">                to the default).                                                                                </span>
+<span class="sd">                                                                                </span>
+<span class="sd">            show_progress (boolean): flag to indicate whether task progress     </span>
+<span class="sd">                should be displayed to the user (defaults to True).             </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        Returns:                                                                </span>
+<span class="sd">            An output table containing tuple pairs that survive the filter      </span>
+<span class="sd">            (DataFrame).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># check if the input tables are dataframes</span>
+        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+
+        <span class="c1"># check if the key attributes and filter attributes exist</span>
+        <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                      <span class="s1">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+        <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                      <span class="s1">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+        <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                      <span class="s1">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+        <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_filter_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                      <span class="s1">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+
+        <span class="c1"># check if the filter attributes are not of numeric type                      </span>
+        <span class="n">validate_attr_type</span><span class="p">(</span><span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">[</span><span class="n">l_filter_attr</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>          
+                           <span class="s1">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>                    
+        <span class="n">validate_attr_type</span><span class="p">(</span><span class="n">r_filter_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">[</span><span class="n">r_filter_attr</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>          
+                           <span class="s1">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+
+        <span class="c1"># check if the output attributes exist</span>
+        <span class="n">validate_output_attrs</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                              <span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="c1"># check if the key attributes are unique and do not contain </span>
+        <span class="c1"># missing values</span>
+        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+
+        <span class="c1"># remove redundant attrs from output attrs.</span>
+        <span class="n">l_out_attrs</span> <span class="o">=</span> <span class="n">remove_redundant_attrs</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">l_key_attr</span><span class="p">)</span>
+        <span class="n">r_out_attrs</span> <span class="o">=</span> <span class="n">remove_redundant_attrs</span><span class="p">(</span><span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">)</span>
+
+        <span class="c1"># get attributes to project.  </span>
+        <span class="n">l_proj_attrs</span> <span class="o">=</span> <span class="n">get_attrs_to_project</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span>
+                                            <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">l_filter_attr</span><span class="p">)</span>
+        <span class="n">r_proj_attrs</span> <span class="o">=</span> <span class="n">get_attrs_to_project</span><span class="p">(</span><span class="n">r_out_attrs</span><span class="p">,</span>
+                                            <span class="n">r_key_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">)</span>
+
+        <span class="c1"># Do a projection on the input dataframes to keep only the required         </span>
+        <span class="c1"># attributes. Then, remove rows with missing value in filter attribute  </span>
+        <span class="c1"># from the input dataframes. Then, convert the resulting dataframes     </span>
+        <span class="c1"># into ndarray.                                                         </span>
+        <span class="n">ltable_array</span> <span class="o">=</span> <span class="n">convert_dataframe_to_array</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">l_proj_attrs</span><span class="p">,</span>         
+                                                  <span class="n">l_filter_attr</span><span class="p">)</span>                
+        <span class="n">rtable_array</span> <span class="o">=</span> <span class="n">convert_dataframe_to_array</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="n">r_proj_attrs</span><span class="p">,</span>         
+                                                  <span class="n">r_filter_attr</span><span class="p">)</span> 
+
+        <span class="c1"># computes the actual number of jobs to launch.</span>
+        <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">get_num_processes_to_launch</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">rtable_array</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># if n_jobs is 1, do not use any parallel code.                     </span>
+            <span class="n">output_table</span> <span class="o">=</span> <span class="n">_filter_tables_split</span><span class="p">(</span>
+                                           <span class="n">ltable_array</span><span class="p">,</span> <span class="n">rtable_array</span><span class="p">,</span>
+                                           <span class="n">l_proj_attrs</span><span class="p">,</span> <span class="n">r_proj_attrs</span><span class="p">,</span>                 
+                                           <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                                           <span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="p">,</span>
+                                           <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
+                                           <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>
+                                           <span class="n">show_progress</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if n_jobs is above 1, split the right table into n_jobs splits and    </span>
+            <span class="c1"># filter each right table split with the whole of left table in a   </span>
+            <span class="c1"># separate process.</span>
+            <span class="n">r_splits</span> <span class="o">=</span> <span class="n">split_table</span><span class="p">(</span><span class="n">rtable_array</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">_filter_tables_split</span><span class="p">)(</span>
+                                    <span class="n">ltable_array</span><span class="p">,</span> <span class="n">r_splits</span><span class="p">[</span><span class="n">job_index</span><span class="p">],</span>
+                                    <span class="n">l_proj_attrs</span><span class="p">,</span> <span class="n">r_proj_attrs</span><span class="p">,</span>                 
+                                    <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                                    <span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="p">,</span>
+                                    <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
+                                    <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>
+                                    <span class="p">(</span><span class="n">show_progress</span> <span class="ow">and</span> <span class="p">(</span><span class="n">job_index</span><span class="o">==</span><span class="n">n_jobs</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+                                <span class="k">for</span> <span class="n">job_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">))</span>
+            <span class="n">output_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># If allow_missing flag is set, then compute all pairs with missing     </span>
+        <span class="c1"># value in at least one of the filter attributes and then add it to the </span>
+        <span class="c1"># output obtained from applying the filter.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_missing</span><span class="p">:</span>
+            <span class="n">missing_pairs</span> <span class="o">=</span> <span class="n">get_pairs_with_missing_value</span><span class="p">(</span>
+                                            <span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>
+                                            <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                                            <span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">,</span>
+                                            <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
+                                            <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>
+                                            <span class="bp">False</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">)</span>
+            <span class="n">output_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">output_table</span><span class="p">,</span> <span class="n">missing_pairs</span><span class="p">])</span>
+
+        <span class="c1"># add an id column named &#39;_id&#39; to the output table.</span>
+        <span class="n">output_table</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;_id&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_table</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">output_table</span></div>
+
+    <span class="k">def</span> <span class="nf">_est_hamming_dist_lower_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l_suffix</span><span class="p">,</span> <span class="n">r_suffix</span><span class="p">,</span>
+                                      <span class="n">l_suffix_num_tokens</span><span class="p">,</span>
+                                      <span class="n">r_suffix_num_tokens</span><span class="p">,</span>
+                                      <span class="n">hamming_dist_max</span><span class="p">,</span> <span class="n">depth</span><span class="p">):</span>
+        <span class="n">abs_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">l_suffix_num_tokens</span> <span class="o">-</span> <span class="n">r_suffix_num_tokens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">depth</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span> <span class="ow">or</span>
+            <span class="n">l_suffix_num_tokens</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span>
+            <span class="n">r_suffix_num_tokens</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">abs_diff</span>
+
+        <span class="k">if</span> <span class="n">l_suffix_num_tokens</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">r_suffix_num_tokens</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">l_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">r_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">r_mid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">r_suffix_num_tokens</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">r_mid_token</span> <span class="o">=</span> <span class="n">r_suffix</span><span class="p">[</span><span class="n">r_mid</span><span class="p">]</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="p">(</span><span class="n">hamming_dist_max</span> <span class="o">-</span> <span class="n">abs_diff</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="n">l_suffix_num_tokens</span> <span class="o">&lt;</span> <span class="n">r_suffix_num_tokens</span><span class="p">:</span>
+            <span class="n">o_l</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">o_r</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">o_l</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">o_r</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># partition the tokens using the probe token.</span>
+        <span class="p">(</span><span class="n">r_l</span><span class="p">,</span> <span class="n">r_r</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partition</span><span class="p">(</span>
+                                  <span class="n">r_suffix</span><span class="p">,</span> <span class="n">r_mid_token</span><span class="p">,</span> <span class="n">r_mid</span><span class="p">,</span> <span class="n">r_mid</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">l_l</span><span class="p">,</span> <span class="n">l_r</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partition</span><span class="p">(</span><span class="n">l_suffix</span><span class="p">,</span> <span class="n">r_mid_token</span><span class="p">,</span>
+                                  <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">r_mid</span> <span class="o">-</span> <span class="n">o</span> <span class="o">-</span> <span class="n">abs_diff</span> <span class="o">*</span> <span class="n">o_l</span><span class="p">)),</span>
+                                  <span class="nb">min</span><span class="p">(</span><span class="n">l_suffix_num_tokens</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                                      <span class="nb">int</span><span class="p">(</span><span class="n">r_mid</span> <span class="o">+</span> <span class="n">o</span> <span class="o">+</span> <span class="n">abs_diff</span> <span class="o">*</span> <span class="n">o_r</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">hamming_dist_max</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">r_l_num_tokens</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_l</span><span class="p">)</span>
+        <span class="n">r_r_num_tokens</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_r</span><span class="p">)</span>
+        <span class="n">l_l_num_tokens</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">l_l</span><span class="p">)</span>
+        <span class="n">l_r_num_tokens</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">l_r</span><span class="p">)</span>
+        <span class="n">hamming_dist</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">l_l_num_tokens</span> <span class="o">-</span> <span class="n">r_l_num_tokens</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="nb">abs</span><span class="p">(</span><span class="n">l_r_num_tokens</span> <span class="o">-</span> <span class="n">r_r_num_tokens</span><span class="p">)</span> <span class="o">+</span> <span class="n">diff</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">hamming_dist</span> <span class="o">&gt;</span> <span class="n">hamming_dist_max</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">hamming_dist</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># compute lower bound on hamming distance in the left partition.</span>
+            <span class="n">hamming_dist_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_est_hamming_dist_lower_bound</span><span class="p">(</span>
+                             <span class="n">l_l</span><span class="p">,</span> <span class="n">r_l</span><span class="p">,</span> <span class="n">l_l_num_tokens</span><span class="p">,</span> <span class="n">r_l_num_tokens</span><span class="p">,</span>
+                             <span class="n">hamming_dist_max</span> <span class="o">-</span>
+                                 <span class="nb">abs</span><span class="p">(</span><span class="n">l_r_num_tokens</span> <span class="o">-</span> <span class="n">r_r_num_tokens</span><span class="p">)</span> <span class="o">-</span> <span class="n">diff</span><span class="p">,</span>
+                             <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">hamming_dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">hamming_dist_l</span> <span class="o">+</span>
+                            <span class="nb">abs</span><span class="p">(</span><span class="n">l_r_num_tokens</span> <span class="o">-</span> <span class="n">r_r_num_tokens</span><span class="p">)</span> <span class="o">+</span> <span class="n">diff</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">hamming_dist</span> <span class="o">&lt;=</span> <span class="n">hamming_dist_max</span><span class="p">:</span>
+                <span class="c1"># compute lower bound on hamming distance in the right </span>
+                <span class="c1"># partition.</span>
+                <span class="n">hamming_dist_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_est_hamming_dist_lower_bound</span><span class="p">(</span>
+                                 <span class="n">l_r</span><span class="p">,</span> <span class="n">r_r</span><span class="p">,</span> <span class="n">l_r_num_tokens</span><span class="p">,</span> <span class="n">r_r_num_tokens</span><span class="p">,</span>
+                                 <span class="n">hamming_dist_max</span> <span class="o">-</span> <span class="n">hamming_dist_l</span> <span class="o">-</span> <span class="n">diff</span><span class="p">,</span>
+                                 <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">hamming_dist_l</span> <span class="o">+</span> <span class="n">hamming_dist_r</span> <span class="o">+</span> <span class="n">diff</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">hamming_dist</span>
+
+    <span class="k">def</span> <span class="nf">_partition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="n">probe_token</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Partition the tokens using the probe token.&quot;&quot;&quot;</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">right</span> <span class="o">&lt;</span> <span class="n">left</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">probe_token</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">probe_token</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+
+        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_search</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">probe_token</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+        <span class="n">tokens_left</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">pos</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">==</span> <span class="n">probe_token</span><span class="p">:</span>
+            <span class="n">tokens_right</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)]</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tokens_right</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)]</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">tokens_left</span><span class="p">,</span> <span class="n">tokens_right</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">diff</span>
+
+    <span class="k">def</span> <span class="nf">_binary_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="n">probe_token</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Peform binary search to find the position of the probe token.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">left</span> <span class="o">==</span> <span class="n">right</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">left</span>
+
+        <span class="n">mid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">((</span><span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">mid_token</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">mid_token</span> <span class="o">==</span> <span class="n">probe_token</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mid</span>
+        <span class="k">elif</span> <span class="n">mid_token</span> <span class="o">&lt;</span> <span class="n">probe_token</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_search</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">probe_token</span><span class="p">,</span> <span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_search</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">probe_token</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_filter_tables_split</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>
+                         <span class="n">l_columns</span><span class="p">,</span> <span class="n">r_columns</span><span class="p">,</span>
+                         <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                         <span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">,</span>
+                         <span class="n">suffix_filter</span><span class="p">,</span>
+                         <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
+                         <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">):</span>
+    <span class="c1"># find column indices of key attr, filter attr and output attrs in ltable</span>
+    <span class="n">l_key_attr_index</span> <span class="o">=</span> <span class="n">l_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">)</span>
+    <span class="n">l_filter_attr_index</span> <span class="o">=</span> <span class="n">l_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l_filter_attr</span><span class="p">)</span>
+    <span class="n">l_out_attrs_indices</span> <span class="o">=</span> <span class="n">find_output_attribute_indices</span><span class="p">(</span><span class="n">l_columns</span><span class="p">,</span> <span class="n">l_out_attrs</span><span class="p">)</span>
+
+    <span class="c1"># find column indices of key attr, filter attr and output attrs in rtable</span>
+    <span class="n">r_key_attr_index</span> <span class="o">=</span> <span class="n">r_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">)</span>
+    <span class="n">r_filter_attr_index</span> <span class="o">=</span> <span class="n">r_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">r_filter_attr</span><span class="p">)</span>
+    <span class="n">r_out_attrs_indices</span> <span class="o">=</span> <span class="n">find_output_attribute_indices</span><span class="p">(</span><span class="n">r_columns</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">)</span>
+        
+    <span class="c1"># generate token ordering using tokens in l_filter_attr and r_filter_attr</span>
+    <span class="n">token_ordering</span> <span class="o">=</span> <span class="n">gen_token_ordering_for_tables</span><span class="p">(</span>
+                                <span class="p">[</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">],</span>
+                                <span class="p">[</span><span class="n">l_filter_attr_index</span><span class="p">,</span> <span class="n">r_filter_attr_index</span><span class="p">],</span>
+                                <span class="n">suffix_filter</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span>
+                                <span class="n">suffix_filter</span><span class="o">.</span><span class="n">sim_measure_type</span><span class="p">)</span>
+
+    <span class="c1"># ignore allow_empty flag for OVERLAP and EDIT_DISTANCE measures.           </span>
+    <span class="n">handle_empty</span> <span class="o">=</span> <span class="p">(</span><span class="n">suffix_filter</span><span class="o">.</span><span class="n">allow_empty</span> <span class="ow">and</span>
+        <span class="n">suffix_filter</span><span class="o">.</span><span class="n">sim_measure_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;OVERLAP&#39;</span><span class="p">,</span> <span class="s1">&#39;EDIT_DISTANCE&#39;</span><span class="p">])</span>
+
+    <span class="n">output_rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">has_output_attributes</span> <span class="o">=</span> <span class="p">(</span><span class="n">l_out_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">or</span>
+                             <span class="n">r_out_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+        <span class="n">prog_bar</span> <span class="o">=</span> <span class="n">pyprind</span><span class="o">.</span><span class="n">ProgBar</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ltable</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">l_row</span> <span class="ow">in</span> <span class="n">ltable</span><span class="p">:</span>
+        <span class="n">l_string</span> <span class="o">=</span> <span class="n">l_row</span><span class="p">[</span><span class="n">l_filter_attr_index</span><span class="p">]</span>
+
+        <span class="n">ltokens</span> <span class="o">=</span> <span class="n">suffix_filter</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">l_string</span><span class="p">)</span>
+        <span class="n">ordered_ltokens</span> <span class="o">=</span> <span class="n">order_using_token_ordering</span><span class="p">(</span><span class="n">ltokens</span><span class="p">,</span> <span class="n">token_ordering</span><span class="p">)</span>
+        <span class="n">l_num_tokens</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ordered_ltokens</span><span class="p">)</span>
+        <span class="n">l_prefix_length</span> <span class="o">=</span> <span class="n">get_prefix_length</span><span class="p">(</span><span class="n">l_num_tokens</span><span class="p">,</span>
+                                            <span class="n">suffix_filter</span><span class="o">.</span><span class="n">sim_measure_type</span><span class="p">,</span>
+                                            <span class="n">suffix_filter</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span>
+                                            <span class="n">suffix_filter</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
+
+        <span class="n">l_suffix</span> <span class="o">=</span> <span class="n">ordered_ltokens</span><span class="p">[</span><span class="n">l_prefix_length</span><span class="p">:]</span>
+        <span class="k">for</span> <span class="n">r_row</span> <span class="ow">in</span> <span class="n">rtable</span><span class="p">:</span>
+            <span class="n">r_string</span> <span class="o">=</span> <span class="n">r_row</span><span class="p">[</span><span class="n">r_filter_attr_index</span><span class="p">]</span>
+
+            <span class="n">rtokens</span> <span class="o">=</span> <span class="n">suffix_filter</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">r_string</span><span class="p">)</span>
+            <span class="n">ordered_rtokens</span> <span class="o">=</span> <span class="n">order_using_token_ordering</span><span class="p">(</span><span class="n">rtokens</span><span class="p">,</span>
+                                                         <span class="n">token_ordering</span><span class="p">)</span>
+            <span class="n">r_num_tokens</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ordered_rtokens</span><span class="p">)</span>
+
+            <span class="c1"># If allow_empty flag is set, then add the pair to the output.</span>
+            <span class="k">if</span> <span class="n">handle_empty</span> <span class="ow">and</span> <span class="n">l_num_tokens</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">r_num_tokens</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">has_output_attributes</span><span class="p">:</span>
+                    <span class="n">output_row</span> <span class="o">=</span> <span class="n">get_output_row_from_tables</span><span class="p">(</span>
+                                         <span class="n">l_row</span><span class="p">,</span> <span class="n">r_row</span><span class="p">,</span>
+                                         <span class="n">l_key_attr_index</span><span class="p">,</span> <span class="n">r_key_attr_index</span><span class="p">,</span>
+                                         <span class="n">l_out_attrs_indices</span><span class="p">,</span>
+                                         <span class="n">r_out_attrs_indices</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">output_row</span> <span class="o">=</span> <span class="p">[</span><span class="n">l_row</span><span class="p">[</span><span class="n">l_key_attr_index</span><span class="p">],</span>
+                                  <span class="n">r_row</span><span class="p">[</span><span class="n">r_key_attr_index</span><span class="p">]]</span>
+
+                <span class="n">output_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_row</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">r_prefix_length</span> <span class="o">=</span> <span class="n">get_prefix_length</span><span class="p">(</span><span class="n">r_num_tokens</span><span class="p">,</span>
+                                                <span class="n">suffix_filter</span><span class="o">.</span><span class="n">sim_measure_type</span><span class="p">,</span>
+                                                <span class="n">suffix_filter</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span>
+                                                <span class="n">suffix_filter</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">l_prefix_length</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">r_prefix_length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">suffix_filter</span><span class="o">.</span><span class="n">_filter_suffix</span><span class="p">(</span><span class="n">l_suffix</span><span class="p">,</span>
+                                           <span class="n">ordered_rtokens</span><span class="p">[</span><span class="n">r_prefix_length</span><span class="p">:],</span>
+                                           <span class="n">l_prefix_length</span><span class="p">,</span> <span class="n">r_prefix_length</span><span class="p">,</span>
+                                           <span class="n">l_num_tokens</span><span class="p">,</span> <span class="n">r_num_tokens</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">has_output_attributes</span><span class="p">:</span>
+                    <span class="n">output_row</span> <span class="o">=</span> <span class="n">get_output_row_from_tables</span><span class="p">(</span>
+                                         <span class="n">l_row</span><span class="p">,</span> <span class="n">r_row</span><span class="p">,</span>
+                                         <span class="n">l_key_attr_index</span><span class="p">,</span> <span class="n">r_key_attr_index</span><span class="p">,</span> 
+                                         <span class="n">l_out_attrs_indices</span><span class="p">,</span>
+                                         <span class="n">r_out_attrs_indices</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">output_row</span> <span class="o">=</span> <span class="p">[</span><span class="n">l_row</span><span class="p">[</span><span class="n">l_key_attr_index</span><span class="p">],</span>
+                                  <span class="n">r_row</span><span class="p">[</span><span class="n">r_key_attr_index</span><span class="p">]]</span>
+
+                <span class="n">output_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_row</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">prog_bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+    <span class="n">output_header</span> <span class="o">=</span> <span class="n">get_output_header_from_tables</span><span class="p">(</span>
+                            <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                            <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span> 
+                            <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">)</span>
+
+    <span class="c1"># generate a dataframe from the list of output rows</span>
+    <span class="n">output_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">output_rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">output_header</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_table</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, anhaidgroup.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

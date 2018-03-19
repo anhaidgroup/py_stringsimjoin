@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py_stringsimjoin.join.overlap_coefficient_join &mdash; py_stringsimjoin 0.3.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="py_stringsimjoin 0.3.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../whatisnew.html">What is New?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guide.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cython.html">Disabling Cython</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/join.html">Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/filter.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utility.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">py_stringsimjoin</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>py_stringsimjoin.join.overlap_coefficient_join</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for py_stringsimjoin.join.overlap_coefficient_join</h1><div class="highlight"><pre>
+<span class="c1"># overlap coefficient join</span>
+
+
+<div class="viewcode-block" id="overlap_coefficient_join"><a class="viewcode-back" href="../../../api/overlap_coefficient_join.html#py_stringsimjoin.join.overlap_coefficient_join.overlap_coefficient_join">[docs]</a><span class="k">def</span> <span class="nf">overlap_coefficient_join</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>
+                             <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
+                             <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>
+                             <span class="n">tokenizer</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span>
+                             <span class="n">allow_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_missing</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                             <span class="n">l_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                             <span class="n">l_out_prefix</span><span class="o">=</span><span class="s1">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s1">&#39;r_&#39;</span><span class="p">,</span>
+                             <span class="n">out_sim_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Join two tables using overlap coefficient.</span>
+
+<span class="sd">    For two sets X and Y, the overlap coefficient between them is given by:                      </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        :math:`overlap\\_coefficient(X, Y) = \\frac{|X \\cap Y|}{\\min(|X|, |Y|)}`             </span>
+
+<span class="sd">    In the case where one of X and Y is an empty set and the other is a </span>
+<span class="sd">    non-empty set, we define their overlap coefficient to be 0. In the case </span>
+<span class="sd">    where both X and Y are empty sets, we define their overlap coefficient to </span>
+<span class="sd">    be 1.                                                                                 </span>
+
+<span class="sd">    Finds tuple pairs from left table and right table such that the overlap </span>
+<span class="sd">    coefficient between the join attributes satisfies the condition on input </span>
+<span class="sd">    threshold. For example, if the comparison operator is &#39;&gt;=&#39;, finds tuple     </span>
+<span class="sd">    pairs whose overlap coefficient between the strings that are the values of    </span>
+<span class="sd">    the join attributes is greater than or equal to the input threshold, as     </span>
+<span class="sd">    specified in &quot;threshold&quot;. </span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ltable (DataFrame): left input table.</span>
+
+<span class="sd">        rtable (DataFrame): right input table.</span>
+
+<span class="sd">        l_key_attr (string): key attribute in left table.</span>
+
+<span class="sd">        r_key_attr (string): key attribute in right table.</span>
+
+<span class="sd">        l_join_attr (string): join attribute in left table.</span>
+
+<span class="sd">        r_join_attr (string): join attribute in right table.</span>
+
+<span class="sd">        tokenizer (Tokenizer): tokenizer to be used to tokenize join     </span>
+<span class="sd">            attributes.                                                         </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        threshold (float): overlap coefficient threshold to be satisfied.        </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        comp_op (string): comparison operator. Supported values are &#39;&gt;=&#39;, &#39;&gt;&#39;   </span>
+<span class="sd">            and &#39;=&#39; (defaults to &#39;&gt;=&#39;).                                         </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        allow_empty (boolean): flag to indicate whether tuple pairs with empty  </span>
+<span class="sd">            set of tokens in both the join attributes should be included in the </span>
+<span class="sd">            output (defaults to True).                                          </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        allow_missing (boolean): flag to indicate whether tuple pairs with      </span>
+<span class="sd">            missing value in at least one of the join attributes should be      </span>
+<span class="sd">            included in the output (defaults to False). If this flag is set to  </span>
+<span class="sd">            True, a tuple in ltable with missing value in the join attribute    </span>
+<span class="sd">            will be matched with every tuple in rtable and vice versa.          </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        l_out_attrs (list): list of attribute names from the left table to be   </span>
+<span class="sd">            included in the output table (defaults to None).                    </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        r_out_attrs (list): list of attribute names from the right table to be  </span>
+<span class="sd">            included in the output table (defaults to None).                    </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        l_out_prefix (string): prefix to be used for the attribute names coming </span>
+<span class="sd">            from the left table, in the output table (defaults to &#39;l\_&#39;).       </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        r_out_prefix (string): prefix to be used for the attribute names coming </span>
+<span class="sd">            from the right table, in the output table (defaults to &#39;r\_&#39;).      </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        out_sim_score (boolean): flag to indicate whether similarity score      </span>
+<span class="sd">            should be included in the output table (defaults to True). Setting  </span>
+<span class="sd">            this flag to True will add a column named &#39;_sim_score&#39; in the       </span>
+<span class="sd">            output table. This column will contain the similarity scores for the</span>
+<span class="sd">            tuple pairs in the output.                                          </span>
+
+<span class="sd">        n_jobs (int): number of parallel jobs to use for the computation        </span>
+<span class="sd">            (defaults to 1). If -1 is given, all CPUs are used. If 1 is given,  </span>
+<span class="sd">            no parallel computing code is used at all, which is useful for      </span>
+<span class="sd">            debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used      </span>
+<span class="sd">            (where n_cpus is the total number of CPUs in the machine). Thus for </span>
+<span class="sd">            n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)    </span>
+<span class="sd">            becomes less than 1, then no parallel computing code will be used   </span>
+<span class="sd">            (i.e., equivalent to the default).                                                                                 </span>
+<span class="sd">                                                                                </span>
+<span class="sd">        show_progress (boolean): flag to indicate whether task progress should  </span>
+<span class="sd">            be displayed to the user (defaults to True).                        </span>
+<span class="sd">                                                                                </span>
+<span class="sd">    Returns:                                                                    </span>
+<span class="sd">        An output table containing tuple pairs that satisfy the join            </span>
+<span class="sd">        condition (DataFrame).  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">py_stringsimjoin</span> <span class="kn">import</span> <span class="n">__use_cython__</span>                                 
+    <span class="k">if</span> <span class="n">__use_cython__</span><span class="p">:</span>                                                          
+        <span class="kn">from</span> <span class="nn">py_stringsimjoin.join.overlap_coefficient_join_cy</span> <span class="kn">import</span> <span class="n">overlap_coefficient_join_cy</span>       
+        <span class="k">return</span> <span class="n">overlap_coefficient_join_cy</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>                                  
+                                           <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>                          
+                                           <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>                        
+                                           <span class="n">tokenizer</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="p">,</span>                   
+                                           <span class="n">allow_empty</span><span class="p">,</span> <span class="n">allow_missing</span><span class="p">,</span>                      
+                                           <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>                        
+                                           <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>                      
+                                           <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">)</span>            
+    <span class="k">else</span><span class="p">:</span>                                                                       
+        <span class="kn">from</span> <span class="nn">py_stringsimjoin.join.overlap_coefficient_join_py</span> <span class="kn">import</span> <span class="n">overlap_coefficient_join_py</span>       
+        <span class="k">return</span> <span class="n">overlap_coefficient_join_py</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>                                  
+                                           <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>                          
+                                           <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>                        
+                                           <span class="n">tokenizer</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="p">,</span>                   
+                                           <span class="n">allow_empty</span><span class="p">,</span> <span class="n">allow_missing</span><span class="p">,</span>                      
+                                           <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>                        
+                                           <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>                      
+                                           <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">)</span> </div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, anhaidgroup.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
