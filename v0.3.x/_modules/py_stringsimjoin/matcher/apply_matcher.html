@@ -160,11 +160,11 @@
     <span class="n">validate_tokenizer</span><span class="p">,</span> <span class="n">validate_output_attrs</span>
 
 
-<span class="c1"># Register pickle and unpickle methods for handling instance methods.</span>
-<span class="c1"># This is because joblib doesn&#39;t pickle instance methods, by default.</span>
-<span class="c1"># Hence, if the sim_function supplied to apply_matcher is an instance</span>
-<span class="c1"># method, it will result in an error. To avoid this, we register custom</span>
-<span class="c1"># functions to pickle and unpickle instance methods. </span>
+<span class="c"># Register pickle and unpickle methods for handling instance methods.</span>
+<span class="c"># This is because joblib doesn&#39;t pickle instance methods, by default.</span>
+<span class="c"># Hence, if the sim_function supplied to apply_matcher is an instance</span>
+<span class="c"># method, it will result in an error. To avoid this, we register custom</span>
+<span class="c"># functions to pickle and unpickle instance methods. </span>
 <span class="n">copyreg</span><span class="o">.</span><span class="n">pickle</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">,</span>
                <span class="n">pickle_instance_method</span><span class="p">,</span>
                <span class="n">unpickle_instance_method</span><span class="p">)</span>
@@ -176,10 +176,10 @@
                   <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
                   <span class="n">l_match_attr</span><span class="p">,</span> <span class="n">r_match_attr</span><span class="p">,</span>
                   <span class="n">tokenizer</span><span class="p">,</span> <span class="n">sim_function</span><span class="p">,</span>
-                  <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span>
+                  <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s">&#39;&gt;=&#39;</span><span class="p">,</span>
                   <span class="n">allow_missing</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                   <span class="n">l_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                  <span class="n">l_out_prefix</span><span class="o">=</span><span class="s1">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s1">&#39;r_&#39;</span><span class="p">,</span>
+                  <span class="n">l_out_prefix</span><span class="o">=</span><span class="s">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s">&#39;r_&#39;</span><span class="p">,</span>
                   <span class="n">out_sim_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find matching string pairs from the candidate set (typically produced by</span>
 <span class="sd">    applying a filter to two tables) by applying a matcher of form </span>
@@ -262,71 +262,71 @@
 <span class="sd">        survive the matcher (DataFrame).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># check if the input candset is a dataframe</span>
-    <span class="n">validate_input_table</span><span class="p">(</span><span class="n">candset</span><span class="p">,</span> <span class="s1">&#39;candset&#39;</span><span class="p">)</span>
+    <span class="c"># check if the input candset is a dataframe</span>
+    <span class="n">validate_input_table</span><span class="p">(</span><span class="n">candset</span><span class="p">,</span> <span class="s">&#39;candset&#39;</span><span class="p">)</span>
 
-    <span class="c1"># check if the candset key attributes exist</span>
+    <span class="c"># check if the candset key attributes exist</span>
     <span class="n">validate_attr</span><span class="p">(</span><span class="n">candset_l_key_attr</span><span class="p">,</span> <span class="n">candset</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                  <span class="s1">&#39;left key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;candset&#39;</span><span class="p">)</span>
+                  <span class="s">&#39;left key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;candset&#39;</span><span class="p">)</span>
     <span class="n">validate_attr</span><span class="p">(</span><span class="n">candset_r_key_attr</span><span class="p">,</span> <span class="n">candset</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                  <span class="s1">&#39;right key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;candset&#39;</span><span class="p">)</span>
+                  <span class="s">&#39;right key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;candset&#39;</span><span class="p">)</span>
 
-    <span class="c1"># check if the input tables are dataframes</span>
-    <span class="n">validate_input_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
-    <span class="n">validate_input_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+    <span class="c"># check if the input tables are dataframes</span>
+    <span class="n">validate_input_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+    <span class="n">validate_input_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-    <span class="c1"># check if the key attributes and join attributes exist</span>
+    <span class="c"># check if the key attributes and join attributes exist</span>
     <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                  <span class="s1">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+                  <span class="s">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
     <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                  <span class="s1">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+                  <span class="s">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
     <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_match_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                  <span class="s1">&#39;match attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+                  <span class="s">&#39;match attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
     <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_match_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                  <span class="s1">&#39;match attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+                  <span class="s">&#39;match attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-    <span class="c1"># check if the output attributes exist</span>
+    <span class="c"># check if the output attributes exist</span>
     <span class="n">validate_output_attrs</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
                           <span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
-    <span class="c1"># check if the input tokenizer is valid, if it is not None</span>
+    <span class="c"># check if the input tokenizer is valid, if it is not None</span>
     <span class="k">if</span> <span class="n">tokenizer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">validate_tokenizer</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">)</span>
 
-    <span class="c1"># check if the comparison operator is valid</span>
+    <span class="c"># check if the comparison operator is valid</span>
     <span class="n">validate_comp_op</span><span class="p">(</span><span class="n">comp_op</span><span class="p">)</span>
 
-    <span class="c1"># check if the key attributes are unique and do not contain missing values</span>
-    <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
-    <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+    <span class="c"># check if the key attributes are unique and do not contain missing values</span>
+    <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+    <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-    <span class="c1"># check for empty candset</span>
+    <span class="c"># check for empty candset</span>
     <span class="k">if</span> <span class="n">candset</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">candset</span>
 
-    <span class="c1"># remove redundant attrs from output attrs.</span>
+    <span class="c"># remove redundant attrs from output attrs.</span>
     <span class="n">l_out_attrs</span> <span class="o">=</span> <span class="n">remove_redundant_attrs</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">l_key_attr</span><span class="p">)</span>
     <span class="n">r_out_attrs</span> <span class="o">=</span> <span class="n">remove_redundant_attrs</span><span class="p">(</span><span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">)</span>
 
-    <span class="c1"># get attributes to project.  </span>
+    <span class="c"># get attributes to project.  </span>
     <span class="n">l_proj_attrs</span> <span class="o">=</span> <span class="n">get_attrs_to_project</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">l_match_attr</span><span class="p">)</span>
     <span class="n">r_proj_attrs</span> <span class="o">=</span> <span class="n">get_attrs_to_project</span><span class="p">(</span><span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span> <span class="n">r_match_attr</span><span class="p">)</span>
 
-    <span class="c1"># do a projection on the input dataframes. Note that this doesn&#39;t create a </span>
-    <span class="c1"># copy of the dataframes. It only creates a view on original dataframes.</span>
+    <span class="c"># do a projection on the input dataframes. Note that this doesn&#39;t create a </span>
+    <span class="c"># copy of the dataframes. It only creates a view on original dataframes.</span>
     <span class="n">ltable_projected</span> <span class="o">=</span> <span class="n">ltable</span><span class="p">[</span><span class="n">l_proj_attrs</span><span class="p">]</span>
     <span class="n">rtable_projected</span> <span class="o">=</span> <span class="n">rtable</span><span class="p">[</span><span class="n">r_proj_attrs</span><span class="p">]</span>
 
-    <span class="c1"># computes the actual number of jobs to launch.</span>
+    <span class="c"># computes the actual number of jobs to launch.</span>
     <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">get_num_processes_to_launch</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">candset</span><span class="p">))</span>
 
-    <span class="c1"># If a tokenizer is provided, we can optimize by tokenizing each value </span>
-    <span class="c1"># only once by caching the tokens of l_match_attr and r_match_attr. But, </span>
-    <span class="c1"># this can be a bad strategy in case the candset has very few records </span>
-    <span class="c1"># compared to the original tables. Hence, we check if the sum of tuples in </span>
-    <span class="c1"># ltable and rtable is less than twice the number of tuples in the candset. </span>
-    <span class="c1"># If yes, we decide to cache the token values. Else, we do not cache the </span>
-    <span class="c1"># tokens as the candset is small.</span>
+    <span class="c"># If a tokenizer is provided, we can optimize by tokenizing each value </span>
+    <span class="c"># only once by caching the tokens of l_match_attr and r_match_attr. But, </span>
+    <span class="c"># this can be a bad strategy in case the candset has very few records </span>
+    <span class="c"># compared to the original tables. Hence, we check if the sum of tuples in </span>
+    <span class="c"># ltable and rtable is less than twice the number of tuples in the candset. </span>
+    <span class="c"># If yes, we decide to cache the token values. Else, we do not cache the </span>
+    <span class="c"># tokens as the candset is small.</span>
     <span class="n">l_tokens</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">r_tokens</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">if</span> <span class="n">tokenizer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ltable</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">rtable</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">candset</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">):</span>
@@ -336,7 +336,7 @@
                                    <span class="n">tokenizer</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="c1"># if n_jobs is 1, do not use any parallel code.                     </span>
+        <span class="c"># if n_jobs is 1, do not use any parallel code.                     </span>
         <span class="n">output_table</span> <span class="o">=</span>  <span class="n">_apply_matcher_split</span><span class="p">(</span><span class="n">candset</span><span class="p">,</span>
                                     <span class="n">candset_l_key_attr</span><span class="p">,</span> <span class="n">candset_r_key_attr</span><span class="p">,</span>
                                     <span class="n">ltable_projected</span><span class="p">,</span> <span class="n">rtable_projected</span><span class="p">,</span>
@@ -349,8 +349,8 @@
                                     <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">,</span>
                                     <span class="n">l_tokens</span><span class="p">,</span> <span class="n">r_tokens</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># if n_jobs is above 1, split the candset into n_jobs splits and apply   </span>
-        <span class="c1"># the matcher on each candset split in a separate process.  </span>
+        <span class="c"># if n_jobs is above 1, split the candset into n_jobs splits and apply   </span>
+        <span class="c"># the matcher on each candset split in a separate process.  </span>
         <span class="n">candset_splits</span> <span class="o">=</span> <span class="n">split_table</span><span class="p">(</span><span class="n">candset</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">_apply_matcher_split</span><span class="p">)(</span>
                                       <span class="n">candset_splits</span><span class="p">[</span><span class="n">job_index</span><span class="p">],</span>
@@ -381,27 +381,27 @@
                          <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
                          <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>
                          <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">,</span> <span class="n">l_tokens</span><span class="p">,</span> <span class="n">r_tokens</span><span class="p">):</span>
-    <span class="c1"># find column indices of key attr, join attr and output attrs in ltable</span>
+    <span class="c"># find column indices of key attr, join attr and output attrs in ltable</span>
     <span class="n">l_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">l_key_attr_index</span> <span class="o">=</span> <span class="n">l_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">)</span>
     <span class="n">l_match_attr_index</span> <span class="o">=</span> <span class="n">l_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l_match_attr</span><span class="p">)</span>
     <span class="n">l_out_attrs_indices</span> <span class="o">=</span> <span class="n">find_output_attribute_indices</span><span class="p">(</span><span class="n">l_columns</span><span class="p">,</span> <span class="n">l_out_attrs</span><span class="p">)</span>
 
-    <span class="c1"># find column indices of key attr, join attr and output attrs in rtable</span>
+    <span class="c"># find column indices of key attr, join attr and output attrs in rtable</span>
     <span class="n">r_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">r_key_attr_index</span> <span class="o">=</span> <span class="n">r_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">)</span>
     <span class="n">r_match_attr_index</span> <span class="o">=</span> <span class="n">r_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">r_match_attr</span><span class="p">)</span>
     <span class="n">r_out_attrs_indices</span> <span class="o">=</span> <span class="n">find_output_attribute_indices</span><span class="p">(</span><span class="n">r_columns</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">)</span>
 
-    <span class="c1"># Build a dictionary on ltable</span>
+    <span class="c"># Build a dictionary on ltable</span>
     <span class="n">ltable_dict</span> <span class="o">=</span> <span class="n">build_dict_from_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">l_key_attr_index</span><span class="p">,</span>
                                         <span class="n">l_match_attr_index</span><span class="p">,</span> <span class="n">remove_null</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
-    <span class="c1"># Build a dictionary on rtable</span>
+    <span class="c"># Build a dictionary on rtable</span>
     <span class="n">rtable_dict</span> <span class="o">=</span> <span class="n">build_dict_from_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="n">r_key_attr_index</span><span class="p">,</span>
                                         <span class="n">r_match_attr_index</span><span class="p">,</span> <span class="n">remove_null</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
-    <span class="c1"># Find indices of l_key_attr and r_key_attr in candset</span>
+    <span class="c"># Find indices of l_key_attr and r_key_attr in candset</span>
     <span class="n">candset_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">candset</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">candset_l_key_attr_index</span> <span class="o">=</span> <span class="n">candset_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">candset_l_key_attr</span><span class="p">)</span>
     <span class="n">candset_r_key_attr_index</span> <span class="o">=</span> <span class="n">candset_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">candset_r_key_attr</span><span class="p">)</span>
@@ -419,7 +419,7 @@
     <span class="k">if</span> <span class="n">tokenizer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">tokenize_flag</span> <span class="o">=</span>  <span class="bp">True</span>
         <span class="n">use_cache</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="c1"># check if we have cached the tokens.</span>
+        <span class="c"># check if we have cached the tokens.</span>
         <span class="k">if</span> <span class="n">l_tokens</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">r_tokens</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">use_cache</span> <span class="o">=</span> <span class="bp">True</span>
 
@@ -434,10 +434,10 @@
         <span class="n">r_apply_col_value</span> <span class="o">=</span> <span class="n">r_row</span><span class="p">[</span><span class="n">r_match_attr_index</span><span class="p">]</span>
 
         <span class="n">allow_pair</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="c1"># Check if one of the inputs is missing. If yes, check the allow_missing</span>
-        <span class="c1"># flag. If it is True, then add the pair to output. Else, continue.</span>
-        <span class="c1"># If none of the input is missing, then proceed to apply the </span>
-        <span class="c1"># sim_function. </span>
+        <span class="c"># Check if one of the inputs is missing. If yes, check the allow_missing</span>
+        <span class="c"># flag. If it is True, then add the pair to output. Else, continue.</span>
+        <span class="c"># If none of the input is missing, then proceed to apply the </span>
+        <span class="c"># sim_function. </span>
         <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">l_apply_col_value</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">r_apply_col_value</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">allow_missing</span><span class="p">:</span>
                 <span class="n">allow_pair</span> <span class="o">=</span> <span class="bp">True</span>
@@ -446,8 +446,8 @@
                 <span class="k">continue</span>   
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">tokenize_flag</span><span class="p">:</span>
-                <span class="c1"># If we have cached the tokens, we use it directly. Else, we</span>
-                <span class="c1"># tokenize the values.</span>
+                <span class="c"># If we have cached the tokens, we use it directly. Else, we</span>
+                <span class="c"># tokenize the values.</span>
                 <span class="k">if</span> <span class="n">use_cache</span><span class="p">:</span>
                     <span class="n">l_apply_col_value</span> <span class="o">=</span> <span class="n">l_tokens</span><span class="p">[</span><span class="n">l_id</span><span class="p">]</span>
                     <span class="n">r_apply_col_value</span> <span class="o">=</span> <span class="n">r_tokens</span><span class="p">[</span><span class="n">r_id</span><span class="p">]</span>
@@ -479,11 +479,11 @@
                         <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
                         <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
                         <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">)</span>
-    <span class="n">output_header</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;_id&#39;</span><span class="p">)</span>
+    <span class="n">output_header</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;_id&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">out_sim_score</span><span class="p">:</span>
-        <span class="n">output_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;_sim_score&quot;</span><span class="p">)</span>
+        <span class="n">output_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;_sim_score&quot;</span><span class="p">)</span>
 
-    <span class="c1"># generate a dataframe from the list of output rows</span>
+    <span class="c"># generate a dataframe from the list of output rows</span>
     <span class="n">output_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">output_rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">output_header</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">output_table</span>
 

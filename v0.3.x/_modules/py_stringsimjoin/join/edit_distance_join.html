@@ -140,16 +140,16 @@
            <div itemprop="articleBody">
             
   <h1>Source code for py_stringsimjoin.join.edit_distance_join</h1><div class="highlight"><pre>
-<span class="c1"># edit distance join</span>
+<span class="c"># edit distance join</span>
 <span class="kn">from</span> <span class="nn">py_stringmatching.tokenizer.qgram_tokenizer</span> <span class="kn">import</span> <span class="n">QgramTokenizer</span>
 
 <div class="viewcode-block" id="edit_distance_join"><a class="viewcode-back" href="../../../api/edit_distance_join.html#py_stringsimjoin.join.edit_distance_join.edit_distance_join">[docs]</a><span class="k">def</span> <span class="nf">edit_distance_join</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>
                        <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
                        <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>
-                       <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span>
+                       <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s">&#39;&lt;=&#39;</span><span class="p">,</span>
                        <span class="n">allow_missing</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                        <span class="n">l_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                       <span class="n">l_out_prefix</span><span class="o">=</span><span class="s1">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s1">&#39;r_&#39;</span><span class="p">,</span>
+                       <span class="n">l_out_prefix</span><span class="o">=</span><span class="s">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s">&#39;r_&#39;</span><span class="p">,</span>
                        <span class="n">out_sim_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                        <span class="n">tokenizer</span><span class="o">=</span><span class="n">QgramTokenizer</span><span class="p">(</span><span class="n">qval</span><span class="o">=</span><span class="mi">2</span><span class="p">)):</span>
     <span class="kn">from</span> <span class="nn">py_stringsimjoin</span> <span class="kn">import</span> <span class="n">__use_cython__</span> 

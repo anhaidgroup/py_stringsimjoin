@@ -140,7 +140,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for py_stringsimjoin.filter.overlap_filter</h1><div class="highlight"><pre>
-<span class="c1"># Overlap Filter</span>
+<span class="c"># Overlap Filter</span>
 
 <span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">delayed</span><span class="p">,</span> <span class="n">Parallel</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span>
@@ -188,16 +188,16 @@
 <span class="sd">            allow_missing.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">overlap_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">overlap_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s">&#39;&gt;=&#39;</span><span class="p">,</span>
                  <span class="n">allow_missing</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="c1"># check if the input tokenizer is valid</span>
+        <span class="c"># check if the input tokenizer is valid</span>
         <span class="n">validate_tokenizer</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">)</span>
 
-        <span class="c1"># check if the overlap size is valid</span>
-        <span class="n">validate_threshold</span><span class="p">(</span><span class="n">overlap_size</span><span class="p">,</span> <span class="s1">&#39;OVERLAP&#39;</span><span class="p">)</span>
+        <span class="c"># check if the overlap size is valid</span>
+        <span class="n">validate_threshold</span><span class="p">(</span><span class="n">overlap_size</span><span class="p">,</span> <span class="s">&#39;OVERLAP&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if the comparison operator is valid</span>
-        <span class="n">validate_comp_op_for_sim_measure</span><span class="p">(</span><span class="n">comp_op</span><span class="p">,</span> <span class="s1">&#39;OVERLAP&#39;</span><span class="p">)</span>
+        <span class="c"># check if the comparison operator is valid</span>
+        <span class="n">validate_comp_op_for_sim_measure</span><span class="p">(</span><span class="n">comp_op</span><span class="p">,</span> <span class="s">&#39;OVERLAP&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlap_size</span> <span class="o">=</span> <span class="n">overlap_size</span>
@@ -215,16 +215,16 @@
 <span class="sd">            A flag indicating whether the string pair is dropped (boolean).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># If one of the inputs is missing, then check the allow_missing flag.</span>
-        <span class="c1"># If it is set to True, then pass the pair. Else drop the pair.</span>
+        <span class="c"># If one of the inputs is missing, then check the allow_missing flag.</span>
+        <span class="c"># If it is set to True, then pass the pair. Else drop the pair.</span>
         <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">lstring</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">rstring</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_missing</span><span class="p">)</span>
 
-        <span class="c1"># check for empty string</span>
+        <span class="c"># check for empty string</span>
         <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">lstring</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">rstring</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">True</span>
 
-        <span class="c1"># tokenize input strings </span>
+        <span class="c"># tokenize input strings </span>
         <span class="n">ltokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">lstring</span><span class="p">)</span>
         <span class="n">rtokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">rstring</span><span class="p">)</span>
  
@@ -239,7 +239,7 @@
                       <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
                       <span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">,</span>
                       <span class="n">l_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                      <span class="n">l_out_prefix</span><span class="o">=</span><span class="s1">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s1">&#39;r_&#39;</span><span class="p">,</span>
+                      <span class="n">l_out_prefix</span><span class="o">=</span><span class="s">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s">&#39;r_&#39;</span><span class="p">,</span>
                       <span class="n">out_sim_score</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds candidate matching pairs of strings from the input tables using</span>
 <span class="sd">        overlap filtering technique.</span>
@@ -297,59 +297,59 @@
 <span class="sd">            (DataFrame).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># check if the input tables are dataframes</span>
-        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
-        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+        <span class="c"># check if the input tables are dataframes</span>
+        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if the key attributes and filter attributes exist</span>
+        <span class="c"># check if the key attributes and filter attributes exist</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_filter_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if the filter attributes are not of numeric type                      </span>
+        <span class="c"># check if the filter attributes are not of numeric type                      </span>
         <span class="n">validate_attr_type</span><span class="p">(</span><span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">[</span><span class="n">l_filter_attr</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>                  
-                           <span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>                          
+                           <span class="s">&#39;attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>                          
         <span class="n">validate_attr_type</span><span class="p">(</span><span class="n">r_filter_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">[</span><span class="n">r_filter_attr</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>                  
-                           <span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+                           <span class="s">&#39;attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if the output attributes exist</span>
+        <span class="c"># check if the output attributes exist</span>
         <span class="n">validate_output_attrs</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
                               <span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
-        <span class="c1"># check if the key attributes are unique and do not contain </span>
-        <span class="c1"># missing values</span>
-        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
-        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+        <span class="c"># check if the key attributes are unique and do not contain </span>
+        <span class="c"># missing values</span>
+        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-        <span class="c1"># remove redundant attrs from output attrs.</span>
+        <span class="c"># remove redundant attrs from output attrs.</span>
         <span class="n">l_out_attrs</span> <span class="o">=</span> <span class="n">remove_redundant_attrs</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">l_key_attr</span><span class="p">)</span>
         <span class="n">r_out_attrs</span> <span class="o">=</span> <span class="n">remove_redundant_attrs</span><span class="p">(</span><span class="n">r_out_attrs</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">)</span>
 
-        <span class="c1"># get attributes to project.  </span>
+        <span class="c"># get attributes to project.  </span>
         <span class="n">l_proj_attrs</span> <span class="o">=</span> <span class="n">get_attrs_to_project</span><span class="p">(</span><span class="n">l_out_attrs</span><span class="p">,</span>
                                             <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">l_filter_attr</span><span class="p">)</span>
         <span class="n">r_proj_attrs</span> <span class="o">=</span> <span class="n">get_attrs_to_project</span><span class="p">(</span><span class="n">r_out_attrs</span><span class="p">,</span>
                                             <span class="n">r_key_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">)</span>
 
-        <span class="c1"># Do a projection on the input dataframes to keep only the required         </span>
-        <span class="c1"># attributes. Then, remove rows with missing value in filter attribute </span>
-        <span class="c1"># from the input dataframes. Then, convert the resulting dataframes </span>
-        <span class="c1"># into ndarray.</span>
+        <span class="c"># Do a projection on the input dataframes to keep only the required         </span>
+        <span class="c"># attributes. Then, remove rows with missing value in filter attribute </span>
+        <span class="c"># from the input dataframes. Then, convert the resulting dataframes </span>
+        <span class="c"># into ndarray.</span>
         <span class="n">ltable_array</span> <span class="o">=</span> <span class="n">convert_dataframe_to_array</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">l_proj_attrs</span><span class="p">,</span> 
                                                   <span class="n">l_filter_attr</span><span class="p">)</span>
         <span class="n">rtable_array</span> <span class="o">=</span> <span class="n">convert_dataframe_to_array</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="n">r_proj_attrs</span><span class="p">,</span> 
                                                   <span class="n">r_filter_attr</span><span class="p">)</span>
 
-        <span class="c1"># computes the actual number of jobs to launch.</span>
+        <span class="c"># computes the actual number of jobs to launch.</span>
         <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">get_num_processes_to_launch</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">rtable_array</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># if n_jobs is 1, do not use any parallel code.</span>
+            <span class="c"># if n_jobs is 1, do not use any parallel code.</span>
             <span class="n">output_table</span> <span class="o">=</span> <span class="n">_filter_tables_split</span><span class="p">(</span>
                                            <span class="n">ltable_array</span><span class="p">,</span> <span class="n">rtable_array</span><span class="p">,</span>
                                            <span class="n">l_proj_attrs</span><span class="p">,</span> <span class="n">r_proj_attrs</span><span class="p">,</span>
@@ -360,9 +360,9 @@
                                            <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>
                                            <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># if n_jobs is above 1, split the right table into n_jobs splits and    </span>
-            <span class="c1"># filter each right table split with the whole of left table in a </span>
-            <span class="c1"># separate process.</span>
+            <span class="c"># if n_jobs is above 1, split the right table into n_jobs splits and    </span>
+            <span class="c"># filter each right table split with the whole of left table in a </span>
+            <span class="c"># separate process.</span>
             <span class="n">r_splits</span> <span class="o">=</span> <span class="n">split_table</span><span class="p">(</span><span class="n">rtable_array</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">_filter_tables_split</span><span class="p">)(</span>
                                     <span class="n">ltable_array</span><span class="p">,</span> <span class="n">r_splits</span><span class="p">[</span><span class="n">job_index</span><span class="p">],</span>
@@ -377,9 +377,9 @@
                                 <span class="k">for</span> <span class="n">job_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">))</span>
             <span class="n">output_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
-        <span class="c1"># If allow_missing flag is set, then compute all pairs with missing     </span>
-        <span class="c1"># value in at least one of the filter attributes and then add it to the </span>
-        <span class="c1"># output obtained from applying the filter.</span>
+        <span class="c"># If allow_missing flag is set, then compute all pairs with missing     </span>
+        <span class="c"># value in at least one of the filter attributes and then add it to the </span>
+        <span class="c"># output obtained from applying the filter.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_missing</span><span class="p">:</span>
             <span class="n">missing_pairs</span> <span class="o">=</span> <span class="n">get_pairs_with_missing_value</span><span class="p">(</span>
                                             <span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>
@@ -390,8 +390,8 @@
                                             <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">)</span>
             <span class="n">output_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">output_table</span><span class="p">,</span> <span class="n">missing_pairs</span><span class="p">])</span>
 
-        <span class="c1"># add an id column named &#39;_id&#39; to the output table.</span>
-        <span class="n">output_table</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;_id&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_table</span><span class="p">)))</span>
+        <span class="c"># add an id column named &#39;_id&#39; to the output table.</span>
+        <span class="n">output_table</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;_id&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_table</span><span class="p">)))</span>
 
         <span class="k">return</span> <span class="n">output_table</span></div>
 
@@ -415,18 +415,18 @@
                          <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
                          <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>
                          <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">):</span>
-    <span class="c1"># Find column indices of key attr, filter attr and output attrs in ltable</span>
+    <span class="c"># Find column indices of key attr, filter attr and output attrs in ltable</span>
     <span class="n">l_key_attr_index</span> <span class="o">=</span> <span class="n">l_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">)</span>
     <span class="n">l_filter_attr_index</span> <span class="o">=</span> <span class="n">l_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l_filter_attr</span><span class="p">)</span>
     <span class="n">l_out_attrs_indices</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">l_out_attrs_indices</span> <span class="o">=</span> <span class="n">find_output_attribute_indices</span><span class="p">(</span><span class="n">l_columns</span><span class="p">,</span> <span class="n">l_out_attrs</span><span class="p">)</span>
 
-    <span class="c1"># Find column indices of key attr, filter attr and output attrs in rtable</span>
+    <span class="c"># Find column indices of key attr, filter attr and output attrs in rtable</span>
     <span class="n">r_key_attr_index</span> <span class="o">=</span> <span class="n">r_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">)</span>
     <span class="n">r_filter_attr_index</span> <span class="o">=</span> <span class="n">r_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">r_filter_attr</span><span class="p">)</span>
     <span class="n">r_out_attrs_indices</span> <span class="o">=</span> <span class="n">find_output_attribute_indices</span><span class="p">(</span><span class="n">r_columns</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">)</span>
 
-    <span class="c1"># Build inverted index over ltable</span>
+    <span class="c"># Build inverted index over ltable</span>
     <span class="n">inverted_index</span> <span class="o">=</span> <span class="n">InvertedIndex</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">l_filter_attr_index</span><span class="p">,</span>
                                    <span class="n">overlap_filter</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
     <span class="n">inverted_index</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
@@ -444,7 +444,7 @@
         <span class="n">r_string</span> <span class="o">=</span> <span class="n">r_row</span><span class="p">[</span><span class="n">r_filter_attr_index</span><span class="p">]</span>
         <span class="n">r_filter_attr_tokens</span> <span class="o">=</span> <span class="n">overlap_filter</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">r_string</span><span class="p">)</span>
 
-        <span class="c1"># probe inverted index and find overlap of candidates          </span>
+        <span class="c"># probe inverted index and find overlap of candidates          </span>
         <span class="n">candidate_overlap</span> <span class="o">=</span> <span class="n">overlap_filter</span><span class="o">.</span><span class="n">find_candidates</span><span class="p">(</span>
                                 <span class="n">r_filter_attr_tokens</span><span class="p">,</span> <span class="n">inverted_index</span><span class="p">)</span>
 
@@ -470,7 +470,7 @@
                                                   <span class="n">l_out_attrs</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="p">,</span>
                                                   <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">out_sim_score</span><span class="p">:</span>
-        <span class="n">output_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;_sim_score&quot;</span><span class="p">)</span>
+        <span class="n">output_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;_sim_score&quot;</span><span class="p">)</span>
 
     <span class="n">output_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">output_rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">output_header</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">output_table</span>

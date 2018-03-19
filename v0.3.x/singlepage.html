@@ -141,10 +141,10 @@ section “For Contributors and Developers”.</p>
 <div class="toctree-wrapper compound" id="getting-started">
 <span id="document-whatisnew"></span><div class="section" id="what-is-new">
 <h2>What is New?<a class="headerlink" href="#what-is-new" title="Permalink to this headline">¶</a></h2>
-<p>Compared to Version 0.1.0, the following is new:</p>
+<p>Compared to Version 0.2.0, the following is new:</p>
 <blockquote>
 <div><ul class="simple">
-<li>All the join methods written in Python have been Cythonized to run much faster.</li>
+<li>All the join methods using Cython&#8217;s multithreading are modified to use multiprocessing, to avoid openmp dependency.</li>
 </ul>
 </div></blockquote>
 </div>

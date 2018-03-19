@@ -1,6 +1,6 @@
 What is New? 
 ============
 
-Compared to Version 0.1.0, the following is new:
+Compared to Version 0.2.0, the following is new:
 
-  * All the join methods written in Python have been Cythonized to run much faster.
+  * All the join methods using Cython's multithreading are modified to use multiprocessing, to avoid openmp dependency.

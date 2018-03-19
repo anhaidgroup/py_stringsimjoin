@@ -206,55 +206,55 @@
 <span class="sd">            survive the filter (DataFrame).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># check if the input candset is a dataframe</span>
-        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">candset</span><span class="p">,</span> <span class="s1">&#39;candset&#39;</span><span class="p">)</span>
+        <span class="c"># check if the input candset is a dataframe</span>
+        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">candset</span><span class="p">,</span> <span class="s">&#39;candset&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if the candset key attributes exist</span>
+        <span class="c"># check if the candset key attributes exist</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">candset_l_key_attr</span><span class="p">,</span> <span class="n">candset</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;left key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;candset&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;left key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;candset&#39;</span><span class="p">)</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">candset_r_key_attr</span><span class="p">,</span> <span class="n">candset</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;right key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;candset&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;right key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;candset&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if the input tables are dataframes</span>
-        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
-        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+        <span class="c"># check if the input tables are dataframes</span>
+        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+        <span class="n">validate_input_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if the key attributes filter join attributes exist</span>
+        <span class="c"># check if the key attributes filter join attributes exist</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;key attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
         <span class="n">validate_attr</span><span class="p">(</span><span class="n">r_filter_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                      <span class="s1">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+                      <span class="s">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if the filter attributes are not of numeric type                      </span>
+        <span class="c"># check if the filter attributes are not of numeric type                      </span>
         <span class="n">validate_attr_type</span><span class="p">(</span><span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">[</span><span class="n">l_filter_attr</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>          
-                           <span class="s1">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>                    
+                           <span class="s">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>                    
         <span class="n">validate_attr_type</span><span class="p">(</span><span class="n">r_filter_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">[</span><span class="n">r_filter_attr</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>          
-                           <span class="s1">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+                           <span class="s">&#39;filter attribute&#39;</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if the key attributes are unique and do not contain </span>
-        <span class="c1"># missing values</span>
-        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">,</span> <span class="s1">&#39;left table&#39;</span><span class="p">)</span>
-        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span> <span class="s1">&#39;right table&#39;</span><span class="p">)</span>
+        <span class="c"># check if the key attributes are unique and do not contain </span>
+        <span class="c"># missing values</span>
+        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">ltable</span><span class="p">,</span> <span class="s">&#39;left table&#39;</span><span class="p">)</span>
+        <span class="n">validate_key_attr</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span> <span class="s">&#39;right table&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check for empty candset</span>
+        <span class="c"># check for empty candset</span>
         <span class="k">if</span> <span class="n">candset</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">candset</span>
 
-        <span class="c1"># Do a projection on the input dataframes to keep only required </span>
-        <span class="c1"># attributes. Note that this does not create a copy of the dataframes. </span>
-        <span class="c1"># It only creates a view on original dataframes.</span>
+        <span class="c"># Do a projection on the input dataframes to keep only required </span>
+        <span class="c"># attributes. Note that this does not create a copy of the dataframes. </span>
+        <span class="c"># It only creates a view on original dataframes.</span>
         <span class="n">ltable_projected</span> <span class="o">=</span> <span class="n">ltable</span><span class="p">[[</span><span class="n">l_key_attr</span><span class="p">,</span> <span class="n">l_filter_attr</span><span class="p">]]</span>
         <span class="n">rtable_projected</span> <span class="o">=</span> <span class="n">rtable</span><span class="p">[[</span><span class="n">r_key_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">]]</span>
 
-        <span class="c1"># computes the actual number of jobs to launch.</span>
+        <span class="c"># computes the actual number of jobs to launch.</span>
         <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">get_num_processes_to_launch</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">candset</span><span class="p">))</span>
         
         <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># if n_jobs is 1, do not use any parallel code.                     </span>
+            <span class="c"># if n_jobs is 1, do not use any parallel code.                     </span>
             <span class="n">output_table</span> <span class="o">=</span>  <span class="n">_filter_candset_split</span><span class="p">(</span><span class="n">candset</span><span class="p">,</span>
                                          <span class="n">candset_l_key_attr</span><span class="p">,</span> <span class="n">candset_r_key_attr</span><span class="p">,</span>
                                          <span class="n">ltable_projected</span><span class="p">,</span> <span class="n">rtable_projected</span><span class="p">,</span>
@@ -262,8 +262,8 @@
                                          <span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">,</span>
                                          <span class="bp">self</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># if n_jobs is above 1, split the candset into n_jobs splits and    </span>
-            <span class="c1"># filter each candset split in a separate process.</span>
+            <span class="c"># if n_jobs is above 1, split the candset into n_jobs splits and    </span>
+            <span class="c"># filter each candset split in a separate process.</span>
             <span class="n">candset_splits</span> <span class="o">=</span> <span class="n">split_table</span><span class="p">(</span><span class="n">candset</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">_filter_candset_split</span><span class="p">)(</span>
                                       <span class="n">candset_splits</span><span class="p">[</span><span class="n">job_index</span><span class="p">],</span>
@@ -285,27 +285,27 @@
                           <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
                           <span class="n">l_filter_attr</span><span class="p">,</span> <span class="n">r_filter_attr</span><span class="p">,</span>
                           <span class="n">filter_object</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">):</span>
-    <span class="c1"># Find column indices of key attr and filter attr in ltable</span>
+    <span class="c"># Find column indices of key attr and filter attr in ltable</span>
     <span class="n">l_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ltable</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">l_key_attr_index</span> <span class="o">=</span> <span class="n">l_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l_key_attr</span><span class="p">)</span>
     <span class="n">l_filter_attr_index</span> <span class="o">=</span> <span class="n">l_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l_filter_attr</span><span class="p">)</span>
 
-    <span class="c1"># Find column indices of key attr and filter attr in rtable</span>
+    <span class="c"># Find column indices of key attr and filter attr in rtable</span>
     <span class="n">r_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rtable</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">r_key_attr_index</span> <span class="o">=</span> <span class="n">r_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">r_key_attr</span><span class="p">)</span>
     <span class="n">r_filter_attr_index</span> <span class="o">=</span> <span class="n">r_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">r_filter_attr</span><span class="p">)</span>
     
-    <span class="c1"># Build a dictionary on ltable</span>
+    <span class="c"># Build a dictionary on ltable</span>
     <span class="n">ltable_dict</span> <span class="o">=</span> <span class="n">build_dict_from_table</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">l_key_attr_index</span><span class="p">,</span>
                                         <span class="n">l_filter_attr_index</span><span class="p">,</span>
                                         <span class="n">remove_null</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
-    <span class="c1"># Build a dictionary on rtable</span>
+    <span class="c"># Build a dictionary on rtable</span>
     <span class="n">rtable_dict</span> <span class="o">=</span> <span class="n">build_dict_from_table</span><span class="p">(</span><span class="n">rtable</span><span class="p">,</span> <span class="n">r_key_attr_index</span><span class="p">,</span>
                                         <span class="n">r_filter_attr_index</span><span class="p">,</span>
                                         <span class="n">remove_null</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
-    <span class="c1"># Find indices of l_key_attr and r_key_attr in candset</span>
+    <span class="c"># Find indices of l_key_attr and r_key_attr in candset</span>
     <span class="n">candset_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">candset</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">candset_l_key_attr_index</span> <span class="o">=</span> <span class="n">candset_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">candset_l_key_attr</span><span class="p">)</span>
     <span class="n">candset_r_key_attr_index</span> <span class="o">=</span> <span class="n">candset_columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">candset_r_key_attr</span><span class="p">)</span>

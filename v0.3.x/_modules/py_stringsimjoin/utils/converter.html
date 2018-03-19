@@ -172,21 +172,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;First argument is not of type pandas dataframe&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;First argument is not of type pandas dataframe&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">col_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Column </span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">col_name</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1"> not found in the&#39;</span> <span class="o">+</span> \
-                             <span class="s1">&#39; input dataframe&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Column </span><span class="se">\&#39;</span><span class="s">&#39;</span> <span class="o">+</span> <span class="n">col_name</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\&#39;</span><span class="s"> not found in the&#39;</span> <span class="o">+</span> \
+                             <span class="s">&#39; input dataframe&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Parameter </span><span class="se">\&#39;</span><span class="s1">inplace</span><span class="se">\&#39;</span><span class="s1"> is not of type bool&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Parameter </span><span class="se">\&#39;</span><span class="s">inplace</span><span class="se">\&#39;</span><span class="s"> is not of type bool&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">return_col</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>                                           
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Parameter </span><span class="se">\&#39;</span><span class="s1">return_col</span><span class="se">\&#39;</span><span class="s1"> is not of type bool&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Parameter </span><span class="se">\&#39;</span><span class="s">return_col</span><span class="se">\&#39;</span><span class="s"> is not of type bool&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="n">return_col</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Both </span><span class="se">\&#39;</span><span class="s1">inplace</span><span class="se">\&#39;</span><span class="s1"> and </span><span class="se">\&#39;</span><span class="s1">return_col</span><span class="se">\&#39;</span><span class="s1"> parameters&#39;</span> <span class="o">+</span>\
-                             <span class="s1">&#39;cannot be set to True&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Both </span><span class="se">\&#39;</span><span class="s">inplace</span><span class="se">\&#39;</span><span class="s"> and </span><span class="se">\&#39;</span><span class="s">return_col</span><span class="se">\&#39;</span><span class="s"> parameters&#39;</span> <span class="o">+</span>\
+                             <span class="s">&#39;cannot be set to True&#39;</span><span class="p">)</span>
 
     <span class="n">col_type</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
 
@@ -223,15 +223,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
    
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>                                 
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;First argument is not of type pandas dataframe&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;First argument is not of type pandas dataframe&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>                                           
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Parameter </span><span class="se">\&#39;</span><span class="s1">inplace</span><span class="se">\&#39;</span><span class="s1"> is not of type bool&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&#39;Parameter </span><span class="se">\&#39;</span><span class="s">inplace</span><span class="se">\&#39;</span><span class="s"> is not of type bool&#39;</span><span class="p">)</span>
     
     <span class="n">col_type</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dtype</span>                                                     
 
-    <span class="c1"># Currently, we ignore the inplace flag when the series is empty and is of</span>
-    <span class="c1"># type int or float. In this case, we will always return a copy.                       </span>
+    <span class="c"># Currently, we ignore the inplace flag when the series is empty and is of</span>
+    <span class="c"># type int or float. In this case, we will always return a copy.                       </span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">series</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>                                                        
         <span class="k">if</span> <span class="n">col_type</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">object</span> <span class="ow">and</span> <span class="n">inplace</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">True</span>
@@ -239,15 +239,15 @@
             <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>    
 
     <span class="k">if</span> <span class="n">col_type</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">:</span>
-        <span class="c1"># If column is already of type object, do not perform any conversion.</span>
+        <span class="c"># If column is already of type object, do not perform any conversion.</span>
         <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">col_type</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
-        <span class="c1"># If the column is of type int, then there are no missing values in the </span>
-        <span class="c1"># column and hence we can directly convert it to string using           </span>
-        <span class="c1"># the astype method.     </span>
+        <span class="c"># If the column is of type int, then there are no missing values in the </span>
+        <span class="c"># column and hence we can directly convert it to string using           </span>
+        <span class="c"># the astype method.     </span>
         <span class="n">col_str</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
             <span class="n">series</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">col_str</span><span class="p">)</span>
@@ -255,29 +255,29 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">col_str</span>
     <span class="k">elif</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">col_type</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">):</span>
-        <span class="c1"># If the column is of type float, then there are two cases:             </span>
-        <span class="c1"># (1) column only contains interger values along with NaN.              </span>
-        <span class="c1"># (2) column actually contains floating point values.                   </span>
-        <span class="c1"># For case 1, we preserve the NaN values as such and convert the float  </span>
-        <span class="c1"># values to string by first converting them to int and then to string.  </span>
-        <span class="c1"># For case 1, we preserve the NaN values as such and convert the float  </span>
-        <span class="c1"># values directly to string.   </span>
+        <span class="c"># If the column is of type float, then there are two cases:             </span>
+        <span class="c"># (1) column only contains interger values along with NaN.              </span>
+        <span class="c"># (2) column actually contains floating point values.                   </span>
+        <span class="c"># For case 1, we preserve the NaN values as such and convert the float  </span>
+        <span class="c"># values to string by first converting them to int and then to string.  </span>
+        <span class="c"># For case 1, we preserve the NaN values as such and convert the float  </span>
+        <span class="c"># values directly to string.   </span>
 
-        <span class="c1"># get the column values that are not NaN                                    </span>
+        <span class="c"># get the column values that are not NaN                                    </span>
         <span class="n">col_non_nan_values</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
  
-        <span class="c1"># Currently, we ignore the inplace flag when all values in the column</span>
-        <span class="c1"># are NaN and will always return a copy of the column cast into </span>
-        <span class="c1"># object type.</span>
+        <span class="c"># Currently, we ignore the inplace flag when all values in the column</span>
+        <span class="c"># are NaN and will always return a copy of the column cast into </span>
+        <span class="c"># object type.</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_non_nan_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
      
-        <span class="c1"># find how many of these values are actually integer values cast into   </span>
-        <span class="c1"># float.</span>
+        <span class="c"># find how many of these values are actually integer values cast into   </span>
+        <span class="c"># float.</span>
         <span class="n">int_values</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">col_non_nan_values</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()))</span>
 
-        <span class="c1"># if all these values are interger values, then we handle according     </span>
-        <span class="c1"># to case 1, else we proceed by case 2. </span>
+        <span class="c"># if all these values are interger values, then we handle according     </span>
+        <span class="c"># to case 1, else we proceed by case 2. </span>
         <span class="k">if</span> <span class="n">int_values</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_non_nan_values</span><span class="p">):</span>                               
             <span class="n">col_str</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span> <span class="k">if</span>        
                                             <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>  
@@ -290,8 +290,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">col_str</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid column type. &#39;</span> <span class="o">+</span> \
-                        <span class="s1">&#39;Cannot convert the column to string.&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Invalid column type. &#39;</span> <span class="o">+</span> \
+                        <span class="s">&#39;Cannot convert the column to string.&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
