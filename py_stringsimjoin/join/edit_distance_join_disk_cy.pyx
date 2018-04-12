@@ -44,7 +44,7 @@ _progress_bar = None
 def edit_distance_join_disk_cy(ltable, rtable,
                           l_key_attr, r_key_attr,
                           l_join_attr, r_join_attr,
-                          double threshold,data_limit,
+                          double threshold,data_limit=10000,
                           comp_op='<=',
                           allow_missing=False,
                           l_out_attrs=None, r_out_attrs=None,
@@ -88,8 +88,11 @@ def edit_distance_join_disk_cy(ltable, rtable,
 
         r_join_attr (string): join attribute in right table.
 
-        threshold (float): edit distance threshold to be satisfied.        
-                                                                                
+        threshold (float): edit distance threshold to be satisfied.
+
+        data_limit (int): number of generated rows to be written at a time to the output 
+        file (defaults t0 10000).
+
         comp_op (string): comparison operator. Supported values are '<=', '<'   
             and '=' (defaults to '<=').                                         
                                                                                 
@@ -133,10 +136,13 @@ def edit_distance_join_disk_cy(ltable, rtable,
             attributes during filtering, when edit distance measure is          
             transformed into an overlap measure. This must be a q-gram tokenizer
             (defaults to 2-gram tokenizer).
+
+        global_path (string): Absolute path where the output file will be generated
+            (defaults to the current working directory).
                                                                                 
     Returns:                                                                    
-        An output table containing tuple pairs that satisfy the join            
-        condition (DataFrame).  
+        File name of the output csv file containing tuple pairs that satisfy the join            
+        condition (string).  
     """
 
     # check if the input tables are dataframes
@@ -247,6 +253,8 @@ def edit_distance_join_disk_cy(ltable, rtable,
 
     print("Combining all files ...")
     output_header = results[0][1]
+    # Combine all the files from results into a single output file 
+    # and remove those temporary files
     with open(os.path.join(global_path,final_output_file),'ab+') as outfile :
         w = csv.writer(outfile)
         w.writerow(output_header)
@@ -268,7 +276,8 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                            l_out_attrs, r_out_attrs,
                                            l_out_prefix, r_out_prefix,
                                            out_sim_score, show_progress)
-
+                                           
+        # Write missing pairs dataframe to a csv file and append it to the output file                                  
         missing_pairs_output = "missing_pairs.csv"
         with open(os.path.join(global_path,missing_pairs_output),'a+') as myfile :
             missing_pairs.to_csv(myfile, header = False, index = False)
@@ -381,9 +390,10 @@ def _edit_distance_join_split(ltable_array, rtable_array,
                     # if out_sim_score flag is set, append the edit distance            
                     # score to the output record.                                       
                     if out_sim_score:                                                   
-                        output_row.append(edit_dist)                   
-                                                                                
+                        output_row.append(edit_dist)               
                     output_rows.append(output_row)
+
+                    #if the output rows id bigger than the given data limit, write to the file.
                     if len(output_rows)> data_limit :
                         df = pd.DataFrame(output_rows)
                         with open(os.path.join(dir,fn),'a+') as myfile :
@@ -392,10 +402,8 @@ def _edit_distance_join_split(ltable_array, rtable_array,
         candidates = []
 
         if show_progress:                                                       
-            prog_bar.update() 
-
- 
-
+            prog_bar.update()  
+    # Write the remaining output rows left to the file.
     if output_rows :
         df = pd.DataFrame(output_rows)
         with open(os.path.join(dir,fn),'a+') as myfile :
@@ -426,4 +434,3 @@ cdef void tokenize_and_build_index(ltable_array, l_join_attr_index,
         ltokens.push_back(lstring_tokens)
 
     index.build_prefix_index(ltokens, tokenizer.qval, threshold)         
-       

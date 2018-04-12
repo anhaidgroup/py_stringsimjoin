@@ -11,6 +11,7 @@ import py_stringsimjoin as ssj
 import py_stringmatching as sm
 import pandas as pd
 import os, sys
+import time
 
 
 # In[21]:
@@ -130,6 +131,13 @@ print(B.columns.values)
 # l_out_attrs and r_out_attrs denote the attributes from the 
 # left table (A) and right table (B) that need to be included in the output.
 
-output_pairs = ssj.edit_distance_join_disk(A, B, 'ID', 'ID', ' name', 'title', 10,
+tick = time.time()
+
+output_pairs = ssj.edit_distance_join_disk(A, B, 'ID', 'ID', ' name', 'title', 1,
                                       100000,n_jobs =4,l_out_attrs=[' name',' year'],#' director',' writers',' actors '],
                                        r_out_attrs=['title','year'], global_path = "/afs/cs.wisc.edu/u/a/j/ajain64/private/Spring_2018/indep/git/", allow_missing = False)
+
+tock = time.time()
+
+
+print ("Time taken in disk " + str(tock-tick))
