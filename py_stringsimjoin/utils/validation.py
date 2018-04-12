@@ -1,6 +1,7 @@
 """Validation utilities"""
 
 import pandas as pd
+import os
 
 from py_stringmatching.tokenizer.tokenizer import Tokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
@@ -125,4 +126,22 @@ def validate_comp_op(comp_op):
     """Check if the comparison operator is valid."""
     if comp_op not in COMP_OP_MAP.keys():
         raise AssertionError('Comparison operator not supported. ' + \
-            'Supported comparison operators are >=, >, <=, <, = and !=.')        
+            'Supported comparison operators are >=, >, <=, <, = and !=.') 
+
+def validate_path(path) :
+    """Check if the given path is valid."""
+    if os.path.exists(path) == False:
+        raise AssertionError('Invalid path given. Please enter an existing path.')
+    return True
+
+def validate_data_limit(data_limit):
+    """Check if the given datalimit is valid."""
+    if isinstance(data_limit,int)== False :
+        raise AssertionError('data_limit is not an integer')
+    if data_limit<=0 :
+        raise AssertionError('data_limit should be greater than or equal to 0. Ideally, it should be greater than 10000.')
+    return True
+
+
+        
+
