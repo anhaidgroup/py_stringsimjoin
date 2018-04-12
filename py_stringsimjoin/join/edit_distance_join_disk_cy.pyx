@@ -210,6 +210,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
     n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
     cdef int index_count = 0
     cdef int iter
+    final_output_file = "output_rows.csv"
 
 
     if n_jobs <= 1:                                                             
@@ -245,9 +246,11 @@ def edit_distance_join_disk_cy(ltable, rtable,
 
 
     print("Combining all files ...")
-    with open(os.path.join(global_path,"output_rows.csv"),'ab+') as outfile :
+    output_header = results[0][1]
+    with open(os.path.join(global_path,final_output_file),'ab+') as outfile :
+        w = csv.writer(outfile)
+        w.writerow(output_header)
         for fname,output_header in results:
-            print("File name " + str(fname))
             with open(os.path.join(global_path,fname),'rb') as infile :
                 shutil.copyfileobj(infile,outfile)
             os.remove(os.path.join(global_path,fname))
@@ -270,7 +273,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
         with open(os.path.join(global_path,missing_pairs_output),'a+') as myfile :
             missing_pairs.to_csv(myfile, header = False, index = False)
 
-        with open(os.path.join(global_path,"output_rows.csv"),'ab+') as outfile :
+        with open(os.path.join(global_path,final_output_file),'ab+') as outfile :
             with open(os.path.join(global_path,missing_pairs_output),'rb') as infile :
                     shutil.copyfileobj(infile,outfile)
             os.remove(os.path.join(global_path,missing_pairs_output))
@@ -281,7 +284,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
     if revert_tokenizer_return_set_flag:                                        
         tokenizer.set_return_set(True)                                          
                                                                                 
-    return "output_rows.csv"
+    return final_output_file
 
 
 def _edit_distance_join_split(ltable_array, rtable_array,                         

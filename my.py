@@ -41,8 +41,8 @@ print(sys.path)
 # where the package is installed. If you need to load your own data, you can directly
 # provide your table path to the read_csv command.
 
-table_A_path = os.sep.join([ssj.get_install_path(), 'datasets', 'data', 'imdb_A_50.csv'])
-table_B_path = os.sep.join([ssj.get_install_path(), 'datasets', 'data', 'imdb_B_50.csv'])
+table_A_path = os.sep.join([ssj.get_install_path(), 'datasets', 'data', 'imdb_A.csv'])
+table_B_path = os.sep.join([ssj.get_install_path(), 'datasets', 'data', 'imdb_B.csv'])
 
 
 # In[23]:
