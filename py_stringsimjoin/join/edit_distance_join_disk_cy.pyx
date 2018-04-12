@@ -21,7 +21,8 @@ from py_stringsimjoin.utils.token_ordering import \
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_attr_type, validate_comp_op_for_sim_measure, validate_key_attr, \
     validate_input_table, validate_threshold, \
-    validate_tokenizer_for_sim_measure, validate_output_attrs
+    validate_tokenizer_for_sim_measure, validate_output_attrs,validate_path, \
+    validate_data_limit
 
 # Cython imports
 from libcpp.vector cimport vector                                               
@@ -165,6 +166,9 @@ def edit_distance_join_disk_cy(ltable, rtable,
     # check if the input threshold is valid
     validate_threshold(threshold, 'EDIT_DISTANCE')
 
+    #check if the given datalimit is valid
+    validate_data_limit(data_limit)
+
     # check if the comparison operator is valid
     validate_comp_op_for_sim_measure(comp_op, 'EDIT_DISTANCE')
 
@@ -175,6 +179,9 @@ def edit_distance_join_disk_cy(ltable, rtable,
     # check if the key attributes are unique and do not contain missing values
     validate_key_attr(l_key_attr, ltable, 'left table')
     validate_key_attr(r_key_attr, rtable, 'right table')
+
+    #Check if the given path is valid
+    validate_path(global_path)
 
     # convert threshold to integer (incase if it is float)
     threshold = int(floor(threshold))
@@ -204,11 +211,6 @@ def edit_distance_join_disk_cy(ltable, rtable,
     cdef int index_count = 0
     cdef int iter
 
-    print("Global Path " + str(global_path))
-
-    if os.path.exists(global_path) == False:
-        print("Setting path to current dir")
-        global_path = os.getcwd()
 
     if n_jobs <= 1:                                                             
         # if n_jobs is 1, do not use any parallel code.                         

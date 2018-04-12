@@ -26,4 +26,4 @@ def edit_distance_join_disk(ltable, rtable,
                                      out_sim_score, n_jobs, show_progress,
                                      tokenizer,path)
     else:
-      print("cython not present")
+      print("Cython not present")
