@@ -254,7 +254,6 @@ def edit_distance_join_disk_cy(ltable, rtable,
             with open(os.path.join(global_path,fname),'rb') as infile :
                 shutil.copyfileobj(infile,outfile)
             os.remove(os.path.join(global_path,fname))
-            #print(fname)
     #print(index_count)
 
 
