@@ -243,41 +243,39 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                     (show_progress and (job_index==n_jobs-1)), job_index,global_path,data_limit)
                                 for job_index in range(n_jobs)) 
 
-        #output_table = pd.concat(results)
 
-    print(os.path.join(global_path,"output_rows.csv"))
     print("Combining all files ...")
-    with open(os.path.join(global_path,"output_rows.csv"),'wb+') as outfile :
-        print("Opened output file")
-        for fname in results:
-            print("checking file" + str(fname))
+    with open(os.path.join(global_path,"output_rows.csv"),'ab+') as outfile :
+        for fname,output_header in results:
+            print("File name " + str(fname))
             with open(os.path.join(global_path,fname),'rb') as infile :
                 shutil.copyfileobj(infile,outfile)
             os.remove(os.path.join(global_path,fname))
-    #print(index_count)
 
 
 
     # If allow_missing flag is set, then compute all pairs with missing value in
     # at least one of the join attributes and then add it to the output         
     # obtained from the join.                                                   
-    #if allow_missing:                                                           
-        #missing_pairs = get_pairs_with_missing_value(                           
-        #                                     ltable, rtable,                     
-        #                                   l_key_attr, r_key_attr,             
-        #                                   l_join_attr, r_join_attr,           
-        #                                   l_out_attrs, r_out_attrs,           
-        #                                   l_out_prefix, r_out_prefix,         
-        #                                   out_sim_score, show_progress)       
-        #output_table = pd.concat([output_table, missing_pairs]) 
-         #with open(os.path.join(dir,"output_rows.txt"),'a+',0) as outfile :
-            #for item in missing_pairs:
-                #index_count+=1
-                #outfile.write((str(index_count)+" "+ item).encode("utf-8"))
-            #os.fsync()
-                                                                                
-    # add an id column named '_id' to the output table.                         
-    #output_table.insert(0, '_id', range(0, len(output_table)))                  
+    if allow_missing:
+        missing_pairs = get_pairs_with_missing_value(
+                                             ltable, rtable,
+                                           l_key_attr, r_key_attr,
+                                           l_join_attr, r_join_attr,
+                                           l_out_attrs, r_out_attrs,
+                                           l_out_prefix, r_out_prefix,
+                                           out_sim_score, show_progress)
+
+        missing_pairs_output = "missing_pairs.csv"
+        with open(os.path.join(global_path,missing_pairs_output),'a+') as myfile :
+            missing_pairs.to_csv(myfile, header = False, index = False)
+
+        with open(os.path.join(global_path,"output_rows.csv"),'ab+') as outfile :
+            with open(os.path.join(global_path,missing_pairs_output),'rb') as infile :
+                    shutil.copyfileobj(infile,outfile)
+            os.remove(os.path.join(global_path,missing_pairs_output))
+
+
                                                                                 
     # revert the return_set flag of tokenizer, in case it was modified.         
     if revert_tokenizer_return_set_flag:                                        
@@ -347,7 +345,7 @@ def _edit_distance_join_split(ltable_array, rtable_array,
     cdef double edit_dist                                                       
     cdef int qval = tokenizer.qval                                              
     cdef compfnptr comp_fn
-    # Doubtful
+
     fn = "strsimjoin_"+str(job_index)+".csv"
     comp_fn = get_comparison_function(get_comp_type(comp_op))
 
@@ -383,20 +381,11 @@ def _edit_distance_join_split(ltable_array, rtable_array,
                         output_row.append(edit_dist)                   
                                                                                 
                     output_rows.append(output_row)
-                    if len(output_rows)>data_limit :
-                        #with open(os.path.join(dir,fn),'a+') as myfile :
-                        #    writer = csv.writer(myfile,lineterminator="\n")
-                        #    writer.writerows(output_rows)
-                            #myfile.flush()
-                            #os.fsync(myfile.fileno())
-                        #output_rows.clear()
-
+                    if len(output_rows)> data_limit :
                         df = pd.DataFrame(output_rows)
                         with open(os.path.join(dir,fn),'a+') as myfile :
-                            df.to_csv(myfile, header = False)
-                        #output_rows.clear()
+                            df.to_csv(myfile, header = False, index = False)
                         output_rows = []
-        #candidates.clear()
         candidates = []
 
         if show_progress:                                                       
@@ -407,27 +396,16 @@ def _edit_distance_join_split(ltable_array, rtable_array,
     if output_rows :
         df = pd.DataFrame(output_rows)
         with open(os.path.join(dir,fn),'a+') as myfile :
-            df.to_csv(myfile, header = False)
-        #output_rows.clear()
+            df.to_csv(myfile, header = False, index= False)
         output_rows = []
-            #with open(os.path.join(dir,fn),'a+') as myfile :
-             #   writer = csv.writer(myfile,lineterminator="\n")
-              #  writer.writerows(output_rows)
-               # myfile.flush()
-                #os.fsync(myfile.fileno())
-            #output_rows.clear()                                                                      
 
-    #print(df.shape)
-    #output_header = get_output_header_from_tables(
-    #                   l_key_attr, r_key_attr,
-    #                   l_out_attrs, r_out_attrs,
-    #                   l_out_prefix, r_out_prefix)
-    #if out_sim_score:
-    #    output_header.append("_sim_score")
-
-    # generate a dataframe from the list of output rows
-    #output_table = pd.DataFrame(output_rows, columns=output_header)
-    return fn                                                   
+    output_header = get_output_header_from_tables(
+                       l_key_attr, r_key_attr,
+                       l_out_attrs, r_out_attrs,
+                       l_out_prefix, r_out_prefix)
+    if out_sim_score:
+        output_header.append("_sim_score")
+    return fn,output_header
 
 
 cdef void tokenize_and_build_index(ltable_array, l_join_attr_index,
