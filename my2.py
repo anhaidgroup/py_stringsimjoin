@@ -41,8 +41,8 @@ print(sys.path)
 # where the package is installed. If you need to load your own data, you can directly
 # provide your table path to the read_csv command.
 
-table_A_path = os.sep.join([ssj.get_install_path(), 'datasets', 'data', 'imdb_A.csv'])
-table_B_path = os.sep.join([ssj.get_install_path(), 'datasets', 'data', 'imdb_B.csv'])
+table_A_path = os.sep.join([ssj.get_install_path(), 'datasets', 'data', 'imdb_A_50.csv'])
+table_B_path = os.sep.join([ssj.get_install_path(), 'datasets', 'data', 'imdb_B_50.csv'])
 
 
 # In[23]:
@@ -130,9 +130,9 @@ print(B.columns.values)
 # l_out_attrs and r_out_attrs denote the attributes from the 
 # left table (A) and right table (B) that need to be included in the output.
 
-output_pairs = ssj.edit_distance_join(A, B, 'ID', 'ID', ' name', 'title', 50,
-                                      n_jobs =4,l_out_attrs=[' name',' year',' director',' writers',' actors '],
-                                       r_out_attrs=['title','year','director(s)','writer(s)','actor(s)'])
+output_pairs = ssj.edit_distance_join(A, B, 'ID', 'ID', ' name', 'title', 10,
+                                      n_jobs =4,l_out_attrs=[' name',' year'],#,' director',' writers',' actors '],
+                                       r_out_attrs=['title','year'])#'director(s)','writer(s)','actor(s)'])
 
 
 

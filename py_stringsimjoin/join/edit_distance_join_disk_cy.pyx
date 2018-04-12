@@ -7,6 +7,7 @@ import pandas as pd
 import pyprind
 import os
 import csv
+import shutil
 
 from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
@@ -50,7 +51,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                           out_sim_score=True, 
                           int n_jobs=1, 
                           bool show_progress=True,
-                          tokenizer=QgramTokenizer(qval=2),path=os.getcwd()):
+                          tokenizer=QgramTokenizer(qval=2),global_path = os.getcwd()):
     """Join two tables using edit distance measure.
 
     Finds tuple pairs from left table and right table such that the edit 
@@ -203,6 +204,12 @@ def edit_distance_join_disk_cy(ltable, rtable,
     cdef int index_count = 0
     cdef int iter
 
+    print("Global Path " + str(global_path))
+
+    if os.path.exists(global_path) == False:
+        print("Setting path to current dir")
+        global_path = os.getcwd()
+
     if n_jobs <= 1:                                                             
         # if n_jobs is 1, do not use any parallel code.                         
         result = _edit_distance_join_split(                               
@@ -213,7 +220,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                tokenizer, threshold, comp_op,                   
                                l_out_attrs, r_out_attrs,                        
                                l_out_prefix, r_out_prefix,                      
-                               out_sim_score, show_progress,0,path,data_limit)
+                               out_sim_score, show_progress,0,global_path,data_limit)
         results = []
         results.append(result)
 
@@ -231,26 +238,22 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                     l_out_attrs, r_out_attrs,                   
                                     l_out_prefix, r_out_prefix,                 
                                     out_sim_score,                              
-                                    (show_progress and (job_index==n_jobs-1)), job_index,path,data_limit)  
+                                    (show_progress and (job_index==n_jobs-1)), job_index,global_path,data_limit)
                                 for job_index in range(n_jobs)) 
 
         #output_table = pd.concat(results)
-        #print(os.path.join(dir,"output_rows.csv"))
+
+    print(os.path.join(global_path,"output_rows.csv"))
     print("Combining all files ...")
-    with open("output_rows.csv",'w+') as outfile :
-        writer = csv.writer(outfile)
-        for iter in range(n_jobs):
-            curr_file_name = results[iter]
-            with open(curr_file_name,'r') as infile :
-                reader = csv.reader(infile)
-                for line in reader :
-                    line.insert(0,index_count)
-                    index_count+=1
-                    writer.writerow(line)
-            os.remove(curr_file_name)
-            outfile.flush()
-            os.fsync(outfile.fileno())
-    print(index_count)
+    with open(os.path.join(global_path,"output_rows.csv"),'wb+') as outfile :
+        print("Opened output file")
+        for fname in results:
+            print("checking file" + str(fname))
+            with open(os.path.join(global_path,fname),'rb') as infile :
+                shutil.copyfileobj(infile,outfile)
+            os.remove(os.path.join(global_path,fname))
+            #print(fname)
+    #print(index_count)
 
 
 
@@ -379,28 +382,41 @@ def _edit_distance_join_split(ltable_array, rtable_array,
                         output_row.append(edit_dist)                   
                                                                                 
                     output_rows.append(output_row)
-                    if len(output_rows)> data_limit :
-                        with open(os.path.join(dir,fn),'a+') as myfile :
-                            writer = csv.writer(myfile,lineterminator="\n")
-                            writer.writerows(output_rows)
-                            myfile.flush()
-                            os.fsync(myfile.fileno())
-                        output_rows.clear()  
- 
+                    if len(output_rows)>data_limit :
+                        #with open(os.path.join(dir,fn),'a+') as myfile :
+                        #    writer = csv.writer(myfile,lineterminator="\n")
+                        #    writer.writerows(output_rows)
+                            #myfile.flush()
+                            #os.fsync(myfile.fileno())
+                        #output_rows.clear()
 
-        if output_rows :
-            with open(os.path.join(dir,fn),'a+') as myfile :
-                writer = csv.writer(myfile,lineterminator="\n")
-                writer.writerows(output_rows)
-                myfile.flush()
-                os.fsync(myfile.fileno())
-            output_rows.clear()                                                                         
-        candidates.clear()
-        #candidates = []
+                        df = pd.DataFrame(output_rows)
+                        with open(os.path.join(dir,fn),'a+') as myfile :
+                            df.to_csv(myfile, header = False)
+                        #output_rows.clear()
+                        output_rows = []
+        #candidates.clear()
+        candidates = []
 
         if show_progress:                                                       
             prog_bar.update() 
 
+ 
+
+    if output_rows :
+        df = pd.DataFrame(output_rows)
+        with open(os.path.join(dir,fn),'a+') as myfile :
+            df.to_csv(myfile, header = False)
+        #output_rows.clear()
+        output_rows = []
+            #with open(os.path.join(dir,fn),'a+') as myfile :
+             #   writer = csv.writer(myfile,lineterminator="\n")
+              #  writer.writerows(output_rows)
+               # myfile.flush()
+                #os.fsync(myfile.fileno())
+            #output_rows.clear()                                                                      
+
+    #print(df.shape)
     #output_header = get_output_header_from_tables(
     #                   l_key_attr, r_key_attr,
     #                   l_out_attrs, r_out_attrs,
