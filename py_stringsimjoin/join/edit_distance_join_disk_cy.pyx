@@ -90,8 +90,8 @@ def edit_distance_join_disk_cy(ltable, rtable,
 
         threshold (float): edit distance threshold to be satisfied.
 
-        data_limit (int): number of generated rows to be written at a time to the output 
-        file (defaults t0 10000).
+        data_limit (int): threshold value for number of rows that would be kept in memory
+         before writing the output on the disk(defaults to 10000).
 
         comp_op (string): comparison operator. Supported values are '<=', '<'   
             and '=' (defaults to '<=').                                         
