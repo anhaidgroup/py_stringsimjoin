@@ -44,7 +44,7 @@ _progress_bar = None
 def edit_distance_join_disk_cy(ltable, rtable,
                           l_key_attr, r_key_attr,
                           l_join_attr, r_join_attr,
-                          double threshold,data_limit=10000,
+                          double threshold,data_limit=100000,
                           comp_op='<=',
                           allow_missing=False,
                           l_out_attrs=None, r_out_attrs=None,
