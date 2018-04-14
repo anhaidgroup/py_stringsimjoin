@@ -216,7 +216,8 @@ def edit_distance_join_disk_cy(ltable, rtable,
     n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
     cdef int index_count = 0
     cdef int iter
-    final_output_file = "output_rows.csv"
+    final_output_file_name = "py_stringsimjoin_output.csv"
+    final_output_file = os.path.join(global_path,final_output_file_name)
 
 
     if n_jobs <= 1:                                                             
@@ -252,14 +253,16 @@ def edit_distance_join_disk_cy(ltable, rtable,
 
 
     print("Combining all files ...")
+    if os.path.isfile(final_output_file):
+        os.remove(final_output_file)
     output_header = results[0][1]
     # Combine all the files from results into a single output file 
     # and remove those temporary files
-    with open(os.path.join(global_path,final_output_file),'ab+') as outfile :
-        w = csv.writer(outfile)
-        w.writerow(output_header)
+    with open(final_output_file,'w+') as outfile :
+        outfile.write((",".join(output_header)))
+        outfile.write("\n")
         for fname,output_header in results:
-            with open(os.path.join(global_path,fname),'rb') as infile :
+            with open(os.path.join(global_path,fname),'r') as infile :
                 shutil.copyfileobj(infile,outfile)
             os.remove(os.path.join(global_path,fname))
 
@@ -282,8 +285,8 @@ def edit_distance_join_disk_cy(ltable, rtable,
         with open(os.path.join(global_path,missing_pairs_output),'a+') as myfile :
             missing_pairs.to_csv(myfile, header = False, index = False)
 
-        with open(os.path.join(global_path,final_output_file),'ab+') as outfile :
-            with open(os.path.join(global_path,missing_pairs_output),'rb') as infile :
+        with open(final_output_file,'a+') as outfile :
+            with open(os.path.join(global_path,missing_pairs_output),'r') as infile :
                     shutil.copyfileobj(infile,outfile)
             os.remove(os.path.join(global_path,missing_pairs_output))
 
