@@ -58,7 +58,18 @@ def edit_distance_join_disk_cy(ltable, rtable,
                           tokenizer=QgramTokenizer(qval=2),global_path = os.getcwd(), output_file_path = os.path.join(os.getcwd(),final_output_file_name)):
     """Join two tables using edit distance measure.
 
-    Finds tuple pairs from left table and right table such that the edit 
+    This is the disk version of the previous edit_distance_join api.
+    There can be a scenario that while performing join on large datasets,
+    the intermediate in-memory data structures grow very large and thus lead
+    to termination of the program due to insufficient memory. Keeping this problem
+    in mind, edit_distance_join_disk is the updated version of the older
+    edit_distance_join function that solves the above mentioned problem.
+    So if the analysis is being done on the machine with small memory limits or
+    if the input tables are too large, then this new edit_distance_join_disk can be
+    used to avoid memory exceeding problem while processing.
+
+
+    It Finds tuple pairs from left table and right table such that the edit
     distance between the join attributes satisfies the condition on input 
     threshold. For example, if the comparison operator is '<=', finds tuple     
     pairs whose edit distance between the strings that are the values of    
