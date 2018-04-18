@@ -8,6 +8,8 @@ import pyprind
 import os
 import csv
 import shutil
+import multiprocessing
+import math
 
 from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
@@ -21,7 +23,7 @@ from py_stringsimjoin.utils.token_ordering import \
 from py_stringsimjoin.utils.validation import validate_attr, \
     validate_attr_type, validate_comp_op_for_sim_measure, validate_key_attr, \
     validate_input_table, validate_threshold, \
-    validate_tokenizer_for_sim_measure, validate_output_attrs,validate_path, \
+    validate_tokenizer_for_sim_measure, validate_output_attrs,validate_path,validate_output_file_path, \
     validate_data_limit
 
 # Cython imports
@@ -40,6 +42,7 @@ from py_stringsimjoin.utils.cython_utils cimport compfnptr,\
 
 # Initialize a global variable to keep track of the progress bar
 _progress_bar = None
+final_output_file_name = "py_stringsimjoin_edit_distance_output.csv"
 
 def edit_distance_join_disk_cy(ltable, rtable,
                           l_key_attr, r_key_attr,
@@ -52,7 +55,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                           out_sim_score=True, 
                           int n_jobs=1, 
                           bool show_progress=True,
-                          tokenizer=QgramTokenizer(qval=2),global_path = os.getcwd()):
+                          tokenizer=QgramTokenizer(qval=2),global_path = os.getcwd(), output_file_path = os.path.join(os.getcwd(),final_output_file_name)):
     """Join two tables using edit distance measure.
 
     Finds tuple pairs from left table and right table such that the edit 
@@ -137,9 +140,12 @@ def edit_distance_join_disk_cy(ltable, rtable,
             transformed into an overlap measure. This must be a q-gram tokenizer
             (defaults to 2-gram tokenizer).
 
-        global_path (string): Absolute path where the output file will be generated
+        global_path (string): Absolute path where all the intermediate files will be generated.
             (defaults to the current working directory).
-                                                                                
+
+        output_file_path (string) : Absolute path where the output file will be generated.
+            (defaults to the current working directory/py_stringsimjoin_edit_distance_output.csv).
+
     Returns:                                                                    
         File name of the output csv file containing tuple pairs that satisfy the join            
         condition (string).  
@@ -189,6 +195,9 @@ def edit_distance_join_disk_cy(ltable, rtable,
     #Check if the given path is valid
     validate_path(global_path)
 
+    #Check if the given output file path is valid
+    validate_output_file_path(output_file_path)
+
     # convert threshold to integer (incase if it is float)
     threshold = int(floor(threshold))
 
@@ -216,8 +225,8 @@ def edit_distance_join_disk_cy(ltable, rtable,
     n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
     cdef int index_count = 0
     cdef int iter
-    final_output_file_name = "py_stringsimjoin_output.csv"
-    final_output_file = os.path.join(global_path,final_output_file_name)
+    num_cpus = multiprocessing.cpu_count()
+    data_limit = math.floor(data_limit/num_cpus)
 
 
     if n_jobs <= 1:                                                             
@@ -253,12 +262,12 @@ def edit_distance_join_disk_cy(ltable, rtable,
 
 
     print("Combining all files ...")
-    if os.path.isfile(final_output_file):
-        os.remove(final_output_file)
+    if os.path.isfile(output_file_path):
+        os.remove(output_file_path)
     output_header = results[0][1]
     # Combine all the files from results into a single output file 
     # and remove those temporary files
-    with open(final_output_file,'w+') as outfile :
+    with open(output_file_path,'w+') as outfile :
         outfile.write((",".join(output_header)))
         outfile.write("\n")
         for fname,output_header in results:
@@ -285,7 +294,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
         with open(os.path.join(global_path,missing_pairs_output),'a+') as myfile :
             missing_pairs.to_csv(myfile, header = False, index = False)
 
-        with open(final_output_file,'a+') as outfile :
+        with open(output_file_path,'a+') as outfile :
             with open(os.path.join(global_path,missing_pairs_output),'r') as infile :
                     shutil.copyfileobj(infile,outfile)
             os.remove(os.path.join(global_path,missing_pairs_output))
@@ -296,7 +305,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
     if revert_tokenizer_return_set_flag:                                        
         tokenizer.set_return_set(True)                                          
                                                                                 
-    return final_output_file
+    return output_file_path
 
 
 def _edit_distance_join_split(ltable_array, rtable_array,                         

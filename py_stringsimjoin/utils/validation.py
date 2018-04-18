@@ -134,6 +134,10 @@ def validate_path(path) :
         raise AssertionError('Invalid path given. Please enter an existing path.')
     return True
 
+def validate_output_file_path(path):
+    dir = os.path.dirname(os.path.abspath(path))
+    validate_path(dir)
+
 def validate_data_limit(data_limit):
     """Check if the given datalimit is valid."""
     if isinstance(data_limit,int)== False :
