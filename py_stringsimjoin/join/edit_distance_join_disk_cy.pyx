@@ -15,9 +15,9 @@ from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
     get_num_processes_to_launch, get_output_header_from_tables, \
     get_output_row_from_tables, remove_non_ascii, remove_redundant_attrs, \
-    split_table 
-from py_stringsimjoin.utils.missing_value_handler import \
-    get_pairs_with_missing_value
+    split_table
+from py_stringsimjoin.utils.missing_value_handler_disk import \
+    get_pairs_with_missing_value_disk
 from py_stringsimjoin.utils.token_ordering import \
     gen_token_ordering_for_tables, order_using_token_ordering
 from py_stringsimjoin.utils.validation import validate_attr, \
@@ -292,25 +292,19 @@ def edit_distance_join_disk_cy(ltable, rtable,
     # at least one of the join attributes and then add it to the output         
     # obtained from the join.                                                   
     if allow_missing:
-        missing_pairs = get_pairs_with_missing_value(
+        missing_pairs_output_path = get_pairs_with_missing_value_disk(
                                              ltable, rtable,
                                            l_key_attr, r_key_attr,
                                            l_join_attr, r_join_attr,
                                            l_out_attrs, r_out_attrs,
                                            l_out_prefix, r_out_prefix,
-                                           out_sim_score, show_progress)
-                                           
-        # Write missing pairs dataframe to a csv file and append it to the output file                                  
-        missing_pairs_output = "missing_pairs.csv"
-        with open(os.path.join(global_path,missing_pairs_output),'a+') as myfile :
-            missing_pairs.to_csv(myfile, header = False, index = False)
+                                           out_sim_score, show_progress, global_path, data_limit)
 
+        # Write missing pairs to the output file
         with open(output_file_path,'a+') as outfile :
-            with open(os.path.join(global_path,missing_pairs_output),'r') as infile :
+            with open(missing_pairs_output_path,'r') as infile :
                     shutil.copyfileobj(infile,outfile)
-            os.remove(os.path.join(global_path,missing_pairs_output))
-
-
+            os.remove(missing_pairs_output_path)
                                                                                 
     # revert the return_set flag of tokenizer, in case it was modified.         
     if revert_tokenizer_return_set_flag:                                        
@@ -427,7 +421,7 @@ def _edit_distance_join_split(ltable_array, rtable_array,
         if show_progress:                                                       
             prog_bar.update()  
     # Write the remaining output rows left to the file.
-    if output_rows :
+    if len(output_rows) > 0 :
         df = pd.DataFrame(output_rows)
         with open(os.path.join(dir,fn),'a+') as myfile :
             df.to_csv(myfile, header = False, index= False)

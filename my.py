@@ -136,7 +136,7 @@ tick = time.time()
 output_pairs = ssj.edit_distance_join_disk(A, B, 'ID', 'ID', ' name', 'title', 1,
                                       100000,n_jobs =4,l_out_attrs=[' name',' year'],#' director',' writers',' actors '],
                                        r_out_attrs=['title','year'], global_path = "/afs/cs.wisc.edu/u/a/j/ajain64/private/Spring_2018/indep/git/",
-                                           allow_missing = False, output_file_path= "/afs/cs.wisc.edu/u/a/j/ajain64/private/Spring_2018/indep/join_output.csv")
+                                           allow_missing = True, output_file_path= "/afs/cs.wisc.edu/u/a/j/ajain64/private/Spring_2018/indep/join_output.csv")
 
 tock = time.time()
 
