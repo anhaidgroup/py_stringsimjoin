@@ -55,7 +55,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                           out_sim_score=True, 
                           int n_jobs=1, 
                           bool show_progress=True,
-                          tokenizer=QgramTokenizer(qval=2),global_path = os.getcwd(), output_file_path = os.path.join(os.getcwd(),final_output_file_name)):
+                          tokenizer=QgramTokenizer(qval=2),temp_file_path = os.getcwd(), output_file_path = os.path.join(os.getcwd(),final_output_file_name)):
     """Join two tables using edit distance measure.
 
     This is the disk version of the previous edit_distance_join api.
@@ -151,7 +151,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
             transformed into an overlap measure. This must be a q-gram tokenizer
             (defaults to 2-gram tokenizer).
 
-        global_path (string): Absolute path where all the intermediate files will be generated.
+        temp_file_path (string): Absolute path where all the intermediate files will be generated.
             (defaults to the current working directory).
 
         output_file_path (string) : Absolute path where the output file will be generated.
@@ -204,7 +204,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
     validate_key_attr(r_key_attr, rtable, 'right table')
 
     #Check if the given path is valid
-    validate_path(global_path)
+    validate_path(temp_file_path)
 
     #Check if the given output file path is valid
     validate_output_file_path(output_file_path)
@@ -250,7 +250,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                tokenizer, threshold, comp_op,                   
                                l_out_attrs, r_out_attrs,                        
                                l_out_prefix, r_out_prefix,                      
-                               out_sim_score, show_progress,0,global_path,data_limit)
+                               out_sim_score, show_progress,0,temp_file_path,data_limit)
         results = []
         results.append(result)
 
@@ -268,7 +268,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                     l_out_attrs, r_out_attrs,                   
                                     l_out_prefix, r_out_prefix,                 
                                     out_sim_score,                              
-                                    (show_progress and (job_index==n_jobs-1)), job_index,global_path,data_limit)
+                                    (show_progress and (job_index==n_jobs-1)), job_index,temp_file_path,data_limit)
                                 for job_index in range(n_jobs)) 
 
 
@@ -282,9 +282,9 @@ def edit_distance_join_disk_cy(ltable, rtable,
         outfile.write((",".join(output_header)))
         outfile.write("\n")
         for fname,output_header in results:
-            with open(os.path.join(global_path,fname),'r') as infile :
+            with open(os.path.join(temp_file_path,fname),'r') as infile :
                 shutil.copyfileobj(infile,outfile)
-            os.remove(os.path.join(global_path,fname))
+            os.remove(os.path.join(temp_file_path,fname))
 
 
 
@@ -298,7 +298,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                            l_join_attr, r_join_attr,
                                            l_out_attrs, r_out_attrs,
                                            l_out_prefix, r_out_prefix,
-                                           out_sim_score, show_progress, global_path, data_limit)
+                                           out_sim_score, show_progress, temp_file_path, data_limit)
 
         # Write missing pairs to the output file
         with open(output_file_path,'a+') as outfile :
@@ -310,7 +310,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
     if revert_tokenizer_return_set_flag:                                        
         tokenizer.set_return_set(True)                                          
                                                                                 
-    return output_file_path
+    return None
 
 
 def _edit_distance_join_split(ltable_array, rtable_array,                         

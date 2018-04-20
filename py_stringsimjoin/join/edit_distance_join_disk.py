@@ -13,7 +13,7 @@ def edit_distance_join_disk(ltable, rtable,
                             l_out_attrs=None, r_out_attrs=None,
                             l_out_prefix='l_', r_out_prefix='r_',
                             out_sim_score=True, n_jobs=1, show_progress=True,
-                            tokenizer=QgramTokenizer(qval=2), global_path = getcwd(), output_file_path = os.path.join(getcwd(),final_output_file_name)):
+                            tokenizer=QgramTokenizer(qval=2), temp_file_path = getcwd(), output_file_path = os.path.join(getcwd(),final_output_file_name)):
     from py_stringsimjoin import __use_cython__ 
     if __use_cython__:
         from py_stringsimjoin.join.edit_distance_join_disk_cy import edit_distance_join_disk_cy    
@@ -26,6 +26,6 @@ def edit_distance_join_disk(ltable, rtable,
                                           l_out_attrs, r_out_attrs,
                                           l_out_prefix, r_out_prefix,
                                           out_sim_score, n_jobs, show_progress,
-                                          tokenizer, global_path, output_file_path)
+                                          tokenizer, temp_file_path, output_file_path)
     else:
       print("Cython not present")
