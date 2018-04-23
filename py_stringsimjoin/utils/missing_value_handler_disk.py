@@ -7,13 +7,14 @@ from py_stringsimjoin.utils.generic_helper import \
     get_output_row_from_tables
 
 
-missing_pairs_output = "missing_pairs.csv"
 def get_pairs_with_missing_value_disk(ltable, rtable,
-                                 l_key_attr, r_key_attr,
-                                 l_join_attr, r_join_attr,
-                                 l_out_attrs=None, r_out_attrs=None,
-                                 l_out_prefix='l_', r_out_prefix='r_',
-                                 out_sim_score=False, show_progress=True, global_path = os.getcwd(), data_limit = 100000):
+                                      l_key_attr, r_key_attr,
+                                      l_join_attr, r_join_attr,
+                                      temp_dir, data_limit_per_core,
+                                      missing_pairs_file_name, l_out_attrs=None,
+                                      r_out_attrs=None, l_out_prefix='l_',
+                                      r_out_prefix='r_', out_sim_score=False,
+                                      show_progress=True):
 
     # find column indices of key attr, join attr and output attrs in ltable
     l_columns = list(ltable.columns.values)
@@ -44,27 +45,23 @@ def get_pairs_with_missing_value_disk(ltable, rtable,
         print('Finding pairs with missing value...')
         prog_bar = pyprind.ProgBar(len(ltable_missing) + len(rtable_missing))
 
-    missing_pairs_output_path = os.path.join(global_path,missing_pairs_output)
-    if os.path.isfile(missing_pairs_output_path):
-        os.remove(missing_pairs_output_path)
-
     # For each ltable record with missing value in l_join_attr,
     # output a pair corresponding to every record in rtable.
     for l_row in ltable_missing.itertuples(index=False):
         for r_row in rtable.itertuples(index=False):
             if has_output_attributes:
-                output_row = get_output_row_from_tables(
+                record = get_output_row_from_tables(
                                  l_row, r_row,
                                  l_key_attr_index, r_key_attr_index,
                                  l_out_attrs_indices, r_out_attrs_indices)
             else:
-                output_row = [l_row[l_key_attr_index], r_row[r_key_attr_index]]
-            output_rows.append(output_row)
+                record = [l_row[l_key_attr_index], r_row[r_key_attr_index]]
+            output_rows.append(record)
 
             # Flushing the data onto the disk if in-memory size exceeds the permissible data limit
-            if len(output_rows) > data_limit:
+            if len(output_rows) > data_limit_per_core:
                 df = pd.DataFrame(output_rows)
-                with open(missing_pairs_output_path, 'a+') as myfile:
+                with open(missing_pairs_file_name, 'a+') as myfile:
                     df.to_csv(myfile, header=False, index=False)
                 output_rows = []
 
@@ -74,7 +71,7 @@ def get_pairs_with_missing_value_disk(ltable, rtable,
     # if output rows have some data left, flush the same to the disk to maintain consistency.
     if len(output_rows) > 0:
         df = pd.DataFrame(output_rows)
-        with open(missing_pairs_output_path, 'a+') as myfile:
+        with open(missing_pairs_file_name, 'a+') as myfile:
             df.to_csv(myfile, header=False, index=False)
         output_rows = []
 
@@ -84,22 +81,22 @@ def get_pairs_with_missing_value_disk(ltable, rtable,
     for r_row in rtable_missing.itertuples(index=False):
         for l_row in ltable_not_missing.itertuples(index=False):
             if has_output_attributes:
-                output_row = get_output_row_from_tables(
+                record = get_output_row_from_tables(
                                  l_row, r_row,
                                  l_key_attr_index, r_key_attr_index,
                                  l_out_attrs_indices, r_out_attrs_indices)
             else:
-                output_row = [l_row[l_key_attr_index], r_row[r_key_attr_index]]
+                record = [l_row[l_key_attr_index], r_row[r_key_attr_index]]
 
             if out_sim_score:
-                output_row.append(pd.np.NaN)
+                record.append(pd.np.NaN)
 
-            output_rows.append(output_row)
+            output_rows.append(record)
 
             # Flushing the data onto the disk if in-memory size exceeds the permissible data limit
-            if len(output_rows) > data_limit:
+            if len(output_rows) > data_limit_per_core:
                 df = pd.DataFrame(output_rows)
-                with open(missing_pairs_output_path, 'a+') as myfile:
+                with open(missing_pairs_file_name, 'a+') as myfile:
                     df.to_csv(myfile, header=False, index=False)
                 output_rows = []
 
@@ -109,16 +106,8 @@ def get_pairs_with_missing_value_disk(ltable, rtable,
     # if output rows have some data left, flush the same to the disk to maintain consistency.
     if len(output_rows) > 0:
         df = pd.DataFrame(output_rows)
-        with open(missing_pairs_output_path, 'a+') as myfile:
+        with open(missing_pairs_file_name, 'a+') as myfile:
             df.to_csv(myfile, header=False, index=False)
         output_rows = []
 
-    output_header = get_output_header_from_tables(
-                        l_key_attr, r_key_attr,
-                        l_out_attrs, r_out_attrs,
-                        l_out_prefix, r_out_prefix)
-
-    if out_sim_score:
-        output_header.append("_sim_score")
-
-    return missing_pairs_output_path
+    return True

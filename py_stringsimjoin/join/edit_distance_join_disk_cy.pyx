@@ -1,15 +1,13 @@
 # edit distance join
-from math import floor
 
-from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
-from joblib import delayed, Parallel                                            
-import pandas as pd
-import pyprind
-import os
-import csv
-import shutil
-import multiprocessing
 import math
+import os
+import pyprind
+import shutil
+import datetime
+import pandas as pd
+from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
+from joblib import delayed, Parallel
 
 from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
     find_output_attribute_indices, get_attrs_to_project, \
@@ -39,23 +37,17 @@ from py_stringsimjoin.index.inverted_index_cy cimport InvertedIndexCy
 from py_stringsimjoin.utils.cython_utils cimport compfnptr,\
     get_comparison_function, get_comp_type, int_min
 
-
-# Initialize a global variable to keep track of the progress bar
-_progress_bar = None
-final_output_file_name = "py_stringsimjoin_edit_distance_output.csv"
-
 def edit_distance_join_disk_cy(ltable, rtable,
                           l_key_attr, r_key_attr,
                           l_join_attr, r_join_attr,
-                          double threshold,data_limit=100000,
-                          comp_op='<=',
-                          allow_missing=False,
-                          l_out_attrs=None, r_out_attrs=None,
-                          l_out_prefix='l_', r_out_prefix='r_',
-                          out_sim_score=True, 
-                          int n_jobs=1, 
-                          bool show_progress=True,
-                          tokenizer=QgramTokenizer(qval=2),temp_file_path = os.getcwd(), output_file_path = os.path.join(os.getcwd(),final_output_file_name)):
+                          double threshold,data_limit,
+                          comp_op, allow_missing,
+                          l_out_attrs, r_out_attrs,
+                          l_out_prefix, r_out_prefix,
+                          out_sim_score, int n_jobs,
+                          bool show_progress, tokenizer,
+                          temp_dir, output_file_path):
+
     """Join two tables using edit distance measure.
 
     This is the disk version of the previous edit_distance_join api.
@@ -104,8 +96,11 @@ def edit_distance_join_disk_cy(ltable, rtable,
 
         threshold (float): edit distance threshold to be satisfied.
 
-        data_limit (int): threshold value for number of rows that would be kept in memory
-         before writing the output on the disk(defaults to 10000).
+        data_limit (int): threshold value for number of rows that would be kept
+            in memory before writing the output on the disk. This is the maximum sum
+            total of all rows that can be present in memory across all processes at
+            a time. This is a new argument compared to edit distance join.
+            (defaults to 1M)
 
         comp_op (string): comparison operator. Supported values are '<=', '<'   
             and '=' (defaults to '<=').                                         
@@ -151,15 +146,16 @@ def edit_distance_join_disk_cy(ltable, rtable,
             transformed into an overlap measure. This must be a q-gram tokenizer
             (defaults to 2-gram tokenizer).
 
-        temp_file_path (string): Absolute path where all the intermediate files will be generated.
-            (defaults to the current working directory).
+        temp_dir (string): absolute path where all the intermediate files will be generated.
+            This is a new argument compared to edit distance join. (defaults to the current
+            working directory).
 
-        output_file_path (string) : Absolute path where the output file will be generated.
-            (defaults to the current working directory/py_stringsimjoin_edit_distance_output.csv).
+        output_file_path (string): absolute path where the output file will be generated.
+            Older file with same path and name will be removed. This is a new argument compared
+            to edit distance join. (defaults to the current working directory/$default_output_file_name).
 
     Returns:                                                                    
-        File name of the output csv file containing tuple pairs that satisfy the join            
-        condition (string).  
+        Returns the status of the computation. True if successfully completed else False (boolean).
     """
 
     # check if the input tables are dataframes
@@ -204,13 +200,13 @@ def edit_distance_join_disk_cy(ltable, rtable,
     validate_key_attr(r_key_attr, rtable, 'right table')
 
     #Check if the given path is valid
-    validate_path(temp_file_path)
+    validate_path(temp_dir)
 
     #Check if the given output file path is valid
     validate_output_file_path(output_file_path)
 
     # convert threshold to integer (incase if it is float)
-    threshold = int(floor(threshold))
+    threshold = int(math.floor(threshold))
 
     # set return_set flag of tokenizer to be False, in case it is set to True
     revert_tokenizer_return_set_flag = False
@@ -236,8 +232,9 @@ def edit_distance_join_disk_cy(ltable, rtable,
     n_jobs = min(get_num_processes_to_launch(n_jobs), len(rtable_array))
     cdef int index_count = 0
     cdef int iter
-    num_cpus = multiprocessing.cpu_count()
-    data_limit = math.floor(data_limit/num_cpus)
+    data_limit_per_core = math.floor(data_limit/n_jobs)
+    file_names = [str(i) + "_" + datetime.datetime.now().strftime("%H:%M:%S.%f" + ".csv") for i in range(n_jobs)]
+    file_names = [os.path.join(temp_dir,fname) for fname in file_names]
 
 
     if n_jobs <= 1:                                                             
@@ -247,12 +244,13 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                l_proj_attrs, r_proj_attrs,                      
                                l_key_attr, r_key_attr,                          
                                l_join_attr, r_join_attr,                        
-                               tokenizer, threshold, comp_op,                   
-                               l_out_attrs, r_out_attrs,                        
-                               l_out_prefix, r_out_prefix,                      
-                               out_sim_score, show_progress,0,temp_file_path,data_limit)
-        results = []
-        results.append(result)
+                               tokenizer, threshold,
+                               comp_op, l_out_attrs,
+                               r_out_attrs, l_out_prefix,
+                               r_out_prefix, out_sim_score,
+                               show_progress, 0,
+                               temp_dir, data_limit_per_core,
+                               file_names)
 
     else:                                                                       
         # if n_jobs is above 1, split the right table into n_jobs splits and    
@@ -264,27 +262,47 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                     l_proj_attrs, r_proj_attrs,                 
                                     l_key_attr, r_key_attr,                     
                                     l_join_attr, r_join_attr,                   
-                                    tokenizer, threshold, comp_op,              
-                                    l_out_attrs, r_out_attrs,                   
-                                    l_out_prefix, r_out_prefix,                 
-                                    out_sim_score,                              
-                                    (show_progress and (job_index==n_jobs-1)), job_index,temp_file_path,data_limit)
+                                    tokenizer, threshold,
+                                    comp_op, l_out_attrs,
+                                    r_out_attrs, l_out_prefix,
+                                    r_out_prefix, out_sim_score,
+                                    (show_progress and (job_index==n_jobs-1)), job_index,
+                                    temp_dir, data_limit_per_core,
+                                    file_names)
                                 for job_index in range(n_jobs)) 
 
-
-    print("Combining all files ...")
     if os.path.isfile(output_file_path):
         os.remove(output_file_path)
-    output_header = results[0][1]
+
+    output_header = get_output_header_from_tables(
+                       l_key_attr, r_key_attr,
+                       l_out_attrs, r_out_attrs,
+                       l_out_prefix, r_out_prefix)
+    if out_sim_score:
+        output_header.append("_sim_score")
+
     # Combine all the files from results into a single output file 
     # and remove those temporary files
     with open(output_file_path,'w+') as outfile :
         outfile.write((",".join(output_header)))
         outfile.write("\n")
-        for fname,output_header in results:
-            with open(os.path.join(temp_file_path,fname),'r') as infile :
-                shutil.copyfileobj(infile,outfile)
-            os.remove(os.path.join(temp_file_path,fname))
+        try:
+            for fname in file_names:
+                with open(fname,'r') as infile :
+                    shutil.copyfileobj(infile,outfile)
+                os.remove(fname)
+        except Exception as e:
+            print(e.message, e.args)
+
+            # removing all the intermediate files before returning
+            for fname in file_names:
+                if os.path.isfile(fname):
+                    os.remove(fname)
+            # removing output file if it exists
+            if os.path.isfile(output_file_path):
+                os.remove(output_file_path)
+            return False
+
 
 
 
@@ -292,35 +310,56 @@ def edit_distance_join_disk_cy(ltable, rtable,
     # at least one of the join attributes and then add it to the output         
     # obtained from the join.                                                   
     if allow_missing:
-        missing_pairs_output_path = get_pairs_with_missing_value_disk(
+        missing_pairs_file_name = "missing_pairs.csv" + datetime.datetime.now().strftime("%H:%M:%S.%f" + ".csv")
+        missing_pairs_file_name = os.path.join(temp_dir, missing_pairs_file_name)
+        if os.path.isfile(missing_pairs_file_name):
+            os.remove(missing_pairs_file_name)
+
+        missing_status = get_pairs_with_missing_value_disk(
                                              ltable, rtable,
                                            l_key_attr, r_key_attr,
                                            l_join_attr, r_join_attr,
-                                           l_out_attrs, r_out_attrs,
-                                           l_out_prefix, r_out_prefix,
-                                           out_sim_score, show_progress, temp_file_path, data_limit)
+                                           temp_dir, data_limit_per_core,
+                                           missing_pairs_file_name, l_out_attrs,
+                                           r_out_attrs, l_out_prefix,
+                                           r_out_prefix, out_sim_score,
+                                           show_progress,)
 
         # Write missing pairs to the output file
         with open(output_file_path,'a+') as outfile :
-            with open(missing_pairs_output_path,'r') as infile :
+            try:
+                with open(missing_pairs_file_name,'r') as infile :
                     shutil.copyfileobj(infile,outfile)
-            os.remove(missing_pairs_output_path)
-                                                                                
+                os.remove(missing_pairs_file_name)
+            except Exception as e:
+                print(e.message, e.args)
+
+                # removing all the intermediate files before returning
+                if os.path.isfile(missing_pairs_file_name):
+                    os.remove(missing_pairs_file_name)
+                # removing output file if it exists
+                if os.path.isfile(output_file_path):
+                    os.remove(output_file_path)
+                return False
+
     # revert the return_set flag of tokenizer, in case it was modified.         
     if revert_tokenizer_return_set_flag:                                        
         tokenizer.set_return_set(True)                                          
                                                                                 
-    return None
+    return True
 
 
 def _edit_distance_join_split(ltable_array, rtable_array,                         
                               l_columns, r_columns,                             
                               l_key_attr, r_key_attr,                           
                               l_join_attr, r_join_attr,                         
-                              tokenizer, threshold, comp_op,                    
-                              l_out_attrs, r_out_attrs,                         
-                              l_out_prefix, r_out_prefix,                       
-                              out_sim_score, show_progress,job_index,dir,data_limit):            
+                              tokenizer, threshold,
+                              comp_op, l_out_attrs,
+                              r_out_attrs, l_out_prefix,
+                              r_out_prefix, out_sim_score,
+                              show_progress, job_index,
+                              dir, data_limit_per_core,
+                              file_names):
     """Perform edit distance join for a split of ltable and rtable"""
   
     # find column indices of key attr, join attr and output attrs in ltable
@@ -374,8 +413,6 @@ def _edit_distance_join_split(ltable_array, rtable_array,
     cdef double edit_dist                                                       
     cdef int qval = tokenizer.qval                                              
     cdef compfnptr comp_fn
-
-    fn = "strsimjoin_"+str(job_index)+".csv"
     comp_fn = get_comparison_function(get_comp_type(comp_op))
 
                                                                                 
@@ -395,26 +432,26 @@ def _edit_distance_join_split(ltable_array, rtable_array,
                 edit_dist = edit_distance(lstrings[cand], rstrings[i])          
                 if comp_fn(edit_dist, threshold):
                     if has_output_attributes:                                           
-                        output_row = get_output_row_from_tables(                        
+                        record = get_output_row_from_tables(
                                          ltable_array[cand], rtable_array[i],                                  
                                          l_key_attr_index, r_key_attr_index,            
                                          l_out_attrs_indices,                           
                                          r_out_attrs_indices)                           
                     else:                                                               
-                        output_row = [ltable_array[cand][l_key_attr_index],                          
+                        record = [ltable_array[cand][l_key_attr_index],
                                       rtable_array[i][r_key_attr_index]]                          
                                                                                 
                     # if out_sim_score flag is set, append the edit distance            
                     # score to the output record.                                       
                     if out_sim_score:                                                   
-                        output_row.append(edit_dist)               
-                    output_rows.append(output_row)
+                        record.append(edit_dist)
+                    output_rows.append(record)
 
                     #if the output rows id bigger than the given data limit, write to the file.
-                    if len(output_rows)> data_limit :
+                    if len(output_rows)> data_limit_per_core :
                         df = pd.DataFrame(output_rows)
-                        with open(os.path.join(dir,fn),'a+') as myfile :
-                            df.to_csv(myfile, header = False, index = False)
+                        with open(file_names[job_index],'a+') as output_temp_file :
+                            df.to_csv(output_temp_file, header = False, index = False)
                         output_rows = []
         candidates = []
 
@@ -423,17 +460,11 @@ def _edit_distance_join_split(ltable_array, rtable_array,
     # Write the remaining output rows left to the file.
     if len(output_rows) > 0 :
         df = pd.DataFrame(output_rows)
-        with open(os.path.join(dir,fn),'a+') as myfile :
-            df.to_csv(myfile, header = False, index= False)
+        with open(file_names[job_index],'a+') as output_temp_file :
+            df.to_csv(output_temp_file, header = False, index= False)
         output_rows = []
 
-    output_header = get_output_header_from_tables(
-                       l_key_attr, r_key_attr,
-                       l_out_attrs, r_out_attrs,
-                       l_out_prefix, r_out_prefix)
-    if out_sim_score:
-        output_header.append("_sim_score")
-    return fn,output_header
+    return True
 
 
 cdef void tokenize_and_build_index(ltable_array, l_join_attr_index,
