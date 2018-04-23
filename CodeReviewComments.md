@@ -1,2 +1,17 @@
-- [x] Change "Cython" not present to an assertion error.
-- [ ]  
+- [x] Change "Cython not installed" to an Exception.
+- [x] Renamed temp_file_path to temp_dir
+- [x] Copied doc string to the .py file
+- [x] default n_jobs = -1
+- [x] keeping the output file_name in wrapper function only.
+- [x] Appending timestamp to the filename.
+- [x] Changed the name of output file name variable to include "default".
+- [x] Edited doc string to reflect desired changes.
+- [x] Changed default value of data_limit to 1 million.
+- [x] Changed variable data_limit to data_limit_per_core
+- [x] Changed from num_cpus to n_jobs for per core data limit computation.
+- [x] Added timestamps to temporary file names after being created in the wrapper itself.
+- [x] Exception to shutil caught and handled.
+- [x] Moved output_header code to wrapper function.
+- [x] change missing pairs behavior by creating filename in the wrapper itself.
+- [x] Exception to shutil caught and handled in missing pairs.
+- [x] Removed _progress_bar.
