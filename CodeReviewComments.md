@@ -1,1 +1,2 @@
-- [ ] Checking
+- [x] Change "Cython" not present to an assertion error.
+- [ ]  
