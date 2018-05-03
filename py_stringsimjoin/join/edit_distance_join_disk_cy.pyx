@@ -233,7 +233,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
     cdef int index_count = 0
     cdef int iter
     data_limit_per_core = math.floor(data_limit/n_jobs)
-    file_names = [str(i) + "_" + datetime.datetime.now().strftime("%H:%M:%S.%f" + ".csv") for i in range(n_jobs)]
+    file_names = [str(i) + "_" + datetime.datetime.now().strftime("%H:%M:%S:%f" + ".csv") for i in range(n_jobs)]
     file_names = [os.path.join(temp_dir,fname) for fname in file_names]
 
 
