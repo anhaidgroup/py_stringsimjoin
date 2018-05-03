@@ -292,7 +292,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                     shutil.copyfileobj(infile,outfile)
                 os.remove(fname)
         except Exception as e:
-            print(e.message, e.args)
+            print(str(e))
 
             # removing all the intermediate files before returning
             for fname in file_names:
@@ -332,7 +332,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                     shutil.copyfileobj(infile,outfile)
                 os.remove(missing_pairs_file_name)
             except Exception as e:
-                print(e.message, e.args)
+                print(str(e))
 
                 # removing all the intermediate files before returning
                 if os.path.isfile(missing_pairs_file_name):

@@ -349,23 +349,48 @@ class EditDistJoinInvalidTestCases(unittest.TestCase):
                            -0.1)
 
     @raises(AssertionError)
+    def test_edit_distance_join_disk_invalid_data_limit(self):
+        edit_distance_join_disk(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold,data_limit = -1)
+
+    @raises(AssertionError)
+    def test_edit_distance_join_disk_invalid_data_limit(self):
+        edit_distance_join_disk(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold,data_limit = 0)
+
+    @raises(AssertionError)
+    def test_edit_distance_join_disk_invalid_data_limit(self):
+        edit_distance_join_disk(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold,data_limit = 'a')
+
+    @raises(AssertionError)
     def test_edit_distance_join_disk_invalid_comp_op_gt(self):
         edit_distance_join_disk(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                           self.threshold, '>')
+                           self.threshold, comp_op = '>')
 
     @raises(AssertionError)
     def test_edit_distance_join_disk_invalid_comp_op_ge(self):
         edit_distance_join_disk(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                           self.threshold, '>=')
+                           self.threshold, comp_op = '>=')
 
     @raises(AssertionError)
     def test_edit_distance_join_disk_invalid_l_out_attr(self):
         edit_distance_join_disk(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                           self.threshold, self.comp_op, False,
-                           ['A.invalid_attr'], ['B.attr'])
+                           self.threshold, comp_op = self.comp_op, allow_missing = False,
+                           l_out_attrs = ['A.invalid_attr'], r_out_attrs = ['B.attr'])
 
     @raises(AssertionError)
     def test_edit_distance_join_disk_invalid_r_out_attr(self):
         edit_distance_join_disk(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
-                           self.threshold, self.comp_op, False,
-                           ['A.attr'], ['B.invalid_attr'])
+                           self.threshold, self.comp_op, allow_missing = False,
+                           l_out_attrs = ['A.attr'], r_out_attrs = ['B.invalid_attr'])
+
+    @raises(AssertionError)
+    def test_edit_distance_join_disk_invalid_temp_dir(self):
+        edit_distance_join_disk(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold, temp_dir = 'Wrong_dir/worng_file_path')
+
+    @raises(AssertionError)
+    def test_edit_distance_join_disk_invalid_r_output_file_path(self):
+        edit_distance_join_disk(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
+                           self.threshold, output_file_path = 'Wrong_dir/worng_file_path')
