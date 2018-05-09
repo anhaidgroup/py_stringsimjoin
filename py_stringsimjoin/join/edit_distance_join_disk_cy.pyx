@@ -391,6 +391,7 @@ def _edit_distance_join_split(ltable_array, rtable_array,
 
     cdef vector[vector[int]] rtokens
     cdef vector[string] rstrings
+    output_temp_file = open(file_names[job_index],'a+')
 
     for r_row in rtable_array:
         rstring = r_row[r_join_attr_index]
@@ -450,8 +451,7 @@ def _edit_distance_join_split(ltable_array, rtable_array,
                     #if the output rows id bigger than the given data limit, write to the file.
                     if len(output_rows)> data_limit_per_core :
                         df = pd.DataFrame(output_rows)
-                        with open(file_names[job_index],'a+') as output_temp_file :
-                            df.to_csv(output_temp_file, header = False, index = False)
+                        df.to_csv(output_temp_file, header = False, index = False)
                         output_rows = []
         candidates = []
 
@@ -460,10 +460,9 @@ def _edit_distance_join_split(ltable_array, rtable_array,
     # Write the remaining output rows left to the file.
     if len(output_rows) > 0 :
         df = pd.DataFrame(output_rows)
-        with open(file_names[job_index],'a+') as output_temp_file :
-            df.to_csv(output_temp_file, header = False, index= False)
+        df.to_csv(output_temp_file, header = False, index= False)
         output_rows = []
-
+    output_temp_file.close()
     return True
 
 

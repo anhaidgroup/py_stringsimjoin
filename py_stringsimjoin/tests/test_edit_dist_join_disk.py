@@ -9,6 +9,7 @@ from six import iteritems
 import pandas as pd
 
 from py_stringsimjoin.join.edit_distance_join_disk import edit_distance_join_disk
+from py_stringsimjoin.join.edit_distance_join import edit_distance_join
 from py_stringsimjoin.utils.converter import dataframe_column_to_str            
 from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP, \
                                                   remove_redundant_attrs
@@ -18,10 +19,13 @@ from py_stringsimjoin.utils.simfunctions import get_sim_function
 DEFAULT_COMP_OP = '<='
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
+default_output_file_name = "unit_test_edit_dist_join_disk.csv"
+default_output_file_path = os.path.join(os.getcwd(), default_output_file_name)
 
 @nottest
-def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
-                    convert_to_str=False):
+def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
+                    convert_to_str=False,data_limit=100000,temp_dir = os.getcwd(), 
+                    output_file_path = default_output_file_path):
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
     (rtable_path, r_key_attr, r_join_attr) = scenario[1]
 
@@ -44,6 +48,8 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
                     pd.isnull(r_row[r_join_attr])):
                     missing_pairs.add(','.join((str(l_row[l_key_attr]),
                                                 str(r_row[r_key_attr]))))
+    if len(args) == 0  or (len(args) >0 and not args[0]) :
+      assert_equal(len(missing_pairs),0)
 
     # remove rows with missing value in join attribute and create new dataframes
     # consisting of rows with non-missing values.
@@ -95,30 +101,26 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
 
     orig_return_set_flag = tok.get_return_set()
 
-    data_limit = 1000000
-
     # use join function to obtain actual output pairs.
-    actual_candset = edit_distance_join_disk(ltable, rtable,
+    is_success = edit_distance_join_disk(ltable, rtable,
                                         l_key_attr, r_key_attr,
                                         l_join_attr, r_join_attr,
-                                        threshold,data_limit, comp_op,
+                                        threshold, data_limit, 
+                                        comp_op, *args, 
+                                        tokenizer=tok, temp_dir = temp_dir,
+                                        output_file_path = output_file_path)
+    # use edit distance join without the disk version to get the dataframe to compare. 
+    no_disk_candset = edit_distance_join(ltable, rtable,
+                                        l_key_attr, r_key_attr,
+                                        l_join_attr, r_join_attr,
+                                        threshold, comp_op,
                                         *args, tokenizer=tok)
-
-    '''
-    edit_distance_join_disk(A, B, 'ID', 'ID', ' name', 'title', 1,
-                                      100000,n_jobs =4,l_out_attrs=[' name',' year'],#' director',' writers',' actors '],
-                                       r_out_attrs=['title','year'], temp_dir = "/afs/cs.wisc.edu/u/a/j/ajain64/private/Spring_2018/indep/git/",
-                                           allow_missing = False, output_file_path= "/afs/cs.wisc.edu/u/a/j/ajain64/private/Spring_2018/indep/join_output.csv")
-
-    edit_distance_join(A, B, 'ID', 'ID', ' name', 'title', 5,
-                                      n_jobs =4,l_out_attrs=[' name',' year'],#,' director',' writers',' actors '],
-                                       r_out_attrs=['title','year'], allow_missing = False)#'director(s)','writer(s)','actor(s)'])
-
-    '''
+    if '_id' in no_disk_candset :
+      del no_disk_candset['_id']
 
     assert_equal(tok.get_return_set(), orig_return_set_flag)
 
-    expected_output_attrs = ['_id']
+    expected_output_attrs = []
     l_out_prefix = DEFAULT_L_OUT_PREFIX
     r_out_prefix = DEFAULT_R_OUT_PREFIX
 
@@ -153,23 +155,32 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
     else:
         expected_output_attrs.append('_sim_score')
 
-    #TODO Need to read the output file and then compare the output. Currently it is as per the previous edit distance version..
-    #TODO ..which used to return the output after the call. But now we have changed it to bool.
-    '''
     # verify whether the output table has the necessary attributes.
+    actual_candset = pd.read_csv(output_file_path)
     assert_list_equal(list(actual_candset.columns.values),
-                      expected_output_attrs)
+                        expected_output_attrs)
+    assert_list_equal(list(no_disk_candset.columns.values),
+                        list(actual_candset.columns.values))
 
     actual_pairs = set()
+    no_disk_pairs = set() 
     for idx, row in actual_candset.iterrows():
         actual_pairs.add(','.join((str(row[l_out_prefix + l_key_attr]),
-                                   str(row[r_out_prefix + r_key_attr]))))
- 
-    # verify whether the actual pairs and the expected pairs match.
+                                     str(row[r_out_prefix + r_key_attr]))))
+
+    for idx, row in no_disk_candset.iterrows():
+        no_disk_pairs.add(','.join((str(row[l_out_prefix + l_key_attr]),
+                                     str(row[r_out_prefix + r_key_attr]))))
+   
+      # verify whether the actual pairs and the expected pairs match.
     assert_equal(len(expected_pairs), len(actual_pairs))
+    assert_equal(len(expected_pairs), len(no_disk_pairs))
     common_pairs = actual_pairs.intersection(expected_pairs)
+    common_pairs2 = no_disk_pairs.intersection(expected_pairs)
     assert_equal(len(common_pairs), len(expected_pairs))
-    '''
+    assert_equal(len(common_pairs2), len(expected_pairs))
+
+
 
 def test_edit_distance_join_disk():
     # data to be tested.
