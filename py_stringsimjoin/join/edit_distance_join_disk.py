@@ -6,7 +6,8 @@ from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 
 # This the name of the outfile created, in case the user does not provide any value to the output_file_path argument.
 default_output_file_name = "py_stringsimjoin_edit_distance_output"
-default_output_file_path = os.path.join(os.getcwd(), default_output_file_name + "_" + datetime.datetime.now().strftime("%H:%M:%S:%f")+ ".csv")
+time_string = datetime.datetime.now().strftime("%H:%M:%S:%f")[0:11]
+default_output_file_path = os.path.join(os.getcwd(), default_output_file_name + "_" + time_string + ".csv")
 
 def edit_distance_join_disk(ltable, rtable,
                             l_key_attr, r_key_attr,

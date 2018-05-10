@@ -19,6 +19,7 @@ from py_stringsimjoin.utils.simfunctions import get_sim_function
 DEFAULT_COMP_OP = '<='
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
+# Creating a default output file path to pass in edit distance disk API.
 default_output_file_name = "unit_test_edit_dist_join_disk.csv"
 default_output_file_path = os.path.join(os.getcwd(), default_output_file_name)
 
@@ -103,7 +104,7 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
     if os.path.exists(output_file_path):
       os.remove(output_file_path)
 
-    # use join function to obtain actual output pairs.
+    # Use join function to process the input data. It returns the boolean value.
     is_success = edit_distance_join_disk(ltable, rtable,
                                         l_key_attr, r_key_attr,
                                         l_join_attr, r_join_attr,
@@ -111,12 +112,13 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
                                         comp_op, *args, 
                                         tokenizer=tok, temp_dir = temp_dir,
                                         output_file_path = output_file_path)
-    # use edit distance join without the disk version to get the dataframe to compare. 
+    # Use edit distance join without the disk version to get the dataframe to compare.
     no_disk_candset = edit_distance_join(ltable, rtable,
                                         l_key_attr, r_key_attr,
                                         l_join_attr, r_join_attr,
                                         threshold, comp_op,
                                         *args, tokenizer=tok)
+    # Deleting Id to make the schema consistent for comparison.
     if '_id' in no_disk_candset :
       del no_disk_candset['_id']
 
@@ -162,6 +164,8 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
 
     # verify whether the output table has the necessary attributes.
     actual_candset = pd.read_csv(output_file_path)
+
+    # Comparing column header values
     assert_list_equal(list(actual_candset.columns.values),
                         expected_output_attrs)
     assert_list_equal(list(no_disk_candset.columns.values),
@@ -169,6 +173,8 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
 
     actual_pairs = set()
     no_disk_pairs = set() 
+
+    # Creating sets for comparing the data tuples
     for idx, row in actual_candset.iterrows():
         actual_pairs.add(','.join((str(row[l_out_prefix + l_key_attr]),
                                      str(row[r_out_prefix + r_key_attr]))))
@@ -177,13 +183,13 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
         no_disk_pairs.add(','.join((str(row[l_out_prefix + l_key_attr]),
                                      str(row[r_out_prefix + r_key_attr]))))
    
-      # verify whether the actual pairs and the expected pairs match.
+    # Verify whether the actual pairs and the expected pairs match.
     assert_equal(len(expected_pairs), len(actual_pairs))
     assert_equal(len(expected_pairs), len(no_disk_pairs))
     common_pairs = actual_pairs.intersection(expected_pairs)
-    common_pairs2 = no_disk_pairs.intersection(expected_pairs)
+    common_pairs_no_disk = no_disk_pairs.intersection(expected_pairs)
     assert_equal(len(common_pairs), len(expected_pairs))
-    assert_equal(len(common_pairs2), len(expected_pairs))
+    assert_equal(len(common_pairs_no_disk), len(expected_pairs))
 
 
 
