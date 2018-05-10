@@ -48,8 +48,6 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
                     pd.isnull(r_row[r_join_attr])):
                     missing_pairs.add(','.join((str(l_row[l_key_attr]),
                                                 str(r_row[r_key_attr]))))
-    if len(args) == 0  or (len(args) >0 and not args[0]) :
-      assert_equal(len(missing_pairs),0)
 
     # remove rows with missing value in join attribute and create new dataframes
     # consisting of rows with non-missing values.
@@ -100,6 +98,10 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
     expected_pairs = expected_pairs.union(missing_pairs)
 
     orig_return_set_flag = tok.get_return_set()
+    
+    # Removing any previously existing output file path.
+    if os.path.exists(output_file_path):
+      os.remove(output_file_path)
 
     # use join function to obtain actual output pairs.
     is_success = edit_distance_join_disk(ltable, rtable,
@@ -154,6 +156,9 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
             expected_output_attrs.append('_sim_score')
     else:
         expected_output_attrs.append('_sim_score')
+
+    # Verify whether the current output file path exists.
+    assert_equal(True,os.path.exists(output_file_path))
 
     # verify whether the output table has the necessary attributes.
     actual_candset = pd.read_csv(output_file_path)
@@ -272,6 +277,50 @@ def test_edit_distance_join_disk():
                                 ' with n_jobs above 1.'
     yield test_function,
 
+    # Test with n_jobs equal to -1.
+    test_function = partial(test_valid_join, test_scenario_1,
+                                             tokenizers['2_GRAM'],
+                                             9, '<=',
+                                             (False,
+                                              ['A.birth_year', 'A.zipcode'],
+                                              ['B.name', 'B.zipcode'],
+                                              'ltable.', 'rtable.',
+                                              False, -1))
+    test_function.description = 'Test ' + sim_measure_type + \
+                                ' with n_jobs equal to -1.'
+    yield test_function,
+
+    # Test with data limit equal to 1 (a low value).
+    test_function = partial(test_valid_join, test_scenario_1,
+                                             tokenizers['2_GRAM'],
+                                             9, '<=',
+                                             (False,
+                                              ['A.birth_year', 'A.zipcode'],
+                                              ['B.name', 'B.zipcode'],
+                                              'ltable.', 'rtable.',
+                                              False, -1), data_limit = 1)
+    test_function.description = 'Test ' + sim_measure_type + \
+                                ' with data limit equal to 1.'
+    yield test_function,
+    
+    # Test with a given output file path.
+    test_output_file_path = os.path.join(os.path.expanduser('~'),"test_edit_disk.csv")
+    if os.path.exists(test_output_file_path):
+      os.remove(test_output_file_path)
+    test_function = partial(test_valid_join, test_scenario_1,
+                                             tokenizers['2_GRAM'],
+                                             9, '<=',
+                                             (False,
+                                              ['A.birth_year', 'A.zipcode'],
+                                              ['B.name', 'B.zipcode'],
+                                              'ltable.', 'rtable.',
+                                              False, -1),output_file_path = test_output_file_path)
+    test_function.description = 'Test ' + sim_measure_type + \
+                                " output file path as OS' home."
+    yield test_function,
+    if os.path.exists(test_output_file_path):
+      os.remove(test_output_file_path)
+
     # scenario where join attributes are of type int
     test_scenario_2 = [(os.sep.join(['data', 'table_A.csv']), 'A.ID', 'A.zipcode'),
                        (os.sep.join(['data', 'table_B.csv']), 'B.ID', 'B.zipcode')]
@@ -300,6 +349,9 @@ def test_edit_distance_join_disk():
     test_function.description = 'Test ' + sim_measure_type + \
                         ' with a tokenizer where return_set flag is set to True'
     yield test_function,
+
+    if os.path.exists(default_output_file_path):
+      os.remove(default_output_file_path)
 
 
 class EditDistJoinInvalidTestCases(unittest.TestCase):
