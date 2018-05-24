@@ -1,4 +1,6 @@
 # edit distance join
+# cython: linetrace = True
+# distutils: define_macros = CYTHON_TRACE_NOGIL = 1
 
 import math
 import os
@@ -252,7 +254,8 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                show_progress, 0,
                                temp_dir, data_limit_per_core,
                                file_names)
-
+        results = []
+        results.append(result)
     else:                                                                       
         # if n_jobs is above 1, split the right table into n_jobs splits and    
         # join each right table split with the whole of left table in a separate
@@ -271,7 +274,14 @@ def edit_distance_join_disk_cy(ltable, rtable,
                                     temp_dir, data_limit_per_core,
                                     file_names)
                                 for job_index in range(n_jobs)) 
+    
+    # If one of the parallel joins fail, clean up and return.
+    if False in results:
+        for fname in file_names:
+            os.remove(fname)
+        return False
 
+    # Delete the file with the same name as output file, if it exists.
     if os.path.isfile(output_file_path):
         os.remove(output_file_path)
 
@@ -292,9 +302,7 @@ def edit_distance_join_disk_cy(ltable, rtable,
                 with open(fname,'r') as infile :
                     shutil.copyfileobj(infile,outfile)
                 os.remove(fname)
-        except Exception as e:
-            print(str(e))
-
+        except Exception as e:        
             # removing all the intermediate files before returning
             for fname in file_names:
                 if os.path.isfile(fname):
@@ -418,51 +426,56 @@ def _edit_distance_join_split(ltable_array, rtable_array,
     comp_fn = get_comparison_function(get_comp_type(comp_op))
 
                                                                                 
-    for i in range(rtokens.size()):                          
-        tokens = rtokens[i]                                                     
-        m = tokens.size()                                                       
-        prefix_length = int_min(<int>(qval * threshold + 1), m)                 
-                                                                                
-        for j in range(prefix_length):                                          
-            if prefix_index.index.find(tokens[j]) == prefix_index.index.end():                            
-                continue                                                        
-            for cand in prefix_index.index[tokens[j]]:                                       
-                candidates.insert(cand)                                         
-                                                                                
-        for cand in candidates:                                                 
-            if m - threshold <= prefix_index.size_vector[cand] <= m + threshold:             
-                edit_dist = edit_distance(lstrings[cand], rstrings[i])          
-                if comp_fn(edit_dist, threshold):
-                    if has_output_attributes:                                           
-                        record = get_output_row_from_tables(
-                                         ltable_array[cand], rtable_array[i],                                  
-                                         l_key_attr_index, r_key_attr_index,            
-                                         l_out_attrs_indices,                           
-                                         r_out_attrs_indices)                           
-                    else:                                                               
-                        record = [ltable_array[cand][l_key_attr_index],
-                                      rtable_array[i][r_key_attr_index]]                          
-                                                                                
-                    # if out_sim_score flag is set, append the edit distance            
-                    # score to the output record.                                       
-                    if out_sim_score:                                                   
-                        record.append(edit_dist)
-                    output_rows.append(record)
+    try:
+        for i in range(rtokens.size()):                          
+            tokens = rtokens[i]                                                     
+            m = tokens.size()                                                       
+            prefix_length = int_min(<int>(qval * threshold + 1), m)                 
+                                                                                    
+            for j in range(prefix_length):                                          
+                if prefix_index.index.find(tokens[j]) == prefix_index.index.end():                            
+                    continue                                                        
+                for cand in prefix_index.index[tokens[j]]:                                       
+                    candidates.insert(cand)                                         
+                                                                                    
+            for cand in candidates:                                                 
+                if m - threshold <= prefix_index.size_vector[cand] <= m + threshold:             
+                    edit_dist = edit_distance(lstrings[cand], rstrings[i])          
+                    if comp_fn(edit_dist, threshold):
+                        if has_output_attributes:                                           
+                            record = get_output_row_from_tables(
+                                             ltable_array[cand], rtable_array[i],                                  
+                                             l_key_attr_index, r_key_attr_index,            
+                                             l_out_attrs_indices,                           
+                                             r_out_attrs_indices)                           
+                        else:                                                               
+                            record = [ltable_array[cand][l_key_attr_index],
+                                          rtable_array[i][r_key_attr_index]]                          
+                                                                                    
+                        # if out_sim_score flag is set, append the edit distance            
+                        # score to the output record.                                       
+                        if out_sim_score:                                                   
+                            record.append(edit_dist)
+                        output_rows.append(record)
+    
+                        #if the output rows id bigger than the given data limit, write to the file.
+                        if len(output_rows)> data_limit_per_core :
+                            df = pd.DataFrame(output_rows)
+                            df.to_csv(output_temp_file, header = False, index = False)
+                            output_rows = []
+            candidates = []
+    
+            if show_progress:                                                       
+                prog_bar.update()  
+        # Write the remaining output rows left to the file.
+        if len(output_rows) > 0 :
+            df = pd.DataFrame(output_rows)
+            df.to_csv(output_temp_file, header = False, index= False)
+            output_rows = []
+    except:
+        output_temp_file.close()
+        return False
 
-                    #if the output rows id bigger than the given data limit, write to the file.
-                    if len(output_rows)> data_limit_per_core :
-                        df = pd.DataFrame(output_rows)
-                        df.to_csv(output_temp_file, header = False, index = False)
-                        output_rows = []
-        candidates = []
-
-        if show_progress:                                                       
-            prog_bar.update()  
-    # Write the remaining output rows left to the file.
-    if len(output_rows) > 0 :
-        df = pd.DataFrame(output_rows)
-        df.to_csv(output_temp_file, header = False, index= False)
-        output_rows = []
     output_temp_file.close()
     return True
 
