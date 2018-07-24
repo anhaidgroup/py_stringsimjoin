@@ -132,7 +132,7 @@ def disk_edit_distance_join(ltable, rtable,
 
     from py_stringsimjoin import __use_cython__ 
     if __use_cython__:
-        from py_stringsimjoin.join.edit_distance_join_disk_cy import edit_distance_join_disk_cy    
+        from py_stringsimjoin.join.disk_edit_distance_join_cy import disk_edit_distance_join_cy
         return edit_distance_join_disk_cy(ltable, rtable,
                                           l_key_attr, r_key_attr,
                                           l_join_attr, r_join_attr,
