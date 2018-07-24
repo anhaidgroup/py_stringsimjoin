@@ -1,5 +1,5 @@
 
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 
 # determine whether to use available cython implementations                     
 __use_cython__ = True 
@@ -11,6 +11,9 @@ from py_stringsimjoin.join.edit_distance_join import edit_distance_join
 from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_join import overlap_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
+
+# import disk-based join methods
+from py_stringsimjoin.join.disk_edit_distance_join import disk_edit_distance_join
 
 # import filters
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
@@ -33,3 +36,5 @@ from py_stringsimjoin.utils.generic_helper import get_install_path
 
 # import methods to load sample datasets
 from py_stringsimjoin.datasets.base import load_books_dataset, load_person_dataset
+
+# import disk-based join methods
