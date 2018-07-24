@@ -100,6 +100,11 @@ MODULES = {
                                                         'comargs':["-I./py_stringsimjoin/index/"]
                                                         },
 
+        "py_stringsimjoin.join.edit_distance_join_disk_cy": {'sources':["py_stringsimjoin/join/edit_distance_join_disk_cy.pyx",
+                                                                   ],
+                                                        'comargs':["-I./py_stringsimjoin/index/"]
+                                                        },
+
         "py_stringsimjoin.join.overlap_coefficient_join_cy": {'sources':["py_stringsimjoin/join/overlap_coefficient_join_cy.pyx",
                                                                     ],
                                                         'comargs':["-I./py_stringsimjoin/index/"]
