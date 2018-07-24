@@ -8,6 +8,7 @@ Joins
     cosine_join
     dice_join
     edit_distance_join
+    disk_edit_distance_join
     jaccard_join
     overlap_join
     overlap_coefficient_join
