@@ -160,6 +160,9 @@ def disk_edit_distance_join_cy(ltable, rtable,
         Returns the status of the computation. True if successfully completed else False (boolean).
     """
 
+    # display warning message
+    print("WARNING: THIS IS AN EXPERIMENTAL COMMAND. THIS COMMAND IS NOT TESTED. USE AT YOUR OWN RISK.")
+
     # check if the input tables are dataframes
     validate_input_table(ltable, 'left table')
     validate_input_table(rtable, 'right table')
