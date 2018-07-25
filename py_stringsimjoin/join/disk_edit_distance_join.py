@@ -20,7 +20,11 @@ def disk_edit_distance_join(ltable, rtable,
                             show_progress=True, tokenizer=QgramTokenizer(qval=2),
                             temp_dir=os.getcwd(), output_file_path=default_output_file_path):
 
-    """Join two tables using edit distance measure.
+    """
+    WARNING: THIS IS AN EXPERIMENTAL COMMAND. THIS COMMAND IS NOT TESTED. 
+    USE AT YOUR OWN RISK.
+
+    Join two tables using edit distance measure.
 
     This is the disk version of the previous edit_distance_join api.
     There can be a scenario that while performing join on large datasets,
