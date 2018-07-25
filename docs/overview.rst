@@ -44,11 +44,12 @@ After loading and optionally profiling and fixing the tables, most likely the us
 * overlap_coefficient_join
 * overlap_join
 
-All the above commands expect the input tables, intermediate results, and the output tables to fit in memory.  However, if the intermediate results or the output tables are large, these commands will produce a memory error. To address this, we have implemented the following disk-based version for a subset of above commands.
+All the above commands expect the input tables, intermediate results, and the output tables to fit in memory.  However, if the intermediate results or the output tables are large, these commands will produce a memory error. To address this, we have started to implement disk-based version of above commands. As a first step, we have implemented the following command.
+
 
 * disk_edit_distance_join
 
-Specifically, the above command will spill the intermediate results and the output tables to disk when they get too large to fit in memory. Currently, this disk-based version is experimental and it is not tested thoroughly.
+The above command implements disk-based version of edit distance join. Specifically, this command will spill the intermediate results and the output tables to disk when they get too large to fit in memory. Currently, this disk-based version is experimental and it is not tested thoroughly.
 
 Filters & Matchers
 ------------------
