@@ -49,7 +49,7 @@ All the above commands expect the input tables, intermediate results, and the ou
 
 * disk_edit_distance_join
 
-The above command implements disk-based version of edit distance join. Specifically, this command will spill the intermediate results and the output tables to disk when they get too large to fit in memory. Currently, this disk-based version is experimental and it is not tested thoroughly.
+The above command implements disk-based version of edit distance join. Specifically, this command will spill the intermediate results and the output tables to disk when they get too large to fit in memory. Currently, this command is experimental and not tested thoroughly.
 
 Filters & Matchers
 ------------------
