@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,24 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="py_stringsimjoin 0.3.0 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -80,7 +77,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Getting Started</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../whatisnew.html">What is New?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
@@ -106,50 +106,68 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../../index.html">py_stringsimjoin</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">py_stringsimjoin</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      
-    <li>py_stringsimjoin.join.dice_join</li>
+        
+      <li>py_stringsimjoin.join.dice_join</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for py_stringsimjoin.join.dice_join</h1><div class="highlight"><pre>
-<span class="c"># dice join</span>
+<span></span><span class="c1"># dice join</span>
 
 <div class="viewcode-block" id="dice_join"><a class="viewcode-back" href="../../../api/dice_join.html#py_stringsimjoin.join.dice_join.dice_join">[docs]</a><span class="k">def</span> <span class="nf">dice_join</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>
               <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>
               <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>
-              <span class="n">tokenizer</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s">&#39;&gt;=&#39;</span><span class="p">,</span>
-              <span class="n">allow_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_missing</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-              <span class="n">l_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-              <span class="n">l_out_prefix</span><span class="o">=</span><span class="s">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s">&#39;r_&#39;</span><span class="p">,</span>
-              <span class="n">out_sim_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+              <span class="n">tokenizer</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">comp_op</span><span class="o">=</span><span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span>
+              <span class="n">allow_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">l_out_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_out_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">l_out_prefix</span><span class="o">=</span><span class="s1">&#39;l_&#39;</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="o">=</span><span class="s1">&#39;r_&#39;</span><span class="p">,</span>
+              <span class="n">out_sim_score</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Join two tables using Dice similarity measure.                           </span>
 <span class="sd">                                                                                </span>
 <span class="sd">    For two sets X and Y, the Dice similarity score between them is given by:                      </span>
@@ -232,9 +250,9 @@
 <span class="sd">        condition (DataFrame).                                                  </span>
 <span class="sd">    &quot;&quot;&quot;</span> 
 
-    <span class="kn">from</span> <span class="nn">py_stringsimjoin</span> <span class="kn">import</span> <span class="n">__use_cython__</span>                                     
+    <span class="kn">from</span> <span class="nn">py_stringsimjoin</span> <span class="k">import</span> <span class="n">__use_cython__</span>                                     
     <span class="k">if</span> <span class="n">__use_cython__</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">py_stringsimjoin.join.dice_join_cy</span> <span class="kn">import</span> <span class="n">dice_join_cy</span>
+        <span class="kn">from</span> <span class="nn">py_stringsimjoin.join.dice_join_cy</span> <span class="k">import</span> <span class="n">dice_join_cy</span>
         <span class="k">return</span> <span class="n">dice_join_cy</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>                                  
                             <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>                          
                             <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>                        
@@ -244,7 +262,7 @@
                             <span class="n">l_out_prefix</span><span class="p">,</span> <span class="n">r_out_prefix</span><span class="p">,</span>                      
                             <span class="n">out_sim_score</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">)</span>  
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">py_stringsimjoin.join.dice_join_py</span> <span class="kn">import</span> <span class="n">dice_join_py</span>       
+        <span class="kn">from</span> <span class="nn">py_stringsimjoin.join.dice_join_py</span> <span class="k">import</span> <span class="n">dice_join_py</span>       
         <span class="k">return</span> <span class="n">dice_join_py</span><span class="p">(</span><span class="n">ltable</span><span class="p">,</span> <span class="n">rtable</span><span class="p">,</span>                                                
                             <span class="n">l_key_attr</span><span class="p">,</span> <span class="n">r_key_attr</span><span class="p">,</span>                                        
                             <span class="n">l_join_attr</span><span class="p">,</span> <span class="n">r_join_attr</span><span class="p">,</span>                                      
@@ -257,6 +275,7 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
   
@@ -269,7 +288,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -288,31 +307,27 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'0.3.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

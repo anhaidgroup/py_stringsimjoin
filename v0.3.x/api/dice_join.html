@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,26 +24,21 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="py_stringsimjoin 0.3.0 documentation" href="../index.html"/>
-        <link rel="up" title="Joins" href="join.html"/>
-        <link rel="next" title="Edit Distance Join" href="edit_distance_join.html"/>
-        <link rel="prev" title="Cosine Join" href="cosine_join.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Edit Distance Join" href="edit_distance_join.html" />
+    <link rel="prev" title="Cosine Join" href="cosine_join.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -82,7 +79,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Getting Started</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../whatisnew.html">What is New?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
@@ -95,7 +95,7 @@
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profilers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="join.html">Joins</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="cosine_join.html">Cosine Join</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Dice Join</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Dice Join</a></li>
 <li class="toctree-l2"><a class="reference internal" href="edit_distance_join.html">Edit Distance Join</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jaccard_join.html">Jaccard Join</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overlap_join.html">Overlap Join</a></li>
@@ -116,36 +116,56 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">py_stringsimjoin</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py_stringsimjoin</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="join.html">Joins</a> &raquo;</li>
-      
-    <li>Dice Join</li>
+        
+      <li>Dice Join</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="../_sources/api/dice_join.txt" rel="nofollow"> View page source</a>
+            
+            <a href="../_sources/api/dice_join.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -164,48 +184,48 @@
 score to be 1.</p>
 <p>Finds tuple pairs from left table and right table such that the Dice
 similarity between the join attributes satisfies the condition on input
-threshold. For example, if the comparison operator is &#8216;&gt;=&#8217;, finds tuple
+threshold. For example, if the comparison operator is ‘&gt;=’, finds tuple
 pairs whose Dice similarity between the strings that are the values of
 the join attributes is greater than or equal to the input threshold, as
-specified in &#8220;threshold&#8221;.</p>
+specified in “threshold”.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ltable</strong> (<em>DataFrame</em>) &#8211; left input table.</li>
-<li><strong>rtable</strong> (<em>DataFrame</em>) &#8211; right input table.</li>
-<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
-<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
-<li><strong>l_join_attr</strong> (<em>string</em>) &#8211; join attribute in left table.</li>
-<li><strong>r_join_attr</strong> (<em>string</em>) &#8211; join attribute in right table.</li>
-<li><strong>tokenizer</strong> (<em>Tokenizer</em>) &#8211; tokenizer to be used to tokenize join
+<li><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</li>
+<li><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</li>
+<li><strong>l_join_attr</strong> (<em>string</em>) – join attribute in left table.</li>
+<li><strong>r_join_attr</strong> (<em>string</em>) – join attribute in right table.</li>
+<li><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize join
 attributes.</li>
-<li><strong>threshold</strong> (<em>float</em>) &#8211; Dice similarity threshold to be satisfied.</li>
-<li><strong>comp_op</strong> (<em>string</em>) &#8211; comparison operator. Supported values are &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;
-and &#8216;=&#8217; (defaults to &#8216;&gt;=&#8217;).</li>
-<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with empty
+<li><strong>threshold</strong> (<em>float</em>) – Dice similarity threshold to be satisfied.</li>
+<li><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&gt;=’, ‘&gt;’
+and ‘=’ (defaults to ‘&gt;=’).</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with empty
 set of tokens in both the join attributes should be included in the
 output (defaults to True).</li>
-<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; flag to indicate whether tuple pairs with
+<li><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
 missing value in at least one of the join attributes should be
 included in the output (defaults to False). If this flag is set to
 True, a tuple in ltable with missing value in the join attribute
 will be matched with every tuple in rtable and vice versa.</li>
-<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to be
+<li><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
 included in the output table (defaults to None).</li>
-<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to be
+<li><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
 included in the output table (defaults to None).</li>
-<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
-from the left table, in the output table (defaults to &#8216;l_&#8217;).</li>
-<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names coming
-from the right table, in the output table (defaults to &#8216;r_&#8217;).</li>
-<li><strong>out_sim_score</strong> (<em>boolean</em>) &#8211; flag to indicate whether similarity score
+<li><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</li>
+<li><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether similarity score
 should be included in the output table (defaults to True). Setting
-this flag to True will add a column named &#8216;_sim_score&#8217; in the
+this flag to True will add a column named ‘_sim_score’ in the
 output table. This column will contain the similarity scores for the
 tuple pairs in the output.</li>
-<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+<li><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
 (defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
 no parallel computing code is used at all, which is useful for
 debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
@@ -213,7 +233,7 @@ debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
 n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
 becomes less than 1, then no parallel computing code will be used
 (i.e., equivalent to the default).</li>
-<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress should
+<li><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
 be displayed to the user (defaults to True).</li>
 </ul>
 </td>
@@ -230,15 +250,16 @@ condition (DataFrame).</p>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="edit_distance_join.html" class="btn btn-neutral float-right" title="Edit Distance Join" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="edit_distance_join.html" class="btn btn-neutral float-right" title="Edit Distance Join" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="cosine_join.html" class="btn btn-neutral" title="Cosine Join" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="cosine_join.html" class="btn btn-neutral" title="Cosine Join" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -251,7 +272,7 @@ condition (DataFrame).</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -270,31 +291,27 @@ condition (DataFrame).</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
             VERSION:'0.3.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

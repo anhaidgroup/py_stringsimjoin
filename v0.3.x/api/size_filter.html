@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,26 +24,21 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="py_stringsimjoin 0.3.0 documentation" href="../index.html"/>
-        <link rel="up" title="Filters" href="filter.html"/>
-        <link rel="next" title="Prefix Filter" href="prefix_filter.html"/>
-        <link rel="prev" title="Overlap Filter" href="overlap_filter.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Prefix Filter" href="prefix_filter.html" />
+    <link rel="prev" title="Overlap Filter" href="overlap_filter.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -82,7 +79,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Getting Started</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../whatisnew.html">What is New?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="join.html">Joins</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="filter.html">Filters</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="overlap_filter.html">Overlap Filter</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Size Filter</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Size Filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prefix_filter.html">Prefix Filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="position_filter.html">Position Filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="suffix_filter.html">Suffix Filter</a></li>
@@ -115,36 +115,56 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">py_stringsimjoin</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py_stringsimjoin</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="filter.html">Filters</a> &raquo;</li>
-      
-    <li>Size Filter</li>
+        
+      <li>Size Filter</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="../_sources/api/size_filter.txt" rel="nofollow"> View page source</a>
+            
+            <a href="../_sources/api/size_filter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -158,25 +178,25 @@
 <dd><p>Finds candidate matching pairs of strings using size filtering technique.</p>
 <p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
 filter finds candidate string pairs that may have similarity score greater
-than or equal to the input threshold, as specified in &#8220;threshold&#8221;. For
+than or equal to the input threshold, as specified in “threshold”. For
 distance measures such as edit distance, the filter finds candidate string
 pairs that may have distance score less than or equal to the threshold.</p>
 <p>To know more about size filtering, refer to the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">string matching chapter</a>
-of the &#8220;Principles of Data Integration&#8221; book.</p>
+of the “Principles of Data Integration” book.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tokenizer</strong> (<em>Tokenizer</em>) &#8211; tokenizer to be used.</li>
-<li><strong>sim_measure_type</strong> (<em>string</em>) &#8211; similarity measure type. Supported types are
-&#8216;JACCARD&#8217;, &#8216;COSINE&#8217;, &#8216;DICE&#8217;, &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
-<li><strong>threshold</strong> (<em>float</em>) &#8211; threshold to be used by the filter.</li>
-<li><strong>allow_empty</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs in which both
+<li><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used.</li>
+<li><strong>sim_measure_type</strong> (<em>string</em>) – similarity measure type. Supported types are
+‘JACCARD’, ‘COSINE’, ‘DICE’, ‘OVERLAP’ and ‘EDIT_DISTANCE’.</li>
+<li><strong>threshold</strong> (<em>float</em>) – threshold to be used by the filter.</li>
+<li><strong>allow_empty</strong> (<em>boolean</em>) – A flag to indicate whether pairs in which both
 strings are tokenized into an empty set of tokens should
 survive the filter (defaults to True). This flag is not valid for
-measures such as &#8216;OVERLAP&#8217; and &#8216;EDIT_DISTANCE&#8217;.</li>
-<li><strong>allow_missing</strong> (<em>boolean</em>) &#8211; A flag to indicate whether pairs containing
+measures such as ‘OVERLAP’ and ‘EDIT_DISTANCE’.</li>
+<li><strong>allow_missing</strong> (<em>boolean</em>) – A flag to indicate whether pairs containing
 missing value should survive the filter (defaults to False).</li>
 </ul>
 </td>
@@ -186,38 +206,33 @@ missing value should survive the filter (defaults to False).</li>
 <dl class="attribute">
 <dt id="py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer">
 <code class="descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Tokenizer</em></p>
-<p>An attribute to store the tokenizer.</p>
+<dd><p><em>Tokenizer</em> – An attribute to store the tokenizer.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type">
 <code class="descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>string</em></p>
-<p>An attribute to store the similarity measure
+<dd><p><em>string</em> – An attribute to store the similarity measure
 type.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="py_stringsimjoin.filter.size_filter.SizeFilter.threshold">
 <code class="descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.threshold" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em></p>
-<p>An attribute to store the threshold value.</p>
+<dd><p><em>float</em> – An attribute to store the threshold value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty">
 <code class="descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>boolean</em></p>
-<p>An attribute to store the value of the flag
+<dd><p><em>boolean</em> – An attribute to store the value of the flag
 allow_empty.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing">
 <code class="descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>boolean</em></p>
-<p>An attribute to store the value of the flag
+<dd><p><em>boolean</em> – An attribute to store the value of the flag
 allow_missing.</p>
 </dd></dl>
 
@@ -231,20 +246,20 @@ set.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>candset</strong> (<em>DataFrame</em>) &#8211; input candidate set.</li>
-<li><strong>candset_l_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+<li><strong>candset</strong> (<em>DataFrame</em>) – input candidate set.</li>
+<li><strong>candset_l_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
 key in left table.</li>
-<li><strong>candset_r_key_attr</strong> (<em>string</em>) &#8211; attribute in candidate set which is a
+<li><strong>candset_r_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
 key in right table.</li>
-<li><strong>ltable</strong> (<em>DataFrame</em>) &#8211; left input table.</li>
-<li><strong>rtable</strong> (<em>DataFrame</em>) &#8211; right input table.</li>
-<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
-<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
-<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+<li><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</li>
+<li><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
 should be applied.</li>
-<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+<li><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
 should be applied.</li>
-<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+<li><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
 (defaults to 1). If -1 is given, all CPUs are used. If 1 is
 given, no parallel computing code is used at all, which is
 useful for debugging. For n_jobs below -1,
@@ -253,7 +268,7 @@ number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
 but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
 then no parallel computing code will be used (i.e., equivalent
 to the default).</li>
-<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+<li><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
 should be displayed to the user (defaults to True).</li>
 </ul>
 </td>
@@ -274,7 +289,7 @@ survive the filter (DataFrame).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lstring,rstring</strong> (<em>string</em>) &#8211; input strings</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lstring</strong><strong>,</strong><strong>rstring</strong> (<em>string</em>) – input strings</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A flag indicating whether the string pair is dropped (boolean).</td>
 </tr>
@@ -292,25 +307,25 @@ size filtering technique.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ltable</strong> (<em>DataFrame</em>) &#8211; left input table.</li>
-<li><strong>rtable</strong> (<em>DataFrame</em>) &#8211; right input table.</li>
-<li><strong>l_key_attr</strong> (<em>string</em>) &#8211; key attribute in left table.</li>
-<li><strong>r_key_attr</strong> (<em>string</em>) &#8211; key attribute in right table.</li>
-<li><strong>l_filter_attr</strong> (<em>string</em>) &#8211; attribute in left table on which the filter
+<li><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</li>
+<li><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</li>
+<li><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</li>
+<li><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</li>
+<li><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
 should be applied.</li>
-<li><strong>r_filter_attr</strong> (<em>string</em>) &#8211; attribute in right table on which the filter
+<li><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
 should be applied.</li>
-<li><strong>l_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the left table to
+<li><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to
 be included in the output table (defaults to None).</li>
-<li><strong>r_out_attrs</strong> (<em>list</em>) &#8211; list of attribute names from the right table to
+<li><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to
 be included in the output table (defaults to None).</li>
-<li><strong>l_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+<li><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
 coming from the left table, in the output table
-(defaults to &#8216;l_&#8217;).</li>
-<li><strong>r_out_prefix</strong> (<em>string</em>) &#8211; prefix to be used for the attribute names
+(defaults to ‘l_’).</li>
+<li><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
 coming from the right table, in the output table
-(defaults to &#8216;r_&#8217;).</li>
-<li><strong>n_jobs</strong> (<em>int</em>) &#8211; number of parallel jobs to use for the computation
+(defaults to ‘r_’).</li>
+<li><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
 (defaults to 1). If -1 is given, all CPUs are used. If 1 is
 given, no parallel computing code is used at all, which is
 useful for debugging. For n_jobs below -1,
@@ -319,7 +334,7 @@ number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
 but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
 then no parallel computing code will be used (i.e., equivalent
 to the default).</li>
-<li><strong>show_progress</strong> (<em>boolean</em>) &#8211; flag to indicate whether task progress
+<li><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
 should be displayed to the user (defaults to True).</li>
 </ul>
 </td>
@@ -338,15 +353,16 @@ should be displayed to the user (defaults to True).</li>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="prefix_filter.html" class="btn btn-neutral float-right" title="Prefix Filter" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="prefix_filter.html" class="btn btn-neutral float-right" title="Prefix Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="overlap_filter.html" class="btn btn-neutral" title="Overlap Filter" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="overlap_filter.html" class="btn btn-neutral" title="Overlap Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -359,7 +375,7 @@ should be displayed to the user (defaults to True).</li>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -378,31 +394,27 @@ should be displayed to the user (defaults to True).</li>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
             VERSION:'0.3.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

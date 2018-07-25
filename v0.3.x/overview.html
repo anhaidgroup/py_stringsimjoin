@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,25 +24,21 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="py_stringsimjoin 0.3.0 documentation" href="index.html"/>
-        <link rel="next" title="Guides" href="guide.html"/>
-        <link rel="prev" title="Installation" href="installation.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Guides" href="guide.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -81,11 +79,14 @@
           
             
             
-                <p class="caption"><span class="caption-text">Getting Started</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="whatisnew.html">What is New?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Overview</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#profilers">Profilers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#joins">Joins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#filters-matchers">Filters &amp; Matchers</a></li>
@@ -113,34 +114,54 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">py_stringsimjoin</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py_stringsimjoin</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
-    <li>Overview</li>
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Overview</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="_sources/overview.txt" rel="nofollow"> View page source</a>
+            
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -151,20 +172,20 @@
 <p>Given two tables A and B, this package provides commands to perform string similarity joins between two columns of these tables, such as A.name and B.name, or A.city and B.city. An example of such joins is to return all pairs (x,y) of tuples from the Cartesian product of Tables A and B such that</p>
 <ul class="simple">
 <li>x is a tuple in Table A and y is a tuple in Table B.</li>
-<li>Jaccard(3gram(x.name), 3gram(y.name)) &gt; 0.7. That is, first tokenize the value of the attribute &#8220;name&#8221; of x into a set P of 3grams, and tokenize the value of the attribute &#8220;name&#8221; of y into a set Q of 3grams. Then compute the Jaccard score between P and Q. This score must exceed 0.7. This is often called the &#8220;join condition&#8221;.</li>
+<li>Jaccard(3gram(x.name), 3gram(y.name)) &gt; 0.7. That is, first tokenize the value of the attribute “name” of x into a set P of 3grams, and tokenize the value of the attribute “name” of y into a set Q of 3grams. Then compute the Jaccard score between P and Q. This score must exceed 0.7. This is often called the “join condition”.</li>
 </ul>
-<p>Such joins are challenging because a naive implementation would consider all tuple pairs in the Cartesian product of Tables A and B, an often enormous number (for example, 10 billion pairs if each table has 100K tuples). The package provides efficient implementations of such joins, by using methods called &#8220;filtering&#8221; to quickly eliminate the pairs that obviously cannot satisfy the join condition.</p>
+<p>Such joins are challenging because a naive implementation would consider all tuple pairs in the Cartesian product of Tables A and B, an often enormous number (for example, 10 billion pairs if each table has 100K tuples). The package provides efficient implementations of such joins, by using methods called “filtering” to quickly eliminate the pairs that obviously cannot satisfy the join condition.</p>
 <p>To understand tokenizing and string similarity scores (such as Jaccard, edit distance, etc.), see the <a class="reference external" href="https://sites.google.com/site/anhaidgroup/projects/py_stringmatching">Web site</a> of the package py_stringmatching (in particular, read the following <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">book chapter on string matching</a>). That package provides efficient implementations of a set of tokenizers and string similarity measures. It focuses on the case of tokenizing two strings and then applying a similarity measure to the outputs of the tokenizers to compute a similarity score between those two strings. This package builds on top of py_stringmatching, so it is important to understand the tokenizers and string similarity measures of the py_stringmatching package.</p>
-<p>To read more about string similarity joins, see &#8220;<a class="reference external" href="http://www.vldb.org/pvldb/vol7/p625-jiang.pdf">String Similarity Joins: An Experimental Evaluation</a>&#8221; and &#8220;<a class="reference external" href="http://dbgroup.cs.tsinghua.edu.cn/ligl/papers/fcs15-string-survey.pdf">String Similarity Search and Join : A Survey</a>&#8221;.</p>
-<p>We now explain the most important notions an user is likely to encounter while using this package. To use the package, the user typically loads into Python two tables A and B (as described above). These two tables will often be referred to in the commands of this package as ltable (for &#8220;left table&#8221;) and rtable (for &#8220;right table&#8221;), respectively. The notion &#8220;tuple pair&#8221; refers to a pair (x,y) where x is a tuple in ltable and y is a tuple in rtable.</p>
-<p>To execute a string similarity join, the user calls a command such as jaccard_join, cosine_join, etc. The command&#8217;s arguments include</p>
+<p>To read more about string similarity joins, see “<a class="reference external" href="http://www.vldb.org/pvldb/vol7/p625-jiang.pdf">String Similarity Joins: An Experimental Evaluation</a>” and “<a class="reference external" href="http://dbgroup.cs.tsinghua.edu.cn/ligl/papers/fcs15-string-survey.pdf">String Similarity Search and Join : A Survey</a>”.</p>
+<p>We now explain the most important notions an user is likely to encounter while using this package. To use the package, the user typically loads into Python two tables A and B (as described above). These two tables will often be referred to in the commands of this package as ltable (for “left table”) and rtable (for “right table”), respectively. The notion “tuple pair” refers to a pair (x,y) where x is a tuple in ltable and y is a tuple in rtable.</p>
+<p>To execute a string similarity join, the user calls a command such as jaccard_join, cosine_join, etc. The command’s arguments include</p>
 <ul class="simple">
 <li>The two tables: ltable and rtable, the key attributes of these tables, and the target attributes (on which the join will be performed, such as A.name and B.name).</li>
 <li>The join condition.</li>
 <li>The output will be a table of tuple pairs surviving the join. The user may want to specify the desired attributes of the output table, using arguments such as l_out_attrs, r_out_attrs, l_out_prefix, etc.</li>
 <li>A flag to indicate on how many cores should this command be run.</li>
 </ul>
-<p>Internally, a command such as jaccard_join will first create a filter object, using an appropriate filtering techniques (many such techniques exist, see the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">book chapter on string matching</a>). Next, it uses this filter object to quickly drop many pairs that obviously do not satisfy the join condition. The set of remaining tuple pairs is referred to as a &#8220;candidate set&#8221;. Finally, it applies a matcher to the pairs in this set. The matcher simply checks and retains only those pairs that satisfy the join condition.</p>
+<p>Internally, a command such as jaccard_join will first create a filter object, using an appropriate filtering techniques (many such techniques exist, see the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">book chapter on string matching</a>). Next, it uses this filter object to quickly drop many pairs that obviously do not satisfy the join condition. The set of remaining tuple pairs is referred to as a “candidate set”. Finally, it applies a matcher to the pairs in this set. The matcher simply checks and retains only those pairs that satisfy the join condition.</p>
 <p>The implemented commands can be organized into the following groups: profilers, joins, filters, matchers, and utilities. We now briefly describe these.</p>
 <div class="section" id="profilers">
 <h2>Profilers<a class="headerlink" href="#profilers" title="Permalink to this headline">¶</a></h2>
@@ -198,26 +219,27 @@
 </ul>
 </dd>
 </dl>
-<p>Currently we have implemented only one matcher, called &#8220;apply_matcher&#8221;.</p>
+<p>Currently we have implemented only one matcher, called “apply_matcher”.</p>
 </div>
 <div class="section" id="utilities">
 <h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
-<p>Consider a table A with an attribute &#8220;year&#8221;. This attribute contains numeric, not string, values. So we cannot apply the commands in py_stringsimjoin on this attribute directly (as these commands input only string values). To apply the command, we first must convert the values of this attribute (for example, 1978, 2001, etc.) into strings. This conversion is somewhat tricky, because if we are not careful, missing values such as NaN will be converted into strings &#8220;NaN&#8221;.
+<p>Consider a table A with an attribute “year”. This attribute contains numeric, not string, values. So we cannot apply the commands in py_stringsimjoin on this attribute directly (as these commands input only string values). To apply the command, we first must convert the values of this attribute (for example, 1978, 2001, etc.) into strings. This conversion is somewhat tricky, because if we are not careful, missing values such as NaN will be converted into strings “NaN”.
 In this package we have provided several utility commands to do such conversion.</p>
 </div>
 </div>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="guide.html" class="btn btn-neutral float-right" title="Guides" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="guide.html" class="btn btn-neutral float-right" title="Guides" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -230,7 +252,7 @@ In this package we have provided several utility commands to do such conversion.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -249,31 +271,27 @@ In this package we have provided several utility commands to do such conversion.
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'0.3.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
