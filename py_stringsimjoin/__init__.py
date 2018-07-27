@@ -12,6 +12,9 @@ from py_stringsimjoin.join.jaccard_join import jaccard_join
 from py_stringsimjoin.join.overlap_join import overlap_join
 from py_stringsimjoin.join.overlap_coefficient_join import overlap_coefficient_join
 
+# import disk-based join methods
+from py_stringsimjoin.join.disk_edit_distance_join import disk_edit_distance_join
+
 # import filters
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
 from py_stringsimjoin.filter.position_filter import PositionFilter
@@ -33,3 +36,5 @@ from py_stringsimjoin.utils.generic_helper import get_install_path
 
 # import methods to load sample datasets
 from py_stringsimjoin.datasets.base import load_books_dataset, load_person_dataset
+
+# import disk-based join methods

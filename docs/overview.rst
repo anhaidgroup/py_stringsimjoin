@@ -44,8 +44,15 @@ After loading and optionally profiling and fixing the tables, most likely the us
 * overlap_coefficient_join
 * overlap_join
 
+All the above commands expect the input tables, intermediate results, and the output tables to fit in memory.  However, if the intermediate results or the output tables are large, these commands will produce a memory error. To address this, we have started to implement disk-based version of above commands. As a first step, we have implemented the following command.
+
+
+* disk_edit_distance_join
+
+The above command implements disk-based version of edit distance join. Specifically, this command will spill the intermediate results and the output tables to disk when they get too large to fit in memory. Currently, this command is experimental and not tested thoroughly.
+
 Filters & Matchers
--------------------
+------------------
 
 Most users will just use join commands (described above). They do not need to know about filters and matchers. However, users who want to perform more complex string similarity joins (or joins that we currently do not yet support) may find filters and matchers useful and may want to use them. (See the How-to Guide for examples of performing complex string similarity joins such as TF/IDF joins.)
 
