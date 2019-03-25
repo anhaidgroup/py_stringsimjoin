@@ -33,22 +33,29 @@ compiler:
     - gcc
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://repo.continuum.io/miniconda/Miniconda2-4.0.5-Linux-x86_64.sh -O miniconda.sh; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://repo.continuum.io/miniconda/Miniconda2-4.0.5-MacOSX-x86_64.sh -O miniconda.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == linux ]; then MINICONDAVERSION="Linux"; else MINICONDAVERSION="MacOSX"; fi
+  - if [ "$PYTHON_VERSION" == "2.7" ]; then wget http://repo.continuum.io/miniconda/Miniconda2-latest-$MINICONDAVERSION-x86_64.sh -O miniconda.sh; fi
+  - if [ "$PYTHON_VERSION" != "2.7" ]; then wget http://repo.continuum.io/miniconda/Miniconda3-latest-$MINICONDAVERSION-x86_64.sh -O miniconda.sh; fi
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
-#  - conda update --yes conda
 
 install:
-  - conda install --yes python=$PYTHON_VERSION pandas joblib six nose Cython
+  - conda create --yes -n py_stringsimjoin_test_env python=$PYTHON_VERSION
+  - source activate py_stringsimjoin_test_env
+  - python --version
+  
+  # Why does py_stringsimjoin have a dependency on gcc but py_stringmatching doesn't?
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda install --yes gcc; fi                              
   - which gcc
-  - pip install pyprind==2.9.8 py_stringmatching coveralls
-  - python --version
+  
+  # Python package dependencies; put in requirements.txt?
+  # Or get rid of these and rely on install_requires
+  - pip install pandas joblib six nose Cython pyprind==2.9.8 py_stringmatching coveralls
   - python setup.py build_ext --inplace
 
 script:
   - coverage run -m nose
+  - uname -a
 
 after_success:
   - coveralls
