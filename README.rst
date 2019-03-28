@@ -14,7 +14,7 @@ Important links
 Dependencies
 ============
 
-py_stringsimjoin has been tested on Python 2.7, 3.4+.
+py_stringsimjoin has been tested on Python 2.7, 3.5+.
 
 The required dependencies to build the package are pandas 0.16.0 or higher, py_stringmatching 0.2.1 or higher,
 joblib, pyprind, six and a C++ compiler. For the development version, you will also need Cython.
