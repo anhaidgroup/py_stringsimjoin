@@ -4,9 +4,6 @@ matrix:
     python: 2.7
     env: PYTHON_VERSION=2.7
   - os: linux
-    python: 3.4
-    env: PYTHON_VERSION=3.4 # triggers source build of pandas; drop?
-  - os: linux
     python: 3.5
     env: PYTHON_VERSION=3.5
   - os: linux                                                                   
@@ -19,10 +16,6 @@ matrix:
     language: generic
     env:
     - PYTHON_VERSION=2.7
-  - os: osx
-    language: generic
-    env:
-    - PYTHON_VERSION=3.4 # triggers source build of pandas; drop?
   - os: osx
     language: generic
     env:
@@ -50,13 +43,8 @@ install:
   - conda create --yes -n py_stringsimjoin_test_env python=$PYTHON_VERSION
   - source activate py_stringsimjoin_test_env
   - python --version
-  
-  # Why does py_stringsimjoin have a dependency on gcc but py_stringmatching doesn't?
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda install --yes gcc; fi                              
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda install --yes gcc; fi
   - which gcc
-  
-  # Python package dependencies; put in requirements.txt?
-  # Or get rid of these and rely on install_requires
   - pip install pandas joblib six nose Cython pyprind==2.9.8 py_stringmatching coveralls
   - python setup.py build_ext --inplace
 
