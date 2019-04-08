@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Matchers &mdash; py_stringsimjoin 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Utilities" href="utility.html" />
+    <link rel="prev" title="Suffix Filter" href="suffix_filter.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatisnew.html">What is New?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cython.html">Disabling Cython</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="join.html">Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filter.html">Filters</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py_stringsimjoin</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Matchers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/matcher.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="matchers">
+<h1>Matchers<a class="headerlink" href="#matchers" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="py_stringsimjoin.matcher.apply_matcher.apply_matcher">
+<code class="descclassname">py_stringsimjoin.matcher.apply_matcher.</code><code class="descname">apply_matcher</code><span class="sig-paren">(</span><em>candset</em>, <em>candset_l_key_attr</em>, <em>candset_r_key_attr</em>, <em>ltable</em>, <em>rtable</em>, <em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_match_attr</em>, <em>r_match_attr</em>, <em>tokenizer</em>, <em>sim_function</em>, <em>threshold</em>, <em>comp_op='&gt;='</em>, <em>allow_missing=False</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=True</em>, <em>n_jobs=1</em>, <em>show_progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/matcher/apply_matcher.html#apply_matcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.matcher.apply_matcher.apply_matcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find matching string pairs from the candidate set (typically produced by
+applying a filter to two tables) by applying a matcher of form
+(sim_function comp_op threshold).</p>
+<p>Specifically, this method computes the input similarity function on string
+pairs in the candidate set and checks if the resulting score satisfies the
+input threshold (depending on the comparison operator).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candset</strong> (<em>DataFrame</em>) – input candidate set.</p></li>
+<li><p><strong>candset_l_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a key
+in left table.</p></li>
+<li><p><strong>candset_r_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a key
+in right table.</p></li>
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_match_attr</strong> (<em>string</em>) – attribute in left table on which the matcher
+should be applied.</p></li>
+<li><p><strong>r_match_attr</strong> (<em>string</em>) – attribute in right table on which the matcher
+should be applied.</p></li>
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize the
+match attributes. If set to None, the matcher is applied directly
+on the match attributes.</p></li>
+<li><p><strong>sim_function</strong> (<em>function</em>) – matcher function to be applied.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – threshold to be satisfied.</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&gt;=’, ‘&gt;’, ‘
+&lt;=’, ‘&lt;’, ‘=’ and ‘!=’ (defaults to ‘&gt;=’).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
+missing value in at least one of the match attributes should be
+included in the output (defaults to False).</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named ‘_sim_score’ in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
+no parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
+(where n_cpus is the total number of CPUs in the machine). Thus for
+n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then no parallel computing code will be used
+(i.e., equivalent to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
+be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs from the candidate set that
+survive the matcher (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="utility.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="suffix_filter.html" class="btn btn-neutral float-left" title="Suffix Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, anhaidgroup
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

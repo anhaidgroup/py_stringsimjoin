@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Disk-Based Edit Distance Join &mdash; py_stringsimjoin 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Jaccard Join" href="jaccard_join.html" />
+    <link rel="prev" title="Edit Distance Join" href="edit_distance_join.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatisnew.html">What is New?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cython.html">Disabling Cython</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profilers</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="join.html">Joins</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cosine_join.html">Cosine Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dice_join.html">Dice Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="edit_distance_join.html">Edit Distance Join</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Disk-Based Edit Distance Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jaccard_join.html">Jaccard Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overlap_join.html">Overlap Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overlap_coefficient_join.html">Overlap Coefficient Join</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="filter.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py_stringsimjoin</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="join.html">Joins</a> &raquo;</li>
+        
+      <li>Disk-Based Edit Distance Join</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/disk_edit_distance_join.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="disk-based-edit-distance-join">
+<h1>Disk-Based Edit Distance Join<a class="headerlink" href="#disk-based-edit-distance-join" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="py_stringsimjoin.join.disk_edit_distance_join.disk_edit_distance_join">
+<code class="descclassname">py_stringsimjoin.join.disk_edit_distance_join.</code><code class="descname">disk_edit_distance_join</code><span class="sig-paren">(</span><em>l_key_attr</em>, <em>r_key_attr</em>, <em>l_join_attr</em>, <em>r_join_attr</em>, <em>threshold</em>, <em>data_limit=1000000</em>, <em>comp_op='&lt;='</em>, <em>allow_missing=False</em>, <em>l_out_attrs=None</em>, <em>r_out_attrs=None</em>, <em>l_out_prefix='l_'</em>, <em>r_out_prefix='r_'</em>, <em>out_sim_score=True</em>, <em>n_jobs=-1</em>, <em>show_progress=True</em>, <em>tokenizer=QgramTokenizer(qval=2)</em>, <em>temp_dir=os.getcwd()</em>, <em>output_file_path=default_output_file_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/join/disk_edit_distance_join.html#disk_edit_distance_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.disk_edit_distance_join.disk_edit_distance_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>WARNING: THIS IS AN EXPERIMENTAL COMMAND. THIS COMMAND IS NOT TESTED.
+USE AT YOUR OWN RISK.</p>
+<p>Join two tables using edit distance measure.</p>
+<p>This is the disk version of the previous edit_distance_join api.
+There can be a scenario that while performing join on large datasets,
+the intermediate in-memory data structures grow very large and thus lead
+to termination of the program due to insufficient memory. Keeping this problem
+in mind, disk_edit_distance_join is the updated version of the older
+edit_distance_join function that solves the above mentioned problem.
+So if the analysis is being done on the machine with small memory limits or
+if the input tables are too large, then this new disk_edit_distance_join can be
+used to avoid memory exceeding problem while processing.</p>
+<p>It Finds tuple pairs from left table and right table such that the edit
+distance between the join attributes satisfies the condition on input
+threshold. For example, if the comparison operator is ‘&lt;=’, finds tuple
+pairs whose edit distance between the strings that are the values of
+the join attributes is less than or equal to the input threshold, as
+specified in “threshold”.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, this method only computes an approximate join result. This is
+because, to perform the join we transform an edit distance measure
+between strings into an overlap measure between qgrams of the strings.
+Hence, we need at least one qgram to be in common between two input
+strings, to appear in the join output. For smaller strings, where all
+qgrams of the strings differ, we cannot process them.</p>
+<p>This method implements a simplified version of the algorithm proposed in
+<a class="reference external" href="http://www.vldb.org/pvldb/1/1453957.pdf">Ed-Join: An Efficient Algorithm for Similarity Joins With Edit Distance
+Constraints (Chuan Xiao, Wei Wang and Xuemin Lin), VLDB 08</a>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_join_attr</strong> (<em>string</em>) – join attribute in left table.</p></li>
+<li><p><strong>r_join_attr</strong> (<em>string</em>) – join attribute in right table.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – edit distance threshold to be satisfied.</p></li>
+<li><p><strong>data_limit</strong> (<em>int</em>) – threshold value for number of rows that would be kept
+in memory before writing the output on the disk. This is the maximum sum
+total of all rows that can be present in memory across all processes at
+a time. This is a new argument compared to edit distance join.
+(defaults to 1M)</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&lt;=’, ‘&lt;’
+and ‘=’ (defaults to ‘&lt;=’).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether the edit distance
+score should be included in the output table (defaults to True).
+Setting this flag to True will add a column named ‘_sim_score’ in
+the output table. This column will contain the edit distance scores
+for the tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
+no parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
+(where n_cpus is the total number of CPUs in the machine). Thus for
+n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then no parallel computing code will be used
+(i.e., equivalent to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
+be displayed to the user (defaults to True).</p></li>
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize the join
+attributes during filtering, when edit distance measure is
+transformed into an overlap measure. This must be a q-gram tokenizer
+(defaults to 2-gram tokenizer).</p></li>
+<li><p><strong>temp_dir</strong> (<em>string</em>) – absolute path where all the intermediate files will be generated.
+This is a new argument compared to edit distance join. (defaults to the current
+working directory).</p></li>
+<li><p><strong>output_file_path</strong> (<em>string</em>) – absolute path where the output file will be generated.
+Older file with same path and name will be removed. This is a new argument compared
+to edit distance join. (defaults to the current working directory/$default_output_file_name).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the status of the computation. True if successfully completed else False (boolean).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="jaccard_join.html" class="btn btn-neutral float-right" title="Jaccard Join" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="edit_distance_join.html" class="btn btn-neutral float-left" title="Edit Distance Join" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, anhaidgroup
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
