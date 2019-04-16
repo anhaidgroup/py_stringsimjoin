@@ -253,7 +253,7 @@ def test_set_sim_join():
         test_function.description = 'Test ' + sim_measure_type + \
                                     ' with sim_score disabled.'
         yield test_function,
-
+'''
     # Test each similarity measure with n_jobs above 1.
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
@@ -325,7 +325,7 @@ def test_set_sim_join():
         test_function.description = 'Test ' + sim_measure_type + \
                     ' with allow_empty set to True and with output attributes.'
         yield test_function,
-'''
+
 
 class JaccardJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
