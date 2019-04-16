@@ -19,6 +19,7 @@ DEFAULT_COMP_OP = '<='
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
 
+'''
 @nottest
 def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
                     convert_to_str=False):
@@ -351,3 +352,4 @@ class EditDistJoinInvalidTestCases(unittest.TestCase):
         edit_distance_join(self.A, self.B, 'A.id', 'B.id', 'A.attr', 'B.attr',
                            self.threshold, self.comp_op, False,
                            ['A.attr'], ['B.invalid_attr'])
+'''
