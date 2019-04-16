@@ -27,7 +27,7 @@ JOIN_FN_MAP = {'COSINE': cosine_join,
 DEFAULT_COMP_OP = '>='
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
-'''
+
 @nottest
 def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
@@ -193,6 +193,7 @@ def test_set_sim_join():
                         tok_type + ' tokenizer for ' + label + '.'
                     yield test_function,
 
+'''
    # Test each similarity measure with different comparison operators.
     for sim_measure_type in sim_measure_types:
         for comp_op in ['>', '=']:
