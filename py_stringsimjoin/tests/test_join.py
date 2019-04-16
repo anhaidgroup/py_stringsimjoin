@@ -253,6 +253,7 @@ def test_set_sim_join():
         test_function.description = 'Test ' + sim_measure_type + \
                                     ' with sim_score disabled.'
         yield test_function,
+
 '''
     # Test each similarity measure with n_jobs above 1.
     for sim_measure_type in sim_measure_types:
@@ -268,6 +269,7 @@ def test_set_sim_join():
                                     ' with n_jobs above 1.'
         yield test_function,
 '''
+
     # scenario where join attributes are of type int
     test_scenario_2 = [(os.sep.join(['data', 'table_A.csv']), 'A.ID', 'A.zipcode'),
                        (os.sep.join(['data', 'table_B.csv']), 'B.ID', 'B.zipcode')]
