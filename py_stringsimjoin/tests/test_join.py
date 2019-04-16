@@ -182,28 +182,28 @@ def test_set_sim_join():
 
     # Test each combination of similarity measure, threshold and tokenizer
     # for different test scenarios.
-    for label, scenario in iteritems(data):
-        for sim_measure_type in sim_measure_types:
-            for threshold in thresholds.get(sim_measure_type):
-                for tok_type, tok in iteritems(tokenizers):
-                    test_function = partial(test_valid_join, scenario,
-                                        sim_measure_type, (tok, threshold))
-                    test_function.description = 'Test ' + sim_measure_type + \
-                        ' with ' + str(threshold) + ' threshold and ' + \
-                        tok_type + ' tokenizer for ' + label + '.'
-                    yield test_function,
+#    for label, scenario in iteritems(data):
+#        for sim_measure_type in sim_measure_types:
+#            for threshold in thresholds.get(sim_measure_type):
+#                for tok_type, tok in iteritems(tokenizers):
+#                    test_function = partial(test_valid_join, scenario,
+#                                        sim_measure_type, (tok, threshold))
+#                    test_function.description = 'Test ' + sim_measure_type + \
+#                        ' with ' + str(threshold) + ' threshold and ' + \
+#                        tok_type + ' tokenizer for ' + label + '.'
+#                    yield test_function,
 
 
    # Test each similarity measure with different comparison operators.
-#    for sim_measure_type in sim_measure_types:
-#        for comp_op in ['>', '=']:
-#            test_function = partial(test_valid_join, test_scenario_1,
-#                                                 sim_measure_type,
-#                                                 (tokenizers['SPACE_DELIMITER'],
-#                                                  0.3, comp_op, False))
-#            test_function.description = 'Test ' + sim_measure_type + \
-#                                        ' with comp_op ' + comp_op + '.'
-#            yield test_function,
+    for sim_measure_type in sim_measure_types:
+        for comp_op in ['>', '=']:
+            test_function = partial(test_valid_join, test_scenario_1,
+                                                 sim_measure_type,
+                                                 (tokenizers['SPACE_DELIMITER'],
+                                                  0.3, comp_op, False))
+            test_function.description = 'Test ' + sim_measure_type + \
+                                        ' with comp_op ' + comp_op + '.'
+            yield test_function,
 
     # Test each similarity measure with allow_missing set to True.
     for sim_measure_type in sim_measure_types:
