@@ -27,7 +27,7 @@ JOIN_FN_MAP = {'COSINE': cosine_join,
 DEFAULT_COMP_OP = '>='
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
-
+'''
 @nottest
 def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
@@ -694,3 +694,4 @@ class OverlapCoefficientJoinInvalidTestCases(unittest.TestCase):
                                  'A.attr', 'B.attr',
                                  self.tokenizer, self.threshold, '>=',
                                  True, False, ['A.attr'], ['B.invalid_attr'])
+'''
