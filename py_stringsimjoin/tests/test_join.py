@@ -195,15 +195,15 @@ def test_set_sim_join():
 
 
    # Test each similarity measure with different comparison operators.
-    for sim_measure_type in sim_measure_types:
-        for comp_op in ['>', '=']:
-            test_function = partial(test_valid_join, test_scenario_1,
-                                                 sim_measure_type,
-                                                 (tokenizers['SPACE_DELIMITER'],
-                                                  0.3, comp_op, False))
-            test_function.description = 'Test ' + sim_measure_type + \
-                                        ' with comp_op ' + comp_op + '.'
-            yield test_function,
+#    for sim_measure_type in sim_measure_types:
+#        for comp_op in ['>', '=']:
+#            test_function = partial(test_valid_join, test_scenario_1,
+#                                                 sim_measure_type,
+#                                                 (tokenizers['SPACE_DELIMITER'],
+#                                                  0.3, comp_op, False))
+#            test_function.description = 'Test ' + sim_measure_type + \
+#                                        ' with comp_op ' + comp_op + '.'
+#            yield test_function,
 
     # Test each similarity measure with allow_missing set to True.
     for sim_measure_type in sim_measure_types:
@@ -255,18 +255,18 @@ def test_set_sim_join():
         yield test_function,
 
     # Test each similarity measure with n_jobs above 1.
-#    for sim_measure_type in sim_measure_types:
-#        test_function = partial(test_valid_join, test_scenario_1,
-#                                                 sim_measure_type,
-#                                                 (tokenizers['SPACE_DELIMITER'],
-#                                                  0.3, '>=', False, False,
-#                                                  ['A.birth_year', 'A.zipcode'],
-#                                                  ['B.name', 'B.zipcode'],
-#                                                  'ltable.', 'rtable.',
-#                                                  False, 2))
-#        test_function.description = 'Test ' + sim_measure_type + \
-#                                    ' with n_jobs above 1.'
-#        yield test_function,
+    for sim_measure_type in sim_measure_types:
+        test_function = partial(test_valid_join, test_scenario_1,
+                                                 sim_measure_type,
+                                                 (tokenizers['SPACE_DELIMITER'],
+                                                  0.3, '>=', False, False,
+                                                  ['A.birth_year', 'A.zipcode'],
+                                                  ['B.name', 'B.zipcode'],
+                                                  'ltable.', 'rtable.',
+                                                  False, 2))
+        test_function.description = 'Test ' + sim_measure_type + \
+                                    ' with n_jobs above 1.'
+        yield test_function,
 
     # scenario where join attributes are of type int
     test_scenario_2 = [(os.sep.join(['data', 'table_A.csv']), 'A.ID', 'A.zipcode'),
