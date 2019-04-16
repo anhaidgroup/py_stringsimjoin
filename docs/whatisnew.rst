@@ -1,6 +1,8 @@
 What is New? 
 ============
 
-Compared to Version 0.2.0, the following is new:
+Compared to Version 0.3.0, the following is new:
 
-  * All the join methods using Cython's multithreading are modified to use multiprocessing, to avoid openmp dependency.
+  * Cython version was updated. The package is now built with updated Cython version >= 0.27.3.
+
+  * Added support for Python 3.7 version and dropped Testing support for Python 3.4 version.
