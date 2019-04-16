@@ -324,7 +324,7 @@ def test_set_sim_join():
         test_function.description = 'Test ' + sim_measure_type + \
                     ' with allow_empty set to True and with output attributes.'
         yield test_function,
-
+'''
 
 class JaccardJoinInvalidTestCases(unittest.TestCase):
     def setUp(self):
@@ -694,4 +694,4 @@ class OverlapCoefficientJoinInvalidTestCases(unittest.TestCase):
                                  'A.attr', 'B.attr',
                                  self.tokenizer, self.threshold, '>=',
                                  True, False, ['A.attr'], ['B.invalid_attr'])
-'''
+
