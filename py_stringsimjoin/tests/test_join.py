@@ -166,19 +166,19 @@ def test_set_sim_join():
     data = {'TEST_SCENARIO_1' : test_scenario_1}
 
     # similarity measures to be tested.
-#    sim_measure_types = ['COSINE', 'DICE', 'JACCARD', 'OVERLAP_COEFFICIENT']
-    sim_measure_types = ['DICE', 'JACCARD', 'OVERLAP_COEFFICIENT'] 
+    sim_measure_types = ['COSINE', 'DICE', 'JACCARD', 'OVERLAP_COEFFICIENT']
 
     # similarity thresholds to be tested.
     thresholds = {'JACCARD' : [0.3, 0.5, 0.7, 0.85, 1],
-#                  'COSINE' : [0.3, 0.5, 0.7, 0.85, 1], 
+                  'COSINE' : [0.3, 0.5, 0.7, 0.85, 1], 
                   'DICE' : [0.3, 0.5, 0.7, 0.85, 1],
                   'OVERLAP_COEFFICIENT' : [0.3, 0.5, 0.7, 0.85, 1]}
 
     # tokenizers to be tested.
-    tokenizers = {'SPACE_DELIMITER': DelimiterTokenizer(delim_set=[' '],
-                                                        return_set=True),
-                  '2_GRAM': QgramTokenizer(qval=2, return_set=True),
+    #tokenizers = {'SPACE_DELIMITER': DelimiterTokenizer(delim_set=[' '],
+    #                                                    return_set=True),
+    tokenizers = {'2_GRAM': QgramTokenizer(qval=2, return_set=True),
+    #              '2_GRAM': QgramTokenizer(qval=2, return_set=True),
                   '3_GRAM': QgramTokenizer(qval=3, return_set=True)}    
 
     # Test each combination of similarity measure, threshold and tokenizer for different test scenarios.
