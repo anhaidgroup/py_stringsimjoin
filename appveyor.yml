@@ -1,5 +1,6 @@
-environment:
+image: Visual Studio 2017
 
+environment:
   matrix:
     - python : 27
     - python : 27-x64
