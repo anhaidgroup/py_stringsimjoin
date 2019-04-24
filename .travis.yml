@@ -2,32 +2,84 @@ matrix:
   include:
   - os: linux
     python: 2.7
-    env: PYTHON_VERSION=2.7
+    env:
+      - PYTHON_VERSION=2.7
+      - INSTALL_METHOD=src
+  - os: linux
+    python: 2.7
+    env:
+      - PYTHON_VERSION=2.7
+      - INSTALL_METHOD=pip
   - os: linux
     python: 3.5
-    env: PYTHON_VERSION=3.5
+    env:
+      - PYTHON_VERSION=3.5
+      - INSTALL_METHOD=src
+  - os: linux
+    python: 3.5
+    env:
+      - PYTHON_VERSION=3.5
+      - INSTALL_METHOD=pip
   - os: linux                                                                   
     python: 3.6                                                                 
-    env: PYTHON_VERSION=3.6     
+    env:
+      - PYTHON_VERSION=3.6
+      - INSTALL_METHOD=src
+  - os: linux                                                                   
+    python: 3.6                                                                 
+    env:
+      - PYTHON_VERSION=3.6
+      - INSTALL_METHOD=pip
   - os: linux
     python: 3.7
-    env: PYTHON_VERSION=3.7
+    env:
+      - PYTHON_VERSION=3.7
+      - INSTALL_METHOD=src
+  - os: linux
+    python: 3.7
+    env:
+      - PYTHON_VERSION=3.7
+      - INSTALL_METHOD=pip
   - os: osx
     language: generic
     env:
-    - PYTHON_VERSION=2.7
+      - PYTHON_VERSION=2.7
+      - INSTALL_METHOD=src
   - os: osx
     language: generic
     env:
-    - PYTHON_VERSION=3.5
+      - PYTHON_VERSION=2.7
+      - INSTALL_METHOD=pip
+  - os: osx
+    language: generic
+    env:
+      - PYTHON_VERSION=3.5
+      - INSTALL_METHOD=src
+  - os: osx
+    language: generic
+    env:
+      - PYTHON_VERSION=3.5
+      - INSTALL_METHOD=pip
   - os: osx                                                                     
     language: generic                                                           
     env:                                                                        
-    - PYTHON_VERSION=3.6  
+      - PYTHON_VERSION=3.6
+      - INSTALL_METHOD=src
+  - os: osx                                                                     
+    language: generic                                                           
+    env:                                                                        
+      - PYTHON_VERSION=3.6
+      - INSTALL_METHOD=pip
   - os: osx
     language: generic
     env:
-    - PYTHON_VERSION=3.7
+      - PYTHON_VERSION=3.7
+      - INSTALL_METHOD=src
+  - os: osx
+    language: generic
+    env:
+      - PYTHON_VERSION=3.7
+      - INSTALL_METHOD=pip
 
 compiler:
     - gcc
@@ -38,19 +90,14 @@ before_install:
   - if [ "$PYTHON_VERSION" != "2.7" ]; then wget http://repo.continuum.io/miniconda/Miniconda3-latest-$MINICONDAVERSION-x86_64.sh -O miniconda.sh; fi
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
-
-install:
   - conda create --yes -n py_stringsimjoin_test_env python=$PYTHON_VERSION
   - source activate py_stringsimjoin_test_env
-  - python --version
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda install --yes gcc; fi
-  - which gcc
-  - pip install pandas joblib six nose Cython pyprind==2.9.8 py_stringmatching coveralls
-  - python setup.py build_ext --inplace
+  - python --version  
+
+install: TRAVIS_OS_NAME="$TRAVIS_OS_NAME" ./install/install-${INSTALL_METHOD}.sh
 
 script:
-  - coverage run -m nose
-  - uname -a
-
-after_success:
-  - coveralls
+  - source activate py_stringsimjoin_test_env
+  - cd ~
+  - pwd
+  - python -c "import py_stringsimjoin; print(py_stringsimjoin.__version__)"
