@@ -4,5 +4,8 @@
 
 source activate py_stringsimjoin_test_env
 
+# Package dependencies (TODO: factor this out)
+pip install -r requirements.txt
+
 # Install from TestPyPI
 pip install -i https://test.pypi.org/simple/ py-stringsimjoin
