@@ -166,7 +166,8 @@ def test_set_sim_join():
     data = {'TEST_SCENARIO_1' : test_scenario_1}
 
     # similarity measures to be tested.
-    sim_measure_types = ['COSINE', 'DICE', 'JACCARD', 'OVERLAP_COEFFICIENT']
+#    sim_measure_types = ['COSINE', 'DICE', 'JACCARD', 'OVERLAP_COEFFICIENT']
+    sim_measure_types = ['DICE', 'JACCARD', 'OVERLAP_COEFFICIENT'] 
 
     # similarity thresholds to be tested.
     thresholds = {'JACCARD' : [0.3, 0.5, 0.7, 0.85, 1],
