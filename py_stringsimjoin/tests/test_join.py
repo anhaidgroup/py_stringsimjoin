@@ -170,7 +170,7 @@ def test_set_sim_join():
 
     # similarity thresholds to be tested.
     thresholds = {'JACCARD' : [0.3, 0.5, 0.7, 0.85, 1],
-                  'COSINE' : [0.3] 
+                  'COSINE' : [0.3, 0.5, 0.7, 0.85, 1], 
                   'DICE' : [0.3, 0.5, 0.7, 0.85, 1],
                   'OVERLAP_COEFFICIENT' : [0.3, 0.5, 0.7, 0.85, 1]}
 
