@@ -199,7 +199,8 @@ def test_set_sim_join():
         for comp_op in ['>', '=']:
             test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
-                                                 (tokenizers['SPACE_DELIMITER'],
+#                                                 (tokenizers['SPACE_DELIMITER'],
+                                                  (tokenizers['2_GRAM'],
                                                   0.3, comp_op, False))
             test_function.description = 'Test ' + sim_measure_type + \
                                         ' with comp_op ' + comp_op + '.'
@@ -209,7 +210,8 @@ def test_set_sim_join():
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
-                                                 (tokenizers['SPACE_DELIMITER'],
+                                                 (tokenizers['2_GRAM'],
+#                                                 (tokenizers['SPACE_DELIMITER'],
                                                   0.7, '>=', False, True))
         test_function.description = 'Test ' + sim_measure_type + \
                                     ' with allow_missing set to True.'
@@ -219,7 +221,8 @@ def test_set_sim_join():
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
-                                                 (tokenizers['SPACE_DELIMITER'],
+#                                                 (tokenizers['SPACE_DELIMITER'],
+                                                 (tokenizers['2_GRAM'],
                                                   0.3, '>=', False, False,
                                                   ['A.ID', 'A.birth_year', 'A.zipcode'],
                                                   ['B.ID', 'B.name', 'B.zipcode']))
@@ -231,7 +234,8 @@ def test_set_sim_join():
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
-                                                 (tokenizers['SPACE_DELIMITER'],
+ #                                                (tokenizers['SPACE_DELIMITER'],
+                                                 (tokenizers['2_GRAM'],
                                                   0.7, '>=', False, False,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
@@ -244,7 +248,8 @@ def test_set_sim_join():
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
-                                                 (tokenizers['SPACE_DELIMITER'],
+#                                                 (tokenizers['SPACE_DELIMITER'],
+                                                 (tokenizers['2_GRAM'],
                                                   0.7, '>=', False, False,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
@@ -258,7 +263,8 @@ def test_set_sim_join():
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
-                                                 (tokenizers['SPACE_DELIMITER'],
+#                                                 (tokenizers['SPACE_DELIMITER'],
+                                                 (tokenizers['2_GRAM'],
                                                   0.3, '>=', False, False,
                                                   ['A.birth_year', 'A.zipcode'],
                                                   ['B.name', 'B.zipcode'],
