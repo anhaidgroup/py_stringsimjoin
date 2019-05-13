@@ -71,8 +71,8 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
 
     # Test that name " " is causing error
     print('Testing removing values with " " for name:')
-    ltable_not_missing = ltable_not_missing[ltable_not_missing['A.name'] != ' ']
-    rtable_not_missing = rtable_not_missing[rtable_not_missing['B.name'] != ' ']
+    #ltable_not_missing = ltable_not_missing[ltable_not_missing['A.name'] != ' ']
+    #rtable_not_missing = rtable_not_missing[rtable_not_missing['B.name'] != ' ']
 
     # Print message about if we will use tokenizer
     print('Is len(args) > 3: {}'.format(len(args) > 3))
@@ -186,9 +186,9 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
                                    str(row[r_out_prefix + r_key_attr]))))
    
     # verify whether the actual pairs and the expected pairs match.
-    #assert_equal(len(expected_pairs), len(actual_pairs))
-    #common_pairs = actual_pairs.intersection(expected_pairs)
-    #assert_equal(len(common_pairs), len(expected_pairs))
+    assert_equal(len(expected_pairs), len(actual_pairs))
+    common_pairs = actual_pairs.intersection(expected_pairs)
+    assert_equal(len(common_pairs), len(expected_pairs))
 
 def test_set_sim_join():
     # data to be tested.
@@ -206,7 +206,7 @@ def test_set_sim_join():
                   'OVERLAP_COEFFICIENT' : [0.3, 0.5, 0.7, 0.85, 1]}
 
     # tokenizers to be tested.
-    tok = DelimiterTokenizer(delim_set=[' '], return_set=True)
+    tok = DelimiterTokenizer(delim_set=['i'], return_set=True)
 
     # Test the space delimiter tokenizer
     for sim_measure_type in sim_measure_types:
