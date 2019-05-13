@@ -206,7 +206,7 @@ def test_set_sim_join():
                   'OVERLAP_COEFFICIENT' : [0.3, 0.5, 0.7, 0.85, 1]}
 
     # tokenizers to be tested.
-    tok = DelimiterTokenizer(delim_set=['i'], return_set=True)
+    tok = DelimiterTokenizer(return_set=True)
 
     # Test the space delimiter tokenizer
     for sim_measure_type in sim_measure_types:
