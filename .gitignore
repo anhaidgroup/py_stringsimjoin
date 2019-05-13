@@ -8,6 +8,7 @@ __pycache__/
 py_stringsimjoin/similarity_measure/*.cpp
 py_stringsimjoin/join/*.cpp                                       
 py_stringsimjoin/utils/*.cpp                                       
+py_stringsimjoin/index/*.cpp
 
 # Distribution / packaging
 .Python
