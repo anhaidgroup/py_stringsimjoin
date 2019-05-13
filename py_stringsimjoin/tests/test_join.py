@@ -704,3 +704,4 @@ class OverlapCoefficientJoinInvalidTestCases(unittest.TestCase):
                                  self.tokenizer, self.threshold, '>=',
                                  True, False, ['A.attr'], ['B.invalid_attr'])
 
+

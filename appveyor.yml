@@ -32,7 +32,8 @@ build: false
 
 test_script:
   # run unit tests
-  - nosetests -v
+  # - nosetests
+  - nosetests py_stringsimjoin/tests/test_error.py -v -s
 
 on_success:
   - echo Build succesful
