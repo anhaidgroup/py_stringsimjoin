@@ -53,7 +53,6 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
         dataframe_column_to_str(rtable, r_join_attr, inplace=True)
 
     print('Data tables loaded.')
-    sleep(2)
 
     missing_pairs = set()
     # if allow_missing flag is set, compute missing pairs.
@@ -204,10 +203,12 @@ def test_set_sim_join():
 
     # tokenizers to be tested.
     tok = DelimiterTokenizer(delim_set=[' '], return_set=True)
+    tok = QgramTokenizer(qval=2, return_set=True)
 
     # Test the space delimiter tokenizer
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1, sim_measure_type, (tok, 0.5))
         test_function.description = 'Test Appveyor Error with sim measure {}.'.format(sim_measure_type)
+        print('Created test function for sim measure {}'.format(sim_measure_type))
         yield test_function,
 
