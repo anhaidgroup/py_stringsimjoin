@@ -33,6 +33,7 @@ DEFAULT_R_OUT_PREFIX = 'r_'
 def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
 
     # Print message that we are in the function
+    print('\n-------------------------------------------------------')
     print('Entering test_valid_join function.')
 
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
@@ -90,6 +91,13 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     cartprod['sim_score'] = cartprod.apply(lambda row: round(sim_func(
                 args[0].tokenize(str(row[l_join_attr])),
                 args[0].tokenize(str(row[r_join_attr]))), 4), axis=1)
+
+    print('cartpr0d: {}'.format(cartprod))
+    for row in cartprod.iterrows():
+        print('left val: <{}>'.format(row[1][l_join_attr]))
+        print('right val: <{}>'.format(row[1][r_join_attr]))
+        print('ltokens: {}'.format(args[0].tokenize(str(row[1][l_join_attr]))))
+        print('rtokens: {}'.format(args[0].tokenize(str(row[1][r_join_attr]))))
    
     comp_fn = COMP_OP_MAP[DEFAULT_COMP_OP]
     # Check for comp_op in args.
@@ -101,6 +109,8 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
         if comp_fn(float(row['sim_score']), args[1]):
             expected_pairs.add(','.join((str(row[l_key_attr]),
                                          str(row[r_key_attr]))))
+
+    print(sim_func([], []))
 
     expected_pairs = expected_pairs.union(missing_pairs)
 
@@ -117,22 +127,57 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     expected_output_attrs = ['_id']
     l_out_prefix = DEFAULT_L_OUT_PREFIX
     r_out_prefix = DEFAULT_R_OUT_PREFIX
+    
+    # Check for l_out_prefix in args.
+    if len(args) > 7:
+        l_out_prefix = args[7]
     expected_output_attrs.append(l_out_prefix + l_key_attr)
+
+    # Check for r_out_prefix in args.
+    if len(args) > 8:
+        r_out_prefix = args[8]
     expected_output_attrs.append(r_out_prefix + r_key_attr)
 
-    # verify whether the output table has the necessary attributes.
-    #assert_list_equal(list(actual_candset.columns.values),
-    #                  expected_output_attrs)
+    # Check for l_out_attrs in args.
+    if len(args) > 5:
+        if args[5]:
+            l_out_attrs = remove_redundant_attrs(args[5], l_key_attr)
+            for attr in l_out_attrs:
+                expected_output_attrs.append(l_out_prefix + attr)
 
-    #actual_pairs = set()
-    #for idx, row in actual_candset.iterrows():
-    #    actual_pairs.add(','.join((str(row[l_out_prefix + l_key_attr]),
-    #                               str(row[r_out_prefix + r_key_attr]))))
+    # Check for r_out_attrs in args.
+    if len(args) > 6:
+        if args[6]:
+            r_out_attrs = remove_redundant_attrs(args[6], r_key_attr)
+            for attr in r_out_attrs:
+                expected_output_attrs.append(r_out_prefix + attr)
+
+    # Check for out_sim_score in args. 
+    if len(args) > 9:
+        if args[9]:
+            expected_output_attrs.append('_sim_score')
+    else:
+        expected_output_attrs.append('_sim_score')
+
+    # verify whether the output table has the necessary attributes.
+    assert_list_equal(list(actual_candset.columns.values),
+                      expected_output_attrs)
+
+    actual_pairs = set()
+    for idx, row in actual_candset.iterrows():
+        actual_pairs.add(','.join((str(row[l_out_prefix + l_key_attr]),
+                                   str(row[r_out_prefix + r_key_attr]))))
+
+    print('Expected: {}'.format(expected_pairs))
+    print('Actual: {}'.format(actual_pairs))
+    print('Actual Candset: {}'.format(actual_candset))
    
     # verify whether the actual pairs and the expected pairs match.
     #assert_equal(len(expected_pairs), len(actual_pairs))
     #common_pairs = actual_pairs.intersection(expected_pairs)
     #assert_equal(len(common_pairs), len(expected_pairs))
+
+    print('-------------------------------------------------------')
 
 def test_set_sim_join():
     # data to be tested.
