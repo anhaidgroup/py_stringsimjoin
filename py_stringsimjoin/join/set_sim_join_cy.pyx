@@ -41,10 +41,10 @@ def set_sim_join_cy(ltable, rtable,
     r_join_attr_index = r_columns.index(r_join_attr)                            
     r_out_attrs_indices = find_output_attribute_indices(r_columns, r_out_attrs) 
 
-                     
+                   
     cdef vector[vector[int]] ltokens, rtokens
-    tokenize_lists(ltable, rtable, l_join_attr_index, r_join_attr_index, 
-                   tokenizer, ltokens, rtokens)
+    #tokenize_lists(ltable, rtable, l_join_attr_index, r_join_attr_index, 
+    #               tokenizer, ltokens, rtokens)
 
     cdef int sim_type
     sim_type = get_sim_type(sim_measure)

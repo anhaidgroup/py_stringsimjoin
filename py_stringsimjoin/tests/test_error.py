@@ -70,7 +70,7 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     rtable_not_missing = rtable[pd.notnull(rtable[r_join_attr])].copy()
 
     # Test that name " " is causing error
-    print('Testing removing values with " " for name:')
+    #print('Testing removing values with " " for name:')
     #ltable_not_missing = ltable_not_missing[ltable_not_missing['A.name'] != ' ']
     #rtable_not_missing = rtable_not_missing[rtable_not_missing['B.name'] != ' ']
 
@@ -134,10 +134,10 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     orig_return_set_flag = args[0].get_return_set()
 
     # use join function to obtain actual output pairs.
-    #actual_candset = join_fn(ltable, rtable,
-    #                         l_key_attr, r_key_attr,
-    #                         l_join_attr, r_join_attr,
-    #                         *args)
+    actual_candset = join_fn(ltable, rtable,
+                             l_key_attr, r_key_attr,
+                             l_join_attr, r_join_attr,
+                             *args)
 
     assert_equal(args[0].get_return_set(), orig_return_set_flag)
 
