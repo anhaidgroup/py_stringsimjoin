@@ -24,16 +24,16 @@ cdef void tokenize_lists(ltable, rtable,
                          [l_join_attr_index, r_join_attr_index],                          
                          tokenizer)                                             
                                                                                 
-    #for lrow in ltable:                                                         
-    #    lstr = lrow[l_join_attr_index]                                               
-    #    py_tokens = order_using_token_ordering(                                 
-    #                    tokenizer.tokenize(lstr), token_ordering)               
+    for lrow in ltable:                                                         
+        lstr = lrow[l_join_attr_index]                                               
+        py_tokens = order_using_token_ordering(                                 
+                        tokenizer.tokenize(lstr), token_ordering)               
     #    ltokens.push_back(py_tokens)                                            
                                                                                 
-    #for rrow in rtable:                                                         
-    #    rstr = rrow[r_join_attr_index]                                               
-    #    py_tokens = order_using_token_ordering(                                 
-    #                    tokenizer.tokenize(rstr), token_ordering)               
+    for rrow in rtable:                                                         
+        rstr = rrow[r_join_attr_index]                                               
+        py_tokens = order_using_token_ordering(                                 
+                        tokenizer.tokenize(rstr), token_ordering)               
     #    rtokens.push_back(py_tokens)                                            
 
 

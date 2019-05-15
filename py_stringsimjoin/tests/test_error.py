@@ -33,14 +33,11 @@ DEFAULT_R_OUT_PREFIX = 'r_'
 def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
 
     # Print message that we are in the function
-    print('\n\n---------------------------------------------------------------------------')
     print('Entering test_valid_join function.')
 
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
     (rtable_path, r_key_attr, r_join_attr) = scenario[1]
     join_fn = JOIN_FN_MAP[sim_measure_type]
-
-    print('Loaded scenario and join_fn.')
 
     # load input tables for the tests.
     ltable = pd.read_csv(os.path.join(os.path.dirname(__file__),
@@ -51,8 +48,6 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     if convert_to_str:
         dataframe_column_to_str(ltable, l_join_attr, inplace=True)
         dataframe_column_to_str(rtable, r_join_attr, inplace=True)
-
-    print('Data tables loaded.')
 
     missing_pairs = set()
     # if allow_missing flag is set, compute missing pairs.
@@ -69,26 +64,11 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     ltable_not_missing = ltable[pd.notnull(ltable[l_join_attr])].copy()
     rtable_not_missing = rtable[pd.notnull(rtable[r_join_attr])].copy()
 
-    # Test that name " " is causing error
-    #print('Testing removing values with " " for name:')
-    #ltable_not_missing = ltable_not_missing[ltable_not_missing['A.name'] != ' ']
-    #rtable_not_missing = rtable_not_missing[rtable_not_missing['B.name'] != ' ']
-
-    # Print message about if we will use tokenizer
-    print('Is len(args) > 3: {}'.format(len(args) > 3))
-
     if len(args) > 3 and (not args[3]):
-
-        # Print message that we are about to use the tokenizer
-        print('About to use tokenizer to obtain ltable_not_missing and rtable_not_missing.')
-
         ltable_not_missing = ltable_not_missing[ltable_not_missing.apply(
             lambda row: len(args[0].tokenize(str(row[l_join_attr]))), 1) > 0]
         rtable_not_missing = rtable_not_missing[rtable_not_missing.apply(
             lambda row: len(args[0].tokenize(str(row[r_join_attr]))), 1) > 0]
-
-        # Print message that we have finished using the tokenizer here
-        print('Finished using tokenizer for ltable_not_missing and rtable_not_missing.')
 
     # generate cartesian product to be used as candset
     ltable_not_missing['tmp_join_key'] = 1
@@ -105,18 +85,11 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
 
     sim_func = get_sim_function(sim_measure_type)
 
-    # Print message that we are about to use the tokenizer
-    print('About to use tokenizer to obtain cartprod.')
-
     # apply sim function to the entire cartesian product to obtain
     # the expected set of pairs satisfying the threshold.
     cartprod['sim_score'] = cartprod.apply(lambda row: round(sim_func(
                 args[0].tokenize(str(row[l_join_attr])),
                 args[0].tokenize(str(row[r_join_attr]))), 4), axis=1)
-    
-    # Print message that we have finished using the tokenizer here
-    print('Finished using tokenizer for cartprod.')
-    print('---------------------------------------------------------------------------\n')
    
     comp_fn = COMP_OP_MAP[DEFAULT_COMP_OP]
     # Check for comp_op in args.
