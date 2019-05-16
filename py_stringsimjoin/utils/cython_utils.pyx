@@ -28,24 +28,14 @@ cdef void tokenize_lists(ltable, rtable,
         lstr = lrow[l_join_attr_index]                                               
         py_tokens = order_using_token_ordering(                                 
                         tokenizer.tokenize(lstr), token_ordering)
-        if len(py_tokens) > 0:               
-            ltokens.push_back(py_tokens)
-        else:
-            ltokens.push_back(<vector[int]>py_tokens)
-            print('ltokens (utils): {}'.format(ltokens))
-            print('ltokens type: {}'.format(type(rtokens)))                                      
+        ltokens.push_back(<vector[int]>py_tokens)                         
 
     for rrow in rtable:
         rstr = rrow[r_join_attr_index]                                               
         py_tokens = order_using_token_ordering(                                 
-                        tokenizer.tokenize(rstr), token_ordering)               
-        if len(py_tokens) > 0:               
-            rtokens.push_back(py_tokens)
-        else:
-            rtokens.push_back(<vector[int]>py_tokens)
-            print('ltokens (utils): {}'.format(ltokens))
-            print('ltokens type: {}'.format(type(rtokens)))                                           
-
+                        tokenizer.tokenize(rstr), token_ordering)   
+        rtokens.push_back(<vector[int]>py_tokens)         
+            
 
 cdef generate_output_table(ltable_array, rtable_array, 
                            vector[vector[pair[int, int]]]& output_pairs, 
