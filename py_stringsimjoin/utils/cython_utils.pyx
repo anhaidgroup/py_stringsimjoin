@@ -31,6 +31,7 @@ cdef void tokenize_lists(ltable, rtable,
         if len(py_tokens) > 0:               
             ltokens.push_back(py_tokens)
         else:
+            ltokens.push_back(<vector[int]>py_tokens)
             print('ltokens (utils): {}'.format(ltokens))
             print('ltokens type: {}'.format(type(rtokens)))                                      
 
@@ -41,6 +42,7 @@ cdef void tokenize_lists(ltable, rtable,
         if len(py_tokens) > 0:               
             rtokens.push_back(py_tokens)
         else:
+            rtokens.push_back(<vector[int]>py_tokens)
             print('ltokens (utils): {}'.format(ltokens))
             print('ltokens type: {}'.format(type(rtokens)))                                           
 
