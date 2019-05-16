@@ -96,19 +96,16 @@ def set_sim_join_cy(ltable, rtable,
         size_lower_bound = int_max(get_size_lower_bound(m, sim_type, threshold),
                                    index.min_len)                               
         size_upper_bound = int_min(get_size_upper_bound(m, sim_type, threshold),
-                                   index.max_len)    
+                                   index.max_len)  
 
-        output_header = get_output_header_from_tables(l_key_attr, r_key_attr,       
-                                                  l_out_attrs, r_out_attrs,     
-                                                  l_out_prefix, r_out_prefix)  
-        output_rows = []  
-        output_table = pd.DataFrame(output_rows, columns=output_header)             
-        return output_table                           
+        print('tokens (set_sim_join): {}'.format(tokens))
+        print('size_lower_bound: {}'.format(size_lower_bound))
+        print('size_upper_bound: {}'.format(size_upper_bound))                          
 
         for size in range(size_lower_bound, size_upper_bound + 1):              
             overlap_threshold_cache[size] = get_overlap_threshold(size, m, sim_type, threshold)
 
-        for j in range(prefix_length):                                          
+        for j in range(min(m, prefix_length)):                                          
             if index.index.find(tokens[j]) == index.index.end():                
                 continue                                                        
             candidates = index.index[tokens[j]]                                 
