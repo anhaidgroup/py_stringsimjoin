@@ -50,9 +50,8 @@ def set_sim_join_cy(ltable, rtable,
     sim_type = get_sim_type(sim_measure)
 
     cdef PositionIndexCy index = PositionIndexCy()                                
-    index = build_position_index(ltokens, sim_type, threshold, allow_empty)                            
-
-
+    index = build_position_index(ltokens, sim_type, threshold, allow_empty) 
+ 
     cdef omap[int, int] candidate_overlap, overlap_threshold_cache              
     cdef vector[pair[int, int]] candidates                                      
     cdef vector[int] tokens                                                     
@@ -61,7 +60,7 @@ def set_sim_join_cy(ltable, rtable,
     cdef int size, size_lower_bound, size_upper_bound                           
     cdef double sim_score, overlap_score                                        
     cdef fnptr sim_fn                                           
-    cdef compfnptr comp_fn                
+    cdef compfnptr comp_fn               
     sim_fn = get_sim_function(sim_type)                                         
     comp_fn = get_comparison_function(get_comp_type(comp_op))
 
@@ -71,10 +70,11 @@ def set_sim_join_cy(ltable, rtable,
                                                                                 
     if show_progress:                                                           
         prog_bar = pyprind.ProgBar(len(rtable))
+
                                                                             
-    for i in range(rtokens.size()):                          
+    for i in range(rtokens.size()):                        
         tokens = rtokens[i]                                                     
-        m = tokens.size()                                                       
+        m = tokens.size()                                                    
 
         if allow_empty and m == 0:
             for j in index.l_empty_ids:
@@ -171,14 +171,14 @@ cdef PositionIndexCy build_position_index(vector[vector[int]]& token_vectors,
     cdef vector[int] tokens, size_vector                                        
     cdef int prefix_length, token, i, j, m, n=token_vectors.size(), min_len=100000, max_len=0
     cdef omap[int, vector[pair[int, int]]] index
-    cdef vector[int] empty_l_ids                                
-    for i in range(n):                                                          
-        tokens = token_vectors[i]                                               
-        m = tokens.size()                                                       
+    cdef vector[int] empty_l_ids                               
+    for i in range(n):                                                         
+        tokens = token_vectors[i]                                              
+        m = tokens.size()                                                     
         size_vector.push_back(m)                                                
-        prefix_length = get_prefix_length(m, sim_type, threshold)               
-        for j in range(prefix_length):                                          
-            index[tokens[j]].push_back(pair[int, int](i, j))                    
+        prefix_length = get_prefix_length(m, sim_type, threshold)             
+        for j in range(min(m, prefix_length)):                                          
+            index[tokens[j]].push_back(pair[int, int](i, j))                  
         if m > max_len:                                                         
             max_len = m                                                         
         if m < min_len:                                                         
