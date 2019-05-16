@@ -308,8 +308,7 @@ def test_set_sim_join():
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
-#                                                 (tokenizers['SPACE_DELIMITER'],
-                                                 (tokenizers['2_GRAM'],
+                                                 (tokenizers['SPACE_DELIMITER'],
                                                   0.7, '>=', True))
         test_function.description = 'Test ' + sim_measure_type + \
                                     ' with allow_empty set to True.'
@@ -319,8 +318,7 @@ def test_set_sim_join():
     for sim_measure_type in sim_measure_types:
         test_function = partial(test_valid_join, test_scenario_1,
                                                  sim_measure_type,
-#                                                 (tokenizers['SPACE_DELIMITER'],
-                                                 (tokenizers['2_GRAM'],
+                                                 (tokenizers['SPACE_DELIMITER'],
                                                   0.7, '>=', True, False,
                                                   ['A.name'], ['B.name']))
         test_function.description = 'Test ' + sim_measure_type + \
