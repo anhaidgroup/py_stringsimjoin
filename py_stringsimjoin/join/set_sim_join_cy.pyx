@@ -50,8 +50,16 @@ def set_sim_join_cy(ltable, rtable,
     sim_type = get_sim_type(sim_measure)
 
     cdef PositionIndexCy index = PositionIndexCy()                                
-    index = build_position_index(ltokens, sim_type, threshold, allow_empty) 
- 
+    #index = build_position_index(ltokens, sim_type, threshold, allow_empty) 
+
+    output_header = get_output_header_from_tables(l_key_attr, r_key_attr,       
+                                                  l_out_attrs, r_out_attrs,     
+                                                  l_out_prefix, r_out_prefix)  
+    output_rows = []  
+    output_table = pd.DataFrame(output_rows, columns=output_header)             
+    return output_table
+     
+
     cdef omap[int, int] candidate_overlap, overlap_threshold_cache              
     cdef vector[pair[int, int]] candidates                                      
     cdef vector[int] tokens                                                     
@@ -176,15 +184,20 @@ cdef PositionIndexCy build_position_index(vector[vector[int]]& token_vectors,
         tokens = token_vectors[i]                                              
         m = tokens.size()                                                     
         size_vector.push_back(m)                                                
-        prefix_length = get_prefix_length(m, sim_type, threshold)             
+        prefix_length = get_prefix_length(m, sim_type, threshold)
+        print('prefix_length: {}'.format(prefix_length))            
         for j in range(min(m, prefix_length)):                                          
             index[tokens[j]].push_back(pair[int, int](i, j))                  
         if m > max_len:                                                         
             max_len = m                                                         
         if m < min_len:                                                         
             min_len = m
+        print('max_len: {0}, min_len: {1}'.format(max_len, min_len))
+        print('m: {0}, allow_empty: {1}'.format(m, allow_empty))
+        print('i: {}'.format(i))
         if allow_empty and m == 0:
             empty_l_ids.push_back(i)
+        print('empty_l_ids: {}'.format(empty_l_ids))
 
     pos_index.set_fields(index, size_vector, empty_l_ids, 
                          min_len, max_len, threshold)
