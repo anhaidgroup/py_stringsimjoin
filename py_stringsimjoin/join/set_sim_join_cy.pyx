@@ -50,7 +50,7 @@ def set_sim_join_cy(ltable, rtable,
     sim_type = get_sim_type(sim_measure)
 
     cdef PositionIndexCy index = PositionIndexCy()                                
-    #index = build_position_index(ltokens, sim_type, threshold, allow_empty) 
+    index = build_position_index(ltokens, sim_type, threshold, allow_empty) 
 
     output_header = get_output_header_from_tables(l_key_attr, r_key_attr,       
                                                   l_out_attrs, r_out_attrs,     
