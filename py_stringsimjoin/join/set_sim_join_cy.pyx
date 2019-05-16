@@ -70,13 +70,6 @@ def set_sim_join_cy(ltable, rtable,
                                                                                 
     if show_progress:                                                           
         prog_bar = pyprind.ProgBar(len(rtable))
-
-    output_header = get_output_header_from_tables(l_key_attr, r_key_attr,       
-                                                  l_out_attrs, r_out_attrs,     
-                                                  l_out_prefix, r_out_prefix)  
-    output_rows = []  
-    output_table = pd.DataFrame(output_rows, columns=output_header)             
-    return output_table
                                                                             
     for i in range(rtokens.size()):                        
         tokens = rtokens[i]                                                     
@@ -103,7 +96,14 @@ def set_sim_join_cy(ltable, rtable,
         size_lower_bound = int_max(get_size_lower_bound(m, sim_type, threshold),
                                    index.min_len)                               
         size_upper_bound = int_min(get_size_upper_bound(m, sim_type, threshold),
-                                   index.max_len)                               
+                                   index.max_len)    
+
+        output_header = get_output_header_from_tables(l_key_attr, r_key_attr,       
+                                                  l_out_attrs, r_out_attrs,     
+                                                  l_out_prefix, r_out_prefix)  
+        output_rows = []  
+        output_table = pd.DataFrame(output_rows, columns=output_header)             
+        return output_table                           
 
         for size in range(size_lower_bound, size_upper_bound + 1):              
             overlap_threshold_cache[size] = get_overlap_threshold(size, m, sim_type, threshold)
@@ -179,7 +179,8 @@ cdef PositionIndexCy build_position_index(vector[vector[int]]& token_vectors,
     cdef omap[int, vector[pair[int, int]]] index
     cdef vector[int] empty_l_ids                               
     for i in range(n):                                                         
-        tokens = token_vectors[i]                                              
+        tokens = token_vectors[i]
+        print('tokens: {}'.format(tokens))                                             
         m = tokens.size()                                                     
         size_vector.push_back(m)                                                
         prefix_length = get_prefix_length(m, sim_type, threshold)
