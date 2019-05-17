@@ -27,15 +27,15 @@ cdef void tokenize_lists(ltable, rtable,
     for lrow in ltable:                                                         
         lstr = lrow[l_join_attr_index]                                               
         py_tokens = order_using_token_ordering(                                 
-                        tokenizer.tokenize(lstr), token_ordering)               
-        ltokens.push_back(py_tokens)                                            
-                                                                                
-    for rrow in rtable:                                                         
+                        tokenizer.tokenize(lstr), token_ordering)
+        ltokens.push_back(<vector[int]>py_tokens)                         
+
+    for rrow in rtable:
         rstr = rrow[r_join_attr_index]                                               
         py_tokens = order_using_token_ordering(                                 
-                        tokenizer.tokenize(rstr), token_ordering)               
-        rtokens.push_back(py_tokens)                                            
-
+                        tokenizer.tokenize(rstr), token_ordering)   
+        rtokens.push_back(<vector[int]>py_tokens)         
+            
 
 cdef generate_output_table(ltable_array, rtable_array, 
                            vector[vector[pair[int, int]]]& output_pairs, 

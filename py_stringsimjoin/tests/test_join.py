@@ -170,7 +170,7 @@ def test_set_sim_join():
 
     # similarity thresholds to be tested.
     thresholds = {'JACCARD' : [0.3, 0.5, 0.7, 0.85, 1],
-                  'COSINE' : [0.3, 0.5, 0.7, 0.85, 1],
+                  'COSINE' : [0.3, 0.5, 0.7, 0.85, 1], 
                   'DICE' : [0.3, 0.5, 0.7, 0.85, 1],
                   'OVERLAP_COEFFICIENT' : [0.3, 0.5, 0.7, 0.85, 1]}
 
@@ -180,8 +180,7 @@ def test_set_sim_join():
                   '2_GRAM': QgramTokenizer(qval=2, return_set=True),
                   '3_GRAM': QgramTokenizer(qval=3, return_set=True)}    
 
-    # Test each combination of similarity measure, threshold and tokenizer
-    # for different test scenarios.
+    # Test each combination of similarity measure, threshold and tokenizer for different test scenarios.
     for label, scenario in iteritems(data):
         for sim_measure_type in sim_measure_types:
             for threshold in thresholds.get(sim_measure_type):
@@ -192,6 +191,7 @@ def test_set_sim_join():
                         ' with ' + str(threshold) + ' threshold and ' + \
                         tok_type + ' tokenizer for ' + label + '.'
                     yield test_function,
+
 
    # Test each similarity measure with different comparison operators.
     for sim_measure_type in sim_measure_types:
