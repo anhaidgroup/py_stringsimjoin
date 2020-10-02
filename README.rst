@@ -3,8 +3,8 @@ py_stringsimjoin
 
 This project seeks to build a Python software package that provides scalable implementation of string similarity joins over two tables, for commonly used similarity measures such as Jaccard, Dice, cosine, overlap, overlap coefficient and edit distance. The package is free, open-source, and BSD-licensed.
 
-Important links
-===============
+Important links/links to ponder
+==============================
 
  * Project Homepage: https://sites.google.com/site/anhaidgroup/projects/magellan/py_stringsimjoin
  * Code repository: https://github.com/anhaidgroup/py_stringsimjoin
