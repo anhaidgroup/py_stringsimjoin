@@ -1,5 +1,6 @@
 # set similarity join
 
+#importing importand libraries(pandas for data structure)
 import pandas as pd
 import pyprind                                                                  
 
@@ -104,7 +105,7 @@ def set_sim_join_cy(ltable, rtable,
         for j in range(min(m, prefix_length)):                                          
             if index.index.find(tokens[j]) == index.index.end():                
                 continue                                                        
-            candidates = index.index[tokens[j]]                                 
+            candidates = index.index[tokens[j]]      #nested loop                           
             for cand in candidates:                                             
                 current_overlap = candidate_overlap[cand.first]                 
                 if current_overlap != -1:                                       
