@@ -35,4 +35,4 @@ test_script:
   - nosetests
 
 on_success:
-  - echo Build succesful
+  - echo Build successful
