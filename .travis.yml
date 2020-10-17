@@ -43,7 +43,6 @@ install:
   - conda create --yes -n py_stringsimjoin_test_env python=$PYTHON_VERSION
   - source activate py_stringsimjoin_test_env
   - python --version
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda install --yes gcc; fi
   - which gcc
   - pip install --upgrade pip
   - pip install pandas joblib six nose Cython pyprind==2.9.8 py_stringmatching coveralls
