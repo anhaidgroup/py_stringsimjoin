@@ -45,6 +45,7 @@ install:
   - python --version
   - which gcc
   - pip install --upgrade pip
+  - pip install "numpy<1.19"
   - pip install pandas joblib six nose Cython pyprind==2.9.8 py_stringmatching coveralls
   - python setup.py build_ext --inplace
 
