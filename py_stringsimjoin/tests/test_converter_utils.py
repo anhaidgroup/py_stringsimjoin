@@ -71,7 +71,7 @@ class DataframeColumnToStrTestCases(unittest.TestCase):
             if pd.isnull(row['float_col_with_int_val']): 
                 continue
             assert_equal(str(int(row['float_col_with_int_val'])),
-                         out_df.ix[idx]['float_col_with_int_val'])
+                         out_df.loc[idx]['float_col_with_int_val'])
 
     def test_str_col_with_inplace(self):                                      
         assert_equal(self.dataframe['str_col'].dtype, object)                  
@@ -214,7 +214,7 @@ class SeriesToStrTestCases(unittest.TestCase):
         for idx, val in self.float_col_with_int_val.iteritems():                              
             if pd.isnull(val):                        
                 continue                                                        
-            assert_equal(str(int(val)), out_series.ix[idx])              
+            assert_equal(str(int(val)), out_series.loc[idx])              
                                                                                 
     def test_str_col_with_inplace(self):                                        
         assert_equal(self.str_col.dtype, object)                   

@@ -22,6 +22,7 @@ install:
   - python -m pip install --upgrade pip
 
   # Install the build and runtime dependencies of the project.
+  - pip install "numpy<1.19"
   - pip install setuptools pandas six joblib py_stringmatching nose cython
   - pip install pyprind==2.9.8
 
