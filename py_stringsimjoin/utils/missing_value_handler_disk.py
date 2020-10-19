@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pyprind
 import os
@@ -89,7 +90,7 @@ def get_pairs_with_missing_value_disk(ltable, rtable,
                 record = [l_row[l_key_attr_index], r_row[r_key_attr_index]]
 
             if out_sim_score:
-                record.append(pd.np.NaN)
+                record.append(np.NaN)
 
             output_rows.append(record)
 
