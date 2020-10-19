@@ -3,6 +3,7 @@ import unittest
 from nose.tools import assert_equal, assert_list_equal, nottest, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
+import numpy as np
 import pandas as pd
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
@@ -36,11 +37,11 @@ class FilterPairTestCases(unittest.TestCase):
                               self.dlm, 1, '>=', True, False)
 
     def test_overlap_pass_missing_right(self):
-        self.test_filter_pair('fg ty', pd.np.NaN,
+        self.test_filter_pair('fg ty', np.NaN,
                               self.dlm, 1, '>=', True, False)
 
     def test_overlap_pass_missing_both(self):
-        self.test_filter_pair(None, pd.np.NaN,
+        self.test_filter_pair(None, np.NaN,
                               self.dlm, 1, '>=', True, False)
 
     # tests for empty string input
@@ -77,7 +78,7 @@ class FilterTablesTestCases(unittest.TestCase):
                                {'id': 3, 'attr':'xy pl ou'},
                                {'id': 4, 'attr':'aa'},
                                {'id': 5, 'attr':'fg cd aa ef'},
-                               {'id': 6, 'attr':pd.np.NaN}])
+                               {'id': 6, 'attr':np.NaN}])
         self.empty_table = pd.DataFrame(columns=['id', 'attr'])
         self.default_l_out_prefix = 'l_'
         self.default_r_out_prefix = 'r_'
@@ -226,7 +227,7 @@ class FilterCandsetTestCases(unittest.TestCase):
                                {'l_id': 3, 'l_attr':'ab'},
                                {'l_id': 4, 'l_attr':'ll oo pp'},
                                {'l_id': 5, 'l_attr':'xy xx zz fg'},
-                               {'l_id': 6, 'l_attr':pd.np.NaN}])
+                               {'l_id': 6, 'l_attr':np.NaN}])
         self.B = pd.DataFrame([{'r_id': 1, 'r_attr':'mn'},
                                {'r_id': 2, 'r_attr':'he ll'},
                                {'r_id': 3, 'r_attr':'xy pl ou'},

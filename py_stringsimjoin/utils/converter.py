@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 def dataframe_column_to_str(dataframe, col_name, inplace=False, 
@@ -51,7 +52,7 @@ def dataframe_column_to_str(dataframe, col_name, inplace=False,
     if inplace:
         num_rows = len(dataframe[col_name])
         if (num_rows == 0 or sum(pd.isnull(dataframe[col_name])) == num_rows):
-            dataframe[col_name] = dataframe[col_name].astype(pd.np.object)
+            dataframe[col_name] = dataframe[col_name].astype(np.object)
             return True
         else:
             return series_to_str(dataframe[col_name], inplace)
@@ -91,18 +92,18 @@ def series_to_str(series, inplace=False):
     # Currently, we ignore the inplace flag when the series is empty and is of
     # type int or float. In this case, we will always return a copy.                       
     if len(series) == 0:                                                        
-        if col_type == pd.np.object and inplace:
+        if col_type == np.object and inplace:
             return True
         else:                                                                      
-            return series.astype(pd.np.object)    
+            return series.astype(np.object)    
 
-    if col_type == pd.np.object:
+    if col_type == np.object:
         # If column is already of type object, do not perform any conversion.
         if inplace:
             return True
         else:
             return series.copy()
-    elif pd.np.issubdtype(col_type, pd.np.integer):
+    elif np.issubdtype(col_type, np.integer):
         # If the column is of type int, then there are no missing values in the 
         # column and hence we can directly convert it to string using           
         # the astype method.     
@@ -112,7 +113,7 @@ def series_to_str(series, inplace=False):
             return True
         else:
             return col_str
-    elif pd.np.issubdtype(col_type, pd.np.float):
+    elif np.issubdtype(col_type, np.float):
         # If the column is of type float, then there are two cases:             
         # (1) column only contains interger values along with NaN.              
         # (2) column actually contains floating point values.                   
@@ -128,7 +129,7 @@ def series_to_str(series, inplace=False):
         # are NaN and will always return a copy of the column cast into 
         # object type.
         if len(col_non_nan_values) == 0:
-            return series.astype(pd.np.object)
+            return series.astype(np.object)
      
         # find how many of these values are actually integer values cast into   
         # float.
@@ -137,10 +138,10 @@ def series_to_str(series, inplace=False):
         # if all these values are interger values, then we handle according     
         # to case 1, else we proceed by case 2. 
         if int_values == len(col_non_nan_values):                               
-            col_str = series.apply(lambda val: pd.np.NaN if        
+            col_str = series.apply(lambda val: np.NaN if        
                                             pd.isnull(val) else str(int(val)))  
         else:                                                                   
-            col_str = series.apply(lambda val: pd.np.NaN if        
+            col_str = series.apply(lambda val: np.NaN if        
                                             pd.isnull(val) else str(val))
         if inplace:
             series.update(col_str)
