@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Suffix Filter &mdash; py_stringsimjoin 0.3.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Matchers" href="matcher.html" />
+    <link rel="prev" title="Position Filter" href="position_filter.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatisnew.html">What is New?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cython.html">Disabling Cython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to py_stringsimjoin</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="profiler.html">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="join.html">Joins</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="filter.html">Filters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overlap_filter.html">Overlap Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="size_filter.html">Size Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prefix_filter.html">Prefix Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="position_filter.html">Position Filter</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Suffix Filter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="matcher.html">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py_stringsimjoin</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="filter.html">Filters</a> &raquo;</li>
+        
+      <li>Suffix Filter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/suffix_filter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-py_stringsimjoin.filter.suffix_filter">
+<span id="suffix-filter"></span><h1>Suffix Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.suffix_filter" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter">
+<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.suffix_filter.</code><code class="sig-name descname">SuffixFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_measure_type</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using suffix filtering
+technique.</p>
+<p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
+filter finds candidate string pairs that may have similarity score greater
+than or equal to the input threshold, as specified in “threshold”. For
+distance measures such as edit distance, the filter finds candidate string
+pairs that may have distance score less than or equal to the threshold.</p>
+<p>To know more about suffix filtering, refer to the paper
+<a class="reference external" href="http://www.cse.unsw.edu.au/~weiw/files/WWW08-PPJoin-Final.pdf">Efficient Similarity Joins for Near Duplicate Detection
+(Chuan Xiao, Wei Wang, Xuemin Lin and Jeffrey Xu Yu), WWW 08</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used.</p></li>
+<li><p><strong>sim_measure_type</strong> (<em>string</em>) – similarity measure type. Supported types are
+‘JACCARD’, ‘COSINE’, ‘DICE’, ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – threshold to be used by the filter.</p></li>
+<li><p><strong>allow_empty</strong> (<em>boolean</em>) – A flag to indicate whether pairs in which both
+strings are tokenized into an empty set of tokens should
+survive the filter (defaults to True). This flag is not valid for
+measures such as ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer">
+<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the tokenizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tokenizer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type">
+<code class="sig-name descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the similarity measure
+type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold">
+<code class="sig-name descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the threshold value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty">
+<code class="sig-name descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing">
+<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_missing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset">
+<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candset</strong> (<em>DataFrame</em>) – input candidate set.</p></li>
+<li><p><strong>candset_l_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in left table.</p></li>
+<li><p><strong>candset_r_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in right table.</p></li>
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs from the candidate set that
+survive the filter (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair">
+<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the suffix filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lstring</strong> (<em>string</em>) – input strings</p></li>
+<li><p><strong>rstring</strong> (<em>string</em>) – input strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A flag indicating whether the string pair is dropped (boolean).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables">
+<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+suffix filtering technique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to ‘r_’).</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that survive the filter
+(DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="matcher.html" class="btn btn-neutral float-right" title="Matchers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="position_filter.html" class="btn btn-neutral float-left" title="Position Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2017, anhaidgroup
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,2504 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py_stringsimjoin 0.3.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home" alt="Documentation Home"> py_stringsimjoin
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-whatisnew">What is New?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-installation">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#platforms">Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#c-compiler-required">C Compiler Required</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#installing-using-pip">Installing Using pip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#installing-from-source-distribution">Installing from Source Distribution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-overview">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#profilers">Profilers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#joins">Joins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#filters-matchers">Filters &amp; Matchers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-guide">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-cython">Disabling Cython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-contributing">Contributing to py_stringsimjoin</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#where-to-start">Where to start?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#bug-reports-and-enhancement-requests">Bug reports and enhancement requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#working-with-the-code">Working with the code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#contributing-to-the-documentation">Contributing to the documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#contributing-to-the-code-base">Contributing to the code base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#contributing-your-changes-to-py-stringsimjoin">Contributing your changes to <em>py_stringsimjoin</em></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/profiler">Profilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/join">Joins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/cosine_join">Cosine Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/dice_join">Dice Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/edit_distance_join">Edit Distance Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/disk_edit_distance_join">Disk-Based Edit Distance Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/jaccard_join">Jaccard Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/overlap_join">Overlap Join</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/overlap_coefficient_join">Overlap Coefficient Join</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/filter">Filters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/overlap_filter">Overlap Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/size_filter">Size Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/prefix_filter">Prefix Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/position_filter">Position Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="singlepage.html#document-api/suffix_filter">Suffix Filter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/matcher">Matchers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singlepage.html#document-api/utility">Utilities</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">py_stringsimjoin</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>py_stringsimjoin 0.3.2 documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="user-manual-for-py-stringsimjoin">
+<h1>User Manual for py_stringsimjoin<a class="headerlink" href="#user-manual-for-py-stringsimjoin" title="Permalink to this headline">¶</a></h1>
+<p>This document explains how to install and use, and contribute to the package.</p>
+</div>
+<div class="section" id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<span id="document-whatisnew"></span><div class="section" id="what-is-new">
+<h2>What is New?<a class="headerlink" href="#what-is-new" title="Permalink to this headline">¶</a></h2>
+<p>Compared to Version 0.3.1, the following is new:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Started tracking release changes in CHANGES.txt.</p></li>
+<li><p>Minorly updated usage of Pandas to prevent a dependency on downgraded versions.</p></li>
+<li><p>This is the last version of py_stringmatching that will support Python 2 and Python 3.5.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<span id="document-installation"></span><div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Python 2.7, 3.5, 3.6, or 3.7</p></li>
+<li><p>C++ compiler (parts of the package are in Cython for efficiency reasons, and you need C++ compiler to compile these parts)</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="platforms">
+<h3>Platforms<a class="headerlink" href="#platforms" title="Permalink to this headline">¶</a></h3>
+<p>py_stringsimjoin has been tested on Linux (Ubuntu Xenial 16.04.6), macOS (High Sierra 10.13.6),
+and Windows 10.</p>
+</div>
+<div class="section" id="dependencies">
+<h3>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>pandas (to manage tables of tuples to be joined)</p></li>
+<li><p>joblib (to write code that runs over multiple cores)</p></li>
+<li><p>py_stringmatching (to tokenize and compute similarity scores between strings)</p></li>
+<li><p>pyprind (to display progress bars)</p></li>
+<li><p>six (to ensure our code run on both Python 2.x and Python 3.x)</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The py_stringsimjoin installer will automatically install the above required packages.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If using Python 2, py_stringsimjoin requires numpy less than 1.17; if using Python 3.5, numpy less than 1.19</p>
+</div>
+</div>
+<div class="section" id="c-compiler-required">
+<h3>C Compiler Required<a class="headerlink" href="#c-compiler-required" title="Permalink to this headline">¶</a></h3>
+<p>Before installing this package, you need to make sure that you have a C compiler installed. This is necessary because this package contains Cython files. Go <a class="reference external" href="https://sites.google.com/site/anhaidgroup/projects/magellan/issues">here</a> for more information about how to check whether you already have a C compiler and how to install a C compiler.</p>
+<p>After you have confirmed that you have a C compiler installed, you are ready to install the package. There are two ways to install py_stringsimjoin package: using pip or source distribution.</p>
+</div>
+<div class="section" id="installing-using-pip">
+<h3>Installing Using pip<a class="headerlink" href="#installing-using-pip" title="Permalink to this headline">¶</a></h3>
+<p>The easiest way to install the package is to use pip, which will retrieve py_stringsimjoin from PyPI then install it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">py_stringsimjoin</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-from-source-distribution">
+<h3>Installing from Source Distribution<a class="headerlink" href="#installing-from-source-distribution" title="Permalink to this headline">¶</a></h3>
+<p>Step 1: Download the source code of the py_stringsimjoin package from <a class="reference external" href="https://github.com/anhaidgroup/py_stringsimjoin/releases">here</a>. (Download code in tar.gz format for Linux and OS X, and code in zip format for Windows.)</p>
+<p>Step 2: Untar or unzip the package and execute the following command from the package root:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The above command will try to install py_stringsimjoin into the defaul Python directory on your machine. If you do not have installation permission for that directory then you can install the package in your home directory as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span>
+</pre></div>
+</div>
+<p>For more information see the following StackOverflow <a class="reference external" href="http://stackoverflow.com/questions/14179941/how-to-install-python-packages-without-root-privileges">link</a>.</p>
+</div>
+</div>
+</div>
+<span id="document-overview"></span><div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Given two tables A and B, this package provides commands to perform string similarity joins between two columns of these tables, such as A.name and B.name, or A.city and B.city. An example of such joins is to return all pairs (x,y) of tuples from the Cartesian product of Tables A and B such that</p>
+<ul class="simple">
+<li><p>x is a tuple in Table A and y is a tuple in Table B.</p></li>
+<li><p>Jaccard(3gram(x.name), 3gram(y.name)) &gt; 0.7. That is, first tokenize the value of the attribute “name” of x into a set P of 3grams, and tokenize the value of the attribute “name” of y into a set Q of 3grams. Then compute the Jaccard score between P and Q. This score must exceed 0.7. This is often called the “join condition”.</p></li>
+</ul>
+<p>Such joins are challenging because a naive implementation would consider all tuple pairs in the Cartesian product of Tables A and B, an often enormous number (for example, 10 billion pairs if each table has 100K tuples). The package provides efficient implementations of such joins, by using methods called “filtering” to quickly eliminate the pairs that obviously cannot satisfy the join condition.</p>
+<p>To understand tokenizing and string similarity scores (such as Jaccard, edit distance, etc.), see the <a class="reference external" href="https://sites.google.com/site/anhaidgroup/projects/py_stringmatching">Web site</a> of the package py_stringmatching (in particular, read the following <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">book chapter on string matching</a>). That package provides efficient implementations of a set of tokenizers and string similarity measures. It focuses on the case of tokenizing two strings and then applying a similarity measure to the outputs of the tokenizers to compute a similarity score between those two strings. This package builds on top of py_stringmatching, so it is important to understand the tokenizers and string similarity measures of the py_stringmatching package.</p>
+<p>To read more about string similarity joins, see “<a class="reference external" href="http://www.vldb.org/pvldb/vol7/p625-jiang.pdf">String Similarity Joins: An Experimental Evaluation</a>” and “<a class="reference external" href="http://dbgroup.cs.tsinghua.edu.cn/ligl/papers/fcs15-string-survey.pdf">String Similarity Search and Join : A Survey</a>”.</p>
+<p>We now explain the most important notions an user is likely to encounter while using this package. To use the package, the user typically loads into Python two tables A and B (as described above). These two tables will often be referred to in the commands of this package as ltable (for “left table”) and rtable (for “right table”), respectively. The notion “tuple pair” refers to a pair (x,y) where x is a tuple in ltable and y is a tuple in rtable.</p>
+<p>To execute a string similarity join, the user calls a command such as jaccard_join, cosine_join, etc. The command’s arguments include</p>
+<ul class="simple">
+<li><p>The two tables: ltable and rtable, the key attributes of these tables, and the target attributes (on which the join will be performed, such as A.name and B.name).</p></li>
+<li><p>The join condition.</p></li>
+<li><p>The output will be a table of tuple pairs surviving the join. The user may want to specify the desired attributes of the output table, using arguments such as l_out_attrs, r_out_attrs, l_out_prefix, etc.</p></li>
+<li><p>A flag to indicate on how many cores should this command be run.</p></li>
+</ul>
+<p>Internally, a command such as jaccard_join will first create a filter object, using an appropriate filtering techniques (many such techniques exist, see the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">book chapter on string matching</a>). Next, it uses this filter object to quickly drop many pairs that obviously do not satisfy the join condition. The set of remaining tuple pairs is referred to as a “candidate set”. Finally, it applies a matcher to the pairs in this set. The matcher simply checks and retains only those pairs that satisfy the join condition.</p>
+<p>The implemented commands can be organized into the following groups: profilers, joins, filters, matchers, and utilities. We now briefly describe these.</p>
+<div class="section" id="profilers">
+<h3>Profilers<a class="headerlink" href="#profilers" title="Permalink to this headline">¶</a></h3>
+<p>After loading the two tables A and B into Python, the user may want to run a profiler command, which will examine the two tables, detect possible problems for the subsequent string similarity joins, warn the user of these potential problems, and suggest possible solutions.</p>
+<p>Currently only one profiler has been implemented, profile_table_for_join. This command examines the tables for unique and missing attribute values, and discuss possible problems stemming from these for the subsequent joins. Based on the report of this command, the user may want to take certain actions before actually applying join commands. Using the profiler is not required, of course.</p>
+</div>
+<div class="section" id="joins">
+<h3>Joins<a class="headerlink" href="#joins" title="Permalink to this headline">¶</a></h3>
+<p>After loading and optionally profiling and fixing the tables, most likely the user will just call a join command to do the join. We have implemented the following join commands:</p>
+<ul class="simple">
+<li><p>cosine_join</p></li>
+<li><p>dice_join</p></li>
+<li><p>edit_distance_join</p></li>
+<li><p>jaccard_join</p></li>
+<li><p>overlap_coefficient_join</p></li>
+<li><p>overlap_join</p></li>
+</ul>
+<p>All the above commands expect the input tables, intermediate results, and the output tables to fit in memory.  However, if the intermediate results or the output tables are large, these commands will produce a memory error. To address this, we have started to implement disk-based version of above commands. As a first step, we have implemented the following command.</p>
+<ul class="simple">
+<li><p>disk_edit_distance_join</p></li>
+</ul>
+<p>The above command implements disk-based version of edit distance join. Specifically, this command will spill the intermediate results and the output tables to disk when they get too large to fit in memory. Currently, this command is experimental and not tested thoroughly.</p>
+</div>
+<div class="section" id="filters-matchers">
+<h3>Filters &amp; Matchers<a class="headerlink" href="#filters-matchers" title="Permalink to this headline">¶</a></h3>
+<p>Most users will just use join commands (described above). They do not need to know about filters and matchers. However, users who want to perform more complex string similarity joins (or joins that we currently do not yet support) may find filters and matchers useful and may want to use them. (See the How-to Guide for examples of performing complex string similarity joins such as TF/IDF joins.)</p>
+<p>Filters are class objects. They form the following class hierarchy:</p>
+<dl class="simple">
+<dt>Filter</dt><dd><ul class="simple">
+<li><p>OverlapFilter</p></li>
+<li><p>SizeFilter</p></li>
+<li><p>PrefixFilter</p></li>
+<li><p>PositionFilter</p></li>
+<li><p>SuffixFilter</p></li>
+</ul>
+</dd>
+</dl>
+<p>Currently we have implemented only one matcher, called “apply_matcher”.</p>
+</div>
+<div class="section" id="utilities">
+<h3>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h3>
+<p>Consider a table A with an attribute “year”. This attribute contains numeric, not string, values. So we cannot apply the commands in py_stringsimjoin on this attribute directly (as these commands input only string values). To apply the command, we first must convert the values of this attribute (for example, 1978, 2001, etc.) into strings. This conversion is somewhat tricky, because if we are not careful, missing values such as NaN will be converted into strings “NaN”.
+In this package we have provided several utility commands to do such conversion.</p>
+</div>
+</div>
+<span id="document-guide"></span><div class="section" id="guides">
+<h2>Guides<a class="headerlink" href="#guides" title="Permalink to this headline">¶</a></h2>
+<p>To learn to quickly use the package, you can check out</p>
+<ul class="simple">
+<li><p>a <a class="reference external" href="http://nbviewer.jupyter.org/github/anhaidgroup/py_stringsimjoin/blob/master/notebooks/Joining%20two%20tables%20using%20Jaccard%20measure.ipynb">quickstart guide for Jaccard join</a>.</p></li>
+<li><p>a <a class="reference external" href="http://nbviewer.jupyter.org/github/anhaidgroup/py_stringsimjoin/blob/master/notebooks/Joining%20two%20tables%20using%20edit%20distance%20measure.ipynb">quickstart guide for edit distance join</a>
+(which is very similar to the case of Jaccard join, but the input strings are not tokenized).</p></li>
+</ul>
+<p>The <a class="reference external" href="https://sites.google.com/site/anhaidgroup/projects/py_stringsimjoin">package homepage</a> provides
+a link to the How-To Guide, which provides a complete set of instructions for using
+this package (including performing more complex joins such as TF/IDF).</p>
+</div>
+<span id="document-cython"></span><div class="section" id="disabling-cython">
+<h2>Disabling Cython<a class="headerlink" href="#disabling-cython" title="Permalink to this headline">¶</a></h2>
+<p>By default (in Linux and OSX), the join methods are implemented in Cython. In
+case there are any issues when invoking the Cython function, we recommend you to
+disable the <code class="docutils literal notranslate"><span class="pre">__use_cython__</span></code> flag and try invoking the function again to use
+the Python version of the function. Specifically, Cython usage can be disabled
+using the following command,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">py_stringsimjoin</span> <span class="k">as</span> <span class="nn">ssj</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ssj</span><span class="o">.</span><span class="n">__use_cython__</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>Note that the above command will disable Cython usage for all the join functions.</p>
+</div>
+<span id="document-contributing"></span><div class="section" id="contributing-to-py-stringsimjoin">
+<span id="contributing"></span><h2>Contributing to py_stringsimjoin<a class="headerlink" href="#contributing-to-py-stringsimjoin" title="Permalink to this headline">¶</a></h2>
+<div class="contents local topic" id="table-of-contents">
+<p class="topic-title">Table of contents:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#where-to-start" id="id1">Where to start?</a></p></li>
+<li><p><a class="reference internal" href="#bug-reports-and-enhancement-requests" id="id2">Bug reports and enhancement requests</a></p></li>
+<li><p><a class="reference internal" href="#working-with-the-code" id="id3">Working with the code</a></p>
+<ul>
+<li><p><a class="reference internal" href="#version-control-git-and-github" id="id4">Version control, Git, and GitHub</a></p></li>
+<li><p><a class="reference internal" href="#getting-started-with-git" id="id5">Getting started with Git</a></p></li>
+<li><p><a class="reference internal" href="#forking" id="id6">Forking</a></p></li>
+<li><p><a class="reference internal" href="#creating-a-branch" id="id7">Creating a branch</a></p></li>
+<li><p><a class="reference internal" href="#creating-a-development-environment" id="id8">Creating a development environment</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#contributing-to-the-documentation" id="id9">Contributing to the documentation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#about-the-py-stringsimjoin-documentation" id="id10">About the <em>py_stringsimjoin</em> documentation</a></p></li>
+<li><p><a class="reference internal" href="#how-to-build-the-py-stringsimjoin-documentation" id="id11">How to build the <em>py_stringsimjoin</em> documentation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#requirements" id="id12">Requirements</a></p></li>
+<li><p><a class="reference internal" href="#building-the-documentation" id="id13">Building the documentation</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#contributing-to-the-code-base" id="id14">Contributing to the code base</a></p>
+<ul>
+<li><p><a class="reference internal" href="#code-standards" id="id15">Code standards</a></p></li>
+<li><p><a class="reference internal" href="#writing-tests" id="id16">Writing tests</a></p>
+<ul>
+<li><p><a class="reference internal" href="#unit-testing" id="id17">Unit testing</a></p></li>
+<li><p><a class="reference internal" href="#performance-testing" id="id18">Performance testing</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#contributing-your-changes-to-py-stringsimjoin" id="id19">Contributing your changes to <em>py_stringsimjoin</em></a></p>
+<ul>
+<li><p><a class="reference internal" href="#committing-your-code" id="id20">Committing your code</a></p></li>
+<li><p><a class="reference internal" href="#combining-commits" id="id21">Combining commits</a></p></li>
+<li><p><a class="reference internal" href="#pushing-your-changes" id="id22">Pushing your changes</a></p></li>
+<li><p><a class="reference internal" href="#review-your-code" id="id23">Review your code</a></p></li>
+<li><p><a class="reference internal" href="#finally-make-the-pull-request" id="id24">Finally, make the pull request</a></p></li>
+<li><p><a class="reference internal" href="#delete-your-merged-branch-optional" id="id25">Delete your merged branch (optional)</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>This document is adapted from <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/contributing.html">pandas how to contribute guidelines</a> for <em>py_stringsimjoin</em> package.</p>
+<div class="section" id="where-to-start">
+<h3><a class="toc-backref" href="#id1">Where to start?</a><a class="headerlink" href="#where-to-start" title="Permalink to this headline">¶</a></h3>
+<p>All contributions, bug reports, bug fixes, documentation improvements,
+enhancements and ideas are welcome.</p>
+<p>If you are simply looking to start working with the <em>py_stringsimjoin</em> codebase, navigate to the
+<a class="reference external" href="https://github.com/anhaidgroup/py_stringsimjoin/issues">GitHub “issues” tab</a> and start looking through
+interesting issues.</p>
+<p>Or maybe through using <em>py_stringsimjoin</em> you have an idea of your own or are looking for something
+in the documentation and thinking ‘this can be improved’…you can do something
+about it!</p>
+<p>Feel free to ask questions on the <a class="reference external" href="https://groups.google.com/forum/#!forum/py_stringsimjoin">mailing list</a></p>
+</div>
+<div class="section" id="bug-reports-and-enhancement-requests">
+<h3><a class="toc-backref" href="#id2">Bug reports and enhancement requests</a><a class="headerlink" href="#bug-reports-and-enhancement-requests" title="Permalink to this headline">¶</a></h3>
+<p>Bug reports are an important part of making <em>py_stringsimjoin</em> more stable.  Having a complete bug report
+will allow others to reproduce the bug and provide insight into fixing. We use GitHub issue tracker to track bugs. It is important that you provide the exact version of <em>py_stringsimjoin</em> where the bug is found. Trying the bug-producing code out on the <em>master</em> branch is often a worthwhile exercise to confirm the bug still exists.  It is also worth searching existing bug reports and pull requests to see if the issue has already been reported and/or fixed.</p>
+<p>Bug reports must:</p>
+<ol class="arabic">
+<li><p>Include a short, self-contained Python snippet reproducing the problem.
+You can format the code nicely by using <a class="reference external" href="http://github.github.com/github-flavored-markdown/">GitHub Flavored Markdown</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>```python
+&gt;&gt;&gt; import py_stringsimjoin as ssj
+&gt;&gt;&gt; ssj.jaccard_join(...)
+...
+```
+</pre></div>
+</div>
+</li>
+<li><p>Include the full version string of <em>py_stringsimjoin</em>. You can find the version as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">py_stringsimjoin</span> <span class="k">as</span> <span class="nn">ssj</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ssj</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+</li>
+<li><p>Explain why the current behavior is wrong/not desired and what you expect instead.</p></li>
+</ol>
+<p>The issue will then show up to the <em>py_stringsimjoin</em> community and be open to comments/ideas from others.</p>
+</div>
+<div class="section" id="working-with-the-code">
+<h3><a class="toc-backref" href="#id3">Working with the code</a><a class="headerlink" href="#working-with-the-code" title="Permalink to this headline">¶</a></h3>
+<p>Now that you have an issue you want to fix, enhancement to add, or documentation to improve,
+you need to learn how to work with GitHub and the <em>py_stringsimjoin</em> code base.</p>
+<div class="section" id="version-control-git-and-github">
+<h4><a class="toc-backref" href="#id4">Version control, Git, and GitHub</a><a class="headerlink" href="#version-control-git-and-github" title="Permalink to this headline">¶</a></h4>
+<p>To the new user, working with Git is one of the more daunting aspects of contributing to <em>py_stringsimjoin</em>.
+It can very quickly become overwhelming, but sticking to the guidelines below will help keep the process
+straightforward and mostly trouble free.  As always, if you are having difficulties please
+feel free to ask for help.</p>
+<p>The code is hosted on <a class="reference external" href="https://www.github.com/anhaidgroup/py_stringsimjoin">GitHub</a>. To
+contribute you will need to sign up for a <a class="reference external" href="https://github.com/signup/free">free GitHub account</a>. We use <a class="reference external" href="http://git-scm.com/">Git</a> for
+version control to allow many people to work together on the project.</p>
+<p>Some great resources for learning Git:</p>
+<ul class="simple">
+<li><p>the <a class="reference external" href="http://help.github.com/">GitHub help pages</a>.</p></li>
+<li><p>the <a class="reference external" href="http://docs.scipy.org/doc/numpy/dev/index.html">NumPy’s documentation</a>.</p></li>
+<li><p>Matthew Brett’s <a class="reference external" href="http://matthew-brett.github.com/pydagogue/">Pydagogue</a>.</p></li>
+</ul>
+</div>
+<div class="section" id="getting-started-with-git">
+<h4><a class="toc-backref" href="#id5">Getting started with Git</a><a class="headerlink" href="#getting-started-with-git" title="Permalink to this headline">¶</a></h4>
+<p><a class="reference external" href="http://help.github.com/set-up-git-redirect">GitHub has instructions</a> for installing git,
+setting up your SSH key, and configuring git.  All these steps need to be completed before
+you can work seamlessly between your local repository and GitHub.</p>
+</div>
+<div class="section" id="forking">
+<span id="contributing-forking"></span><h4><a class="toc-backref" href="#id6">Forking</a><a class="headerlink" href="#forking" title="Permalink to this headline">¶</a></h4>
+<p>You will need your own fork to work on the code. Go to the <a class="reference external" href="https://github.com/anhaidgroup/py_stringsimjoin">py_stringsimjoin project
+page</a> and hit the <code class="docutils literal notranslate"><span class="pre">Fork</span></code> button. You will
+want to clone your fork to your machine:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">user</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;/</span><span class="n">py_stringsimjoin</span><span class="o">.</span><span class="n">git</span> <span class="o">&lt;</span><span class="n">local</span><span class="o">-</span><span class="n">repo</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span>
+<span class="n">cd</span> <span class="o">&lt;</span><span class="n">local</span><span class="o">-</span><span class="n">repo</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">upstream</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">anhaidgroup</span><span class="o">/</span><span class="n">py_stringsimjoin</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>This creates the directory <cite>local-repo-name</cite> and connects your repository to
+the upstream (main project) <em>py_stringsimjoin</em> repository.</p>
+<p>The testing suite will run automatically on Travis-CI once your pull request is
+submitted.  However, if you wish to run the test suite on a branch prior to
+submitting the pull request, then Travis-CI needs to be hooked up to your
+GitHub repository.  Instructions for doing so are <a class="reference external" href="http://about.travis-ci.org/docs/user/getting-started/">here</a>.</p>
+</div>
+<div class="section" id="creating-a-branch">
+<h4><a class="toc-backref" href="#id7">Creating a branch</a><a class="headerlink" href="#creating-a-branch" title="Permalink to this headline">¶</a></h4>
+<p>You want your master branch to reflect only production-ready code, so create a
+feature branch for making your changes. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="n">new_feature</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">new_feature</span>
+</pre></div>
+</div>
+<p>The above can be simplified to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="n">new_feature</span>
+</pre></div>
+</div>
+<p>This changes your working directory to the <em>new_feature</em> branch.  Keep any
+changes in this branch specific to one bug or feature so it is clear
+what the branch brings to <em>py_stringsimjoin</em>. You can have many new features
+and switch in between them using the git checkout command.</p>
+<p>To update this branch, you need to retrieve the changes from the master branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">fetch</span> <span class="n">upstream</span>
+<span class="n">git</span> <span class="n">rebase</span> <span class="n">upstream</span><span class="o">/</span><span class="n">master</span>
+</pre></div>
+</div>
+<p>This will replay your commits on top of the lastest py_stringsimjoin git master.  If this
+leads to merge conflicts, you must resolve them before submitting your pull
+request.  If you have uncommitted changes, you will need to <code class="docutils literal notranslate"><span class="pre">stash</span></code> them prior
+to updating.  This will effectively store your changes and they can be reapplied
+after updating.</p>
+</div>
+<div class="section" id="creating-a-development-environment">
+<span id="contributing-dev-env"></span><h4><a class="toc-backref" href="#id8">Creating a development environment</a><a class="headerlink" href="#creating-a-development-environment" title="Permalink to this headline">¶</a></h4>
+<p>An easy way to create a <em>py_stringsimjoin</em> development environment is as follows.</p>
+<ul class="simple">
+<li><p>Install either <span class="xref std std-ref">Anaconda</span> or <span class="xref std std-ref">miniconda</span></p></li>
+<li><p>Make sure that you have <a class="reference internal" href="#contributing-forking"><span class="std std-ref">cloned the repository</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span></code> to the <em>py_stringsimjoin</em> source directory</p></li>
+</ul>
+<p>Tell conda to create a new environment, named <code class="docutils literal notranslate"><span class="pre">py_stringsimjoin_dev</span></code>, or any other name you would like
+for this environment, by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">py_stringsimjoin_dev</span> <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>For a python 3 environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">py_stringsimjoin_dev</span> <span class="n">python</span><span class="o">=</span><span class="mi">3</span> <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>This will create the new environment, and not touch any of your existing environments,
+nor any existing python installation. It will install all of the basic dependencies of
+<em>py_stringsimjoin</em>. You need to install the <em>nose</em> package which is used for
+testing, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">n</span> <span class="n">py_stringsimjoin_dev</span> <span class="n">nose</span>
+</pre></div>
+</div>
+<p>To work in this environment, Windows users should <code class="docutils literal notranslate"><span class="pre">activate</span></code> it as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">activate</span> <span class="n">py_stringsimjoin_dev</span>
+</pre></div>
+</div>
+<p>Mac OSX / Linux users should use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">activate</span> <span class="n">py_stringsimjoin_dev</span>
+</pre></div>
+</div>
+<p>You will then see a confirmation message to indicate you are in the new development environment.</p>
+<p>To view your environments:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">info</span> <span class="o">-</span><span class="n">e</span>
+</pre></div>
+</div>
+<p>To return to your home root environment in Windows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deactivate</span>
+</pre></div>
+</div>
+<p>To return to your home root environment in OSX / Linux:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">deactivate</span>
+</pre></div>
+</div>
+<p>See the full conda docs <a class="reference external" href="http://conda.pydata.org/docs">here</a>.</p>
+</div>
+</div>
+<div class="section" id="contributing-to-the-documentation">
+<span id="contributing-documentation"></span><h3><a class="toc-backref" href="#id9">Contributing to the documentation</a><a class="headerlink" href="#contributing-to-the-documentation" title="Permalink to this headline">¶</a></h3>
+<p>If you’re not the developer type, contributing to the documentation is still
+of huge value. You don’t even have to be an expert on
+<em>py_stringsimjoin</em> to do so! Something as simple as rewriting small passages for clarity
+as you reference the docs is a simple but effective way to contribute. The
+next person to read that passage will be in your debt!</p>
+<p>In fact, there are sections of the docs that are worse off after being written
+by experts. If something in the docs doesn’t make sense to you, updating the
+relevant section after you figure it out is a simple way to ensure it will
+help the next person.</p>
+<div class="contents local topic" id="documentation">
+<p class="topic-title">Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#about-the-py-stringsimjoin-documentation" id="id26">About the <em>py_stringsimjoin</em> documentation</a></p></li>
+<li><p><a class="reference internal" href="#how-to-build-the-py-stringsimjoin-documentation" id="id27">How to build the <em>py_stringsimjoin</em> documentation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#requirements" id="id28">Requirements</a></p></li>
+<li><p><a class="reference internal" href="#building-the-documentation" id="id29">Building the documentation</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="about-the-py-stringsimjoin-documentation">
+<h4><a class="toc-backref" href="#id26">About the <em>py_stringsimjoin</em> documentation</a><a class="headerlink" href="#about-the-py-stringsimjoin-documentation" title="Permalink to this headline">¶</a></h4>
+<p>The documentation is written in <strong>reStructuredText</strong>, which is almost like writing
+in plain English, and built using <a class="reference external" href="http://sphinx.pocoo.org/">Sphinx</a>. The
+Sphinx Documentation has an excellent <a class="reference external" href="http://sphinx.pocoo.org/rest.html">introduction to reST</a>. Review the Sphinx docs to perform more
+complex changes to the documentation as well.</p>
+<p>Some other important things to know about the docs:</p>
+<ul>
+<li><p>The <em>py_stringsimjoin</em> documentation consists of two parts: the docstrings in the code
+itself and the docs in this folder <code class="docutils literal notranslate"><span class="pre">py_stringsimjoin/docs/</span></code>.</p>
+<p>The docstrings provide a clear explanation of the usage of the individual
+functions, while the documentation in this folder consists of tutorial-like
+overviews per topic together with some other information (what’s new,
+installation, etc).</p>
+</li>
+<li><p>The docstrings follow the <strong>Google Docstring Standard</strong>. This standard specifies the format of
+the different sections of the docstring. See <a class="reference external" href="http://www.sphinx-doc.org/en/stable/ext/example_google.html">this document</a>
+for a detailed explanation, or look at some of the existing functions to
+extend it in a similar manner.</p></li>
+</ul>
+</div>
+<div class="section" id="how-to-build-the-py-stringsimjoin-documentation">
+<h4><a class="toc-backref" href="#id27">How to build the <em>py_stringsimjoin</em> documentation</a><a class="headerlink" href="#how-to-build-the-py-stringsimjoin-documentation" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="requirements">
+<h5><a class="toc-backref" href="#id28">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h5>
+<p>To build the <em>py_stringsimjoin</em> docs there are some extra requirements: you will need to
+have <code class="docutils literal notranslate"><span class="pre">sphinx</span></code> and <code class="docutils literal notranslate"><span class="pre">ipython</span></code> installed.</p>
+<p>It is easiest to <a class="reference internal" href="#contributing-dev-env"><span class="std std-ref">create a development environment</span></a>, then install:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">n</span> <span class="n">py_stringsimjoin_dev</span> <span class="n">sphinx</span> <span class="n">sphinx_rtd_theme</span> <span class="n">ipython</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-the-documentation">
+<h5><a class="toc-backref" href="#id29">Building the documentation</a><a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h5>
+<p>So how do you build the docs? Navigate to your local
+<code class="docutils literal notranslate"><span class="pre">py_stringsimjoin/docs/</span></code> directory in the console and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>Then you can find the HTML output in the folder <code class="docutils literal notranslate"><span class="pre">py_stringsimjoin/docs/_build/html/</span></code>.</p>
+<p>If you want to do a full clean build, do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">clean</span> <span class="n">html</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="contributing-to-the-code-base">
+<span id="contributing-dev-docs"></span><h3><a class="toc-backref" href="#id14">Contributing to the code base</a><a class="headerlink" href="#contributing-to-the-code-base" title="Permalink to this headline">¶</a></h3>
+<div class="contents local topic" id="code-base">
+<p class="topic-title">Code Base:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#code-standards" id="id30">Code standards</a></p></li>
+<li><p><a class="reference internal" href="#writing-tests" id="id31">Writing tests</a></p>
+<ul>
+<li><p><a class="reference internal" href="#unit-testing" id="id32">Unit testing</a></p></li>
+<li><p><a class="reference internal" href="#performance-testing" id="id33">Performance testing</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="code-standards">
+<h4><a class="toc-backref" href="#id30">Code standards</a><a class="headerlink" href="#code-standards" title="Permalink to this headline">¶</a></h4>
+<p><em>py_stringsimjoin</em> follows <a class="reference external" href="https://google.github.io/styleguide/pyguide.html">Google Python Style Guide</a>.</p>
+<p>Please try to maintain backward compatibility. <em>py_stringsimjoin</em> has lots of users with lots of
+existing code, so don’t break it if at all possible.  If you think breakage is required,
+clearly state why as part of the pull request.  Also, be careful when changing method
+signatures and add deprecation warnings where needed.</p>
+</div>
+<div class="section" id="writing-tests">
+<h4><a class="toc-backref" href="#id31">Writing tests</a><a class="headerlink" href="#writing-tests" title="Permalink to this headline">¶</a></h4>
+<p>Adding tests is one of the most common requests after code is pushed to <em>py_stringsimjoin</em>.  Therefore,
+it is worth getting in the habit of writing tests ahead of time so this is never an issue.</p>
+<div class="section" id="unit-testing">
+<h5><a class="toc-backref" href="#id32">Unit testing</a><a class="headerlink" href="#unit-testing" title="Permalink to this headline">¶</a></h5>
+<p>Like many packages, <em>py_stringsimjoin</em> uses the <a class="reference external" href="http://nose.readthedocs.org/en/latest/index.html">Nose testing system</a>.</p>
+<p>All tests should go into the <code class="docutils literal notranslate"><span class="pre">tests</span></code> subdirectory of the specific package.
+This folder contains many current examples of tests, and we suggest looking to these for
+inspiration.</p>
+<p>The tests can then be run directly inside your Git clone (without having to
+install <em>py_stringsimjoin</em>) by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nosetests</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="performance-testing">
+<h5><a class="toc-backref" href="#id33">Performance testing</a><a class="headerlink" href="#performance-testing" title="Permalink to this headline">¶</a></h5>
+<p>Performance matters and it is worth considering whether your code has introduced
+performance regressions.  <em>py_stringsimjoin</em> uses
+<a class="reference external" href="https://github.com/spacetelescope/asv">asv</a> for performance testing.
+The benchmark test cases are all found in the <code class="docutils literal notranslate"><span class="pre">benchmarks/asv_benchmarks</span></code> directory.  asv
+supports both python2 and python3.</p>
+<p>To install asv:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">spacetelescope</span><span class="o">/</span><span class="n">asv</span>
+</pre></div>
+</div>
+<p>If you need to run a benchmark, run the following from the <code class="docutils literal notranslate"><span class="pre">benchmarks</span></code> directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asv</span> <span class="n">run</span>
+</pre></div>
+</div>
+<p>This command uses <code class="docutils literal notranslate"><span class="pre">conda</span></code> by default for creating the benchmark environments.</p>
+<p>Information on how to write a benchmark and how to use asv can be found in the
+<a class="reference external" href="http://asv.readthedocs.org/en/latest/writing_benchmarks.html">asv documentation</a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="contributing-your-changes-to-py-stringsimjoin">
+<h3><a class="toc-backref" href="#id19">Contributing your changes to <em>py_stringsimjoin</em></a><a class="headerlink" href="#contributing-your-changes-to-py-stringsimjoin" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="committing-your-code">
+<h4><a class="toc-backref" href="#id20">Committing your code</a><a class="headerlink" href="#committing-your-code" title="Permalink to this headline">¶</a></h4>
+<p>Finally, commit your changes to your local repository with an explanatory message.</p>
+<p>The following defines how a commit message should be structured.  Please reference the
+relevant GitHub issues in your commit message using GH1234 or #1234.  Either style
+is fine, but the former is generally preferred:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a subject line with <cite>&lt; 80</cite> chars.</p></li>
+<li><p>One blank line.</p></li>
+<li><p>Optionally, a commit message body.</p></li>
+</ul>
+</div></blockquote>
+<p>Now you can commit your changes in your local repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="combining-commits">
+<h4><a class="toc-backref" href="#id21">Combining commits</a><a class="headerlink" href="#combining-commits" title="Permalink to this headline">¶</a></h4>
+<p>If you have multiple commits, you may want to combine them into one commit, often
+referred to as “squashing” or “rebasing”.  This is a common request by package maintainers
+when submitting a pull request as it maintains a more compact commit history.  To rebase
+your commits:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">rebase</span> <span class="o">-</span><span class="n">i</span> <span class="n">HEAD</span><span class="o">~</span><span class="c1">#</span>
+</pre></div>
+</div>
+<p>Where # is the number of commits you want to combine.  Then you can pick the relevant
+commit message and discard others.</p>
+<p>To squash to the master branch do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">rebase</span> <span class="o">-</span><span class="n">i</span> <span class="n">master</span>
+</pre></div>
+</div>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">s</span></code> option on a commit to <code class="docutils literal notranslate"><span class="pre">squash</span></code>, meaning to keep the commit messages,
+or <code class="docutils literal notranslate"><span class="pre">f</span></code> to <code class="docutils literal notranslate"><span class="pre">fixup</span></code>, meaning to merge the commit messages.</p>
+<p>Then you will need to push the branch (see below) forcefully to replace the current
+commits with the new ones:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">new_feature</span> <span class="o">-</span><span class="n">f</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pushing-your-changes">
+<h4><a class="toc-backref" href="#id22">Pushing your changes</a><a class="headerlink" href="#pushing-your-changes" title="Permalink to this headline">¶</a></h4>
+<p>When you want your changes to appear publicly on your GitHub page, push your
+forked feature branch’s commits:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">new_feature</span>
+</pre></div>
+</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">origin</span></code> is the default name given to your remote repository on GitHub.
+You can see the remote repositories:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">remote</span> <span class="o">-</span><span class="n">v</span>
+</pre></div>
+</div>
+<p>If you added the upstream repository as described above you will see something
+like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">origin</span>  <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="o">&lt;</span><span class="n">yourname</span><span class="o">&gt;/</span><span class="n">py_stringsimjoin</span><span class="o">.</span><span class="n">git</span> <span class="p">(</span><span class="n">fetch</span><span class="p">)</span>
+<span class="n">origin</span>  <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="o">&lt;</span><span class="n">yourname</span><span class="o">&gt;/</span><span class="n">py_stringsimjoin</span><span class="o">.</span><span class="n">git</span> <span class="p">(</span><span class="n">push</span><span class="p">)</span>
+<span class="n">upstream</span>        <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">anhaidgroup</span><span class="o">/</span><span class="n">py_stringsimjoin</span><span class="o">.</span><span class="n">git</span> <span class="p">(</span><span class="n">fetch</span><span class="p">)</span>
+<span class="n">upstream</span>        <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">anhaidgroup</span><span class="o">/</span><span class="n">py_stringsimjoin</span><span class="o">.</span><span class="n">git</span> <span class="p">(</span><span class="n">push</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now your code is on GitHub, but it is not yet a part of the <em>py_stringsimjoin</em> project.  For that to
+happen, a pull request needs to be submitted on GitHub.</p>
+</div>
+<div class="section" id="review-your-code">
+<h4><a class="toc-backref" href="#id23">Review your code</a><a class="headerlink" href="#review-your-code" title="Permalink to this headline">¶</a></h4>
+<p>When you’re ready to ask for a code review, file a pull request. Before you do, once
+again make sure that you have followed all the guidelines outlined in this document
+regarding code style, tests, performance tests, and documentation. You should also
+double check your branch changes against the branch it was based on:</p>
+<ol class="arabic simple">
+<li><p>Navigate to your repository on GitHub – <a class="reference external" href="https://github.com">https://github.com</a>/&lt;your-user-name&gt;/py_stringsimjoin</p></li>
+<li><p>Click on <code class="docutils literal notranslate"><span class="pre">Branches</span></code></p></li>
+<li><p>Click on the <code class="docutils literal notranslate"><span class="pre">Compare</span></code> button for your feature branch</p></li>
+<li><p>Select the <code class="docutils literal notranslate"><span class="pre">base</span></code> and <code class="docutils literal notranslate"><span class="pre">compare</span></code> branches, if necessary. This will be <code class="docutils literal notranslate"><span class="pre">master</span></code> and
+<code class="docutils literal notranslate"><span class="pre">new_feature</span></code>, respectively.</p></li>
+</ol>
+</div>
+<div class="section" id="finally-make-the-pull-request">
+<h4><a class="toc-backref" href="#id24">Finally, make the pull request</a><a class="headerlink" href="#finally-make-the-pull-request" title="Permalink to this headline">¶</a></h4>
+<p>If everything looks good, you are ready to make a pull request.  A pull request is how
+code from a local repository becomes available to the GitHub community and can be looked
+at and eventually merged into the master version.  This pull request and its associated
+changes will eventually be committed to the master branch and available in the next
+release.  To submit a pull request:</p>
+<ol class="arabic simple">
+<li><p>Navigate to your repository on GitHub</p></li>
+<li><p>Click on the <code class="docutils literal notranslate"><span class="pre">Pull</span> <span class="pre">Request</span></code> button</p></li>
+<li><p>You can then click on <code class="docutils literal notranslate"><span class="pre">Commits</span></code> and <code class="docutils literal notranslate"><span class="pre">Files</span> <span class="pre">Changed</span></code> to make sure everything looks
+okay one last time</p></li>
+<li><p>Write a description of your changes.</p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Send</span> <span class="pre">Pull</span> <span class="pre">Request</span></code>.</p></li>
+</ol>
+<p>This request then goes to the repository maintainers, and they will review
+the code. If you need to make more changes, you can make them in
+your branch, push them to GitHub, and the pull request will be automatically
+updated.  Pushing them to GitHub again is done by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="o">-</span><span class="n">f</span> <span class="n">origin</span> <span class="n">new_feature</span>
+</pre></div>
+</div>
+<p>This will automatically update your pull request with the latest code and restart the
+Travis-CI tests.</p>
+</div>
+<div class="section" id="delete-your-merged-branch-optional">
+<h4><a class="toc-backref" href="#id25">Delete your merged branch (optional)</a><a class="headerlink" href="#delete-your-merged-branch-optional" title="Permalink to this headline">¶</a></h4>
+<p>Once your feature branch is accepted into upstream, you’ll probably want to get rid of
+the branch. First, merge upstream master into your branch so git knows it is safe to
+delete your branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">fetch</span> <span class="n">upstream</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">master</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="n">upstream</span><span class="o">/</span><span class="n">master</span>
+</pre></div>
+</div>
+<p>Then you can just do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="o">-</span><span class="n">d</span> <span class="n">new_feature</span>
+</pre></div>
+</div>
+<p>Make sure you use a lower-case <code class="docutils literal notranslate"><span class="pre">-d</span></code>, or else git won’t warn you if your feature
+branch has not actually been merged.</p>
+<p>The branch will still exist on GitHub, so to delete it there do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="o">--</span><span class="n">delete</span> <span class="n">new_feature</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="toctree-wrapper compound">
+<span id="document-api/profiler"></span><div class="section" id="profilers">
+<h2>Profilers<a class="headerlink" href="#profilers" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="py_stringsimjoin.profiler.profiler.profile_table_for_join">
+<code class="sig-prename descclassname">py_stringsimjoin.profiler.profiler.</code><code class="sig-name descname">profile_table_for_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_table</span></em>, <em class="sig-param"><span class="n">profile_attrs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/profiler/profiler.html#profile_table_for_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.profiler.profiler.profile_table_for_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Profiles the attributes in the table to suggest implications for join.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_table</strong> (<em>DataFrame</em>) – input table to profile.</p></li>
+<li><p><strong>profile_attrs</strong> (<em>list</em>) – list of attribute names from the input table to be
+profiled (defaults to None). If not provided, all attributes in the
+input table will be profiled.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A dataframe consisting of profile output. Specifically, the dataframe
+contains three columns,</p>
+<ol class="arabic simple">
+<li><p>’Unique values’ column, which shows the number of unique values in
+each attribute,</p></li>
+<li><p>’Missing values’ column, which shows the number of missing values in
+each attribute, and</p></li>
+<li><p>’Comments’ column, which contains comments about each attribute.</p></li>
+</ol>
+<p>The output dataframe is indexed by attribute name, so that the
+statistics for each attribute can be easily accessed using the attribute name.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span id="document-api/join"></span><div class="section" id="joins">
+<h2>Joins<a class="headerlink" href="#joins" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<span id="document-api/cosine_join"></span><div class="section" id="cosine-join">
+<h3>Cosine Join<a class="headerlink" href="#cosine-join" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="py_stringsimjoin.join.cosine_join.cosine_join">
+<code class="sig-prename descclassname">py_stringsimjoin.join.cosine_join.</code><code class="sig-name descname">cosine_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/cosine_join.html#cosine_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.cosine_join.cosine_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using a variant of cosine similarity known as Ochiai
+coefficient.</p>
+<p>This is not the cosine measure that computes the cosine of the angle
+between two given vectors. Rather, it is a variant of cosine measure known
+as Ochiai coefficient (see the Wikipedia page
+<a class="reference external" href="https://en.wikipedia.org/wiki/Cosine_similarity">Cosine Similarity</a>).
+Specifically, for two sets X and Y, this measure computes:</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(cosine(X, Y) = \frac{|X \cap Y|}{\sqrt{|X| \cdot |Y|}}\)</span></p>
+</div></blockquote>
+<p>In the case where one of X and Y is an empty set and the other is a
+non-empty set, we define their cosine score to be 0. In the case where both
+X and Y are empty sets, we define their cosine score to be 1.</p>
+<p>Finds tuple pairs from left table and right table such that the cosine
+similarity between the join attributes satisfies the condition on input
+threshold. For example, if the comparison operator is ‘&gt;=’, finds tuple
+pairs whose cosine similarity between the strings that are the values of
+the join attributes is greater than or equal to the input threshold, as
+specified in “threshold”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_join_attr</strong> (<em>string</em>) – join attribute in left table.</p></li>
+<li><p><strong>r_join_attr</strong> (<em>string</em>) – join attribute in right table.</p></li>
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize join
+attributes.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – cosine similarity threshold to be satisfied.</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&gt;=’, ‘&gt;’
+and ‘=’ (defaults to ‘&gt;=’).</p></li>
+<li><p><strong>allow_empty</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with empty
+set of tokens in both the join attributes should be included in the
+output (defaults to True).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named ‘_sim_score’ in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
+no parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
+(where n_cpus is the total number of CPUs in the machine). Thus for
+n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then no parallel computing code will be used
+(i.e., equivalent to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
+be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that satisfy the join
+condition (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span id="document-api/dice_join"></span><div class="section" id="dice-join">
+<h3>Dice Join<a class="headerlink" href="#dice-join" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="py_stringsimjoin.join.dice_join.dice_join">
+<code class="sig-prename descclassname">py_stringsimjoin.join.dice_join.</code><code class="sig-name descname">dice_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/dice_join.html#dice_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.dice_join.dice_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using Dice similarity measure.</p>
+<p>For two sets X and Y, the Dice similarity score between them is given by:</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(dice(X, Y) = \frac{2 * |X \cap Y|}{|X| + |Y|}\)</span></p>
+</div></blockquote>
+<p>In the case where both X and Y are empty sets, we define their Dice
+score to be 1.</p>
+<p>Finds tuple pairs from left table and right table such that the Dice
+similarity between the join attributes satisfies the condition on input
+threshold. For example, if the comparison operator is ‘&gt;=’, finds tuple
+pairs whose Dice similarity between the strings that are the values of
+the join attributes is greater than or equal to the input threshold, as
+specified in “threshold”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_join_attr</strong> (<em>string</em>) – join attribute in left table.</p></li>
+<li><p><strong>r_join_attr</strong> (<em>string</em>) – join attribute in right table.</p></li>
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize join
+attributes.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – Dice similarity threshold to be satisfied.</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&gt;=’, ‘&gt;’
+and ‘=’ (defaults to ‘&gt;=’).</p></li>
+<li><p><strong>allow_empty</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with empty
+set of tokens in both the join attributes should be included in the
+output (defaults to True).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named ‘_sim_score’ in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
+no parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
+(where n_cpus is the total number of CPUs in the machine). Thus for
+n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then no parallel computing code will be used
+(i.e., equivalent to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
+be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that satisfy the join
+condition (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span id="document-api/edit_distance_join"></span><div class="section" id="edit-distance-join">
+<h3>Edit Distance Join<a class="headerlink" href="#edit-distance-join" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="py_stringsimjoin.join.edit_distance_join.edit_distance_join">
+<code class="sig-prename descclassname">py_stringsimjoin.join.edit_distance_join.</code><code class="sig-name descname">edit_distance_join</code><span class="sig-paren">(</span><em class="sig-param">ltable</em>, <em class="sig-param">rtable</em>, <em class="sig-param">l_key_attr</em>, <em class="sig-param">r_key_attr</em>, <em class="sig-param">l_join_attr</em>, <em class="sig-param">r_join_attr</em>, <em class="sig-param">threshold</em>, <em class="sig-param">comp_op='&lt;='</em>, <em class="sig-param">l_out_attrs=None</em>, <em class="sig-param">r_out_attrs=None</em>, <em class="sig-param">l_out_prefix='l_'</em>, <em class="sig-param">r_out_prefix='r_'</em>, <em class="sig-param">out_sim_score=True</em>, <em class="sig-param">n_jobs=1</em>, <em class="sig-param">show_progress=True</em>, <em class="sig-param">tokenizer=2_gram_tokenizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/edit_distance_join.html#edit_distance_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.edit_distance_join.edit_distance_join" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<span id="document-api/disk_edit_distance_join"></span><div class="section" id="disk-based-edit-distance-join">
+<h3>Disk-Based Edit Distance Join<a class="headerlink" href="#disk-based-edit-distance-join" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="py_stringsimjoin.join.disk_edit_distance_join.disk_edit_distance_join">
+<code class="sig-prename descclassname">py_stringsimjoin.join.disk_edit_distance_join.</code><code class="sig-name descname">disk_edit_distance_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">data_limit</span><span class="o">=</span><span class="default_value">1000000</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&lt;='</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">tokenizer</span><span class="o">=</span><span class="default_value">QgramTokenizer(qval=2)</span></em>, <em class="sig-param"><span class="n">temp_dir</span><span class="o">=</span><span class="default_value">os.getcwd()</span></em>, <em class="sig-param"><span class="n">output_file_path</span><span class="o">=</span><span class="default_value">default_output_file_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/disk_edit_distance_join.html#disk_edit_distance_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.disk_edit_distance_join.disk_edit_distance_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>WARNING: THIS IS AN EXPERIMENTAL COMMAND. THIS COMMAND IS NOT TESTED.
+USE AT YOUR OWN RISK.</p>
+<p>Join two tables using edit distance measure.</p>
+<p>This is the disk version of the previous edit_distance_join api.
+There can be a scenario that while performing join on large datasets,
+the intermediate in-memory data structures grow very large and thus lead
+to termination of the program due to insufficient memory. Keeping this problem
+in mind, disk_edit_distance_join is the updated version of the older
+edit_distance_join function that solves the above mentioned problem.
+So if the analysis is being done on the machine with small memory limits or
+if the input tables are too large, then this new disk_edit_distance_join can be
+used to avoid memory exceeding problem while processing.</p>
+<p>It Finds tuple pairs from left table and right table such that the edit
+distance between the join attributes satisfies the condition on input
+threshold. For example, if the comparison operator is ‘&lt;=’, finds tuple
+pairs whose edit distance between the strings that are the values of
+the join attributes is less than or equal to the input threshold, as
+specified in “threshold”.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, this method only computes an approximate join result. This is
+because, to perform the join we transform an edit distance measure
+between strings into an overlap measure between qgrams of the strings.
+Hence, we need at least one qgram to be in common between two input
+strings, to appear in the join output. For smaller strings, where all
+qgrams of the strings differ, we cannot process them.</p>
+<p>This method implements a simplified version of the algorithm proposed in
+<a class="reference external" href="http://www.vldb.org/pvldb/1/1453957.pdf">Ed-Join: An Efficient Algorithm for Similarity Joins With Edit Distance
+Constraints (Chuan Xiao, Wei Wang and Xuemin Lin), VLDB 08</a>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_join_attr</strong> (<em>string</em>) – join attribute in left table.</p></li>
+<li><p><strong>r_join_attr</strong> (<em>string</em>) – join attribute in right table.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – edit distance threshold to be satisfied.</p></li>
+<li><p><strong>data_limit</strong> (<em>int</em>) – threshold value for number of rows that would be kept
+in memory before writing the output on the disk. This is the maximum sum
+total of all rows that can be present in memory across all processes at
+a time. This is a new argument compared to edit distance join.
+(defaults to 1M)</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&lt;=’, ‘&lt;’
+and ‘=’ (defaults to ‘&lt;=’).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether the edit distance
+score should be included in the output table (defaults to True).
+Setting this flag to True will add a column named ‘_sim_score’ in
+the output table. This column will contain the edit distance scores
+for the tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
+no parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
+(where n_cpus is the total number of CPUs in the machine). Thus for
+n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then no parallel computing code will be used
+(i.e., equivalent to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
+be displayed to the user (defaults to True).</p></li>
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize the join
+attributes during filtering, when edit distance measure is
+transformed into an overlap measure. This must be a q-gram tokenizer
+(defaults to 2-gram tokenizer).</p></li>
+<li><p><strong>temp_dir</strong> (<em>string</em>) – absolute path where all the intermediate files will be generated.
+This is a new argument compared to edit distance join. (defaults to the current
+working directory).</p></li>
+<li><p><strong>output_file_path</strong> (<em>string</em>) – absolute path where the output file will be generated.
+Older file with same path and name will be removed. This is a new argument compared
+to edit distance join. (defaults to the current working directory/$default_output_file_name).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the status of the computation. True if successfully completed else False (boolean).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span id="document-api/jaccard_join"></span><div class="section" id="jaccard-join">
+<h3>Jaccard Join<a class="headerlink" href="#jaccard-join" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="py_stringsimjoin.join.jaccard_join.jaccard_join">
+<code class="sig-prename descclassname">py_stringsimjoin.join.jaccard_join.</code><code class="sig-name descname">jaccard_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/jaccard_join.html#jaccard_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.jaccard_join.jaccard_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using Jaccard similarity measure.</p>
+<p>For two sets X and Y, the Jaccard similarity score between them is given by:</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(jaccard(X, Y) = \frac{|X \cap Y|}{|X \cup Y|}\)</span></p>
+</div></blockquote>
+<p>In the case where both X and Y are empty sets, we define their Jaccard
+score to be 1.</p>
+<p>Finds tuple pairs from left table and right table such that the Jaccard
+similarity between the join attributes satisfies the condition on input
+threshold. For example, if the comparison operator is ‘&gt;=’, finds tuple
+pairs whose Jaccard similarity between the strings that are the values of
+the join attributes is greater than or equal to the input threshold, as
+specified in “threshold”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_join_attr</strong> (<em>string</em>) – join attribute in left table.</p></li>
+<li><p><strong>r_join_attr</strong> (<em>string</em>) – join attribute in right table.</p></li>
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize join
+attributes.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – Jaccard similarity threshold to be satisfied.</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&gt;=’, ‘&gt;’
+and ‘=’ (defaults to ‘&gt;=’).</p></li>
+<li><p><strong>allow_empty</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with empty
+set of tokens in both the join attributes should be included in the
+output (defaults to True).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named ‘_sim_score’ in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
+no parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
+(where n_cpus is the total number of CPUs in the machine). Thus for
+n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then no parallel computing code will be used
+(i.e., equivalent to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
+be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that satisfy the join
+condition (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span id="document-api/overlap_join"></span><div class="section" id="overlap-join">
+<h3>Overlap Join<a class="headerlink" href="#overlap-join" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="py_stringsimjoin.join.overlap_join.overlap_join">
+<code class="sig-prename descclassname">py_stringsimjoin.join.overlap_join.</code><code class="sig-name descname">overlap_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/overlap_join.html#overlap_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.overlap_join.overlap_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using overlap measure.</p>
+<p>For two sets X and Y, the overlap between them is given by:</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(overlap(X, Y) = |X \cap Y|\)</span></p>
+</div></blockquote>
+<p>Finds tuple pairs from left table and right table such that the overlap
+between the join attributes satisfies the condition on input threshold. For
+example, if the comparison operator is ‘&gt;=’, finds tuple pairs whose
+overlap between the strings that are the values of the join attributes is
+greater than or equal to the input threshold, as specified in “threshold”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_join_attr</strong> (<em>string</em>) – join attribute in left table.</p></li>
+<li><p><strong>r_join_attr</strong> (<em>string</em>) – join attribute in right table.</p></li>
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize join
+attributes.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – overlap threshold to be satisfied.</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&gt;=’, ‘&gt;’
+and ‘=’ (defaults to ‘&gt;=’).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named ‘_sim_score’ in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
+no parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
+(where n_cpus is the total number of CPUs in the machine). Thus for
+n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then no parallel computing code will be used
+(i.e., equivalent to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
+be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that satisfy the join
+condition (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span id="document-api/overlap_coefficient_join"></span><div class="section" id="overlap-coefficient-join">
+<h3>Overlap Coefficient Join<a class="headerlink" href="#overlap-coefficient-join" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="py_stringsimjoin.join.overlap_coefficient_join.overlap_coefficient_join">
+<code class="sig-prename descclassname">py_stringsimjoin.join.overlap_coefficient_join.</code><code class="sig-name descname">overlap_coefficient_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/overlap_coefficient_join.html#overlap_coefficient_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.overlap_coefficient_join.overlap_coefficient_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two tables using overlap coefficient.</p>
+<p>For two sets X and Y, the overlap coefficient between them is given by:</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(overlap\_coefficient(X, Y) = \frac{|X \cap Y|}{\min(|X|, |Y|)}\)</span></p>
+</div></blockquote>
+<p>In the case where one of X and Y is an empty set and the other is a
+non-empty set, we define their overlap coefficient to be 0. In the case
+where both X and Y are empty sets, we define their overlap coefficient to
+be 1.</p>
+<p>Finds tuple pairs from left table and right table such that the overlap
+coefficient between the join attributes satisfies the condition on input
+threshold. For example, if the comparison operator is ‘&gt;=’, finds tuple
+pairs whose overlap coefficient between the strings that are the values of
+the join attributes is greater than or equal to the input threshold, as
+specified in “threshold”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_join_attr</strong> (<em>string</em>) – join attribute in left table.</p></li>
+<li><p><strong>r_join_attr</strong> (<em>string</em>) – join attribute in right table.</p></li>
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize join
+attributes.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – overlap coefficient threshold to be satisfied.</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&gt;=’, ‘&gt;’
+and ‘=’ (defaults to ‘&gt;=’).</p></li>
+<li><p><strong>allow_empty</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with empty
+set of tokens in both the join attributes should be included in the
+output (defaults to True).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
+missing value in at least one of the join attributes should be
+included in the output (defaults to False). If this flag is set to
+True, a tuple in ltable with missing value in the join attribute
+will be matched with every tuple in rtable and vice versa.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named ‘_sim_score’ in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
+no parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
+(where n_cpus is the total number of CPUs in the machine). Thus for
+n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then no parallel computing code will be used
+(i.e., equivalent to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
+be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that satisfy the join
+condition (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+<span id="document-api/filter"></span><div class="section" id="filters">
+<h2>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<span id="document-api/overlap_filter"></span><div class="section" id="module-py_stringsimjoin.filter.overlap_filter">
+<span id="overlap-filter"></span><h3>Overlap Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.overlap_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter">
+<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.overlap_filter.</code><code class="sig-name descname">OverlapFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">overlap_size</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using overlap filtering
+technique.</p>
+<p>A string pair is output by overlap filter only if the number of common
+tokens in the strings satisfy the condition on overlap size threshold. For
+example, if the comparison operator is ‘&gt;=’, a string pair is output if the
+number of common tokens is greater than or equal to the overlap size
+threshold, as specified by “overlap_size”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used.</p></li>
+<li><p><strong>overlap_size</strong> (<em>int</em>) – overlap threshold to be used by the filter.</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&gt;=’, ‘&gt;’
+and ‘=’ (defaults to ‘&gt;=’).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer">
+<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the tokenizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tokenizer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.overlap_size">
+<code class="sig-name descname">overlap_size</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.overlap_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the overlap threshold value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.comp_op">
+<code class="sig-name descname">comp_op</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.comp_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the comparison operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.allow_missing">
+<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_missing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_candset">
+<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candset</strong> (<em>DataFrame</em>) – input candidate set.</p></li>
+<li><p><strong>candset_l_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in left table.</p></li>
+<li><p><strong>candset_r_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in right table.</p></li>
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs from the candidate set that
+survive the filter (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_pair">
+<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the overlap filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lstring</strong> (<em>string</em>) – input strings</p></li>
+<li><p><strong>rstring</strong> (<em>string</em>) – input strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A flag indicating whether the string pair is dropped (boolean).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_tables">
+<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+overlap filtering technique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether the overlap score
+should be included in the output table (defaults to True).
+Setting this flag to True will add a column named ‘_sim_score’
+in the output table. This column will contain the overlap scores
+for the tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that survive the filter
+(DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span id="document-api/size_filter"></span><div class="section" id="module-py_stringsimjoin.filter.size_filter">
+<span id="size-filter"></span><h3>Size Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.size_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter">
+<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.size_filter.</code><code class="sig-name descname">SizeFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_measure_type</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/size_filter.html#SizeFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using size filtering technique.</p>
+<p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
+filter finds candidate string pairs that may have similarity score greater
+than or equal to the input threshold, as specified in “threshold”. For
+distance measures such as edit distance, the filter finds candidate string
+pairs that may have distance score less than or equal to the threshold.</p>
+<p>To know more about size filtering, refer to the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">string matching chapter</a>
+of the “Principles of Data Integration” book.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used.</p></li>
+<li><p><strong>sim_measure_type</strong> (<em>string</em>) – similarity measure type. Supported types are
+‘JACCARD’, ‘COSINE’, ‘DICE’, ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – threshold to be used by the filter.</p></li>
+<li><p><strong>allow_empty</strong> (<em>boolean</em>) – A flag to indicate whether pairs in which both
+strings are tokenized into an empty set of tokens should
+survive the filter (defaults to True). This flag is not valid for
+measures such as ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer">
+<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the tokenizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tokenizer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type">
+<code class="sig-name descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the similarity measure
+type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.threshold">
+<code class="sig-name descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the threshold value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty">
+<code class="sig-name descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing">
+<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_missing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_candset">
+<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candset</strong> (<em>DataFrame</em>) – input candidate set.</p></li>
+<li><p><strong>candset_l_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in left table.</p></li>
+<li><p><strong>candset_r_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in right table.</p></li>
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs from the candidate set that
+survive the filter (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_pair">
+<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/size_filter.html#SizeFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the size filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lstring</strong> (<em>string</em>) – input strings</p></li>
+<li><p><strong>rstring</strong> (<em>string</em>) – input strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A flag indicating whether the string pair is dropped (boolean).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_tables">
+<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/size_filter.html#SizeFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+size filtering technique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to ‘r_’).</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that survive the filter
+(DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span id="document-api/prefix_filter"></span><div class="section" id="module-py_stringsimjoin.filter.prefix_filter">
+<span id="prefix-filter"></span><h3>Prefix Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.prefix_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter">
+<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.prefix_filter.</code><code class="sig-name descname">PrefixFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_measure_type</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/prefix_filter.html#PrefixFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using prefix filtering
+technique.</p>
+<p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
+filter finds candidate string pairs that may have similarity score greater
+than or equal to the input threshold, as specified in “threshold”. For
+distance measures such as edit distance, the filter finds candidate string
+pairs that may have distance score less than or equal to the threshold.</p>
+<p>To know more about prefix filtering, refer to the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">string matching chapter</a>
+of the “Principles of Data Integration” book.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used.</p></li>
+<li><p><strong>sim_measure_type</strong> (<em>string</em>) – similarity measure type. Supported types are
+‘JACCARD’, ‘COSINE’, ‘DICE’, ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – threshold to be used by the filter.</p></li>
+<li><p><strong>allow_empty</strong> (<em>boolean</em>) – A flag to indicate whether pairs in which both
+strings are tokenized into an empty set of tokens should
+survive the filter (defaults to True). This flag is not valid for
+measures such as ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.tokenizer">
+<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the tokenizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tokenizer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.sim_measure_type">
+<code class="sig-name descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the similarity measure
+type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.threshold">
+<code class="sig-name descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the threshold value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_empty">
+<code class="sig-name descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_missing">
+<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_missing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_candset">
+<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candset</strong> (<em>DataFrame</em>) – input candidate set.</p></li>
+<li><p><strong>candset_l_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in left table.</p></li>
+<li><p><strong>candset_r_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in right table.</p></li>
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs from the candidate set that
+survive the filter (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_pair">
+<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/prefix_filter.html#PrefixFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the prefix filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lstring</strong> (<em>string</em>) – input strings</p></li>
+<li><p><strong>rstring</strong> (<em>string</em>) – input strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A flag indicating whether the string pair is dropped (boolean).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_tables">
+<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/prefix_filter.html#PrefixFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+prefix filtering technique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether the overlap score
+should be included in the output table (defaults to True).
+Setting this flag to True will add a column named ‘_sim_score’
+in the output table. This column will contain the overlap scores
+for the tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that survive the filter
+(DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span id="document-api/position_filter"></span><div class="section" id="module-py_stringsimjoin.filter.position_filter">
+<span id="position-filter"></span><h3>Position Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.position_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter">
+<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.position_filter.</code><code class="sig-name descname">PositionFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_measure_type</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/position_filter.html#PositionFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using position filtering
+technique.</p>
+<p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
+filter finds candidate string pairs that may have similarity score greater
+than or equal to the input threshold, as specified in “threshold”. For
+distance measures such as edit distance, the filter finds candidate string
+pairs that may have distance score less than or equal to the threshold.</p>
+<p>To know more about position filtering, refer to the <a class="reference external" href="http://pages.cs.wisc.edu/~anhai/py_stringmatching/dibook-string-matching.pdf">string matching chapter</a>
+of the “Principles of Data Integration” book.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used.</p></li>
+<li><p><strong>sim_measure_type</strong> (<em>string</em>) – similarity measure type. Supported types are
+‘JACCARD’, ‘COSINE’, ‘DICE’, ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – threshold to be used by the filter.</p></li>
+<li><p><strong>allow_empty</strong> (<em>boolean</em>) – A flag to indicate whether pairs in which both
+strings are tokenized into an empty set of tokens should
+survive the filter (defaults to True). This flag is not valid for
+measures such as ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.tokenizer">
+<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the tokenizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tokenizer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.sim_measure_type">
+<code class="sig-name descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the similarity measure
+type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.threshold">
+<code class="sig-name descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the threshold value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.allow_empty">
+<code class="sig-name descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.allow_missing">
+<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_missing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_candset">
+<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candset</strong> (<em>DataFrame</em>) – input candidate set.</p></li>
+<li><p><strong>candset_l_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in left table.</p></li>
+<li><p><strong>candset_r_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in right table.</p></li>
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs from the candidate set that
+survive the filter (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_pair">
+<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/position_filter.html#PositionFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the position filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lstring</strong> (<em>string</em>) – input strings</p></li>
+<li><p><strong>rstring</strong> (<em>string</em>) – input strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A flag indicating whether the string pair is dropped (boolean).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_tables">
+<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/position_filter.html#PositionFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+position filtering technique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to ‘r_’).</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that survive the filter
+(DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span id="document-api/suffix_filter"></span><div class="section" id="module-py_stringsimjoin.filter.suffix_filter">
+<span id="suffix-filter"></span><h3>Suffix Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.suffix_filter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter">
+<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.suffix_filter.</code><code class="sig-name descname">SuffixFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_measure_type</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings using suffix filtering
+technique.</p>
+<p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
+filter finds candidate string pairs that may have similarity score greater
+than or equal to the input threshold, as specified in “threshold”. For
+distance measures such as edit distance, the filter finds candidate string
+pairs that may have distance score less than or equal to the threshold.</p>
+<p>To know more about suffix filtering, refer to the paper
+<a class="reference external" href="http://www.cse.unsw.edu.au/~weiw/files/WWW08-PPJoin-Final.pdf">Efficient Similarity Joins for Near Duplicate Detection
+(Chuan Xiao, Wei Wang, Xuemin Lin and Jeffrey Xu Yu), WWW 08</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used.</p></li>
+<li><p><strong>sim_measure_type</strong> (<em>string</em>) – similarity measure type. Supported types are
+‘JACCARD’, ‘COSINE’, ‘DICE’, ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – threshold to be used by the filter.</p></li>
+<li><p><strong>allow_empty</strong> (<em>boolean</em>) – A flag to indicate whether pairs in which both
+strings are tokenized into an empty set of tokens should
+survive the filter (defaults to True). This flag is not valid for
+measures such as ‘OVERLAP’ and ‘EDIT_DISTANCE’.</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – A flag to indicate whether pairs containing
+missing value should survive the filter (defaults to False).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer">
+<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the tokenizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tokenizer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type">
+<code class="sig-name descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the similarity measure
+type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold">
+<code class="sig-name descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the threshold value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty">
+<code class="sig-name descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing">
+<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attribute to store the value of the flag
+allow_missing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset">
+<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input candidate
+set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candset</strong> (<em>DataFrame</em>) – input candidate set.</p></li>
+<li><p><strong>candset_l_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in left table.</p></li>
+<li><p><strong>candset_r_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a
+key in right table.</p></li>
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs from the candidate set that
+survive the filter (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair">
+<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the input strings get dropped by the suffix filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lstring</strong> (<em>string</em>) – input strings</p></li>
+<li><p><strong>rstring</strong> (<em>string</em>) – input strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A flag indicating whether the string pair is dropped (boolean).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables">
+<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds candidate matching pairs of strings from the input tables using
+suffix filtering technique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_filter_attr</strong> (<em>string</em>) – attribute in left table on which the filter
+should be applied.</p></li>
+<li><p><strong>r_filter_attr</strong> (<em>string</em>) – attribute in right table on which the filter
+should be applied.</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to
+be included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the left table, in the output table
+(defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names
+coming from the right table, in the output table
+(defaults to ‘r_’).</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is
+given, no parallel computing code is used at all, which is
+useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used (where n_cpus is the total
+number of CPUs in the machine). Thus for n_jobs = -2, all CPUs
+but one are used. If (n_cpus + 1 + n_jobs) becomes less than 1,
+then no parallel computing code will be used (i.e., equivalent
+to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress
+should be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs that survive the filter
+(DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+<span id="document-api/matcher"></span><div class="section" id="matchers">
+<h2>Matchers<a class="headerlink" href="#matchers" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="py_stringsimjoin.matcher.apply_matcher.apply_matcher">
+<code class="sig-prename descclassname">py_stringsimjoin.matcher.apply_matcher.</code><code class="sig-name descname">apply_matcher</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_match_attr</span></em>, <em class="sig-param"><span class="n">r_match_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_function</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/matcher/apply_matcher.html#apply_matcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.matcher.apply_matcher.apply_matcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find matching string pairs from the candidate set (typically produced by
+applying a filter to two tables) by applying a matcher of form
+(sim_function comp_op threshold).</p>
+<p>Specifically, this method computes the input similarity function on string
+pairs in the candidate set and checks if the resulting score satisfies the
+input threshold (depending on the comparison operator).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candset</strong> (<em>DataFrame</em>) – input candidate set.</p></li>
+<li><p><strong>candset_l_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a key
+in left table.</p></li>
+<li><p><strong>candset_r_key_attr</strong> (<em>string</em>) – attribute in candidate set which is a key
+in right table.</p></li>
+<li><p><strong>ltable</strong> (<em>DataFrame</em>) – left input table.</p></li>
+<li><p><strong>rtable</strong> (<em>DataFrame</em>) – right input table.</p></li>
+<li><p><strong>l_key_attr</strong> (<em>string</em>) – key attribute in left table.</p></li>
+<li><p><strong>r_key_attr</strong> (<em>string</em>) – key attribute in right table.</p></li>
+<li><p><strong>l_match_attr</strong> (<em>string</em>) – attribute in left table on which the matcher
+should be applied.</p></li>
+<li><p><strong>r_match_attr</strong> (<em>string</em>) – attribute in right table on which the matcher
+should be applied.</p></li>
+<li><p><strong>tokenizer</strong> (<em>Tokenizer</em>) – tokenizer to be used to tokenize the
+match attributes. If set to None, the matcher is applied directly
+on the match attributes.</p></li>
+<li><p><strong>sim_function</strong> (<em>function</em>) – matcher function to be applied.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – threshold to be satisfied.</p></li>
+<li><p><strong>comp_op</strong> (<em>string</em>) – comparison operator. Supported values are ‘&gt;=’, ‘&gt;’, ‘
+&lt;=’, ‘&lt;’, ‘=’ and ‘!=’ (defaults to ‘&gt;=’).</p></li>
+<li><p><strong>allow_missing</strong> (<em>boolean</em>) – flag to indicate whether tuple pairs with
+missing value in at least one of the match attributes should be
+included in the output (defaults to False).</p></li>
+<li><p><strong>l_out_attrs</strong> (<em>list</em>) – list of attribute names from the left table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>r_out_attrs</strong> (<em>list</em>) – list of attribute names from the right table to be
+included in the output table (defaults to None).</p></li>
+<li><p><strong>l_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the left table, in the output table (defaults to ‘l_’).</p></li>
+<li><p><strong>r_out_prefix</strong> (<em>string</em>) – prefix to be used for the attribute names coming
+from the right table, in the output table (defaults to ‘r_’).</p></li>
+<li><p><strong>out_sim_score</strong> (<em>boolean</em>) – flag to indicate whether similarity score
+should be included in the output table (defaults to True). Setting
+this flag to True will add a column named ‘_sim_score’ in the
+output table. This column will contain the similarity scores for the
+tuple pairs in the output.</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – number of parallel jobs to use for the computation
+(defaults to 1). If -1 is given, all CPUs are used. If 1 is given,
+no parallel computing code is used at all, which is useful for
+debugging. For n_jobs below -1, (n_cpus + 1 + n_jobs) are used
+(where n_cpus is the total number of CPUs in the machine). Thus for
+n_jobs = -2, all CPUs but one are used. If (n_cpus + 1 + n_jobs)
+becomes less than 1, then no parallel computing code will be used
+(i.e., equivalent to the default).</p></li>
+<li><p><strong>show_progress</strong> (<em>boolean</em>) – flag to indicate whether task progress should
+be displayed to the user (defaults to True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An output table containing tuple pairs from the candidate set that
+survive the matcher (DataFrame).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span id="document-api/utility"></span><div class="section" id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="py_stringsimjoin.utils.converter.dataframe_column_to_str">
+<code class="sig-prename descclassname">py_stringsimjoin.utils.converter.</code><code class="sig-name descname">dataframe_column_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em>, <em class="sig-param"><span class="n">col_name</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">return_col</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/utils/converter.html#dataframe_column_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.utils.converter.dataframe_column_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert columun in the dataframe into string type while preserving NaN
+values.</p>
+<p>This method is useful when performing join over numeric columns. Currently,
+the join methods expect the join columns to be of string type. Hence, the
+numeric columns need to be converted to string type before performing the
+join.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe</strong> (<em>DataFrame</em>) – Input pandas dataframe.</p></li>
+<li><p><strong>col_name</strong> (<em>string</em>) – Name of the column in the dataframe to be converted.</p></li>
+<li><p><strong>inplace</strong> (<em>boolean</em>) – A flag indicating whether the input dataframe should
+be modified inplace or in a copy of it.</p></li>
+<li><p><strong>return_col</strong> (<em>boolean</em>) – A flag indicating whether a copy of the converted
+column should be returned. When this flag is set to True, the method
+will not modify the original dataframe and will return a new column
+of string type. Only one of inplace and return_col can be set to
+True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A Boolean value when inplace is set to True.</p>
+<p>A new dataframe when inplace is set to False and return_col is set to False.</p>
+<p>A series when inplace is set to False and return_col is set to True.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="py_stringsimjoin.utils.converter.series_to_str">
+<code class="sig-prename descclassname">py_stringsimjoin.utils.converter.</code><code class="sig-name descname">series_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/utils/converter.html#series_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.utils.converter.series_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert series into string type while preserving NaN values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>series</strong> (<em>Series</em>) – Input pandas series.</p></li>
+<li><p><strong>inplace</strong> (<em>boolean</em>) – A flag indicating whether the input series should
+be modified inplace or in a copy of it. This flag is ignored when
+the input series consists of only NaN values or the series is
+empty (with int or float type). In these two cases, we always return
+a copy irrespective of the inplace flag.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A Boolean value when inplace is set to True.</p>
+<p>A series when inplace is set to False.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2017, anhaidgroup
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
