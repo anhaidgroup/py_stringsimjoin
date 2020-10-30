@@ -1,13 +1,11 @@
 environment:
   matrix:
-    - python : 27
-    - python : 27-x64
-    - python : 35
-    - python : 35-x64
     - python : 36
     - python : 36-x64
     - python : 37
     - python : 37-x64
+    - python : 38
+    - python : 38-x64
 
 install:
 
@@ -22,7 +20,7 @@ install:
   - python -m pip install --upgrade pip
 
   # Install the build and runtime dependencies of the project.
-  - pip install "numpy<1.19"
+  - pip install numpy
   - pip install setuptools pandas six joblib py_stringmatching nose cython
   - pip install pyprind==2.9.8
 
@@ -36,4 +34,4 @@ test_script:
   - nosetests
 
 on_success:
-  - echo Build succesful
+  - echo Build successful
