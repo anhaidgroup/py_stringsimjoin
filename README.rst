@@ -8,13 +8,16 @@ Important links
 
  * Project Homepage: https://sites.google.com/site/anhaidgroup/projects/magellan/py_stringsimjoin
  * Code repository: https://github.com/anhaidgroup/py_stringsimjoin
+ * User Manual: http://anhaidgroup.github.io/py_stringsimjoin/v0.3.2/index.html
+ * Overview: https://anhaidgroup.github.io/py_stringsimjoin/v0.3.2/overview.html
+ * How to Contribute: https://anhaidgroup.github.io/py_stringsimjoin/v0.3.2/contributing.html
  * Issue Tracker: https://github.com/anhaidgroup/py_stringsimjoin/issues
  * Mailing List: https://groups.google.com/forum/#!forum/py_stringsimjoin
 
 Dependencies
 ============
 
-py_stringsimjoin has been tested on Python 2.7, 3.5+.
+py_stringsimjoin has been tested on Python 2.7, 3.5, 3.6, and 3.7.
 
 The required dependencies to build the package are pandas 0.16.0 or higher, py_stringmatching 0.2.1 or higher,
 joblib, pyprind, six and a C++ compiler. For the development version, you will also need Cython.

@@ -246,7 +246,7 @@ have ``sphinx`` and ``ipython`` installed.
 
 It is easiest to :ref:`create a development environment <contributing.dev_env>`, then install::
 
-      conda install -n py_stringsimjoin_dev sphinx ipython
+      conda install -n py_stringsimjoin_dev sphinx sphinx_rtd_theme ipython
 
 Building the documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

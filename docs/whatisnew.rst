@@ -1,8 +1,8 @@
 What is New? 
 ============
 
-Compared to Version 0.3.0, the following is new:
+Compared to Version 0.3.1, the following is new:
 
-  * Cython version was updated. The package is now built with updated Cython version >= 0.27.3.
-
-  * Added support for Python 3.7 version and dropped Testing support for Python 3.4 version.
+  * Started tracking release changes in CHANGES.txt.
+  * Minorly updated usage of Pandas to prevent a dependency on downgraded versions.
+  * This is the last version of py_stringmatching that will support Python 2 and Python 3.5.

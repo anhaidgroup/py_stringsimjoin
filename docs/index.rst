@@ -6,10 +6,7 @@
 User Manual for py_stringsimjoin
 ================================
 
-This document shows the users how to install and use the package. To contribute 
-to or further develop the package, see the 
-`project website <https://sites.google.com/site/anhaidgroup/projects/py_stringsimjoin>`_, 
-section “For Contributors and Developers”.
+This document explains how to install and use, and contribute to the package.
 
 Contents
 ========
@@ -23,6 +20,7 @@ Contents
    overview
    guide
    cython
+   contributing
 
 .. toctree::
    :maxdepth: 2

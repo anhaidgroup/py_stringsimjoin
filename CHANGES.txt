@@ -1,0 +1,4 @@
+v0.3.2 - 10/26/2020
+  * Started tracking release changes in CHANGES.txt.
+  * Minorly updated usage of Pandas to prevent a dependency on downgraded versions.
+  * This is the last version of py_stringsimjoin that will support Python 2 and Python 3.5.

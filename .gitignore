@@ -59,6 +59,9 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# macOS environment
+.DS_Store
+
 # Performance Testing #
 #######################
 env/
