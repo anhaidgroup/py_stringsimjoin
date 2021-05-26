@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>py_stringsimjoin 0.3.2 documentation</title>
   
@@ -13,10 +13,15 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -26,16 +31,15 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="index" title="Index" href="gensinglepage.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
 
@@ -50,7 +54,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> py_stringsimjoin
+            <a href="#" class="icon icon-home"> py_stringsimjoin
           
 
           
@@ -171,6 +175,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -182,7 +188,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -218,7 +224,7 @@
 <h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Python 2.7, 3.5, 3.6, 3.7, or 3.8</p></li>
+<li><p>Python 3.6, 3.7, 3.8, or 3.9</p></li>
 <li><p>C++ compiler (parts of the package are in Cython for efficiency reasons, and you need C++ compiler to compile these parts)</p></li>
 </ul>
 </div></blockquote>
@@ -236,16 +242,12 @@ and Windows 10.</p>
 <li><p>joblib (to write code that runs over multiple cores)</p></li>
 <li><p>py_stringmatching (to tokenize and compute similarity scores between strings)</p></li>
 <li><p>pyprind (to display progress bars)</p></li>
-<li><p>six (to ensure our code run on both Python 2.x and Python 3.x)</p></li>
+<li><p>six</p></li>
 </ul>
 </div></blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The py_stringsimjoin installer will automatically install the above required packages.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If using Python 2, py_stringsimjoin requires numpy less than 1.17; if using Python 3.5, numpy less than 1.19</p>
 </div>
 </div>
 <div class="section" id="c-compiler-required">
@@ -471,7 +473,7 @@ version control to allow many people to work together on the project.</p>
 <p>Some great resources for learning Git:</p>
 <ul class="simple">
 <li><p>the <a class="reference external" href="http://help.github.com/">GitHub help pages</a>.</p></li>
-<li><p>the <a class="reference external" href="http://docs.scipy.org/doc/numpy/dev/index.html">NumPy’s documentation</a>.</p></li>
+<li><p>the <a class="reference external" href="http://docs.scipy.org/doc/numpy/dev/singlepage.html">NumPy’s documentation</a>.</p></li>
 <li><p>Matthew Brett’s <a class="reference external" href="http://matthew-brett.github.com/pydagogue/">Pydagogue</a>.</p></li>
 </ul>
 </div>
@@ -671,7 +673,7 @@ signatures and add deprecation warnings where needed.</p>
 it is worth getting in the habit of writing tests ahead of time so this is never an issue.</p>
 <div class="section" id="unit-testing">
 <h5><a class="toc-backref" href="#id32">Unit testing</a><a class="headerlink" href="#unit-testing" title="Permalink to this headline">¶</a></h5>
-<p>Like many packages, <em>py_stringsimjoin</em> uses the <a class="reference external" href="http://nose.readthedocs.org/en/latest/index.html">Nose testing system</a>.</p>
+<p>Like many packages, <em>py_stringsimjoin</em> uses the <a class="reference external" href="http://nose.readthedocs.org/en/latest/singlepage.html">Nose testing system</a>.</p>
 <p>All tests should go into the <code class="docutils literal notranslate"><span class="pre">tests</span></code> subdirectory of the specific package.
 This folder contains many current examples of tests, and we suggest looking to these for
 inspiration.</p>
@@ -835,8 +837,8 @@ branch has not actually been merged.</p>
 <span id="document-api/profiler"></span><div class="section" id="profilers">
 <h2>Profilers<a class="headerlink" href="#profilers" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="py_stringsimjoin.profiler.profiler.profile_table_for_join">
-<code class="sig-prename descclassname">py_stringsimjoin.profiler.profiler.</code><code class="sig-name descname">profile_table_for_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_table</span></em>, <em class="sig-param"><span class="n">profile_attrs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/profiler/profiler.html#profile_table_for_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.profiler.profiler.profile_table_for_join" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.profiler.profiler.profile_table_for_join">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.profiler.profiler.</span></span><span class="sig-name descname"><span class="pre">profile_table_for_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.profiler.profiler.profile_table_for_join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Profiles the attributes in the table to suggest implications for join.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -871,8 +873,8 @@ statistics for each attribute can be easily accessed using the attribute name.</
 <span id="document-api/cosine_join"></span><div class="section" id="cosine-join">
 <h3>Cosine Join<a class="headerlink" href="#cosine-join" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
-<dt id="py_stringsimjoin.join.cosine_join.cosine_join">
-<code class="sig-prename descclassname">py_stringsimjoin.join.cosine_join.</code><code class="sig-name descname">cosine_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/cosine_join.html#cosine_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.cosine_join.cosine_join" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.join.cosine_join.cosine_join">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.join.cosine_join.</span></span><span class="sig-name descname"><span class="pre">cosine_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sim_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.join.cosine_join.cosine_join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join two tables using a variant of cosine similarity known as Ochiai
 coefficient.</p>
 <p>This is not the cosine measure that computes the cosine of the angle
@@ -950,8 +952,8 @@ condition (DataFrame).</p>
 <span id="document-api/dice_join"></span><div class="section" id="dice-join">
 <h3>Dice Join<a class="headerlink" href="#dice-join" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
-<dt id="py_stringsimjoin.join.dice_join.dice_join">
-<code class="sig-prename descclassname">py_stringsimjoin.join.dice_join.</code><code class="sig-name descname">dice_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/dice_join.html#dice_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.dice_join.dice_join" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.join.dice_join.dice_join">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.join.dice_join.</span></span><span class="sig-name descname"><span class="pre">dice_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sim_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.join.dice_join.dice_join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join two tables using Dice similarity measure.</p>
 <p>For two sets X and Y, the Dice similarity score between them is given by:</p>
 <blockquote>
@@ -1023,16 +1025,16 @@ condition (DataFrame).</p>
 <span id="document-api/edit_distance_join"></span><div class="section" id="edit-distance-join">
 <h3>Edit Distance Join<a class="headerlink" href="#edit-distance-join" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
-<dt id="py_stringsimjoin.join.edit_distance_join.edit_distance_join">
-<code class="sig-prename descclassname">py_stringsimjoin.join.edit_distance_join.</code><code class="sig-name descname">edit_distance_join</code><span class="sig-paren">(</span><em class="sig-param">ltable</em>, <em class="sig-param">rtable</em>, <em class="sig-param">l_key_attr</em>, <em class="sig-param">r_key_attr</em>, <em class="sig-param">l_join_attr</em>, <em class="sig-param">r_join_attr</em>, <em class="sig-param">threshold</em>, <em class="sig-param">comp_op='&lt;='</em>, <em class="sig-param">l_out_attrs=None</em>, <em class="sig-param">r_out_attrs=None</em>, <em class="sig-param">l_out_prefix='l_'</em>, <em class="sig-param">r_out_prefix='r_'</em>, <em class="sig-param">out_sim_score=True</em>, <em class="sig-param">n_jobs=1</em>, <em class="sig-param">show_progress=True</em>, <em class="sig-param">tokenizer=2_gram_tokenizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/edit_distance_join.html#edit_distance_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.edit_distance_join.edit_distance_join" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.join.edit_distance_join.edit_distance_join">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.join.edit_distance_join.</span></span><span class="sig-name descname"><span class="pre">edit_distance_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">ltable</span></em>, <em class="sig-param"><span class="pre">rtable</span></em>, <em class="sig-param"><span class="pre">l_key_attr</span></em>, <em class="sig-param"><span class="pre">r_key_attr</span></em>, <em class="sig-param"><span class="pre">l_join_attr</span></em>, <em class="sig-param"><span class="pre">r_join_attr</span></em>, <em class="sig-param"><span class="pre">threshold</span></em>, <em class="sig-param"><span class="pre">comp_op='&lt;='</span></em>, <em class="sig-param"><span class="pre">l_out_attrs=None</span></em>, <em class="sig-param"><span class="pre">r_out_attrs=None</span></em>, <em class="sig-param"><span class="pre">l_out_prefix='l_'</span></em>, <em class="sig-param"><span class="pre">r_out_prefix='r_'</span></em>, <em class="sig-param"><span class="pre">out_sim_score=True</span></em>, <em class="sig-param"><span class="pre">n_jobs=1</span></em>, <em class="sig-param"><span class="pre">show_progress=True</span></em>, <em class="sig-param"><span class="pre">tokenizer=2_gram_tokenizer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.join.edit_distance_join.edit_distance_join" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
 <span id="document-api/disk_edit_distance_join"></span><div class="section" id="disk-based-edit-distance-join">
 <h3>Disk-Based Edit Distance Join<a class="headerlink" href="#disk-based-edit-distance-join" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
-<dt id="py_stringsimjoin.join.disk_edit_distance_join.disk_edit_distance_join">
-<code class="sig-prename descclassname">py_stringsimjoin.join.disk_edit_distance_join.</code><code class="sig-name descname">disk_edit_distance_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">data_limit</span><span class="o">=</span><span class="default_value">1000000</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&lt;='</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">tokenizer</span><span class="o">=</span><span class="default_value">QgramTokenizer(qval=2)</span></em>, <em class="sig-param"><span class="n">temp_dir</span><span class="o">=</span><span class="default_value">os.getcwd()</span></em>, <em class="sig-param"><span class="n">output_file_path</span><span class="o">=</span><span class="default_value">default_output_file_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/disk_edit_distance_join.html#disk_edit_distance_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.disk_edit_distance_join.disk_edit_distance_join" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.join.disk_edit_distance_join.disk_edit_distance_join">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.join.disk_edit_distance_join.</span></span><span class="sig-name descname"><span class="pre">disk_edit_distance_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&lt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sim_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">QgramTokenizer(qval=2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">os.getcwd()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">default_output_file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.join.disk_edit_distance_join.disk_edit_distance_join" title="Permalink to this definition">¶</a></dt>
 <dd><p>WARNING: THIS IS AN EXPERIMENTAL COMMAND. THIS COMMAND IS NOT TESTED.
 USE AT YOUR OWN RISK.</p>
 <p>Join two tables using edit distance measure.</p>
@@ -1130,8 +1132,8 @@ to edit distance join. (defaults to the current working directory/$default_outpu
 <span id="document-api/jaccard_join"></span><div class="section" id="jaccard-join">
 <h3>Jaccard Join<a class="headerlink" href="#jaccard-join" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
-<dt id="py_stringsimjoin.join.jaccard_join.jaccard_join">
-<code class="sig-prename descclassname">py_stringsimjoin.join.jaccard_join.</code><code class="sig-name descname">jaccard_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/jaccard_join.html#jaccard_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.jaccard_join.jaccard_join" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.join.jaccard_join.jaccard_join">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.join.jaccard_join.</span></span><span class="sig-name descname"><span class="pre">jaccard_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sim_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.join.jaccard_join.jaccard_join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join two tables using Jaccard similarity measure.</p>
 <p>For two sets X and Y, the Jaccard similarity score between them is given by:</p>
 <blockquote>
@@ -1203,8 +1205,8 @@ condition (DataFrame).</p>
 <span id="document-api/overlap_join"></span><div class="section" id="overlap-join">
 <h3>Overlap Join<a class="headerlink" href="#overlap-join" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
-<dt id="py_stringsimjoin.join.overlap_join.overlap_join">
-<code class="sig-prename descclassname">py_stringsimjoin.join.overlap_join.</code><code class="sig-name descname">overlap_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/overlap_join.html#overlap_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.overlap_join.overlap_join" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.join.overlap_join.overlap_join">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.join.overlap_join.</span></span><span class="sig-name descname"><span class="pre">overlap_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sim_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.join.overlap_join.overlap_join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join two tables using overlap measure.</p>
 <p>For two sets X and Y, the overlap between them is given by:</p>
 <blockquote>
@@ -1270,8 +1272,8 @@ condition (DataFrame).</p>
 <span id="document-api/overlap_coefficient_join"></span><div class="section" id="overlap-coefficient-join">
 <h3>Overlap Coefficient Join<a class="headerlink" href="#overlap-coefficient-join" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
-<dt id="py_stringsimjoin.join.overlap_coefficient_join.overlap_coefficient_join">
-<code class="sig-prename descclassname">py_stringsimjoin.join.overlap_coefficient_join.</code><code class="sig-name descname">overlap_coefficient_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_join_attr</span></em>, <em class="sig-param"><span class="n">r_join_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/join/overlap_coefficient_join.html#overlap_coefficient_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.join.overlap_coefficient_join.overlap_coefficient_join" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.join.overlap_coefficient_join.overlap_coefficient_join">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.join.overlap_coefficient_join.</span></span><span class="sig-name descname"><span class="pre">overlap_coefficient_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_join_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sim_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.join.overlap_coefficient_join.overlap_coefficient_join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join two tables using overlap coefficient.</p>
 <p>For two sets X and Y, the overlap coefficient between them is given by:</p>
 <blockquote>
@@ -1350,8 +1352,8 @@ condition (DataFrame).</p>
 <span id="document-api/overlap_filter"></span><div class="section" id="module-py_stringsimjoin.filter.overlap_filter">
 <span id="overlap-filter"></span><h3>Overlap Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.overlap_filter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter">
-<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.overlap_filter.</code><code class="sig-name descname">OverlapFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">overlap_size</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.overlap_filter.OverlapFilter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.filter.overlap_filter.</span></span><span class="sig-name descname"><span class="pre">OverlapFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings using overlap filtering
 technique.</p>
 <p>A string pair is output by overlap filter only if the number of common
@@ -1372,8 +1374,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer">
-<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer">
+<span class="sig-name descname"><span class="pre">tokenizer</span></span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the tokenizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1383,8 +1385,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.overlap_size">
-<code class="sig-name descname">overlap_size</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.overlap_size" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.overlap_size">
+<span class="sig-name descname"><span class="pre">overlap_size</span></span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.overlap_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the overlap threshold value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1394,8 +1396,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.comp_op">
-<code class="sig-name descname">comp_op</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.comp_op" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.comp_op">
+<span class="sig-name descname"><span class="pre">comp_op</span></span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.comp_op" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the comparison operator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1405,8 +1407,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.allow_missing">
-<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.allow_missing">
+<span class="sig-name descname"><span class="pre">allow_missing</span></span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the value of the flag
 allow_missing.</p>
 <dl class="field-list simple">
@@ -1417,8 +1419,8 @@ allow_missing.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_candset">
-<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_candset">
+<span class="sig-name descname"><span class="pre">filter_candset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input candidate
 set.</p>
 <dl class="field-list simple">
@@ -1458,8 +1460,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_pair">
-<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_pair">
+<span class="sig-name descname"><span class="pre">filter_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the input strings get dropped by the overlap filter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1475,8 +1477,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_tables">
-<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/overlap_filter.html#OverlapFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_tables">
+<span class="sig-name descname"><span class="pre">filter_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sim_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.overlap_filter.OverlapFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input tables using
 overlap filtering technique.</p>
 <dl class="field-list simple">
@@ -1531,8 +1533,8 @@ should be displayed to the user (defaults to True).</p></li>
 <span id="document-api/size_filter"></span><div class="section" id="module-py_stringsimjoin.filter.size_filter">
 <span id="size-filter"></span><h3>Size Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.size_filter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt id="py_stringsimjoin.filter.size_filter.SizeFilter">
-<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.size_filter.</code><code class="sig-name descname">SizeFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_measure_type</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/size_filter.html#SizeFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.size_filter.SizeFilter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.filter.size_filter.</span></span><span class="sig-name descname"><span class="pre">SizeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_measure_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings using size filtering technique.</p>
 <p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
 filter finds candidate string pairs that may have similarity score greater
@@ -1558,8 +1560,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer">
-<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer">
+<span class="sig-name descname"><span class="pre">tokenizer</span></span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the tokenizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1569,8 +1571,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type">
-<code class="sig-name descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type">
+<span class="sig-name descname"><span class="pre">sim_measure_type</span></span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the similarity measure
 type.</p>
 <dl class="field-list simple">
@@ -1581,8 +1583,8 @@ type.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.threshold">
-<code class="sig-name descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.size_filter.SizeFilter.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.threshold" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the threshold value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1592,8 +1594,8 @@ type.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty">
-<code class="sig-name descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty">
+<span class="sig-name descname"><span class="pre">allow_empty</span></span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the value of the flag
 allow_empty.</p>
 <dl class="field-list simple">
@@ -1604,8 +1606,8 @@ allow_empty.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing">
-<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing">
+<span class="sig-name descname"><span class="pre">allow_missing</span></span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the value of the flag
 allow_missing.</p>
 <dl class="field-list simple">
@@ -1616,8 +1618,8 @@ allow_missing.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_candset">
-<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_candset">
+<span class="sig-name descname"><span class="pre">filter_candset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input candidate
 set.</p>
 <dl class="field-list simple">
@@ -1657,8 +1659,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_pair">
-<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/size_filter.html#SizeFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_pair">
+<span class="sig-name descname"><span class="pre">filter_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the input strings get dropped by the size filter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1674,8 +1676,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_tables">
-<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/size_filter.html#SizeFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.size_filter.SizeFilter.filter_tables">
+<span class="sig-name descname"><span class="pre">filter_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.size_filter.SizeFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input tables using
 size filtering technique.</p>
 <dl class="field-list simple">
@@ -1725,8 +1727,8 @@ should be displayed to the user (defaults to True).</p></li>
 <span id="document-api/prefix_filter"></span><div class="section" id="module-py_stringsimjoin.filter.prefix_filter">
 <span id="prefix-filter"></span><h3>Prefix Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.prefix_filter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter">
-<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.prefix_filter.</code><code class="sig-name descname">PrefixFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_measure_type</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/prefix_filter.html#PrefixFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.prefix_filter.PrefixFilter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.filter.prefix_filter.</span></span><span class="sig-name descname"><span class="pre">PrefixFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_measure_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings using prefix filtering
 technique.</p>
 <p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
@@ -1753,8 +1755,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.tokenizer">
-<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.tokenizer">
+<span class="sig-name descname"><span class="pre">tokenizer</span></span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the tokenizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1764,8 +1766,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.sim_measure_type">
-<code class="sig-name descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.sim_measure_type">
+<span class="sig-name descname"><span class="pre">sim_measure_type</span></span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the similarity measure
 type.</p>
 <dl class="field-list simple">
@@ -1776,8 +1778,8 @@ type.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.threshold">
-<code class="sig-name descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.threshold" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the threshold value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1787,8 +1789,8 @@ type.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_empty">
-<code class="sig-name descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_empty">
+<span class="sig-name descname"><span class="pre">allow_empty</span></span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the value of the flag
 allow_empty.</p>
 <dl class="field-list simple">
@@ -1799,8 +1801,8 @@ allow_empty.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_missing">
-<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_missing">
+<span class="sig-name descname"><span class="pre">allow_missing</span></span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the value of the flag
 allow_missing.</p>
 <dl class="field-list simple">
@@ -1811,8 +1813,8 @@ allow_missing.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_candset">
-<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_candset">
+<span class="sig-name descname"><span class="pre">filter_candset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input candidate
 set.</p>
 <dl class="field-list simple">
@@ -1852,8 +1854,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_pair">
-<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/prefix_filter.html#PrefixFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_pair">
+<span class="sig-name descname"><span class="pre">filter_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the input strings get dropped by the prefix filter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1869,8 +1871,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_tables">
-<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/prefix_filter.html#PrefixFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_tables">
+<span class="sig-name descname"><span class="pre">filter_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.prefix_filter.PrefixFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input tables using
 prefix filtering technique.</p>
 <dl class="field-list simple">
@@ -1925,8 +1927,8 @@ should be displayed to the user (defaults to True).</p></li>
 <span id="document-api/position_filter"></span><div class="section" id="module-py_stringsimjoin.filter.position_filter">
 <span id="position-filter"></span><h3>Position Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.position_filter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt id="py_stringsimjoin.filter.position_filter.PositionFilter">
-<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.position_filter.</code><code class="sig-name descname">PositionFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_measure_type</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/position_filter.html#PositionFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.position_filter.PositionFilter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.filter.position_filter.</span></span><span class="sig-name descname"><span class="pre">PositionFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_measure_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings using position filtering
 technique.</p>
 <p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
@@ -1953,8 +1955,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.tokenizer">
-<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.position_filter.PositionFilter.tokenizer">
+<span class="sig-name descname"><span class="pre">tokenizer</span></span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the tokenizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1964,8 +1966,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.sim_measure_type">
-<code class="sig-name descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.position_filter.PositionFilter.sim_measure_type">
+<span class="sig-name descname"><span class="pre">sim_measure_type</span></span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the similarity measure
 type.</p>
 <dl class="field-list simple">
@@ -1976,8 +1978,8 @@ type.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.threshold">
-<code class="sig-name descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.position_filter.PositionFilter.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.threshold" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the threshold value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1987,8 +1989,8 @@ type.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.allow_empty">
-<code class="sig-name descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.position_filter.PositionFilter.allow_empty">
+<span class="sig-name descname"><span class="pre">allow_empty</span></span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the value of the flag
 allow_empty.</p>
 <dl class="field-list simple">
@@ -1999,8 +2001,8 @@ allow_empty.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.allow_missing">
-<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.position_filter.PositionFilter.allow_missing">
+<span class="sig-name descname"><span class="pre">allow_missing</span></span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the value of the flag
 allow_missing.</p>
 <dl class="field-list simple">
@@ -2011,8 +2013,8 @@ allow_missing.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_candset">
-<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_candset">
+<span class="sig-name descname"><span class="pre">filter_candset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input candidate
 set.</p>
 <dl class="field-list simple">
@@ -2052,8 +2054,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_pair">
-<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/position_filter.html#PositionFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_pair">
+<span class="sig-name descname"><span class="pre">filter_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the input strings get dropped by the position filter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2069,8 +2071,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_tables">
-<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/position_filter.html#PositionFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.position_filter.PositionFilter.filter_tables">
+<span class="sig-name descname"><span class="pre">filter_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.position_filter.PositionFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input tables using
 position filtering technique.</p>
 <dl class="field-list simple">
@@ -2120,8 +2122,8 @@ should be displayed to the user (defaults to True).</p></li>
 <span id="document-api/suffix_filter"></span><div class="section" id="module-py_stringsimjoin.filter.suffix_filter">
 <span id="suffix-filter"></span><h3>Suffix Filter<a class="headerlink" href="#module-py_stringsimjoin.filter.suffix_filter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter">
-<em class="property">class </em><code class="sig-prename descclassname">py_stringsimjoin.filter.suffix_filter.</code><code class="sig-name descname">SuffixFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_measure_type</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">allow_empty</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.suffix_filter.SuffixFilter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.filter.suffix_filter.</span></span><span class="sig-name descname"><span class="pre">SuffixFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_measure_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings using suffix filtering
 technique.</p>
 <p>For similarity measures such as cosine, Dice, Jaccard and overlap, the
@@ -2149,8 +2151,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer">
-<code class="sig-name descname">tokenizer</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer">
+<span class="sig-name descname"><span class="pre">tokenizer</span></span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.tokenizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the tokenizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -2160,8 +2162,8 @@ missing value should survive the filter (defaults to False).</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type">
-<code class="sig-name descname">sim_measure_type</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type">
+<span class="sig-name descname"><span class="pre">sim_measure_type</span></span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.sim_measure_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the similarity measure
 type.</p>
 <dl class="field-list simple">
@@ -2172,8 +2174,8 @@ type.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold">
-<code class="sig-name descname">threshold</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.threshold" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the threshold value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -2183,8 +2185,8 @@ type.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty">
-<code class="sig-name descname">allow_empty</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty">
+<span class="sig-name descname"><span class="pre">allow_empty</span></span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the value of the flag
 allow_empty.</p>
 <dl class="field-list simple">
@@ -2195,8 +2197,8 @@ allow_empty.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing">
-<code class="sig-name descname">allow_missing</code><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing">
+<span class="sig-name descname"><span class="pre">allow_missing</span></span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.allow_missing" title="Permalink to this definition">¶</a></dt>
 <dd><p>An attribute to store the value of the flag
 allow_missing.</p>
 <dl class="field-list simple">
@@ -2207,8 +2209,8 @@ allow_missing.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset">
-<code class="sig-name descname">filter_candset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset">
+<span class="sig-name descname"><span class="pre">filter_candset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_candset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input candidate
 set.</p>
 <dl class="field-list simple">
@@ -2248,8 +2250,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair">
-<code class="sig-name descname">filter_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lstring</span></em>, <em class="sig-param"><span class="n">rstring</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter.filter_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair">
+<span class="sig-name descname"><span class="pre">filter_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the input strings get dropped by the suffix filter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2265,8 +2267,8 @@ survive the filter (DataFrame).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables">
-<code class="sig-name descname">filter_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_filter_attr</span></em>, <em class="sig-param"><span class="n">r_filter_attr</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/filter/suffix_filter.html#SuffixFilter.filter_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables">
+<span class="sig-name descname"><span class="pre">filter_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_filter_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.filter.suffix_filter.SuffixFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds candidate matching pairs of strings from the input tables using
 suffix filtering technique.</p>
 <dl class="field-list simple">
@@ -2318,8 +2320,8 @@ should be displayed to the user (defaults to True).</p></li>
 <span id="document-api/matcher"></span><div class="section" id="matchers">
 <h2>Matchers<a class="headerlink" href="#matchers" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="py_stringsimjoin.matcher.apply_matcher.apply_matcher">
-<code class="sig-prename descclassname">py_stringsimjoin.matcher.apply_matcher.</code><code class="sig-name descname">apply_matcher</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">candset</span></em>, <em class="sig-param"><span class="n">candset_l_key_attr</span></em>, <em class="sig-param"><span class="n">candset_r_key_attr</span></em>, <em class="sig-param"><span class="n">ltable</span></em>, <em class="sig-param"><span class="n">rtable</span></em>, <em class="sig-param"><span class="n">l_key_attr</span></em>, <em class="sig-param"><span class="n">r_key_attr</span></em>, <em class="sig-param"><span class="n">l_match_attr</span></em>, <em class="sig-param"><span class="n">r_match_attr</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em>, <em class="sig-param"><span class="n">sim_function</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">comp_op</span><span class="o">=</span><span class="default_value">'&gt;='</span></em>, <em class="sig-param"><span class="n">allow_missing</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">l_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_out_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_out_prefix</span><span class="o">=</span><span class="default_value">'l_'</span></em>, <em class="sig-param"><span class="n">r_out_prefix</span><span class="o">=</span><span class="default_value">'r_'</span></em>, <em class="sig-param"><span class="n">out_sim_score</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_progress</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/matcher/apply_matcher.html#apply_matcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.matcher.apply_matcher.apply_matcher" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.matcher.apply_matcher.apply_matcher">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.matcher.apply_matcher.</span></span><span class="sig-name descname"><span class="pre">apply_matcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candset_r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_key_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_match_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_match_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_out_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sim_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.matcher.apply_matcher.apply_matcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find matching string pairs from the candidate set (typically produced by
 applying a filter to two tables) by applying a matcher of form
 (sim_function comp_op threshold).</p>
@@ -2388,8 +2390,8 @@ survive the matcher (DataFrame).</p>
 <span id="document-api/utility"></span><div class="section" id="utilities">
 <h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="py_stringsimjoin.utils.converter.dataframe_column_to_str">
-<code class="sig-prename descclassname">py_stringsimjoin.utils.converter.</code><code class="sig-name descname">dataframe_column_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em>, <em class="sig-param"><span class="n">col_name</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">return_col</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/utils/converter.html#dataframe_column_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.utils.converter.dataframe_column_to_str" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.utils.converter.dataframe_column_to_str">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.utils.converter.</span></span><span class="sig-name descname"><span class="pre">dataframe_column_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.utils.converter.dataframe_column_to_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert columun in the dataframe into string type while preserving NaN
 values.</p>
 <p>This method is useful when performing join over numeric columns. Currently,
@@ -2420,8 +2422,8 @@ True.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="py_stringsimjoin.utils.converter.series_to_str">
-<code class="sig-prename descclassname">py_stringsimjoin.utils.converter.</code><code class="sig-name descname">series_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">series</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringsimjoin/utils/converter.html#series_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringsimjoin.utils.converter.series_to_str" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="py_stringsimjoin.utils.converter.series_to_str">
+<span class="sig-prename descclassname"><span class="pre">py_stringsimjoin.utils.converter.</span></span><span class="sig-name descname"><span class="pre">series_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringsimjoin.utils.converter.series_to_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert series into string type while preserving NaN values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2448,8 +2450,8 @@ a copy irrespective of the inplace flag.</p></li>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="gensinglepage.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modsinglepage.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
@@ -2459,28 +2461,25 @@ a copy irrespective of the inplace flag.</p></li>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2017, anhaidgroup
+        &#169; Copyright 2017, anhaidgroup.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
