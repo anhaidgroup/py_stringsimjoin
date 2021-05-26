@@ -4,7 +4,7 @@ Installation
  
 Requirements
 ------------
-    * Python 2.7, 3.5, 3.6, 3.7, or 3.8
+    * Python 3.6, 3.7, 3.8, or 3.9
     * C++ compiler (parts of the package are in Cython for efficiency reasons, and you need C++ compiler to compile these parts) 
 
 Platforms
@@ -18,15 +18,12 @@ Dependencies
     * joblib (to write code that runs over multiple cores)
     * py_stringmatching (to tokenize and compute similarity scores between strings)
     * pyprind (to display progress bars)
-    * six (to ensure our code run on both Python 2.x and Python 3.x)
+    * six
 
 .. note::
 
      The py_stringsimjoin installer will automatically install the above required packages.
 
-.. note::
-
-     If using Python 2, py_stringsimjoin requires numpy less than 1.17; if using Python 3.5, numpy less than 1.19
 
 C Compiler Required
 -------------------
