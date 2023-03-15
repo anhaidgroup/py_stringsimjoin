@@ -22,31 +22,31 @@ class ProfileTableForJoinTestCases(unittest.TestCase):
 
         expected_output_attrs = ['Unique values', 'Missing values', 'Comments']
         # verify whether the output dataframe has the necessary attributes.
-        np.assertListEqual(list(profile_output.columns.values),
+        self.assertListEqual(list(profile_output.columns.values),
                           expected_output_attrs)
         
         expected_unique_column = ['5 (100.0%)', '4 (80.0%)']
         # verify whether correct values are present in 'Unique values' column.
-        np.assertListEqual(list(profile_output['Unique values']),
+        self.assertListEqual(list(profile_output['Unique values']),
                           expected_unique_column)
 
         expected_missing_column = ['0 (0.0%)', '1 (20.0%)']
         # verify whether correct values are present in 'Missing values' column.
-        np.assertListEqual(list(profile_output['Missing values']),
+        self.assertListEqual(list(profile_output['Missing values']),
                           expected_missing_column)
 
         expected_comments = ['This attribute can be used as a key attribute.',
                              'Joining on this attribute will ignore 1 (20.0%) rows.']
         # verify whether correct values are present in 'Comments' column.
-        np.assertListEqual(list(profile_output['Comments']),
+        self.assertListEqual(list(profile_output['Comments']),
                           expected_comments)
 
         # verify whether index name is set correctly in the output dataframe.
-        np.assertEqual(profile_output.index.name, 'Attribute')
+        self.assertEqual(profile_output.index.name, 'Attribute')
 
         expected_index_column = ['id', 'attr']
         # verify whether correct values are present in the dataframe index.
-        np.assertListEqual(list(profile_output.index.values),
+        self.assertListEqual(list(profile_output.index.values),
                           expected_index_column)
 
     def test_profile_table_for_join_with_profile_attrs(self):
@@ -54,30 +54,30 @@ class ProfileTableForJoinTestCases(unittest.TestCase):
 
         expected_output_attrs = ['Unique values', 'Missing values', 'Comments']
         # verify whether the output dataframe has the necessary attributes.
-        np.assertListEqual(list(profile_output.columns.values),
+        self.assertListEqual(list(profile_output.columns.values),
                           expected_output_attrs)
 
         expected_unique_column = ['4 (80.0%)']
         # verify whether correct values are present in 'Unique values' column.
-        np.assertListEqual(list(profile_output['Unique values']),
+        self.assertListEqual(list(profile_output['Unique values']),
                           expected_unique_column)
 
         expected_missing_column = ['1 (20.0%)']
         # verify whether correct values are present in 'Missing values' column.
-        np.assertListEqual(list(profile_output['Missing values']),
+        self.assertListEqual(list(profile_output['Missing values']),
                           expected_missing_column)
 
         expected_comments = ['Joining on this attribute will ignore 1 (20.0%) rows.']
         # verify whether correct values are present in 'Comments' column.
-        np.assertListEqual(list(profile_output['Comments']),
+        self.assertListEqual(list(profile_output['Comments']),
                           expected_comments)
 
         # verify whether index name is set correctly in the output dataframe.
-        np.assertEqual(profile_output.index.name, 'Attribute')
+        self.assertEqual(profile_output.index.name, 'Attribute')
 
         expected_index_column = ['attr']
         # verify whether correct values are present in the dataframe index.
-        np.assertListEqual(list(profile_output.index.values),
+        self.assertListEqual(list(profile_output.index.values),
                           expected_index_column)
 
     @raises(TypeError)
