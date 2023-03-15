@@ -2,11 +2,12 @@
 import os
 import unittest
 
-from nose.tools import assert_equal, raises
+#from nose.tools import assert_equal, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from six import iteritems
 import pandas as pd
+from .utils import raises
 
 from py_stringsimjoin.join.overlap_join import overlap_join
 
@@ -17,10 +18,10 @@ class OverlapJoinValidTestCases(unittest.TestCase):
         A = pd.DataFrame([{'id':1, 'attr':'hello'}])
         B = pd.DataFrame([{'id':1, 'attr':'he ll'}])
         qg2_tok = QgramTokenizer(2)
-        assert_equal(qg2_tok.get_return_set(), False)
+        np.assertEqual(qg2_tok.get_return_set(), False)
         c = overlap_join(A, B, 'id', 'id', 'attr', 'attr', qg2_tok, 1)
-        assert_equal(len(c), 1)
-        assert_equal(qg2_tok.get_return_set(), False)        
+        np.assertEqual(len(c), 1)
+        np.assertEqual(qg2_tok.get_return_set(), False)        
         
 
 class OverlapJoinInvalidTestCases(unittest.TestCase):
