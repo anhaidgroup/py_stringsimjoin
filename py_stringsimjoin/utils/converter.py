@@ -103,7 +103,7 @@ def series_to_str(series, inplace=False):
             return True
         else:
             return series.copy()
-    elif np.issubdtype(col_type, integer):
+    elif np.issubdtype(col_type, np.integer):
         # If the column is of type int, then there are no missing values in the 
         # column and hence we can directly convert it to string using           
         # the astype method.     
