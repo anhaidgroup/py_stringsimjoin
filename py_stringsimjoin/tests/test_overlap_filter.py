@@ -1,10 +1,11 @@
 import unittest
 
-from nose.tools import assert_equal, assert_list_equal, nottest, raises
+#from nose.tools import assert_equal, assert_list_equal, nottest, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import numpy as np
 import pandas as pd
+from .utils import raises
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
 from py_stringsimjoin.utils.converter import dataframe_column_to_str            
