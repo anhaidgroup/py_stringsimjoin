@@ -138,10 +138,10 @@ def series_to_str(series, inplace=False):
         # if all these values are interger values, then we handle according     
         # to case 1, else we proceed by case 2. 
         if int_values == len(col_non_nan_values):                               
-            col_str = series.apply(lambda val: NaN if        
+            col_str = series.apply(lambda val: np.NaN if        
                                             pd.isnull(val) else str(int(val)))  
         else:                                                                   
-            col_str = series.apply(lambda val: NaN if        
+            col_str = series.apply(lambda val: np.NaN if        
                                             pd.isnull(val) else str(val))
         if inplace:
             series.update(col_str)
