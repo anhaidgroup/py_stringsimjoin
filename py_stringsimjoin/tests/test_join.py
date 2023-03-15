@@ -2,11 +2,12 @@ from functools import partial
 import os
 import unittest
 
-from nose.tools import assert_equal, assert_list_equal, nottest, raises
+#from nose.tools import assert_equal, assert_list_equal, nottest, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from six import iteritems
 import pandas as pd
+from .utils import raises
 
 from py_stringsimjoin.join.cosine_join import cosine_join
 from py_stringsimjoin.join.dice_join import dice_join
@@ -28,7 +29,7 @@ DEFAULT_COMP_OP = '>='
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
 
-@nottest
+@unittest.skip("Not a test")
 def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
     (rtable_path, r_key_attr, r_join_attr) = scenario[1]
@@ -108,7 +109,7 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
                              l_join_attr, r_join_attr,
                              *args)
 
-    assert_equal(args[0].get_return_set(), orig_return_set_flag)
+    np.assertEqual(args[0].get_return_set(), orig_return_set_flag)
 
     expected_output_attrs = ['_id']
     l_out_prefix = DEFAULT_L_OUT_PREFIX
@@ -146,7 +147,7 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
         expected_output_attrs.append('_sim_score')
 
     # verify whether the output table has the necessary attributes.
-    assert_list_equal(list(actual_candset.columns.values),
+    np.assertListEqual(list(actual_candset.columns.values),
                       expected_output_attrs)
 
     actual_pairs = set()
@@ -155,9 +156,9 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
                                    str(row[r_out_prefix + r_key_attr]))))
    
     # verify whether the actual pairs and the expected pairs match.
-    assert_equal(len(expected_pairs), len(actual_pairs))
+    np.assertEqual(len(expected_pairs), len(actual_pairs))
     common_pairs = actual_pairs.intersection(expected_pairs)
-    assert_equal(len(common_pairs), len(expected_pairs))
+    np.assertEqual(len(common_pairs), len(expected_pairs))
 
 def test_set_sim_join():
     # data to be tested.
