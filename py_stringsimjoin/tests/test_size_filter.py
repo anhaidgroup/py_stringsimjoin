@@ -92,11 +92,11 @@ class FilterPairTestCases(unittest.TestCase):
                               self.dlm, 'DICE', 0.8, False, True, False)
 
     def test_size_filter_pass_missing_right(self):
-        self.test_filter_pair('fg ty', NaN,
+        self.test_filter_pair('fg ty', np.NaN,
                               self.dlm, 'DICE', 0.8, False, True, False)
 
     def test_size_filter_pass_missing_both(self):
-        self.test_filter_pair(None, NaN,
+        self.test_filter_pair(None, np.NaN,
                               self.dlm, 'DICE', 0.8, False, True, False)
 
     # tests for empty string input
@@ -141,7 +141,7 @@ class FilterTablesTestCases(unittest.TestCase):
                                {'id': 3, 'attr':'xy pl ou'},
                                {'id': 4, 'attr':'aa'},
                                {'id': 5, 'attr':'fg cd aa ef'},
-                               {'id': 6, 'attr':NaN},
+                               {'id': 6, 'attr':np.NaN},
                                {'id': 7, 'attr':' '}])
 
         self.empty_table = pd.DataFrame(columns=['id', 'attr'])
@@ -205,12 +205,12 @@ class FilterTablesTestCases(unittest.TestCase):
                           {'l_id': 2, 'l_attr':'200'},
                           {'l_id': 3, 'l_attr':'0'},
                           {'l_id': 4, 'l_attr':''},
-                          {'l_id': 5, 'l_attr':NaN}])
+                          {'l_id': 5, 'l_attr':np.NaN}])
         B = pd.DataFrame([{'r_id': 1, 'r_attr':'200155'},
                           {'r_id': 2, 'r_attr':'19'},
                           {'r_id': 3, 'r_attr':'188'},
                           {'r_id': 4, 'r_attr':''},
-                          {'r_id': 5, 'r_attr':NaN}])
+                          {'r_id': 5, 'r_attr':np.NaN}])
 
         qg2_tok = QgramTokenizer(2)
         expected_pairs = set(['1,1', '1,2', '1,3',
@@ -366,7 +366,7 @@ class FilterCandsetTestCases(unittest.TestCase):
                                {'l_id': 3, 'l_attr':'ab'},
                                {'l_id': 4, 'l_attr':'ll oo pp'},
                                {'l_id': 5, 'l_attr':'xy xx zz fg'},
-                               {'l_id': 6, 'l_attr': NaN}])
+                               {'l_id': 6, 'l_attr': np.NaN}])
         self.B = pd.DataFrame([{'r_id': 1, 'r_attr':'mn'},
                                {'r_id': 2, 'r_attr':'he ll'},
                                {'r_id': 3, 'r_attr':'xy pl ou'},
