@@ -5,7 +5,7 @@ from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import numpy as np
 import pandas as pd
-from .utils import raises, nottest
+from .utils import raises
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
 from py_stringsimjoin.utils.converter import dataframe_column_to_str            
@@ -55,7 +55,7 @@ class FilterPairTestCases(unittest.TestCase):
     def test_empty_strings(self):
         self.test_filter_pair('', '', self.dlm, 1, '>=', False, True)
 
-    @nottest
+    @unittest.skip("Not a test")
     def test_filter_pair(self, lstring, rstring, tokenizer,
                          overlap_size, comp_op, allow_missing, expected_output):
         overlap_filter = OverlapFilter(tokenizer, overlap_size,
@@ -169,7 +169,7 @@ class FilterTablesTestCases(unittest.TestCase):
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
 
-    @nottest
+    @unittest.skip("Not a test")
     def test_filter_tables(self, tokenizer, overlap_size, comp_op,
                            allow_missing, args, expected_pairs):
         overlap_filter = OverlapFilter(tokenizer, overlap_size,
@@ -434,7 +434,7 @@ class FilterCandsetTestCases(unittest.TestCase):
                                       A, B, 'l_id', 'r_id',                     
                                       'l_attr', 'r_attr')  
      
-    @nottest
+    @unittest.skip("Not a test")
     def test_filter_candset(self, tokenizer, overlap_size, comp_op,
                             allow_missing, args, expected_pairs):
         overlap_filter = OverlapFilter(tokenizer, overlap_size,
