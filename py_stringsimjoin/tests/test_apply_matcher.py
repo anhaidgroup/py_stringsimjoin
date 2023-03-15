@@ -1,10 +1,11 @@
 import os
 import unittest
 
-from nose.tools import assert_equal, assert_list_equal, raises
+#from nose.tools import assert_equal, assert_list_equal, raises
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from py_stringmatching.similarity_measure.jaccard import Jaccard
 import pandas as pd
+from .utils import raises
 
 from py_stringsimjoin.matcher.apply_matcher import apply_matcher
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
@@ -108,7 +109,7 @@ class ApplyMatcherTestCases(unittest.TestCase):
                                '_sim_score']
 
         # verify whether the output table has the necessary attributes.
-        assert_list_equal(list(output_candset.columns.values),
+        np.assertListEqual(list(output_candset.columns.values),
                           expected_output_attrs)
         actual_pairs = set()
         for idx, row in output_candset.iterrows():
@@ -116,9 +117,9 @@ class ApplyMatcherTestCases(unittest.TestCase):
                                        str(row[DEFAULT_R_OUT_PREFIX + self.r_key_attr]))))
 
         # verify whether the actual pairs and the expected pairs match.
-        assert_equal(len(expected_pairs), len(actual_pairs))
+        np.assertEqual(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
-        assert_equal(len(common_pairs), len(expected_pairs))
+        np.assertEqual(len(common_pairs), len(expected_pairs))
 
     def test_apply_matcher_n_jobs_above_1(self):
         tok = QgramTokenizer(qval=2, return_set=True)
@@ -164,7 +165,7 @@ class ApplyMatcherTestCases(unittest.TestCase):
                                '_sim_score']
 
         # verify whether the output table has the necessary attributes.
-        assert_list_equal(list(output_candset.columns.values),
+        np.assertListEqual(list(output_candset.columns.values),
                           expected_output_attrs)
         actual_pairs = set()
         for idx, row in output_candset.iterrows():
@@ -172,9 +173,9 @@ class ApplyMatcherTestCases(unittest.TestCase):
                                        str(row[DEFAULT_R_OUT_PREFIX + self.r_key_attr]))))
 
         # verify whether the actual pairs and the expected pairs match.
-        assert_equal(len(expected_pairs), len(actual_pairs))
+        np.assertEqual(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
-        assert_equal(len(common_pairs), len(expected_pairs))
+        np.assertEqual(len(common_pairs), len(expected_pairs))
 
     def test_apply_matcher_with_allow_missing(self):
         tok = QgramTokenizer(qval=2, return_set=True)
@@ -230,7 +231,7 @@ class ApplyMatcherTestCases(unittest.TestCase):
                                '_sim_score']
 
         # verify whether the output table has the necessary attributes.
-        assert_list_equal(list(output_candset.columns.values),
+        np.assertListEqual(list(output_candset.columns.values),
                           expected_output_attrs)
         actual_pairs = set()
         for idx, row in output_candset.iterrows():
@@ -238,9 +239,9 @@ class ApplyMatcherTestCases(unittest.TestCase):
                                        str(row[DEFAULT_R_OUT_PREFIX + self.r_key_attr]))))
 
         # verify whether the actual pairs and the expected pairs match.
-        assert_equal(len(expected_pairs), len(actual_pairs))
+        np.assertEqual(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
-        assert_equal(len(common_pairs), len(expected_pairs))
+        np.assertEqual(len(common_pairs), len(expected_pairs))
 
     def test_apply_matcher_with_join_attr_of_type_int(self):
         tok = QgramTokenizer(qval=2, return_set=True)
@@ -284,7 +285,7 @@ class ApplyMatcherTestCases(unittest.TestCase):
                                '_sim_score']
 
         # verify whether the output table has the necessary attributes.
-        assert_list_equal(list(output_candset.columns.values),
+        np.assertListEqual(list(output_candset.columns.values),
                           expected_output_attrs)
         actual_pairs = set()
         for idx, row in output_candset.iterrows():
@@ -292,9 +293,9 @@ class ApplyMatcherTestCases(unittest.TestCase):
                                        str(row[DEFAULT_R_OUT_PREFIX + self.r_key_attr]))))
 
         # verify whether the actual pairs and the expected pairs match.
-        assert_equal(len(expected_pairs), len(actual_pairs))
+        np.assertEqual(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
-        assert_equal(len(common_pairs), len(expected_pairs))
+        np.assertEqual(len(common_pairs), len(expected_pairs))
 
     def test_empty_candset(self):
         tok = QgramTokenizer(qval=2, return_set=True)
