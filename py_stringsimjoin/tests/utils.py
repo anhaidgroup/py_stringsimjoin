@@ -10,5 +10,7 @@ def raises(exc_type):
 
 # Replacement for nose.tools.nottest
 # I have no idea what I'm doing
-def nottest():
-    return false
+# At this point this is literally nose.tools.nottest
+def nottest(func):
+    func.__test__ = False
+    return func
