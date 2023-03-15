@@ -1,10 +1,11 @@
 import unittest
 
-from nose.tools import assert_equal, assert_list_equal, nottest, raises
+#from nose.tools import assert_equal, assert_list_equal, nottest, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import numpy as np
 import pandas as pd
+from .utils import raises
 
 from py_stringsimjoin.filter.size_filter import SizeFilter
 from py_stringsimjoin.utils.converter import dataframe_column_to_str            
@@ -116,13 +117,13 @@ class FilterPairTestCases(unittest.TestCase):
         self.test_filter_pair('', '', self.dlm, 'JACCARD', 0.8,
                               True, False, False)
 
-    @nottest
+    @unittest.skip("Not a test")
     def test_filter_pair(self, lstring, rstring, tokenizer, sim_measure_type,
                          threshold, allow_empty, allow_missing, expected_output):
         size_filter = SizeFilter(tokenizer, sim_measure_type, threshold,
                                  allow_empty, allow_missing)
         actual_output = size_filter.filter_pair(lstring, rstring)
-        assert_equal(actual_output, expected_output)
+        np.assertEqual(actual_output, expected_output)
 
 
 # test SizeFilter.filter_tables method
@@ -307,7 +308,7 @@ class FilterTablesTestCases(unittest.TestCase):
                                 'id', 'id', 'attr', 'attr'),
                                 expected_pairs)
 
-    @nottest
+    @unittest.skip("Not a test")
     def test_filter_tables(self, tokenizer, sim_measure_type, threshold,
                            allow_empty, allow_missing, args, expected_pairs):
         size_filter = SizeFilter(tokenizer, sim_measure_type, threshold,
@@ -343,7 +344,7 @@ class FilterTablesTestCases(unittest.TestCase):
                     expected_output_attrs.append(r_out_prefix + attr)
 
         # verify whether the output table has the necessary attributes.
-        assert_list_equal(list(actual_candset.columns.values),
+        np.assertListEqual(list(actual_candset.columns.values),
                           expected_output_attrs)
 
         actual_pairs = set()
@@ -352,9 +353,9 @@ class FilterTablesTestCases(unittest.TestCase):
                                        str(row[r_out_prefix + args[3]]))))
 
         # verify whether the actual pairs and the expected pairs match.
-        assert_equal(len(expected_pairs), len(actual_pairs))
+        np.assertEqual(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
-        assert_equal(len(common_pairs), len(expected_pairs))
+        np.assertEqual(len(common_pairs), len(expected_pairs))
 
 
 # test SizeFilter.filter_candset method
@@ -435,7 +436,7 @@ class FilterCandsetTestCases(unittest.TestCase):
                                 'l_id', 'r_id', 'l_attr', 'r_attr'),
                                 expected_pairs)
 
-    @nottest
+    @unittest.skip("Not a test")
     def test_filter_candset(self, tokenizer, sim_measure_type, threshold,
                             allow_empty, allow_missing, args, expected_pairs):
         size_filter = SizeFilter(tokenizer, sim_measure_type, threshold,
@@ -443,7 +444,7 @@ class FilterCandsetTestCases(unittest.TestCase):
         actual_output_candset = size_filter.filter_candset(*args)
 
         # verify whether the output table has the necessary attributes.
-        assert_list_equal(list(actual_output_candset.columns.values),
+        np.assertListEqual(list(actual_output_candset.columns.values),
                           list(args[0].columns.values))
 
         actual_pairs = set()
@@ -451,9 +452,9 @@ class FilterCandsetTestCases(unittest.TestCase):
             actual_pairs.add(','.join((str(row[args[1]]), str(row[args[2]]))))
 
         # verify whether the actual pairs and the expected pairs match.
-        assert_equal(len(expected_pairs), len(actual_pairs))
+        np.assertEqual(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
-        assert_equal(len(common_pairs), len(expected_pairs))
+        np.assertEqual(len(common_pairs), len(expected_pairs))
 
 
 class SizeFilterInvalidTestCases(unittest.TestCase):
