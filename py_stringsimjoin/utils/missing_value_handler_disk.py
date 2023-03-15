@@ -90,7 +90,7 @@ def get_pairs_with_missing_value_disk(ltable, rtable,
                 record = [l_row[l_key_attr_index], r_row[r_key_attr_index]]
 
             if out_sim_score:
-                record.append(np.NaN)
+                record.append(NaN)
 
             output_rows.append(record)
 
