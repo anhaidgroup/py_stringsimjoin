@@ -5,7 +5,7 @@ from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 import numpy as np
 import pandas as pd
-from .utils import raises
+from .utils import raises, nottest
 
 from py_stringsimjoin.filter.overlap_filter import OverlapFilter
 from py_stringsimjoin.utils.converter import dataframe_column_to_str            
