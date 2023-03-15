@@ -119,7 +119,7 @@ class FilterTablesTestCases(unittest.TestCase):
                                {'id': 3, 'attr':'ab'},
                                {'id': 4, 'attr':'ll oo he'},
                                {'id': 5, 'attr':'xy xx zz fg'},
-                               {'id': 6, 'attr':np.NaN},
+                               {'id': 6, 'attr':NaN},
                                {'id': 7, 'attr':''}])
 
         self.B = pd.DataFrame([{'id': 1, 'attr':'zz fg xx'},
@@ -177,12 +177,12 @@ class FilterTablesTestCases(unittest.TestCase):
                           {'l_id': 2, 'l_attr':'200'},
                           {'l_id': 3, 'l_attr':'0'},
                           {'l_id': 4, 'l_attr':''},
-                          {'l_id': 5, 'l_attr':np.NaN}])
+                          {'l_id': 5, 'l_attr':NaN}])
         B = pd.DataFrame([{'r_id': 1, 'r_attr':'200155'},
                           {'r_id': 2, 'r_attr':'190'},
                           {'r_id': 3, 'r_attr':'2010'},
                           {'r_id': 4, 'r_attr':''},
-                          {'r_id': 5, 'r_attr':np.NaN},
+                          {'r_id': 5, 'r_attr':NaN},
                           {'r_id': 6, 'r_attr':'18950'}])
 
         qg2_tok = QgramTokenizer(2)
@@ -361,7 +361,7 @@ class FilterCandsetTestCases(unittest.TestCase):
                                {'l_id': 3, 'l_attr':'ab'},
                                {'l_id': 4, 'l_attr':'ll oo he'},
                                {'l_id': 5, 'l_attr':'xy xx zz fg'},
-                               {'l_id': 6, 'l_attr': np.NaN}])
+                               {'l_id': 6, 'l_attr': NaN}])
 
         self.B = pd.DataFrame([{'r_id': 1, 'r_attr':'zz fg xx'},
                                {'r_id': 2, 'r_attr':'he ll'},
