@@ -109,7 +109,7 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
                              l_join_attr, r_join_attr,
                              *args)
 
-    np.assertEqual(args[0].get_return_set(), orig_return_set_flag)
+    self.assertEqual(args[0].get_return_set(), orig_return_set_flag)
 
     expected_output_attrs = ['_id']
     l_out_prefix = DEFAULT_L_OUT_PREFIX
@@ -147,7 +147,7 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
         expected_output_attrs.append('_sim_score')
 
     # verify whether the output table has the necessary attributes.
-    np.assertListEqual(list(actual_candset.columns.values),
+    self.assertListEqual(list(actual_candset.columns.values),
                       expected_output_attrs)
 
     actual_pairs = set()
@@ -156,9 +156,9 @@ def test_valid_join(scenario, sim_measure_type, args, convert_to_str=False):
                                    str(row[r_out_prefix + r_key_attr]))))
    
     # verify whether the actual pairs and the expected pairs match.
-    np.assertEqual(len(expected_pairs), len(actual_pairs))
+    self.assertEqual(len(expected_pairs), len(actual_pairs))
     common_pairs = actual_pairs.intersection(expected_pairs)
-    np.assertEqual(len(common_pairs), len(expected_pairs))
+    self.assertEqual(len(common_pairs), len(expected_pairs))
 
 def test_set_sim_join():
     # data to be tested.
