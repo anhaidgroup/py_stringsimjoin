@@ -72,7 +72,7 @@ def get_pairs_with_missing_value(ltable, rtable,
                 output_row = [l_row[l_key_attr_index], r_row[r_key_attr_index]]
 
             if out_sim_score:
-                output_row.append(np.NaN)
+                output_row.append(NaN)
 
             output_rows.append(output_row)
 
