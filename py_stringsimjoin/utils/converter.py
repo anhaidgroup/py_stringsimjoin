@@ -103,7 +103,7 @@ def series_to_str(series, inplace=False):
             return True
         else:
             return series.copy()
-    elif np.issubdtype(col_type, np.integer):
+    elif np.issubdtype(col_type, integer):
         # If the column is of type int, then there are no missing values in the 
         # column and hence we can directly convert it to string using           
         # the astype method.     
@@ -113,7 +113,7 @@ def series_to_str(series, inplace=False):
             return True
         else:
             return col_str
-    elif np.issubdtype(col_type, np.float):
+    elif np.issubdtype(col_type, float):
         # If the column is of type float, then there are two cases:             
         # (1) column only contains interger values along with NaN.              
         # (2) column actually contains floating point values.                   
@@ -138,10 +138,10 @@ def series_to_str(series, inplace=False):
         # if all these values are interger values, then we handle according     
         # to case 1, else we proceed by case 2. 
         if int_values == len(col_non_nan_values):                               
-            col_str = series.apply(lambda val: np.NaN if        
+            col_str = series.apply(lambda val: NaN if        
                                             pd.isnull(val) else str(int(val)))  
         else:                                                                   
-            col_str = series.apply(lambda val: np.NaN if        
+            col_str = series.apply(lambda val: NaN if        
                                             pd.isnull(val) else str(val))
         if inplace:
             series.update(col_str)
