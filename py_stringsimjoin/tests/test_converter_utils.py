@@ -31,118 +31,118 @@ class DataframeColumnToStrTestCases(unittest.TestCase):
                                'nan_col': nan_col})
 
     def test_str_col(self):
-        np.assertEqual(self.dataframe['str_col'].dtype, object)
+        self.assertEqual(self.dataframe['str_col'].dtype, object)
         out_df = dataframe_column_to_str(self.dataframe, 'str_col', 
                                          inplace=False, return_col=False)
-        np.assertEqual(type(out_df), pd.DataFrame)
-        np.assertEqual(out_df['str_col'].dtype, object)
-        np.assertEqual(self.dataframe['str_col'].dtype, object)                   
-        np.assertEqual(sum(pd.isnull(self.dataframe['str_col'])), 
+        self.assertEqual(type(out_df), pd.DataFrame)
+        self.assertEqual(out_df['str_col'].dtype, object)
+        self.assertEqual(self.dataframe['str_col'].dtype, object)                   
+        self.assertEqual(sum(pd.isnull(self.dataframe['str_col'])), 
                      sum(pd.isnull(out_df['str_col'])))                     
 
     def test_int_col(self):                                                     
-        np.assertEqual(self.dataframe['int_col'].dtype, int)                   
+        self.assertEqual(self.dataframe['int_col'].dtype, int)                   
         out_df = dataframe_column_to_str(self.dataframe, 'int_col',                         
                                          inplace=False, return_col=False)                   
-        np.assertEqual(type(out_df), pd.DataFrame)                                
-        np.assertEqual(out_df['int_col'].dtype, object)
-        np.assertEqual(self.dataframe['int_col'].dtype, int)                     
-        np.assertEqual(sum(pd.isnull(out_df['int_col'])), 0)
+        self.assertEqual(type(out_df), pd.DataFrame)                                
+        self.assertEqual(out_df['int_col'].dtype, object)
+        self.assertEqual(self.dataframe['int_col'].dtype, int)                     
+        self.assertEqual(sum(pd.isnull(out_df['int_col'])), 0)
 
     def test_float_col(self):                                                     
-        np.assertEqual(self.dataframe['float_col'].dtype, float)                   
+        self.assertEqual(self.dataframe['float_col'].dtype, float)                   
         out_df = dataframe_column_to_str(self.dataframe, 'float_col',                         
                                          inplace=False, return_col=False)                   
-        np.assertEqual(type(out_df), pd.DataFrame)                                
-        np.assertEqual(out_df['float_col'].dtype, object)
-        np.assertEqual(self.dataframe['float_col'].dtype, float)                                             
-        np.assertEqual(sum(pd.isnull(self.dataframe['float_col'])),                           
+        self.assertEqual(type(out_df), pd.DataFrame)                                
+        self.assertEqual(out_df['float_col'].dtype, object)
+        self.assertEqual(self.dataframe['float_col'].dtype, float)                                             
+        self.assertEqual(sum(pd.isnull(self.dataframe['float_col'])),                           
                      sum(pd.isnull(out_df['float_col']))) 
 
     def test_float_col_with_int_val(self):                                                   
-        np.assertEqual(self.dataframe['float_col_with_int_val'].dtype, float)                  
+        self.assertEqual(self.dataframe['float_col_with_int_val'].dtype, float)                  
         out_df = dataframe_column_to_str(
                              self.dataframe, 'float_col_with_int_val',                       
                              inplace=False, return_col=False)                   
-        np.assertEqual(type(out_df), pd.DataFrame)                                
-        np.assertEqual(out_df['float_col_with_int_val'].dtype, object)                         
-        np.assertEqual(self.dataframe['float_col_with_int_val'].dtype, float)                  
-        np.assertEqual(sum(pd.isnull(self.dataframe['float_col_with_int_val'])),               
+        self.assertEqual(type(out_df), pd.DataFrame)                                
+        self.assertEqual(out_df['float_col_with_int_val'].dtype, object)                         
+        self.assertEqual(self.dataframe['float_col_with_int_val'].dtype, float)                  
+        self.assertEqual(sum(pd.isnull(self.dataframe['float_col_with_int_val'])),               
                      sum(pd.isnull(out_df['float_col_with_int_val']))) 
         for idx, row in self.dataframe.iterrows():
             if pd.isnull(row['float_col_with_int_val']): 
                 continue
-            np.assertEqual(str(int(row['float_col_with_int_val'])),
+            self.assertEqual(str(int(row['float_col_with_int_val'])),
                          out_df.loc[idx]['float_col_with_int_val'])
 
     def test_str_col_with_inplace(self):                                      
-        np.assertEqual(self.dataframe['str_col'].dtype, object)                  
+        self.assertEqual(self.dataframe['str_col'].dtype, object)                  
         nan_cnt_before = sum(pd.isnull(self.dataframe['str_col']))            
         flag = dataframe_column_to_str(self.dataframe, 'str_col',                         
                                        inplace=True, return_col=False)                      
-        np.assertEqual(flag, True)                                                
-        np.assertEqual(self.dataframe['str_col'].dtype, object)                 
+        self.assertEqual(flag, True)                                                
+        self.assertEqual(self.dataframe['str_col'].dtype, object)                 
         nan_cnt_after = sum(pd.isnull(self.dataframe['str_col']))             
-        np.assertEqual(nan_cnt_before, nan_cnt_after)                             
+        self.assertEqual(nan_cnt_before, nan_cnt_after)                             
                                                                                 
     def test_str_col_with_return_col(self):                                   
-        np.assertEqual(self.dataframe['str_col'].dtype, object)                  
+        self.assertEqual(self.dataframe['str_col'].dtype, object)                  
         nan_cnt_before = sum(pd.isnull(self.dataframe['str_col']))            
         out_series = dataframe_column_to_str(self.dataframe, 'str_col',                   
                                              inplace=False, return_col=True)                
-        np.assertEqual(type(out_series), pd.Series)                               
-        np.assertEqual(out_series.dtype, object)                                  
-        np.assertEqual(self.dataframe['str_col'].dtype, object)                  
+        self.assertEqual(type(out_series), pd.Series)                               
+        self.assertEqual(out_series.dtype, object)                                  
+        self.assertEqual(self.dataframe['str_col'].dtype, object)                  
         nan_cnt_after = sum(pd.isnull(out_series))                              
-        np.assertEqual(nan_cnt_before, nan_cnt_after) 
+        self.assertEqual(nan_cnt_before, nan_cnt_after) 
 
     def test_int_col_with_inplace(self):                                        
-        np.assertEqual(self.dataframe['int_col'].dtype, int)                   
+        self.assertEqual(self.dataframe['int_col'].dtype, int)                   
         flag = dataframe_column_to_str(self.dataframe, 'int_col',                           
                                        inplace=True, return_col=False)                      
-        np.assertEqual(flag, True)                                                
-        np.assertEqual(self.dataframe['int_col'].dtype, object)                   
-        np.assertEqual(sum(pd.isnull(self.dataframe['int_col'])), 0)                             
+        self.assertEqual(flag, True)                                                
+        self.assertEqual(self.dataframe['int_col'].dtype, object)                   
+        self.assertEqual(sum(pd.isnull(self.dataframe['int_col'])), 0)                             
                                                                                 
     def test_int_col_with_return_col(self):                                     
-        np.assertEqual(self.dataframe['int_col'].dtype, int)                   
+        self.assertEqual(self.dataframe['int_col'].dtype, int)                   
         out_series = dataframe_column_to_str(self.dataframe, 'int_col',                     
                                              inplace=False, return_col=True)                
-        np.assertEqual(type(out_series), pd.Series)                               
-        np.assertEqual(out_series.dtype, object)                                  
-        np.assertEqual(self.dataframe['int_col'].dtype, int)                   
-        np.assertEqual(sum(pd.isnull(out_series)), 0) 
+        self.assertEqual(type(out_series), pd.Series)                               
+        self.assertEqual(out_series.dtype, object)                                  
+        self.assertEqual(self.dataframe['int_col'].dtype, int)                   
+        self.assertEqual(sum(pd.isnull(out_series)), 0) 
 
     def test_float_col_with_inplace(self):                                                   
-        np.assertEqual(self.dataframe['float_col'].dtype, float)
+        self.assertEqual(self.dataframe['float_col'].dtype, float)
         nan_cnt_before = sum(pd.isnull(self.dataframe['float_col']))                  
         flag = dataframe_column_to_str(self.dataframe, 'float_col',                       
                                        inplace=True, return_col=False)                   
-        np.assertEqual(flag, True)                                
-        np.assertEqual(self.dataframe['float_col'].dtype, object)                         
+        self.assertEqual(flag, True)                                
+        self.assertEqual(self.dataframe['float_col'].dtype, object)                         
         nan_cnt_after = sum(pd.isnull(self.dataframe['float_col']))
-        np.assertEqual(nan_cnt_before, nan_cnt_after)
+        self.assertEqual(nan_cnt_before, nan_cnt_after)
 
     def test_float_col_with_return_col(self):                                      
-        np.assertEqual(self.dataframe['float_col'].dtype, float)                  
+        self.assertEqual(self.dataframe['float_col'].dtype, float)                  
         nan_cnt_before = sum(pd.isnull(self.dataframe['float_col']))            
         out_series = dataframe_column_to_str(self.dataframe, 'float_col',                         
                                              inplace=False, return_col=True)                      
-        np.assertEqual(type(out_series), pd.Series)                                                
-        np.assertEqual(out_series.dtype, object)
-        np.assertEqual(self.dataframe['float_col'].dtype, float)                                   
+        self.assertEqual(type(out_series), pd.Series)                                                
+        self.assertEqual(out_series.dtype, object)
+        self.assertEqual(self.dataframe['float_col'].dtype, float)                                   
         nan_cnt_after = sum(pd.isnull(out_series))             
-        np.assertEqual(nan_cnt_before, nan_cnt_after)
+        self.assertEqual(nan_cnt_before, nan_cnt_after)
 
     def test_nan_col_with_inplace(self):                                      
-        np.assertEqual(self.dataframe['nan_col'].dtype, float)                  
+        self.assertEqual(self.dataframe['nan_col'].dtype, float)                  
         nan_cnt_before = sum(pd.isnull(self.dataframe['nan_col']))            
         flag = dataframe_column_to_str(self.dataframe, 'nan_col',             
                                        inplace=True, return_col=False)          
-        np.assertEqual(flag, True)                                                
-        np.assertEqual(self.dataframe['nan_col'].dtype, object)                 
+        self.assertEqual(flag, True)                                                
+        self.assertEqual(self.dataframe['nan_col'].dtype, object)                 
         nan_cnt_after = sum(pd.isnull(self.dataframe['nan_col']))             
-        np.assertEqual(nan_cnt_before, nan_cnt_after)   
+        self.assertEqual(nan_cnt_before, nan_cnt_after)   
 
     @raises(AssertionError)
     def test_invalid_dataframe(self):
@@ -180,87 +180,87 @@ class SeriesToStrTestCases(unittest.TestCase):
         self.nan_col = pd.Series([np.NaN for _ in range(20)])
                                    
     def test_str_col(self):                                                     
-        np.assertEqual(self.str_col.dtype, object)                   
+        self.assertEqual(self.str_col.dtype, object)                   
         out_series = series_to_str(self.str_col, inplace=False)       
-        np.assertEqual(type(out_series), pd.Series)                                
-        np.assertEqual(out_series.dtype, object)                           
-        np.assertEqual(self.str_col.dtype, object)                   
-        np.assertEqual(sum(pd.isnull(self.str_col)),                 
+        self.assertEqual(type(out_series), pd.Series)                                
+        self.assertEqual(out_series.dtype, object)                           
+        self.assertEqual(self.str_col.dtype, object)                   
+        self.assertEqual(sum(pd.isnull(self.str_col)),                 
                      sum(pd.isnull(out_series)))                         
                                                                                 
     def test_int_col(self):                                                    
-        np.assertEqual(self.int_col.dtype, int)                                
+        self.assertEqual(self.int_col.dtype, int)                                
         out_series = series_to_str(self.int_col, inplace=False)                     
-        np.assertEqual(type(out_series), pd.Series)                               
-        np.assertEqual(out_series.dtype, object)                                  
-        np.assertEqual(self.int_col.dtype, int)                                
-        np.assertEqual(sum(pd.isnull(out_series)), 0)   
+        self.assertEqual(type(out_series), pd.Series)                               
+        self.assertEqual(out_series.dtype, object)                                  
+        self.assertEqual(self.int_col.dtype, int)                                
+        self.assertEqual(sum(pd.isnull(out_series)), 0)   
                                                                                 
     def test_float_col(self):                                                   
-        np.assertEqual(self.float_col.dtype, float)                                
+        self.assertEqual(self.float_col.dtype, float)                                
         out_series = series_to_str(self.float_col, inplace=False)                     
-        np.assertEqual(type(out_series), pd.Series)                               
-        np.assertEqual(out_series.dtype, object)                                  
-        np.assertEqual(self.float_col.dtype, float)                                
-        np.assertEqual(sum(pd.isnull(self.float_col)),                              
+        self.assertEqual(type(out_series), pd.Series)                               
+        self.assertEqual(out_series.dtype, object)                                  
+        self.assertEqual(self.float_col.dtype, float)                                
+        self.assertEqual(sum(pd.isnull(self.float_col)),                              
                      sum(pd.isnull(out_series)))  
 
     def test_float_col_with_int_val(self):
-        np.assertEqual(self.float_col_with_int_val.dtype, float)                                
+        self.assertEqual(self.float_col_with_int_val.dtype, float)                                
         out_series = series_to_str(self.float_col_with_int_val, inplace=False)                     
-        np.assertEqual(type(out_series), pd.Series)                               
-        np.assertEqual(out_series.dtype, object)                                  
-        np.assertEqual(self.float_col_with_int_val.dtype, float)                                
-        np.assertEqual(sum(pd.isnull(self.float_col_with_int_val)),                              
+        self.assertEqual(type(out_series), pd.Series)                               
+        self.assertEqual(out_series.dtype, object)                                  
+        self.assertEqual(self.float_col_with_int_val.dtype, float)                                
+        self.assertEqual(sum(pd.isnull(self.float_col_with_int_val)),                              
                      sum(pd.isnull(out_series)))                                        
         for idx, val in self.float_col_with_int_val.iteritems():                              
             if pd.isnull(val):                        
                 continue                                                        
-            np.assertEqual(str(int(val)), out_series.loc[idx])              
+            self.assertEqual(str(int(val)), out_series.loc[idx])              
                                                                                 
     def test_str_col_with_inplace(self):                                        
-        np.assertEqual(self.str_col.dtype, object)                   
+        self.assertEqual(self.str_col.dtype, object)                   
         nan_cnt_before = sum(pd.isnull(self.str_col))              
         flag = series_to_str(self.str_col, inplace=True)          
-        np.assertEqual(flag, True)                                                
-        np.assertEqual(self.str_col.dtype, object)                   
+        self.assertEqual(flag, True)                                                
+        self.assertEqual(self.str_col.dtype, object)                   
         nan_cnt_after = sum(pd.isnull(self.str_col))               
-        np.assertEqual(nan_cnt_before, nan_cnt_after)
+        self.assertEqual(nan_cnt_before, nan_cnt_after)
 
     def test_int_col_with_inplace(self):
-        np.assertEqual(self.int_col.dtype, int)                                
+        self.assertEqual(self.int_col.dtype, int)                                
         flag = series_to_str(self.int_col, inplace=True)                           
-        np.assertEqual(flag, True)                                                
-        np.assertEqual(self.int_col.dtype, object)                                
-        np.assertEqual(sum(pd.isnull(self.int_col)), 0)         
+        self.assertEqual(flag, True)                                                
+        self.assertEqual(self.int_col.dtype, object)                                
+        self.assertEqual(sum(pd.isnull(self.int_col)), 0)         
                                         
     def test_float_col_with_inplace(self):                                      
-        np.assertEqual(self.float_col.dtype, float)                                
+        self.assertEqual(self.float_col.dtype, float)                                
         nan_cnt_before = sum(pd.isnull(self.float_col))                           
         flag = series_to_str(self.float_col, inplace=True)                           
-        np.assertEqual(flag, True)                                                
-        np.assertEqual(self.float_col.dtype, object)                                
+        self.assertEqual(flag, True)                                                
+        self.assertEqual(self.float_col.dtype, object)                                
         nan_cnt_after = sum(pd.isnull(self.float_col))                            
-        np.assertEqual(nan_cnt_before, nan_cnt_after)
+        self.assertEqual(nan_cnt_before, nan_cnt_after)
 
     # test the case with a series containing only NaN values. In this case,
     # inplace flag will be ignored.
     def test_nan_col_with_inplace(self):
-        np.assertEqual(self.nan_col.dtype, float)                               
+        self.assertEqual(self.nan_col.dtype, float)                               
         nan_cnt_before = sum(pd.isnull(self.nan_col))                         
         out_series = series_to_str(self.nan_col, inplace=True)                      
-        np.assertEqual(out_series.dtype, object)                                                
-        np.assertEqual(self.nan_col.dtype, float)                              
+        self.assertEqual(out_series.dtype, object)                                                
+        self.assertEqual(self.nan_col.dtype, float)                              
         nan_cnt_after = sum(pd.isnull(out_series))                          
-        np.assertEqual(nan_cnt_before, nan_cnt_after)
+        self.assertEqual(nan_cnt_before, nan_cnt_after)
 
     def test_empty_series_with_inplace(self):
         empty_series = pd.Series(dtype=int)                                        
-        np.assertEqual(empty_series.dtype, int)                                 
+        self.assertEqual(empty_series.dtype, int)                                 
         out_series = series_to_str(empty_series, inplace=True)                  
-        np.assertEqual(out_series.dtype, object)                                  
-        np.assertEqual(empty_series.dtype, int)                                 
-        np.assertEqual(len(out_series), 0) 
+        self.assertEqual(out_series.dtype, object)                                  
+        self.assertEqual(empty_series.dtype, int)                                 
+        self.assertEqual(len(out_series), 0) 
               
     @raises(AssertionError)                                                     
     def test_invalid_series(self):                                           
