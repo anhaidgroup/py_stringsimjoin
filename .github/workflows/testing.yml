@@ -28,10 +28,10 @@ jobs:
         run: python --version
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install numpy
           pip install pandas joblib six nose Cython pyprind==2.9.8 py_stringmatching coveralls
           python setup.py build_ext --inplace
       - name: Run tests
         run: |
-          nosetests
+          python -m unittest -v
