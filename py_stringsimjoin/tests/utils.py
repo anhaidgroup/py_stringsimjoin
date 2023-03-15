@@ -7,3 +7,8 @@ def raises(exc_type):
                 return f(self)
         return raises_wrapper
     return deco
+
+# Replacement for nose.tools.nottest
+# I have no idea what I'm doing
+def nottest():
+    return false
