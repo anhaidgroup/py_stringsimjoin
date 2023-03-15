@@ -18,10 +18,10 @@ class OverlapJoinValidTestCases(unittest.TestCase):
         A = pd.DataFrame([{'id':1, 'attr':'hello'}])
         B = pd.DataFrame([{'id':1, 'attr':'he ll'}])
         qg2_tok = QgramTokenizer(2)
-        np.assertEqual(qg2_tok.get_return_set(), False)
+        self.assertEqual(qg2_tok.get_return_set(), False)
         c = overlap_join(A, B, 'id', 'id', 'attr', 'attr', qg2_tok, 1)
-        np.assertEqual(len(c), 1)
-        np.assertEqual(qg2_tok.get_return_set(), False)        
+        self.assertEqual(len(c), 1)
+        self.assertEqual(qg2_tok.get_return_set(), False)        
         
 
 class OverlapJoinInvalidTestCases(unittest.TestCase):
