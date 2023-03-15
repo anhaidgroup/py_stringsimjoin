@@ -108,7 +108,7 @@ class FilterPairTestCases(unittest.TestCase):
         suffix_filter = SuffixFilter(tokenizer, sim_measure_type, threshold,
                                      allow_empty, allow_missing)
         actual_output = suffix_filter.filter_pair(lstring, rstring)
-        np.assertEqual(actual_output, expected_output)
+        self.assertEqual(actual_output, expected_output)
 
 
 # test SuffixFilter.filter_tables method
@@ -339,7 +339,7 @@ class FilterTablesTestCases(unittest.TestCase):
                     expected_output_attrs.append(r_out_prefix + attr)
 
         # verify whether the output table has the necessary attributes.
-        np.assertListEqual(list(actual_candset.columns.values),
+        self.assertListEqual(list(actual_candset.columns.values),
                           expected_output_attrs)
  
         actual_pairs = set()
@@ -350,7 +350,7 @@ class FilterTablesTestCases(unittest.TestCase):
         # verify whether all the join output pairs are 
         # present in the actual output pairs
         common_pairs = actual_pairs.intersection(join_output_pairs)
-        np.assertEqual(len(common_pairs), len(join_output_pairs))
+        self.assertEqual(len(common_pairs), len(join_output_pairs))
 
 
 # test SuffixFilter.filter_candset method
@@ -438,7 +438,7 @@ class FilterCandsetTestCases(unittest.TestCase):
         actual_output_candset = suffix_filter.filter_candset(*args)
 
         # verify whether the output table has the necessary attributes.
-        np.assertListEqual(list(actual_output_candset.columns.values),
+        self.assertListEqual(list(actual_output_candset.columns.values),
                           list(args[0].columns.values))
 
         actual_pairs = set()
@@ -446,9 +446,9 @@ class FilterCandsetTestCases(unittest.TestCase):
             actual_pairs.add(','.join((str(row[args[1]]), str(row[args[2]]))))
 
         # verify whether the actual pairs and the expected pairs match.
-        np.assertEqual(len(expected_pairs), len(actual_pairs))
+        self.assertEqual(len(expected_pairs), len(actual_pairs))
         common_pairs = actual_pairs.intersection(expected_pairs)
-        np.assertEqual(len(common_pairs), len(expected_pairs))
+        self.assertEqual(len(common_pairs), len(expected_pairs))
 
 
 class SuffixFilterInvalidTestCases(unittest.TestCase):
