@@ -123,7 +123,7 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
     if '_id' in no_disk_candset :
       del no_disk_candset['_id']
 
-    np.assertEqual(tok.get_return_set(), orig_return_set_flag)
+    self.assertEqual(tok.get_return_set(), orig_return_set_flag)
 
     expected_output_attrs = []
     l_out_prefix = DEFAULT_L_OUT_PREFIX
@@ -161,15 +161,15 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
         expected_output_attrs.append('_sim_score')
 
     # Verify whether the current output file path exists.
-    np.assertEqual(True,os.path.exists(output_file_path))
+    self.assertEqual(True,os.path.exists(output_file_path))
 
     # verify whether the output table has the necessary attributes.
     actual_candset = pd.read_csv(output_file_path)
 
     # Comparing column header values
-    np.assertListEqual(list(actual_candset.columns.values),
+    self.assertListEqual(list(actual_candset.columns.values),
                         expected_output_attrs)
-    np.assertListEqual(list(no_disk_candset.columns.values),
+    self.assertListEqual(list(no_disk_candset.columns.values),
                         list(actual_candset.columns.values))
 
     actual_pairs = set()
@@ -185,12 +185,12 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
                                      str(row[r_out_prefix + r_key_attr]))))
    
     # Verify whether the actual pairs and the expected pairs match.
-    np.assertEqual(len(expected_pairs), len(actual_pairs))
-    np.assertEqual(len(expected_pairs), len(no_disk_pairs))
+    self.assertEqual(len(expected_pairs), len(actual_pairs))
+    self.assertEqual(len(expected_pairs), len(no_disk_pairs))
     common_pairs = actual_pairs.intersection(expected_pairs)
     common_pairs_no_disk = no_disk_pairs.intersection(expected_pairs)
-    np.assertEqual(len(common_pairs), len(expected_pairs))
-    np.assertEqual(len(common_pairs_no_disk), len(expected_pairs))
+    self.assertEqual(len(common_pairs), len(expected_pairs))
+    self.assertEqual(len(common_pairs_no_disk), len(expected_pairs))
 
 
 
