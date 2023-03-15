@@ -299,7 +299,7 @@ def _apply_matcher_split(candset,
         if pd.isnull(l_apply_col_value) or pd.isnull(r_apply_col_value):
             if allow_missing:
                 allow_pair = True
-                sim_score = NaN
+                sim_score = np.NaN
             else:
                 continue   
         else:
