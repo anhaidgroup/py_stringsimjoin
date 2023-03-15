@@ -41,11 +41,12 @@ from functools import partial
 import os
 import unittest
 
-from nose.tools import assert_equal, assert_list_equal, nottest, raises
+#from nose.tools import assert_equal, assert_list_equal, nottest, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from six import iteritems
 import pandas as pd
+from .utils import raises
 
 from py_stringsimjoin.join.disk_edit_distance_join import disk_edit_distance_join
 from py_stringsimjoin.join.edit_distance_join import edit_distance_join
