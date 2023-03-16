@@ -159,10 +159,7 @@ For a python 3 environment::
 
 This will create the new environment, and not touch any of your existing environments,
 nor any existing python installation. It will install all of the basic dependencies of
-*py_stringsimjoin*. You need to install the *nose* package which is used for 
-testing, as follows::
-
-      conda install -n py_stringsimjoin_dev nose
+*py_stringsimjoin*.
 
 To work in this environment, Windows users should ``activate`` it as follows::
 
@@ -288,8 +285,8 @@ it is worth getting in the habit of writing tests ahead of time so this is never
 
 Unit testing
 ~~~~~~~~~~~~~
-Like many packages, *py_stringsimjoin* uses the `Nose testing system
-<http://nose.readthedocs.org/en/latest/index.html>`_.
+Like many packages, *py_stringsimjoin* uses the `standard unittest
+testing library <https://docs.python.org/3/library/unittest.html>`_.
 
 All tests should go into the ``tests`` subdirectory of the specific package.
 This folder contains many current examples of tests, and we suggest looking to these for
@@ -298,7 +295,7 @@ inspiration.
 The tests can then be run directly inside your Git clone (without having to
 install *py_stringsimjoin*) by typing::
 
-    nosetests
+    python -m unittest
 
 
 Performance testing
