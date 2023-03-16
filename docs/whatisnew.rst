@@ -1,8 +1,9 @@
 What is New? 
 ============
 
-Compared to Version 0.3.1, the following is new:
+Compared to Version 0.3.2, the following is new:
 
-  * Started tracking release changes in CHANGES.txt.
-  * Minorly updated usage of Pandas to prevent a dependency on downgraded versions.
-  * This is the last version of py_stringmatching that will support Python 2 and Python 3.5.
+  * Dropped support for Python 2.7, 3.5, 3.6; added support for Python 3.9-3.11.
+  * Removed deprecated numpy aliases.
+  * Switched from nose to unittest for unit testing.
+  * Switched from Travis CI and Appveyor to Github Actions.

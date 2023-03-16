@@ -214,7 +214,7 @@ def setup_package():
         cmdclass = {"build_ext": build_ext}
         setuptools.setup(
             name='py_stringsimjoin',
-            version='0.3.2',
+            version='0.3.3',
             description='Python library for performing string similarity joins.',
             long_description=LONG_DESCRIPTION,
             url='https://sites.google.com/site/anhaidgroup/projects/magellan/py_stringsimjoin',
@@ -234,10 +234,11 @@ def setup_package():
                 'Operating System :: Microsoft :: Windows',
                 'Programming Language :: Python',
                 'Programming Language :: Python :: 3',
-                'Programming Language :: Python :: 3.6',
                 'Programming Language :: Python :: 3.7',
                 'Programming Language :: Python :: 3.8',
                 'Programming Language :: Python :: 3.9',
+                'Programming Language :: Python :: 3.10',
+                'Programming Language :: Python :: 3.11',
                 'Topic :: Scientific/Engineering',
                 'Topic :: Utilities',
                 'Topic :: Software Development :: Libraries',

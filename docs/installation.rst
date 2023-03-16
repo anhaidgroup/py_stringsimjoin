@@ -4,13 +4,12 @@ Installation
  
 Requirements
 ------------
-    * Python 3.6, 3.7, 3.8, or 3.9
+    * Python 3.7-3.11
     * C++ compiler (parts of the package are in Cython for efficiency reasons, and you need C++ compiler to compile these parts) 
 
 Platforms
 ------------
-py_stringsimjoin has been tested on Linux (Ubuntu Xenial 16.04.6), macOS (High Sierra 10.13.6),
-and Windows 10.
+py_stringsimjoin has been tested on Linux (Ubuntu 22.04), OS X (Monterey 12), and Windows 10.
 
 Dependencies
 ------------

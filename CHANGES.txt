@@ -1,3 +1,10 @@
+v0.3.3 - 3/16/2023
+  * Dropped support for Python 3.6.
+  * Added support for Python 3.10 and 3.11.
+  * Replaced aliases removed from Numpy 1.24.
+  * Switched from Nose to vanilla Unittest.
+  * Replaced Travis and Appveyor CI testing with Github Actions.
+
 v0.3.2 - 10/26/2020
   * Started tracking release changes in CHANGES.txt.
   * Minorly updated usage of Pandas to prevent a dependency on downgraded versions.
