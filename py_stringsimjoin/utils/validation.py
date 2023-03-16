@@ -28,7 +28,7 @@ def validate_attr(attr, table_cols, attr_label, table_label):
 
 def validate_attr_type(attr, attr_type, attr_label, table_label):
     """Check if the attribute is not of numeric type."""
-    if attr_type != np.object:
+    if attr_type != object:
         raise AssertionError(attr_label + ' \'' + attr + '\' in ' + 
                              table_label + ' is not of string type.')
     return True

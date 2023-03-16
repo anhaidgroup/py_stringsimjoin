@@ -1,51 +1,13 @@
-"""
-Currently the tests do not pass in Appveyor. Specifically, we got the following error
-for all the the failed cases.
-
-Traceback (most recent call last):
-  File "c:\python34\lib\site-packages\nose\case.py", line 198, in runTest
-    self.test(*self.arg)
-  File "C:\projects\py-stringsimjoin\py_stringsimjoin\tests\test_disk_edit_dist_join.py", line 114, in test_valid_join
-    output_file_path = output_file_path)
-  File "C:\projects\py-stringsimjoin\py_stringsimjoin\join\disk_edit_distance_join.py", line 146, in disk_edit_distance_join
-    temp_dir, output_file_path)
-  File "py_stringsimjoin\join\disk_edit_distance_join_cy.pyx", line 267, in py_stringsimjoin.join.disk_edit_distance_join_cy.disk_edit_distance_join_cy
-    results = Parallel(n_jobs=n_jobs)(delayed(_edit_distance_join_split)(
-  File "c:\python34\lib\site-packages\joblib\parallel.py", line 962, in __call__
-    self.retrieve()
-  File "c:\python34\lib\site-packages\joblib\parallel.py", line 865, in retrieve
-    self._output.extend(job.get(timeout=self.timeout))
-  File "c:\python34\lib\site-packages\joblib\_parallel_backends.py", line 515, in wrap_future_result
-    return future.result(timeout=timeout)
-  File "c:\python34\lib\site-packages\joblib\externals\loky\_base.py", line 431, in result
-    return self.__get_result()
-  File "c:\python34\lib\site-packages\joblib\externals\loky\_base.py", line 382, in __get_result
-    raise self._exception
-nose.proxy.OSError: [Errno 22] Invalid argument: 'C:\\projects\\py-stringsimjoin\\0_05:11:25:188201.csv'
-
-
-
-From the initial analysis, it looks like the error has to do with the intermediate file 
-that we create to flush the intermediate results to disk. Note that this error occurs 
-only in Appveyor (CI service used for Windows) and not in Travis-CI.
-
-As the test cases are automatically generated using a function, it is hard to find/comment the parts of the function that generates testcases causing error. so we currently do not run 
-any testcase in this file. To do this, this testcase file is renamed with a prefix _ 
-(as _test_disk_edit_dist_join) so that nosetests does not pick this file 
-for running unit test cases.
-
-"""
-
-
 from functools import partial
 import os
 import unittest
 
-from nose.tools import assert_equal, assert_list_equal, nottest, raises
+#from nose.tools import assert_equal, assert_list_equal, nottest, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from six import iteritems
 import pandas as pd
+from .utils import raises
 
 from py_stringsimjoin.join.disk_edit_distance_join import disk_edit_distance_join
 from py_stringsimjoin.join.edit_distance_join import edit_distance_join
@@ -62,7 +24,7 @@ DEFAULT_R_OUT_PREFIX = 'r_'
 default_output_file_name = "unit_test_edit_dist_join_disk.csv"
 default_output_file_path = os.path.join(os.getcwd(), default_output_file_name)
 
-@nottest
+@unittest.skip("Not a test")
 def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
                     convert_to_str=False,data_limit=100000,temp_dir = os.getcwd(), 
                     output_file_path = default_output_file_path):
@@ -161,7 +123,7 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
     if '_id' in no_disk_candset :
       del no_disk_candset['_id']
 
-    assert_equal(tok.get_return_set(), orig_return_set_flag)
+    self.assertEqual(tok.get_return_set(), orig_return_set_flag)
 
     expected_output_attrs = []
     l_out_prefix = DEFAULT_L_OUT_PREFIX
@@ -199,15 +161,15 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
         expected_output_attrs.append('_sim_score')
 
     # Verify whether the current output file path exists.
-    assert_equal(True,os.path.exists(output_file_path))
+    self.assertEqual(True,os.path.exists(output_file_path))
 
     # verify whether the output table has the necessary attributes.
     actual_candset = pd.read_csv(output_file_path)
 
     # Comparing column header values
-    assert_list_equal(list(actual_candset.columns.values),
+    self.assertListEqual(list(actual_candset.columns.values),
                         expected_output_attrs)
-    assert_list_equal(list(no_disk_candset.columns.values),
+    self.assertListEqual(list(no_disk_candset.columns.values),
                         list(actual_candset.columns.values))
 
     actual_pairs = set()
@@ -223,12 +185,12 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
                                      str(row[r_out_prefix + r_key_attr]))))
    
     # Verify whether the actual pairs and the expected pairs match.
-    assert_equal(len(expected_pairs), len(actual_pairs))
-    assert_equal(len(expected_pairs), len(no_disk_pairs))
+    self.assertEqual(len(expected_pairs), len(actual_pairs))
+    self.assertEqual(len(expected_pairs), len(no_disk_pairs))
     common_pairs = actual_pairs.intersection(expected_pairs)
     common_pairs_no_disk = no_disk_pairs.intersection(expected_pairs)
-    assert_equal(len(common_pairs), len(expected_pairs))
-    assert_equal(len(common_pairs_no_disk), len(expected_pairs))
+    self.assertEqual(len(common_pairs), len(expected_pairs))
+    self.assertEqual(len(common_pairs_no_disk), len(expected_pairs))
 
 
 

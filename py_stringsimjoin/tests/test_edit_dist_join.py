@@ -2,11 +2,12 @@ from functools import partial
 import os
 import unittest
 
-from nose.tools import assert_equal, assert_list_equal, nottest, raises
+#from nose.tools import assert_equal, assert_list_equal, nottest, raises
 from py_stringmatching.tokenizer.delimiter_tokenizer import DelimiterTokenizer
 from py_stringmatching.tokenizer.qgram_tokenizer import QgramTokenizer
 from six import iteritems
 import pandas as pd
+from .utils import raises
 
 from py_stringsimjoin.join.edit_distance_join import edit_distance_join
 from py_stringsimjoin.utils.converter import dataframe_column_to_str            
@@ -19,7 +20,7 @@ DEFAULT_COMP_OP = '<='
 DEFAULT_L_OUT_PREFIX = 'l_'
 DEFAULT_R_OUT_PREFIX = 'r_'
 
-@nottest
+@unittest.skip("Not a test")
 def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
                     convert_to_str=False):
     (ltable_path, l_key_attr, l_join_attr) = scenario[0]
@@ -102,7 +103,7 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
                                         threshold, comp_op,
                                         *args, tokenizer=tok)
 
-    assert_equal(tok.get_return_set(), orig_return_set_flag)
+    self.assertEqual(tok.get_return_set(), orig_return_set_flag)
 
     expected_output_attrs = ['_id']
     l_out_prefix = DEFAULT_L_OUT_PREFIX
@@ -140,7 +141,7 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
         expected_output_attrs.append('_sim_score')
 
     # verify whether the output table has the necessary attributes.
-    assert_list_equal(list(actual_candset.columns.values),
+    self.assertListEqual(list(actual_candset.columns.values),
                       expected_output_attrs)
 
     actual_pairs = set()
@@ -149,9 +150,9 @@ def test_valid_join(scenario, tok, threshold, comp_op=DEFAULT_COMP_OP, args=(),
                                    str(row[r_out_prefix + r_key_attr]))))
  
     # verify whether the actual pairs and the expected pairs match.
-    assert_equal(len(expected_pairs), len(actual_pairs))
+    self.assertEqual(len(expected_pairs), len(actual_pairs))
     common_pairs = actual_pairs.intersection(expected_pairs)
-    assert_equal(len(common_pairs), len(expected_pairs))
+    self.assertEqual(len(common_pairs), len(expected_pairs))
 
 def test_edit_distance_join():
     # data to be tested.
