@@ -213,7 +213,7 @@ def setup_package():
 
         cmdclass = {"build_ext": build_ext}
         setuptools.setup(
-            name='py_stringsimjoin',
+            name='py-stringsimjoin',
             version='0.3.3',
             description='Python library for performing string similarity joins.',
             long_description=LONG_DESCRIPTION,
