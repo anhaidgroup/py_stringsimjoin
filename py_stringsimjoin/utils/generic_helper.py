@@ -73,7 +73,7 @@ def convert_dataframe_to_list(table, join_attr_index,
 def convert_dataframe_to_array(dataframe, proj_attrs, join_attr, 
                                remove_nan=True):
     if remove_nan:
-        projected_dataframe = dataframe[proj_attrs].dropna(0, 
+        projected_dataframe = dataframe[proj_attrs].dropna(axis=0, 
                                                            subset=[join_attr])
     else:
         projected_dataframe = dataframe[proj_attrs]
