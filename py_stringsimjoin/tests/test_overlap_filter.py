@@ -241,7 +241,7 @@ class FilterCandsetTestCases(unittest.TestCase):
         self.B['tmp_join_key'] = 1
         self.C = pd.merge(self.A[['l_id', 'tmp_join_key']],
                           self.B[['r_id', 'tmp_join_key']],
-                     on='tmp_join_key').drop('tmp_join_key', 1)
+                     on='tmp_join_key').drop('tmp_join_key', axis=1)
 
         self.empty_A = pd.DataFrame(columns=['l_id', 'l_attr'])
         self.empty_B = pd.DataFrame(columns=['r_id', 'r_attr'])
@@ -292,7 +292,7 @@ class FilterCandsetTestCases(unittest.TestCase):
         B['tmp_join_key'] = 1
         C = pd.merge(A[['l_id', 'tmp_join_key']],
                      B[['r_id', 'tmp_join_key']],
-                 on='tmp_join_key').drop('tmp_join_key', 1)
+                 on='tmp_join_key').drop('tmp_join_key', axis=1)
 
         qg2_tok = QgramTokenizer(2, return_set=True)
         expected_pairs = set(['1,2', '1,3', '2,1', '2,4', '2,5',
@@ -409,7 +409,7 @@ class FilterCandsetTestCases(unittest.TestCase):
         B['tmp_join_key'] = 1                                                   
         C = pd.merge(A[['l_id', 'tmp_join_key']],                               
                      B[['r_id', 'tmp_join_key']],                               
-                 on='tmp_join_key').drop('tmp_join_key', 1)                     
+                 on='tmp_join_key').drop('tmp_join_key', axis=1)                     
                                                                                 
         qg2_tok = QgramTokenizer(2, return_set=True)                            
         overlap_filter = OverlapFilter(qg2_tok)                                 
@@ -426,7 +426,7 @@ class FilterCandsetTestCases(unittest.TestCase):
         B['tmp_join_key'] = 1                                                   
         C = pd.merge(A[['l_id', 'tmp_join_key']],                               
                      B[['r_id', 'tmp_join_key']],                               
-                 on='tmp_join_key').drop('tmp_join_key', 1)                     
+                 on='tmp_join_key').drop('tmp_join_key', axis=1)                     
                                                                                 
         qg2_tok = QgramTokenizer(2, return_set=True)                            
         overlap_filter = OverlapFilter(qg2_tok)                                 
