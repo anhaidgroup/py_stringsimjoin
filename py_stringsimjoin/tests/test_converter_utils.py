@@ -13,14 +13,13 @@ from py_stringsimjoin.utils.converter import dataframe_column_to_str, \
 
 class DataframeColumnToStrTestCases(unittest.TestCase):
     def setUp(self):
-        float_col = pd.Series(np.random.randn(10)).append(
-            pd.Series([np.NaN for _ in range(10)], index=range(10, 20)))
-        float_col_with_int_val = pd.Series(
-                                     np.random.randint(1, 100, 10)).append(          
-            pd.Series([np.NaN for _ in range(10)], index=range(10, 20)))        
-        str_col = pd.Series([random.choice(string.ascii_lowercase) 
-                      for _ in range(10)]).append(
-            pd.Series([np.NaN for _ in range(10)], index=range(10, 20)))
+        float_col = pd.concat([Series(np.random.randn(10)),
+            pd.Series([np.NaN for _ in range(10)], index=range(10, 20))])
+        float_col_with_int_val = pd.concat([Series(np.random.randint(1, 100, 10)),          
+            pd.Series([np.NaN for _ in range(10)], index=range(10, 20))])        
+        str_col = pd.concat([Series([random.choice(string.ascii_lowercase) 
+                      for _ in range(10)]),
+            pd.Series([np.NaN for _ in range(10)], index=range(10, 20))])
         int_col = pd.Series(np.random.randint(1, 100, 20))                           
         nan_col = pd.Series([np.NaN for _ in range(20)])                
 
@@ -168,14 +167,13 @@ class DataframeColumnToStrTestCases(unittest.TestCase):
 
 class SeriesToStrTestCases(unittest.TestCase):                         
     def setUp(self):                                                            
-        self.float_col = pd.Series(np.random.randn(10)).append(                   
-            pd.Series([np.NaN for _ in range(10)], index=range(10, 20)))     
-        self.float_col_with_int_val = pd.Series(                                     
-                                     np.random.randint(1, 100, 10)).append(  
-            pd.Series([np.NaN for _ in range(10)], index=range(10, 20)))     
-        self.str_col = pd.Series([random.choice(string.ascii_lowercase)              
-                      for _ in range(10)]).append(                              
-            pd.Series([np.NaN for _ in range(10)], index=range(10, 20)))     
+        self.float_col = pd.concat([Series(np.random.randn(10)),                   
+            pd.Series([np.NaN for _ in range(10)], index=range(10, 20))])     
+        self.float_col_with_int_val = pd.concat([Series(np.random.randint(1, 100, 10)), 
+            pd.Series([np.NaN for _ in range(10)], index=range(10, 20))])     
+        self.str_col = pd.concat([Series([random.choice(string.ascii_lowercase)              
+                      for _ in range(10)]),                              
+            pd.Series([np.NaN for _ in range(10)], index=range(10, 20))])     
         self.int_col = pd.Series(np.random.randint(1, 100, 20))                   
         self.nan_col = pd.Series([np.NaN for _ in range(20)])
                                    
