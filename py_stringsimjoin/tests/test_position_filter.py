@@ -370,7 +370,7 @@ class FilterCandsetTestCases(unittest.TestCase):
         self.B['tmp_join_key'] = 1
         self.C = pd.merge(self.A[['l_id', 'tmp_join_key']],
                           self.B[['r_id', 'tmp_join_key']],
-                     on='tmp_join_key').drop('tmp_join_key', 1)
+                     on='tmp_join_key').drop('tmp_join_key', axis=1)
 
         self.empty_A = pd.DataFrame(columns=['l_id', 'l_attr'])
         self.empty_B = pd.DataFrame(columns=['r_id', 'r_attr'])
