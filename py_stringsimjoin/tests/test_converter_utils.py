@@ -211,7 +211,7 @@ class SeriesToStrTestCases(unittest.TestCase):
         self.assertEqual(self.float_col_with_int_val.dtype, float)                                
         self.assertEqual(sum(pd.isnull(self.float_col_with_int_val)),                              
                      sum(pd.isnull(out_series)))                                        
-        for idx, val in self.float_col_with_int_val.iteritems():                              
+        for idx, val in self.float_col_with_int_val.items():                              
             if pd.isnull(val):                        
                 continue                                                        
             self.assertEqual(str(int(val)), out_series.loc[idx])              
