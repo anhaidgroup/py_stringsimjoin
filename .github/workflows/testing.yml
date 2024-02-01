@@ -31,7 +31,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install numpy
           pip install pandas joblib six Cython>=0.29.23 pyprind coveralls py-stringmatching
-      - name: Run setup.py
+      - name: Install package
         run: python setup.py build_ext --inplace
       - name: Run tests
         run: |
