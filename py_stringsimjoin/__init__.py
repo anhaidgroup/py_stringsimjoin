@@ -1,5 +1,5 @@
 
-__version__ = '0.3.3'
+__version__ = '0.3.4'
 
 # determine whether to use available cython implementations                     
 __use_cython__ = True 
