@@ -13,14 +13,13 @@ try:
 except ImportError:
     PIP_INSTALLED = False
 
-if not PIP_INSTALLED:
-    raise ImportError('pip is not installed.')
-
 def install_and_import(package):
     import importlib
     try:
         importlib.import_module(package)
     except ImportError:
+        if not PIP_INSTALLED:
+            raise ImportError('pip is not installed.')
         pip.main(['install', package])
     finally:
         globals()[package] = importlib.import_module(package)
@@ -215,7 +214,7 @@ def setup_package():
         cmdclass = {"build_ext": build_ext}
         setuptools.setup(
             name='py-stringsimjoin',
-            version='0.3.4',
+            version='0.3.5',
             description='Python library for performing string similarity joins.',
             long_description=LONG_DESCRIPTION,
             url='https://sites.google.com/site/anhaidgroup/projects/magellan/py_stringsimjoin',
