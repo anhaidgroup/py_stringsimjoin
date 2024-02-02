@@ -2,4 +2,4 @@ pandas>=0.16.0
 six                                                              
 joblib                                                           
 pyprind>=2.9.3                                                 
-py_stringmatching>=0.2.1
+py-stringmatching>=0.2.1

@@ -65,9 +65,9 @@ def test_valid_join(scenario, tok, threshold,comp_op=DEFAULT_COMP_OP, args=(),
                         rtable_not_missing[[r_key_attr,
                                 r_join_attr,
                                 'tmp_join_key']],
-                        on='tmp_join_key').drop('tmp_join_key', 1)
-    ltable_not_missing.drop('tmp_join_key', 1)
-    rtable_not_missing.drop('tmp_join_key', 1)
+                        on='tmp_join_key').drop('tmp_join_key', axis=1)
+    ltable_not_missing.drop('tmp_join_key', axis=1)
+    rtable_not_missing.drop('tmp_join_key', axis=1)
 
     sim_measure_type = 'EDIT_DISTANCE'
     sim_func = get_sim_function(sim_measure_type)

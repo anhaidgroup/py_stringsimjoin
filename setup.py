@@ -67,15 +67,16 @@ class build_ext(_build_ext, build_ext_options):
 
 
 def generate_cython():
-    cwd = os.path.abspath(os.path.dirname(__file__))
-    print("Cythonizing sources")
-    p = subprocess.call([sys.executable, os.path.join(cwd,
-                             'build_tools',
-                             'cythonize.py'),
-            'py_stringsimjoin'],
-        cwd=cwd)
-    if p != 0:
+    from Cython.Build import cythonize
+    
+    module_list = [MODULES[key]['sources'][0] for key in MODULES.keys()]
+    print(module_list)
+    
+    p = cythonize(module_list)
+
+    if not p:
         raise RuntimeError("Running cythonize failed!")
+
 
 MODULES = {
         "py_stringsimjoin.index.inverted_index_cy": {'sources':["py_stringsimjoin/index/inverted_index_cy.pyx"],
@@ -213,8 +214,8 @@ def setup_package():
 
         cmdclass = {"build_ext": build_ext}
         setuptools.setup(
-            name='py_stringsimjoin',
-            version='0.3.3',
+            name='py-stringsimjoin',
+            version='0.3.4',
             description='Python library for performing string similarity joins.',
             long_description=LONG_DESCRIPTION,
             url='https://sites.google.com/site/anhaidgroup/projects/magellan/py_stringsimjoin',
@@ -239,6 +240,7 @@ def setup_package():
                 'Programming Language :: Python :: 3.9',
                 'Programming Language :: Python :: 3.10',
                 'Programming Language :: Python :: 3.11',
+                'Programming Language :: Python :: 3.12',
                 'Topic :: Scientific/Engineering',
                 'Topic :: Utilities',
                 'Topic :: Software Development :: Libraries',

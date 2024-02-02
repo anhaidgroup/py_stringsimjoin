@@ -1,3 +1,9 @@
+v0.3.4 - 2/2/2024
+  * Added support for Python 3.12
+  * Discontinued usage of cythonize.py during setup due to Python 3.12 compatibility issues
+  * Adjusted setuptools.setup project name to match name on PyPI
+  * Fixed compatibility issues with the latest versions of Pandas
+
 v0.3.3 - 3/16/2023
   * Dropped support for Python 3.6.
   * Added support for Python 3.10 and 3.11.

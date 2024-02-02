@@ -61,9 +61,9 @@ class ApplyMatcherTestCases(unittest.TestCase):
                                     self.r_join_attr,
                                     'B.zipcode',
                                     'tmp_join_key']],
-                        on='tmp_join_key').drop('tmp_join_key', 1)
-        self.ltable.drop('tmp_join_key', 1)
-        self.rtable.drop('tmp_join_key', 1)
+                        on='tmp_join_key').drop('tmp_join_key', axis=1)
+        self.ltable.drop('tmp_join_key', axis=1)
+        self.rtable.drop('tmp_join_key', axis=1)
 
     def test_apply_matcher(self):
         tok = QgramTokenizer(qval=2, return_set=True)
