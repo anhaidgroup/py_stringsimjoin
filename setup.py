@@ -65,15 +65,16 @@ class build_ext(_build_ext, build_ext_options):
         _build_ext.build_extensions(self)
 
 
-def generate_cython(ext):
-    from Cython.Build import cythonize
-    
-    p = cythonize(ext)
-
-    if not p:
+def generate_cython():
+    cwd = os.path.abspath(os.path.dirname(__file__))
+    print("Cythonizing sources")
+    p = subprocess.call([sys.executable, os.path.join(cwd,
+                             'build_tools',
+                             'cythonize.py'),
+            'py_stringsimjoin'],
+        cwd=cwd)
+    if p != 0:
         raise RuntimeError("Running cythonize failed!")
-    
-    return p
 
 
 MODULES = {
@@ -193,6 +194,9 @@ def setup_package():
         if (ccompiler.new_compiler().compiler_type == 'msvc'
                 and msvccompiler.get_build_version == 9):
             include_dirs.append(os.path.join(root, 'include', 'msvc9'))
+        
+        if not is_source_release(root):
+            generate_cython()
 
         extensions = []
         for name in list(MODULES.keys()):
@@ -200,10 +204,6 @@ def setup_package():
             e = setuptools.Extension(name, sources=curr_mod['sources'],
                     extra_compile_args=curr_mod['comargs'], language='c++')
             extensions.append(e)
-
-        if not is_source_release(root):
-            extensions = generate_cython(extensions)
-
         
         packages = setuptools.find_packages()
         with open('README.rst') as f:
