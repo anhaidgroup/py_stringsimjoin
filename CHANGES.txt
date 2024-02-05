@@ -1,3 +1,7 @@
+v0.3.5 - 2/2/2024
+  * Edited setup.py to fix erroneously raising 'ImportError: pip is missing' during pip install
+  * Reverted to using cythonize.py due to errors with new cythonize implementation
+
 v0.3.4 - 2/2/2024
   * Added support for Python 3.12
   * Discontinued usage of cythonize.py during setup due to Python 3.12 compatibility issues

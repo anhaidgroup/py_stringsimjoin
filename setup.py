@@ -13,14 +13,13 @@ try:
 except ImportError:
     PIP_INSTALLED = False
 
-if not PIP_INSTALLED:
-    raise ImportError('pip is not installed.')
-
 def install_and_import(package):
     import importlib
     try:
         importlib.import_module(package)
     except ImportError:
+        if not PIP_INSTALLED:
+            raise ImportError('pip is not installed.')
         pip.main(['install', package])
     finally:
         globals()[package] = importlib.import_module(package)
@@ -67,14 +66,14 @@ class build_ext(_build_ext, build_ext_options):
 
 
 def generate_cython():
-    from Cython.Build import cythonize
-    
-    module_list = [MODULES[key]['sources'][0] for key in MODULES.keys()]
-    print(module_list)
-    
-    p = cythonize(module_list)
-
-    if not p:
+    cwd = os.path.abspath(os.path.dirname(__file__))
+    print("Cythonizing sources")
+    p = subprocess.call([sys.executable, os.path.join(cwd,
+                             'build_tools',
+                             'cythonize.py'),
+            'py_stringsimjoin'],
+        cwd=cwd)
+    if p != 0:
         raise RuntimeError("Running cythonize failed!")
 
 
@@ -195,7 +194,7 @@ def setup_package():
         if (ccompiler.new_compiler().compiler_type == 'msvc'
                 and msvccompiler.get_build_version == 9):
             include_dirs.append(os.path.join(root, 'include', 'msvc9'))
-
+        
         if not is_source_release(root):
             generate_cython()
 
@@ -205,9 +204,7 @@ def setup_package():
             e = setuptools.Extension(name, sources=curr_mod['sources'],
                     extra_compile_args=curr_mod['comargs'], language='c++')
             extensions.append(e)
-
-
-
+        
         packages = setuptools.find_packages()
         with open('README.rst') as f:
             LONG_DESCRIPTION = f.read()
@@ -215,7 +212,7 @@ def setup_package():
         cmdclass = {"build_ext": build_ext}
         setuptools.setup(
             name='py-stringsimjoin',
-            version='0.3.4',
+            version='0.3.5',
             description='Python library for performing string similarity joins.',
             long_description=LONG_DESCRIPTION,
             url='https://sites.google.com/site/anhaidgroup/projects/magellan/py_stringsimjoin',
