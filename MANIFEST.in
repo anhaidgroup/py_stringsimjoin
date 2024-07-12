@@ -6,3 +6,4 @@ recursive-include LICENSES *
 recursive-include py_stringsimjoin/datasets *.csv *.csv.gz
 recursive-include py_stringsimjoin/tests *.csv *.csv.gz                      
 include py_stringsimjoin/*/*.cpp
+recursive-include build_tools *
