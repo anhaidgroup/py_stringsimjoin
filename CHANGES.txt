@@ -1,6 +1,6 @@
 v0.3.6 - 7/5/2024
-  * Release to fix missing cythonize.py file on PyPI
   * Added preliminary testing of pip install to Github Actions workflow
+  * Added build tools to source distribution
 
 v0.3.5 - 2/2/2024
   * Edited setup.py to fix erroneously raising 'ImportError: pip is missing' during pip install
